@@ -24,7 +24,7 @@ public class DummyContent {
     public static Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
 
     static {
-        // Add 3 sample items.
+        //Jonathan Desmarais: Add 7 static sample items.
         addItem(new DummyItem("1", "Introduction", new int[]{R.layout.test}));
         addItem(new DummyItem("2", "Transmission du son", new int[]{R.layout.test, R.layout.test}));
         addItem(new DummyItem("3", "Modulation", new int[]{R.layout.test, R.layout.test, R.layout.test}));
@@ -41,6 +41,8 @@ public class DummyContent {
 
     /**
      * A dummy item representing a piece of content.
+     * It receive an string id, an title and a list
+     * of XML layout (as R.Layout.name int).
      */
     public static class DummyItem {
         public String id;
