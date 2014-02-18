@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import com.actionbarsherlock.app.SherlockListFragment;
+import android.support.v4.app.ListFragment;
 import com.galimatias.teslaradio.dummy.DummyContent;
 
 /**
@@ -18,7 +18,7 @@ import com.galimatias.teslaradio.dummy.DummyContent;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class ItemListFragment extends SherlockListFragment {
+public class ItemListFragment extends ListFragment {
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -48,17 +48,6 @@ public class ItemListFragment extends SherlockListFragment {
          */
         public void onItemSelected(String id);
     }
-
-
-
-
-//    @Override
-//    public void onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu, MenuInflater inflater) {
-//
-//        super.onCreateOptionsMenu(menu, inflater);
-//
-//        inflater.inflate(R.menu.action_bar_menu, menu);
-//    }
 
     /**
      * A dummy implementation of the {@link Callbacks} interface that does

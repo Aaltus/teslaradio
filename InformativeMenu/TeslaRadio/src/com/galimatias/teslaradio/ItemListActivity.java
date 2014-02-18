@@ -3,9 +3,9 @@ package com.galimatias.teslaradio;
 
 import android.content.Intent;
 import android.os.Bundle;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 /**
  * An activity representing a list of Items. This activity
@@ -23,8 +23,9 @@ import com.actionbarsherlock.view.MenuInflater;
  * {@link ItemListFragment.Callbacks} interface
  * to listen for item selections.
  */
-//public class ItemListActivity extends FragmentActivity implements
-public class ItemListActivity extends SherlockFragmentActivity implements
+
+//Jonathan Desmarais: We extend ActionBarActivity instead of FragmentActivity for support v7
+public class ItemListActivity extends ActionBarActivity implements
 	ItemListFragment.Callbacks {
 
     /**
@@ -37,8 +38,6 @@ public class ItemListActivity extends SherlockFragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
-
-        //this.setHasOptionsMenu(true);
 
         if (findViewById(R.id.item_detail_container) != null) {
             // The detail container view will be present only in the
@@ -60,8 +59,9 @@ public class ItemListActivity extends SherlockFragmentActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // use an inflater to populate the ActionBar with items
-        //MenuInflater inflater = getMenuInflater();
-        MenuInflater inflater = this.getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
+
+        //Jonathan Desmarais: We show use different action menu layout depending if we are on a phone or tablet
         if (mTwoPane){
             inflater.inflate(R.menu.action_bar_menu_large, menu);
         }
