@@ -4,10 +4,10 @@ package com.galimatias.teslaradio;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 /**
  * An activity representing a single Item detail screen. This
@@ -18,7 +18,7 @@ import com.actionbarsherlock.view.MenuItem;
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link ItemDetailFragment}.
  */
-public class ItemDetailActivity extends SherlockFragmentActivity {
+public class ItemDetailActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,13 +26,12 @@ public class ItemDetailActivity extends SherlockFragmentActivity {
         setContentView(R.layout.activity_item_detail);
 
         // Show the Up button in the action bar.
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Set the title of the back button
         getSupportActionBar().setTitle(R.string.back_button_text);
 
-        //this.setHasOptionsMenu(true);
+
 
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
@@ -57,15 +56,16 @@ public class ItemDetailActivity extends SherlockFragmentActivity {
         }
     }
 
+    //Implementing onCreateOptionsMenu to create menu button from xml file
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // use an inflater to populate the ActionBar with items
-        //MenuInflater inflater = getMenuInflater();
-        MenuInflater inflater = this.getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_bar_menu, menu);
         return true;
     }
 
+    //Implementing onOptionsItemSelected to create a functional back button
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
