@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/item_action_language_eng"
+          android:icon="@drawable/ic_action_language_eng"
+          android:title="@string/string_action_language_eng"
+          android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/item_action_language_fr"
+          android:icon="@drawable/ic_action_language_fr"
+          android:title="@string/string_action_language_fr"
+          android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/item_action_language_es"
+          android:icon="@drawable/ic_action_language_es"
+          android:title="@string/string_action_language_es"
+          android:showAsAction="ifRoom|withText"/>
+</menu>
