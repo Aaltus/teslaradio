@@ -53,7 +53,6 @@ public class ItemDetailFragment extends Fragment  {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
