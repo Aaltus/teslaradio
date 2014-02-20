@@ -12,9 +12,7 @@ package com.galimatias.teslaradio; /***
  limitations under the License.
  */
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -46,7 +44,9 @@ public class DemoCameraFragment extends CameraFragment {
 
         //setHasOptionsMenu(true);
         setHost(new DemoCameraHost(getActivity()));
+
     }
+
 
 //    @Override
 //    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -154,12 +154,12 @@ public class DemoCameraFragment extends CameraFragment {
                     Toast.LENGTH_LONG).show();
         }
 
-        @Override
-        @TargetApi(16)
-        public void onAutoFocus(boolean success, Camera camera) {
-            super.onAutoFocus(success, camera);
-
-            takePictureItem.setEnabled(true);
-        }
+//        @Override
+//        @TargetApi(16)
+//        public void onAutoFocus(boolean success, Camera camera) {
+//            super.onAutoFocus(success, camera);
+//
+//            takePictureItem.setEnabled(true);
+//        }
     }
 }
