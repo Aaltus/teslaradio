@@ -1,6 +1,8 @@
 package com.galimatias.teslaradio;
 
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -52,6 +54,23 @@ public class ItemListActivity extends ActionBarActivity implements
                     .findFragmentById(R.id.item_list))
                     .setActivateOnItemClick(true);
         }
+        int xmlIdForCameraPreview = 0;
+        if (mTwoPane){
+            xmlIdForCameraPreview = R.id.CameraPreviewButtonView_twopane;
+        }
+        else{
+            xmlIdForCameraPreview = R.id.CameraPreviewButtonView_single_pane;
+        }
+        Fragment newFragment = new DemoCameraFragment();
+        FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
+        ft.add(xmlIdForCameraPreview, newFragment).commit();
+
+
+
+//        DemoCameraFragment demoFragment = new DemoCameraFragment();
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.CameraPreviewButtonView, demoFragment)
+//                .commit();
 
         // TODO: If exposing deep links into your app, handle intents here.
     }
