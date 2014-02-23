@@ -61,9 +61,13 @@ public class ItemListActivity extends ActionBarActivity implements
         else{
             xmlIdForCameraPreview = R.id.CameraPreviewButtonView_single_pane;
         }
-        Fragment newFragment = new DemoCameraFragment();
-        FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
-        ft.add(xmlIdForCameraPreview, newFragment).commit();
+        if(savedInstanceState == null)
+        {
+            Fragment newFragment = new DemoCameraFragment();
+            FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
+            ft.add(xmlIdForCameraPreview, newFragment).commit();
+        }
+
 
 
 
