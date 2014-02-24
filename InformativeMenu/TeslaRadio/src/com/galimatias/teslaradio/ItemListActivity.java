@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 
 /**
  * An activity representing a list of Items. This activity
@@ -29,7 +31,7 @@ import android.view.MenuInflater;
 
 //Jonathan Desmarais: We extend ActionBarActivity instead of FragmentActivity for support v7
 public class ItemListActivity extends ActionBarActivity implements
-	ItemListFragment.Callbacks {
+	ItemListFragment.Callbacks, View.OnClickListener {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -95,7 +97,10 @@ public class ItemListActivity extends ActionBarActivity implements
         return true;
     }
 
-
+    @Override
+    public void onClick(View view) {
+        Log.e("TAG", "setSingleTapListener");
+    }
 
     /**
      * Callback method from {@link ItemListFragment.Callbacks}
@@ -125,12 +130,17 @@ public class ItemListActivity extends ActionBarActivity implements
     }
 
     private class CreateCameraPreviewAsyncTask extends AsyncTask<Integer, Void, Void> {
+
+        Integer fragmentId;
         protected Void doInBackground(Integer...xmlIdForCameraPreview) {
+            fragmentId = xmlIdForCameraPreview[0];
             Fragment newFragment = new DemoCameraFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(xmlIdForCameraPreview[0], newFragment).commit();
+            ft.add(fragmentId, newFragment).commit();
+
             return null;
         }
+
     }
 
 

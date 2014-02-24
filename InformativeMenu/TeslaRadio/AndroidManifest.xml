@@ -23,6 +23,10 @@
         <!--android:theme="@style/AppTheme" >-->
 
 
+        <activity android:label="CameraAccessJME"
+                  android:name="com.ar4android.cameraAccessJME.CameraAccessJMEActivity"
+                  android:configChanges="keyboardHidden|screenLayout|orientation"
+                />
 
         <activity
             android:name="com.galimatias.teslaradio.ItemListActivity"
