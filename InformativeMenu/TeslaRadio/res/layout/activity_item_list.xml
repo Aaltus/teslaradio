@@ -14,11 +14,8 @@
     tools:context=".ItemListActivity"/>
 
     <FrameLayout
-            android:id="@+id/CameraPreviewButtonView_single_pane"
-            android:layout_width="100dp"
-            android:layout_height="75dp"
-            android:layout_gravity="right|bottom"
-            android:scaleType="fitXY"
+            android:id="@+id/CameraPreviewButtonView_List"
+            style="@style/CameraPreviewButtonStyle"
             />
 
 

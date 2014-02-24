@@ -14,10 +14,7 @@
 
     <FrameLayout
     android:id="@+id/CameraPreviewButtonView"
-    android:layout_width="100dp"
-    android:layout_height="75dp"
-    android:layout_gravity="right|bottom"
-    android:scaleType="fitXY"
+    style="@style/CameraPreviewButtonStyle"
             />
 
     <!--<FrameLayout-->
