@@ -29,6 +29,7 @@
     <orderEntry type="library" name="android-support-v7-appcompat" level="project" />
     <orderEntry type="module" module-name="camera-v9" />
     <orderEntry type="module" module-name="camera" />
+    <orderEntry type="library" name="libs" level="project" />
   </component>
 </module>
 

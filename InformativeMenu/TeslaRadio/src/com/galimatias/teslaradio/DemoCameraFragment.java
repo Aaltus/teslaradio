@@ -13,14 +13,20 @@ package com.galimatias.teslaradio; /***
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 import com.commonsware.cwac.camera.CameraHost;
+import com.commonsware.cwac.camera.CameraView;
 import com.commonsware.cwac.camera.SimpleCameraHost;
 import com.commonsware.cwac.camera.acl.CameraFragment;
 
-public class DemoCameraFragment extends CameraFragment {
+public class DemoCameraFragment extends CameraFragment implements View.OnClickListener {
     private static final String KEY_USE_FFC=
             "com.commonsware.cwac.camera.demo.USE_FFC";
     private MenuItem singleShotItem=null;
@@ -44,9 +50,23 @@ public class DemoCameraFragment extends CameraFragment {
 
         //setHasOptionsMenu(true);
         setHost(new DemoCameraHost(getActivity()));
-
     }
 
+
+    /**
+     * Method to make the fragment clickable. We recall the
+     * Mother class and we add a OnClick event listener
+     */
+    @Override
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+        CameraView cameraView= (CameraView) super.onCreateView(inflater,container, savedInstanceState);
+
+        cameraView.setOnClickListener(this);
+
+        return  cameraView;
+    }
 
 //    @Override
 //    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -94,6 +114,19 @@ public class DemoCameraFragment extends CameraFragment {
         return((Contract)getActivity());
     }
 
+    /**
+     * Method to call jMonkey Module
+     */
+    @Override
+    public void onClick(View view) {
+        Log.e("Chat", "Blob");
+
+        Intent myIntent = new Intent( getActivity(), com.ar4android.cameraAccessJME.CameraAccessJMEActivity.class);
+        startActivityForResult(myIntent, 0);
+        getActivity().overridePendingTransition(R.anim.zoom_enter, R.anim.zoom_exit);
+    }
+
+
     interface Contract {
         boolean isSingleShotMode();
 
@@ -105,10 +138,13 @@ public class DemoCameraFragment extends CameraFragment {
             super(_ctxt);
         }
 
+
 //        @Override
 //        public boolean useFrontFacingCamera() {
 //            return(getArguments().getBoolean(KEY_USE_FFC));
 //        }
+
+
 
         @Override
         public boolean useSingleShotMode() {
