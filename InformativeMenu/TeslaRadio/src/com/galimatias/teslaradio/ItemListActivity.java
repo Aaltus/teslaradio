@@ -1,10 +1,11 @@
 package com.galimatias.teslaradio;
 
 
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +37,8 @@ public class ItemListActivity extends ActionBarActivity implements
      */
     private boolean mTwoPane;
 
+    AsyncTask<Integer, Void, Void> createCameraPreviewAsyncTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,18 +57,15 @@ public class ItemListActivity extends ActionBarActivity implements
                     .findFragmentById(R.id.item_list))
                     .setActivateOnItemClick(true);
         }
-        int xmlIdForCameraPreview = 0;
-        if (mTwoPane){
-            xmlIdForCameraPreview = R.id.CameraPreviewButtonView_twopane;
-        }
-        else{
-            xmlIdForCameraPreview = R.id.CameraPreviewButtonView_single_pane;
-        }
+
+        int xmlIdForCameraPreview = R.id.CameraPreviewButtonView_List;
         if(savedInstanceState == null)
         {
-            Fragment newFragment = new DemoCameraFragment();
-            FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
-            ft.add(xmlIdForCameraPreview, newFragment).commit();
+//            Fragment newFragment = new DemoCameraFragment();
+//            FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
+//            ft.add(xmlIdForCameraPreview, newFragment).commit();
+
+            new CreateCameraPreviewAsyncTask().execute(xmlIdForCameraPreview);
         }
 
 
@@ -95,6 +95,8 @@ public class ItemListActivity extends ActionBarActivity implements
         return true;
     }
 
+
+
     /**
      * Callback method from {@link ItemListFragment.Callbacks}
      * indicating that the item with the given ID was selected.
@@ -121,4 +123,15 @@ public class ItemListActivity extends ActionBarActivity implements
             startActivity(detailIntent);
         }
     }
+
+    private class CreateCameraPreviewAsyncTask extends AsyncTask<Integer, Void, Void> {
+        protected Void doInBackground(Integer...xmlIdForCameraPreview) {
+            Fragment newFragment = new DemoCameraFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(xmlIdForCameraPreview[0], newFragment).commit();
+            return null;
+        }
+    }
+
+
 }
