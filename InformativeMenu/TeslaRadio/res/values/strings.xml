@@ -10,5 +10,6 @@
     <string name="string_action_language_eng">English</string>
     <string name="string_action_language_fr">French</string>
     <string name="string_action_language_es">Spanish</string>
+    <string name="string_action_language_ge">Germany</string>
 
 </resources>
