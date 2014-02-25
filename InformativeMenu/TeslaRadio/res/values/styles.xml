@@ -29,14 +29,14 @@
     <!-- ActionBar styles -->
     <style name="MyActionBar"
            parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@drawable/actionbar_background</item>
+        <item name="android:background">@drawable/global_app_color</item>
 
         <!-- Support library compatibility -->
-        <item name="background">@drawable/actionbar_background</item>
+        <item name="background">@drawable/global_app_color</item>
     </style>
 
     <!--Change this color if you want to change the action bar color-->
-    <drawable name="actionbar_background">#A5B7EC</drawable>
+    <drawable name="global_app_color">#A5B7EC</drawable>
 
 <!--For splashscreen-->
     <style name="Theme.NoBackground" parent="android:Theme">
