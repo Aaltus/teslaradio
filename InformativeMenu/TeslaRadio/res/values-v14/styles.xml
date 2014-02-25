@@ -12,7 +12,13 @@
     </style>
 
     <style name="listViewActivatedStyle">
-        <item name="android:background">?android:attr/activatedBackgroundIndicator</item>
+        <!--<item name="android:background">?android:attr/activatedBackgroundIndicator</item>-->
+        <item name="android:background">@drawable/state_list_drawable</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceListItemSmall</item>
+        <item name="android:paddingStart">?android:attr/listPreferredItemPaddingStart</item>
+        <item name="android:paddingEnd">?android:attr/listPreferredItemPaddingEnd</item>
+        <item name="android:minHeight">?android:attr/listPreferredItemHeightSmall</item>
+
     </style>
 
 </resources>
