@@ -18,11 +18,28 @@ public class TextViewJustifiedUtils {
 
             if ((v instanceof TextView)) {
 
+
                 TextView textView = (TextView) v;
                 WebView mWebView = new WebView(context);
 
-                String text = "<html><body>" + "<p align=\"justify\">"
-                + textView.getText().toString() +
+                ViewGroup.LayoutParams textViewLayoutParams= (ViewGroup.LayoutParams)textView.getLayoutParams();
+                mWebView.setLayoutParams(textViewLayoutParams);
+
+                //Typeface textViewTypeface = textView.getTypeface();
+                //String sTextViewTypeface = textViewTypeface.toString();
+
+                String textViewData = textView.getText().toString();
+
+                int iTextColor =  textView.getCurrentTextColor();
+                String sTextColor = "#" + Integer.toHexString(iTextColor & 0x00FFFFFF);
+
+                float fTextSize = textView.getTextSize();
+                String sTextSize = String.valueOf(fTextSize);
+
+                String text = "<html>"+  "<style>" + "p {color:"+ sTextColor+
+                        "; font-size:" + sTextSize + "px;" +
+                        "}</style>"+"<body>"  +"<p align=\"justify\">"
+                +  textViewData+
                 "       " + "</p> " + "</body></html>";
                 mWebView.setBackgroundColor(Color.TRANSPARENT);
                 mWebView.loadData(text, "text/html", "utf-8");

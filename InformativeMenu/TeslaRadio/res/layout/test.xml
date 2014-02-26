@@ -49,15 +49,33 @@
                 android:id="@+id/textView"
                 android:layout_gravity="center_vertical|right"
                 android:gravity="left"
-                android:textSize="10dp"/>
+                android:textSize="10dp"
+                />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:descendantFocusability="blocksDescendants">
         <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="@string/LopumIpsum"
                 android:id="@+id/textView"
-                android:layout_gravity="center_vertical|right"
-                android:gravity="left"
-                android:textSize="10dp"/>
+                android:textSize="10dp"
+                android:textColor="@color/win8_red"
+                android:layout_weight="20"
+                />
+
+        <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/wavelength_sm"
+                android:layout_weight="20"
+                />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
