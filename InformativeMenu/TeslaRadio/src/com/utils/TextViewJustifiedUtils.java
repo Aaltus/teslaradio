@@ -36,7 +36,9 @@ public class TextViewJustifiedUtils {
                 float fTextSize = textView.getTextSize();
                 String sTextSize = String.valueOf(fTextSize);
 
-                String text = "<html>"+  "<style>" + "p {color:"+ sTextColor+
+                String text = "<html>"+ "<head>" +
+                        "<meta name=\"viewport\" content=\"target-densitydpi=device-dpi\"/>" +
+                        "</head>"+ "<style>" + "p {color:"+ sTextColor+
                         "; font-size:" + sTextSize + "px;" +
                         "}</style>"+"<body>"  +"<p align=\"justify\">"
                 +  textViewData+
