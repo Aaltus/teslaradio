@@ -4,7 +4,7 @@
  * accompanying the book
  * "Augmented Reality for Android Application Development", Packt Publishing, 2013.
  *
- * Copyright © 2013 Jens Grubert, Raphael Grasset / Packt Publishing.
+ * Copyright ï¿½ 2013 Jens Grubert, Raphael Grasset / Packt Publishing.
  *
  * This code is the proprietary information of Qualcomm Connected Experiences, Inc.
  * Any use of this code is subject to the terms of the License Agreement for Vuforia Software Development Kit
@@ -111,7 +111,7 @@ class VuforiaJME_UpdateCallback : public QCAR::UpdateCallback
                 int height = imageRGB565->getHeight();
                 int numPixels = width * height;
 
-               // LOG("Update video image...");
+                LOG("Update video image... !OnUpdate!");
                 jbyteArray pixelArray = env->NewByteArray(numPixels * 2);
                 env->SetByteArrayRegion(pixelArray, 0, numPixels * 2, (const jbyte*) pixels);
                 jclass javaClass = env->GetObjectClass(activityObj);
@@ -152,7 +152,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initTracker(JNIEnv *, jobject)
     
     // Initialize the image tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
-    QCAR::Tracker* tracker = trackerManager.initTracker(QCAR::Tracker::IMAGE_TRACKER);
+    QCAR::Tracker* tracker = trackerManager.initTracker(QCAR::ImageTracker::getClassType());
     if (tracker == NULL)
     {
         LOG("Failed to initialize ImageTracker.");
@@ -171,7 +171,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitTracker(JNIEnv *, jobjec
 
     // Deinit the image tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
-    trackerManager.deinitTracker(QCAR::Tracker::IMAGE_TRACKER);
+    trackerManager.deinitTracker(QCAR::ImageTracker::getClassType());
 }
 
 
@@ -183,7 +183,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData(JNIEnv *, jobj
     // Get the image tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
     QCAR::ImageTracker* imageTracker = static_cast<QCAR::ImageTracker*>(
-                    trackerManager.getTracker(QCAR::Tracker::IMAGE_TRACKER));
+                    trackerManager.getTracker(QCAR::ImageTracker::getClassType()));
     if (imageTracker == NULL)
     {
         LOG("Failed to load tracking data set because the ImageTracker has not"
@@ -226,7 +226,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData(JNIEnv *, j
     // Get the image tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
     QCAR::ImageTracker* imageTracker = static_cast<QCAR::ImageTracker*>(
-        trackerManager.getTracker(QCAR::Tracker::IMAGE_TRACKER));
+        trackerManager.getTracker(QCAR::ImageTracker::getClassType()));
     if (imageTracker == NULL)
     {
         LOG("Failed to destroy the tracking data set because the ImageTracker has not"
@@ -508,7 +508,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera(JNIEnv *,
 
     // Start the tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
-    QCAR::Tracker* imageTracker = trackerManager.getTracker(QCAR::Tracker::IMAGE_TRACKER);
+    QCAR::Tracker* imageTracker = trackerManager.getTracker(QCAR::ImageTracker::getClassType());
     if(imageTracker != 0)
         imageTracker->start();
 }
@@ -521,7 +521,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_stopCamera(JNIEnv *, jobject)
 
     // Stop the tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
-    QCAR::Tracker* imageTracker = trackerManager.getTracker(QCAR::Tracker::IMAGE_TRACKER);
+    QCAR::Tracker* imageTracker = trackerManager.getTracker(QCAR::ImageTracker::getClassType());
     if(imageTracker != 0)
         imageTracker->stop();
     
