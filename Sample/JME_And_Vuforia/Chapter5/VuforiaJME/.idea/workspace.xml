@@ -77,7 +77,7 @@
       <file leaf-file-name="VuforiaJME.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/ar4android/vuforiaJME/VuforiaJME.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="73" column="4" selection-start="2592" selection-end="2592" vertical-scroll-proportion="-0.11792453" vertical-offset="480" max-vertical-offset="4335">
+            <state line="148" column="54" selection-start="5119" selection-end="5119" vertical-scroll-proportion="0.6580938" vertical-offset="1095" max-vertical-offset="4335">
               <folding />
             </state>
           </provider>
@@ -104,7 +104,7 @@
       <file leaf-file-name="VuforiaNative.cpp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/jni/VuforiaNative.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="27" column="22" selection-start="924" selection-end="924" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="9195">
+            <state line="27" column="22" selection-start="924" selection-end="924" vertical-scroll-proportion="0.0" vertical-offset="405" max-vertical-offset="9195">
               <folding />
             </state>
           </provider>
@@ -122,7 +122,7 @@
       <file leaf-file-name="VuforiaJMEActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/ar4android/vuforiaJME/VuforiaJMEActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="88" column="33" selection-start="3054" selection-end="3054" vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="10380">
+            <state line="88" column="33" selection-start="3054" selection-end="3054" vertical-scroll-proportion="0.0" vertical-offset="1320" max-vertical-offset="11235">
               <folding />
             </state>
           </provider>
@@ -159,7 +159,7 @@
   <component name="ProjectFrameBounds">
     <option name="y" value="22" />
     <option name="width" value="1920" />
-    <option name="height" value="947" />
+    <option name="height" value="977" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -174,6 +174,13 @@
   <component name="ProjectReloadState">
     <option name="STATE" value="0" />
   </component>
+  <component name="ProjectStructureProblems">
+    <ignored-problems>
+      <problem id="library-invalid-classes-path(library:project:QCAR)" />
+      <problem id="library-invalid-classes-path(library:project:Vuforia)" />
+      <problem id="unused-library(library:project:Vuforia)" />
+    </ignored-problems>
+  </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
       <flattenPackages />
@@ -187,6 +194,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -290,7 +298,6 @@
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -300,15 +307,15 @@
     <property name="MemberChooser.sorted" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="MemberChooser.copyJavadoc" value="false" />
-    <property name="options.lastSelected" value="preferences.pluginManager" />
+    <property name="options.lastSelected" value="vcs.Git" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
     <property name="recentsLimit" value="5" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$QCAR_SDK_ROOT$/build/java/vuforia/QCAR.jar!/" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../ThirdParty/vuforia-sdk-android-2-8-7/build/java/vuforia/Vuforia.jar!/" />
     <property name="restartRequiresConfirmation" value="true" />
     <property name="SearchEverywhereHistory" value="JmeDesktopSystem" />
     <property name="Repository.Attach.JavaDocs" value="false" />
@@ -355,6 +362,37 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
+    <configuration default="true" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java">
+      <option name="myFilePath" />
+      <option name="GLUE" />
+      <option name="myNameFilter" />
+      <option name="myGeneratedName" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method />
+    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -380,37 +418,6 @@
       <envs />
       <properties />
       <listeners />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <method />
-    </configuration>
-    <configuration default="true" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java">
-      <option name="myFilePath" />
-      <option name="GLUE" />
-      <option name="myNameFilter" />
-      <option name="myGeneratedName" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="" />
-      <envs />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -547,7 +554,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1920" height="947" extended-state="0" />
+    <frame x="0" y="22" width="1920" height="977" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -562,7 +569,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31111112" sideWeight="0.92119277" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22339182" sideWeight="0.8333333" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22322436" sideWeight="0.8333333" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3299435" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -598,6 +605,48 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/jni/Application.mk">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="20" selection-start="490" selection-end="490" vertical-scroll-proportion="0.0" vertical-offset="195" max-vertical-offset="540">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jni/Android.mk">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="59" column="22" selection-start="2467" selection-end="2472" vertical-scroll-proportion="0.0" vertical-offset="885" max-vertical-offset="1650">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jni/VuforiaNative.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="22" selection-start="924" selection-end="924" vertical-scroll-proportion="0.0" vertical-offset="405" max-vertical-offset="9195">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/libs/jME3-core.jar!/com/jme3/app/Application.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="42" selection-start="692" selection-end="692" vertical-scroll-proportion="0.0" vertical-offset="225" max-vertical-offset="1890">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/ar4android/vuforiaJME/VuforiaJMEActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="88" column="33" selection-start="3054" selection-end="3054" vertical-scroll-proportion="0.0" vertical-offset="1320" max-vertical-offset="11235">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/VuforiaJME.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="0" selection-start="270" selection-end="270" vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="180">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/jni/Android.mk">
       <provider selected="true" editor-type-id="text-editor">
         <state line="32" column="71" selection-start="1492" selection-end="1492" vertical-scroll-proportion="0.0" vertical-offset="480" max-vertical-offset="1635" />
@@ -803,11 +852,6 @@
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1020" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../../../adt-bundle-mac-x86_64-20131030/sdk/sources/android-17/com/android/internal/os/ZygoteInit.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="594" column="0" selection-start="20597" selection-end="20597" vertical-scroll-proportion="0.33200794" vertical-offset="8113" max-vertical-offset="11565" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/project.properties">
       <provider selected="true" editor-type-id="text-editor">
         <state line="14" column="0" selection-start="563" selection-end="563" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="300" />
@@ -818,36 +862,11 @@
         <state line="25" column="39" selection-start="1332" selection-end="1332" vertical-scroll-proportion="0.0" vertical-offset="180" max-vertical-offset="780" />
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/../../../../jME3_2013-05-26/lib/jME3-core.jar!/com/jme3/app/SimpleApplication.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="0" selection-start="2253" selection-end="2253" vertical-scroll-proportion="0.0" vertical-offset="840" max-vertical-offset="930" />
-      </provider>
-    </entry>
-    <entry file="jar://$QCAR_SDK_ROOT$/build/java/vuforia/Vuforia.jar!/com/qualcomm/vuforia/Vuforia.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="13" selection-start="163" selection-end="163" vertical-scroll-proportion="0.14478764" vertical-offset="0" max-vertical-offset="870" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="8" column="36" selection-start="292" selection-end="292" vertical-scroll-proportion="0.0" vertical-offset="282" max-vertical-offset="825">
           <folding />
         </state>
-      </provider>
-    </entry>
-    <entry file="jar://$QCAR_SDK_ROOT$/build/java/vuforia/Vuforia.jar!/com/qualcomm/QCAR/QCAR.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="41" selection-start="392" selection-end="392" vertical-scroll-proportion="-7.2" vertical-offset="0" max-vertical-offset="645" />
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/../../../../jME3_2013-05-26/lib/jME3-desktop.jar!/com/jme3/system/JmeDesktopSystem.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="0" selection-start="1835" selection-end="1835" vertical-scroll-proportion="0.0" vertical-offset="480" max-vertical-offset="570" />
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/../../../../jME3_2013-05-26/lib/jME3-core.jar!/com/jme3/system/JmeSystem.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="45" selection-start="2230" selection-end="2230" vertical-scroll-proportion="0.0" vertical-offset="690" max-vertical-offset="1095" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/jni/Android.mk">
@@ -894,7 +913,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/ar4android/vuforiaJME/VuforiaJME.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="73" column="4" selection-start="2592" selection-end="2592" vertical-scroll-proportion="-0.11792453" vertical-offset="480" max-vertical-offset="4335">
+        <state line="148" column="54" selection-start="5119" selection-end="5119" vertical-scroll-proportion="0.6580938" vertical-offset="1095" max-vertical-offset="4335">
           <folding />
         </state>
       </provider>
@@ -976,7 +995,7 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
-          <last-edited>QCAR</last-edited>
+          <last-edited>Vuforia</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

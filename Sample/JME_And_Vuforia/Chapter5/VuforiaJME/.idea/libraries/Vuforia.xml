@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Vuforia">
     <CLASSES>
-      <root url="jar://$QCAR_SDK_ROOT$/build/java/vuforia/Vuforia.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../ThirdParty/vuforia-sdk-android-2-8-7/build/java/vuforia/Vuforia.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
