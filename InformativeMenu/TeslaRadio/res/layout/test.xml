@@ -52,6 +52,32 @@
                 android:textSize="10dp"
                 />
 
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:descendantFocusability="blocksDescendants">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/LopumIpsum"
+                    android:textSize="10dp"
+                    android:textColor="@color/win8_red"
+                    android:layout_weight="20"
+                    />
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/test_size"
+                    android:text="@string/LopumIpsum"
+                    android:textSize="10dp"
+                    android:textColor="@color/win8_blue"
+                    android:layout_weight="20"
+                    />
+        </LinearLayout>
+
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
