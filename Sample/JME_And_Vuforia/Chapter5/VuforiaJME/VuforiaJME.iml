@@ -30,7 +30,6 @@
     <orderEntry type="library" exported="" name="jME3-core" level="project" />
     <orderEntry type="library" exported="" name="jME3-jogg" level="project" />
     <orderEntry type="library" exported="" name="jME3-plugins" level="project" />
-    <orderEntry type="library" name="QCAR" level="project" />
   </component>
 </module>
 
