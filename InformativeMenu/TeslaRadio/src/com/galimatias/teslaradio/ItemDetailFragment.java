@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,9 +89,13 @@ public class ItemDetailFragment extends Fragment  {
         return rootView;
     }
 
+
     //PagerAdapter implementation
     private static class SwipeAdapter extends PagerAdapter {
 
+
+        private final long minimumDifferenceTime = 1000;
+        private long lastUpdateTime = minimumDifferenceTime;
         private LayoutInflater mInflater;
         private Context mContext;
 
@@ -106,13 +111,29 @@ public class ItemDetailFragment extends Fragment  {
         }
 
         @Override
+        public void finishUpdate(ViewGroup container) {
+            super.finishUpdate(container);
+
+
+            long currentUpdateTime=System.currentTimeMillis();
+            if ((currentUpdateTime - lastUpdateTime)<minimumDifferenceTime){
+                container.setVisibility(View.VISIBLE);
+            }
+            lastUpdateTime = currentUpdateTime;
+            Log.e("chat", "chat");
+        }
+
+        @Override
         public Object instantiateItem(ViewGroup container, int position) {
             // using the position parameter, inflate the proper layout, also add
             // it to the container parameter
+            int currentPageRootId = mLayouts[position];
+
             ViewGroup pageView = (ViewGroup) mInflater.inflate(
-                    mLayouts[position], container, false);
+                    currentPageRootId, container, false);
 
             TextViewJustifiedUtils.setTextViewJustified(pageView, mContext);
+            //TextViewJustifiedUtils.setTextViewJustified(pageView.findViewById(R.id.test_size),mContext);
 
 //            WebView mWebView = (WebView) pageView.findViewById(R.id.webview);
 //
@@ -122,8 +143,10 @@ public class ItemDetailFragment extends Fragment  {
 //            mWebView.setBackgroundColor(Color.TRANSPARENT);
 //            mWebView.loadData(text, "text/html", "utf-8");
 
-
+            //container.setVisibility(View.INVISIBLE);
+            pageView.setVisibility(View.GONE);
             container.addView(pageView);
+
             return pageView;
         }
 
