@@ -4,7 +4,7 @@
  * accompanying the book
  * "Augmented Reality for Android Application Development", Packt Publishing, 2013.
  *
- * Copyright © 2013 Jens Grubert, Raphael Grasset / Packt Publishing.
+ * Copyright ï¿½ 2013 Jens Grubert, Raphael Grasset / Packt Publishing.
  *
  * This code is the proprietary information of Qualcomm Connected Experiences, Inc.
  * Any use of this code is subject to the terms of the License Agreement for Vuforia Software Development Kit
@@ -157,7 +157,7 @@ Java_com_ar4android_rayPickingJME_RayPickingJMEActivity_initTracker(JNIEnv *, jo
     
     // Initialize the image tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
-    QCAR::Tracker* tracker = trackerManager.initTracker(QCAR::Tracker::IMAGE_TRACKER);
+    QCAR::Tracker* tracker = trackerManager.initTracker(QCAR::ImageTracker::getClassType());
     if (tracker == NULL)
     {
         LOG("Failed to initialize ImageTracker.");
@@ -176,7 +176,7 @@ Java_com_ar4android_rayPickingJME_RayPickingJMEActivity_deinitTracker(JNIEnv *, 
 
     // Deinit the image tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
-    trackerManager.deinitTracker(QCAR::Tracker::IMAGE_TRACKER);
+    trackerManager.deinitTracker(QCAR::ImageTracker::getClassType());
 }
 
 
@@ -188,7 +188,7 @@ Java_com_ar4android_rayPickingJME_RayPickingJMEActivity_loadTrackerData(JNIEnv *
     // Get the image tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
     QCAR::ImageTracker* imageTracker = static_cast<QCAR::ImageTracker*>(
-                    trackerManager.getTracker(QCAR::Tracker::IMAGE_TRACKER));
+                    trackerManager.getTracker(QCAR::ImageTracker::getClassType()));
     if (imageTracker == NULL)
     {
         LOG("Failed to load tracking data set because the ImageTracker has not"
@@ -231,7 +231,7 @@ Java_com_ar4android_rayPickingJME_RayPickingJMEActivity_destroyTrackerData(JNIEn
     // Get the image tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
     QCAR::ImageTracker* imageTracker = static_cast<QCAR::ImageTracker*>(
-        trackerManager.getTracker(QCAR::Tracker::IMAGE_TRACKER));
+        trackerManager.getTracker(QCAR::ImageTracker::getClassType()));
     if (imageTracker == NULL)
     {
         LOG("Failed to destroy the tracking data set because the ImageTracker has not"
@@ -509,7 +509,7 @@ Java_com_ar4android_rayPickingJME_RayPickingJMEActivity_startCamera(JNIEnv *,
 
     // Start the tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
-    QCAR::Tracker* imageTracker = trackerManager.getTracker(QCAR::Tracker::IMAGE_TRACKER);
+    QCAR::Tracker* imageTracker = trackerManager.getTracker(QCAR::ImageTracker::getClassType());
     if(imageTracker != 0)
         imageTracker->start();
 }
@@ -522,7 +522,7 @@ Java_com_ar4android_rayPickingJME_RayPickingJMEActivity_stopCamera(JNIEnv *, job
 
     // Stop the tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
-    QCAR::Tracker* imageTracker = trackerManager.getTracker(QCAR::Tracker::IMAGE_TRACKER);
+    QCAR::Tracker* imageTracker = trackerManager.getTracker(QCAR::ImageTracker::getClassType());
     if(imageTracker != 0)
         imageTracker->stop();
     
