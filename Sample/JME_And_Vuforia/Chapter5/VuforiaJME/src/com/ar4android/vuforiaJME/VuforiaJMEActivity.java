@@ -261,7 +261,7 @@ public class VuforiaJMEActivity extends AndroidHarness {
 
         boolean isPortrait = false;
 
-        switch (config.orientation)
+       /* switch (config.orientation)
         {
         case Configuration.ORIENTATION_PORTRAIT:
             isPortrait = true;
@@ -272,7 +272,7 @@ public class VuforiaJMEActivity extends AndroidHarness {
         case Configuration.ORIENTATION_UNDEFINED:
         default:
             break;
-        }
+        }*/
 
         Log.d(TAG,"Activity is in "
                 + (isPortrait ? "PORTRAIT" : "LANDSCAPE"));
@@ -457,7 +457,7 @@ public class VuforiaJMEActivity extends AndroidHarness {
         int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 
         // This is necessary for enabling AutoRotation in the Augmented View
-        if (screenOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR)
+        /*if (screenOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR)
         {
             // NOTE: We use reflection here to see if the current platform
             // supports the full sensor mode (available only on Gingerbread
@@ -478,7 +478,7 @@ public class VuforiaJMEActivity extends AndroidHarness {
             {
                 e.printStackTrace();
             }
-        }
+        }*/
 
         // Apply screen orientation
         setRequestedOrientation(screenOrientation);
