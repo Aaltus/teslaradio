@@ -4,7 +4,7 @@
  * accompanying the book
  * "Augmented Reality for Android Application Development", Packt Publishing, 2013.
  * 
- * Copyright © 2013 Jens Grubert, Raphael Grasset / Packt Publishing.
+ * Copyright ï¿½ 2013 Jens Grubert, Raphael Grasset / Packt Publishing.
  * 
  * This example is dependent of the Qualcomm Vuforia SDK 
  * The Vuforia SDK is a product of Qualcomm Austria Research Center GmbH
@@ -82,7 +82,7 @@ public class RayPickingJMEActivity extends AndroidHarness {
 
     // Name of the native dynamic libraries to load:
     private static final String NATIVE_LIB_SAMPLE = "VuforiaNative";
-    private static final String NATIVE_LIB_QCAR = "QCAR";
+    private static final String NATIVE_LIB_QCAR = "Vuforia";
     
     // Display size of the device:
     private int mScreenWidth = 0;
