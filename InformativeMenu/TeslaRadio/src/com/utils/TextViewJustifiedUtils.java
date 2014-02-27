@@ -1,12 +1,9 @@
 package com.utils;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.TextView;
 import com.galimatias.teslaradio.AnimatedWebview;
 
@@ -52,48 +49,48 @@ public class TextViewJustifiedUtils {
                 //mWebView.startAnimation(FadeInAnimation);
                 //mWebView.setVisibility(View.INVISIBLE);
 
-                mWebView.setWebViewClient(new WebViewClient() {
-
-                    boolean loadingFinished = true;
-                    boolean redirect = false;
-
-                    @Override
-                    public boolean shouldOverrideUrlLoading(WebView view, String urlNewString) {
-                        if (!loadingFinished) {
-                            redirect = true;
-                        }
-
-                        loadingFinished = false;
-                        view.loadUrl(urlNewString);
-                        return true;
-                    }
-
-                    @Override
-                    public void onPageStarted(WebView view, String url, Bitmap facIcon) {
-                        loadingFinished = false;
-                        //SHOW LOADING IF IT ISNT ALREADY VISIBLE
-                        //view.setVisibility(View.INVISIBLE);
-                        view.setVisibility(View.INVISIBLE);
-                    }
-
-                    @Override
-                    public void onPageFinished(WebView view, String url) {
-
-                        if(!redirect){
-                            loadingFinished = true;
-                        }
-
-                        if(loadingFinished && !redirect){
-                            //HIDE LOADING IT HAS FINISHED
-                            view.setVisibility(View.VISIBLE);
-
-
-                        } else{
-                            redirect = false;
-                        }
-
-                    }
-                });
+//                mWebView.setWebViewClient(new WebViewClient() {
+//
+//                    boolean loadingFinished = true;
+//                    boolean redirect = false;
+//
+//                    @Override
+//                    public boolean shouldOverrideUrlLoading(WebView view, String urlNewString) {
+//                        if (!loadingFinished) {
+//                            redirect = true;
+//                        }
+//
+//                        loadingFinished = false;
+//                        view.loadUrl(urlNewString);
+//                        return true;
+//                    }
+//
+//                    @Override
+//                    public void onPageStarted(WebView view, String url, Bitmap facIcon) {
+//                        loadingFinished = false;
+//                        //SHOW LOADING IF IT ISNT ALREADY VISIBLE
+//                        //view.setVisibility(View.INVISIBLE);
+//                        view.setVisibility(View.INVISIBLE);
+//                    }
+//
+//                    @Override
+//                    public void onPageFinished(WebView view, String url) {
+//
+//                        if(!redirect){
+//                            loadingFinished = true;
+//                        }
+//
+//                        if(loadingFinished && !redirect){
+//                            //HIDE LOADING IT HAS FINISHED
+//                            view.setVisibility(View.VISIBLE);
+//
+//
+//                        } else{
+//                            redirect = false;
+//                        }
+//
+//                    }
+//                });
 
 
 
