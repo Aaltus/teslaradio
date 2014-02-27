@@ -18,9 +18,9 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-QCAR_DIR:= ../../../ThirdParty/vuforia-sdk-android-2-6-10
+QCAR_DIR:= ../../../ThirdParty/vuforia-sdk-android-2-8-7
 LOCAL_MODULE := QCAR-prebuilt
-LOCAL_SRC_FILES = $(QCAR_DIR)/build/lib/$(TARGET_ARCH_ABI)/libQCAR.so
+LOCAL_SRC_FILES = $(QCAR_DIR)/build/lib/$(TARGET_ARCH_ABI)/libVuforia.so
 LOCAL_EXPORT_C_INCLUDES := $(QCAR_DIR)/build/include
 include $(PREBUILT_SHARED_LIBRARY)
 

@@ -4,7 +4,7 @@
  * accompanying the book
  * "Augmented Reality for Android Application Development", Packt Publishing, 2013.
  * 
- * Copyright © 2013 Jens Grubert, Raphael Grasset / Packt Publishing.
+ * Copyright ï¿½ 2013 Jens Grubert, Raphael Grasset / Packt Publishing.
  * 
  * This example is dependent of the Qualcomm Vuforia SDK 
  * The Vuforia SDK is a product of Qualcomm Austria Research Center GmbH
@@ -103,6 +103,8 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		setDisplayFps(false);
 		
 		//Logger.getLogger("").setLevel(Level.SEVERE);
+//        settings.setWidth(1196);
+//        settings.setHeight(768);
 		 
 		
 		// We use custom viewports - so the main viewport does not need to contain the rootNode
@@ -165,7 +167,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	public void initForegroundScene() {
 		
 		//use the box for debugging
-		/*
+
         Box b = new Box(Vector3f.ZERO, 7, 4, 5); // create cube shape at the origin
         Geometry geom = new Geometry("Box", b);  // create cube geometry from the shape
         Material mat = new Material(assetManager,
@@ -173,9 +175,9 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
         mat.setColor("Color", ColorRGBA.Blue);   // set color of material to blue
         geom.setMaterial(mat);                   // set the cube's material
         rootNode.attachChild(geom);              // make the cube appear in the scene
-       
-        geom.setLocalTranslation(new Vector3f(0.0f,5.0f,0.0f));
-        */
+
+        geom.setLocalTranslation(new Vector3f(0.0f,0.0f,-40.0f));
+
 		
 		// Load a model from test_data (OgreXML + material + texture)
         Spatial ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
@@ -184,8 +186,10 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
         rotateNinjaX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
         Quaternion rotateNinjaZ=new Quaternion();
         rotateNinjaZ.fromAngleAxis(3.14f,new Vector3f(0.0f,0.0f,1.0f));;
-        
-       // rotateNinjaX.mult(rotateNinjaZ);
+
+        // comment
+        //rotateNinjaX.mult(rotateNinjaZ);
+
         Quaternion rotateNinjaXZ=rotateNinjaZ.mult(rotateNinjaX);
         
         ninja.rotate(rotateNinjaXZ);
@@ -227,7 +231,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		//color,depth,stencil
 		fgVP.setClearFlags(false, true, false);
 		fgVP.setBackgroundColor(new ColorRGBA(0,0,0,1));
-//		fgVP.setBackgroundColor(new ColorRGBA(0,0,0,0));
+		//fgVP.setBackgroundColor(new ColorRGBA(0,0,0,0));
 	}
 	
 	
@@ -240,13 +244,13 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	  }
 
 	public void setCameraPerspectiveNative(float fovY,float aspectRatio) {
-			// Log.d(TAG,"Update Camera Perspective..");
+         //Log.d(TAG,"Update Camera Perspective.. !NATIVE!");
 
-			 fgCam.setFrustumPerspective(fovY,aspectRatio, 1.f, 100.f);
+         fgCam.setFrustumPerspective(fovY,aspectRatio, 1.f, 1000.f);
 	}
 	
 	public void setCameraViewportNative(float viewport_w,float viewport_h,float size_x,float size_y) {
-		 //Log.d(TAG,"Update Camera Viewport..");
+		//Log.d(TAG,"Update Camera Viewport.. !NATIVE!");
 		
 		float newWidth = 1.f;
 		float newHeight = 1.f;
@@ -280,20 +284,25 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	}
 	
 	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z) {
-		 //Log.d(TAG,"Update Camera Pose..");
+		 //Log.d(TAG,"Update Camera Pose.. !NATIVE!");
 		 fgCam.setLocation(new Vector3f(cam_x,cam_y,cam_z));
 	}
 	
 	public void setCameraOrientationNative(float cam_right_x,float cam_right_y,float cam_right_z,
 			float cam_up_x,float cam_up_y,float cam_up_z,float cam_dir_x,float cam_dir_y,float cam_dir_z) {
 		 
-		//Log.d(TAG,"Update Orientation Pose..");
+		//Log.d(TAG,"Update Orientation Pose.. !NATIVE!");
 
 		 //left,up,direction
-		 fgCam.setAxes(
-				 	new Vector3f(-cam_right_x,-cam_right_y,-cam_right_z),
-			 		new Vector3f(-cam_up_x,-cam_up_y,-cam_up_z),
-			 		new Vector3f(cam_dir_x,cam_dir_y,cam_dir_z));
+//		 fgCam.setAxes(
+//				 	new Vector3f(cam_right_x,cam_right_y,cam_right_z),
+//			 		new Vector3f(cam_up_x,cam_up_y,cam_up_z),
+//			 		new Vector3f(cam_dir_x,cam_dir_y,cam_dir_z));
+
+        fgCam.setAxes(
+                new Vector3f(-cam_right_x,-cam_right_y,-cam_right_z),
+                new Vector3f(-cam_up_x,-cam_up_y,-cam_up_z),
+                new Vector3f(cam_dir_x,cam_dir_y,cam_dir_z));
 	}
 		 
 	// This method retrieves the preview images from the Android world and puts them into a JME image.
@@ -324,6 +333,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		@Override
 		public void simpleRender(RenderManager rm) {
 			// TODO: add render code
+            //Log.d(TAG,"IT RENDERS! !WOW!");
 		}
 	
 }
