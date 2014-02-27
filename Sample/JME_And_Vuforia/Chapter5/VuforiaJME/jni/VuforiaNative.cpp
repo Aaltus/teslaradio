@@ -111,7 +111,7 @@ class VuforiaJME_UpdateCallback : public QCAR::UpdateCallback
                 int height = imageRGB565->getHeight();
                 int numPixels = width * height;
 
-                LOG("Update video image... !OnUpdate!");
+                //LOG("Update video image... !OnUpdate!");
                 jbyteArray pixelArray = env->NewByteArray(numPixels * 2);
                 env->SetByteArrayRegion(pixelArray, 0, numPixels * 2, (const jbyte*) pixels);
                 jclass javaClass = env->GetObjectClass(activityObj);
@@ -281,13 +281,15 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
     
 
     // Explicitly render the Video Background
-  //  QCAR::Renderer::getInstance().drawVideoBackground();
+    //QCAR::Renderer::getInstance().drawVideoBackground();
 
   //  if(QCAR::Renderer::getInstance().getVideoBackgroundConfig().mReflection == QCAR::VIDEO_BACKGROUND_REFLECTION_ON)
 
     // Did we find any trackables this frame?
     for(int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++)
     {
+        LOG("!!! <i> I SEE ROCKS <i> !!!");
+
         // Get the trackable:
         const QCAR::TrackableResult* result = state.getTrackableResult(tIdx);
         //const QCAR::Trackable& trackable = result->getTrackable();
@@ -298,6 +300,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
         //get the camera transformation
         QCAR::Matrix44F inverseMV = MathUtil::Matrix44FInverse(modelViewMatrix);
         //QCAR::Matrix44F invTranspMV = modelViewMatrix;
+        //LOG("OH YEAH!");
         QCAR::Matrix44F invTranspMV = MathUtil::Matrix44FTranspose(inverseMV);
 
         //get position
@@ -324,8 +327,14 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
         QCAR::VideoBackgroundConfig config = QCAR::Renderer::getInstance().getVideoBackgroundConfig();
 
+        //float viewportWidth = config.mSize.data[0];
+        //float viewportHeight = config.mSize.data[1];
+
         float viewportWidth = config.mSize.data[0];
         float viewportHeight = config.mSize.data[1];
+
+        LOG(">>  Viewport width and height: %f %f", viewportWidth, viewportHeight);
+        LOG(">>  Screen width and height: %d %d", screenWidth, screenHeight);
 
         QCAR::Vec2F size = cameraCalibration.getSize();
         QCAR::Vec2F focalLength = cameraCalibration.getFocalLength();
@@ -355,7 +364,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
         jclass activityClass = env->GetObjectClass(obj);
         jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
-        env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
+        env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovRadians,aspectRatio);
 
         // jclass activityClass = env->GetObjectClass(obj);
         jmethodID setCameraViewportMethod = env->GetMethodID(activityClass,"setCameraViewportNative", "(FFFF)V");
