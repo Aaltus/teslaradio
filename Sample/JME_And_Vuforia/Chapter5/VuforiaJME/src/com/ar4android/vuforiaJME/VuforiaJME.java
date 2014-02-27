@@ -19,6 +19,8 @@
 package com.ar4android.vuforiaJME;
 
 import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.Callable;
 
 import android.util.Log;
@@ -103,8 +105,6 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		setDisplayFps(false);
 		
 		//Logger.getLogger("").setLevel(Level.SEVERE);
-//        settings.setWidth(1196);
-//        settings.setHeight(768);
 		 
 		
 		// We use custom viewports - so the main viewport does not need to contain the rootNode
@@ -112,7 +112,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		
 		initTracking(settings.getWidth(), settings.getHeight());
 		initVideoBackground(settings.getWidth(), settings.getHeight());
-		initBackgroundCamera();		
+		initBackgroundCamera();
 		
 		initForegroundScene();	
 		
@@ -149,7 +149,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		// Create a custom virtual camera with orthographic projection
 		videoBGCam = new Camera(settings.getWidth(), settings.getHeight());
 		videoBGCam.setViewPort(0.0f, 1.0f, 0.f, 1.0f);
-		videoBGCam.setLocation(new Vector3f(0f, 0f, 1.f));		
+		videoBGCam.setLocation(new Vector3f(0f, 0f, 1.f));
 		videoBGCam.setAxes(new Vector3f(-1f,0f,0f), new Vector3f(0f,1f,0f), new Vector3f(0f,0f,-1f));
 		videoBGCam.setParallelProjection(true);
 		
@@ -167,35 +167,36 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	public void initForegroundScene() {
 		
 		//use the box for debugging
-
+		/*
         Box b = new Box(Vector3f.ZERO, 7, 4, 5); // create cube shape at the origin
         Geometry geom = new Geometry("Box", b);  // create cube geometry from the shape
         Material mat = new Material(assetManager,
           "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
         mat.setColor("Color", ColorRGBA.Blue);   // set color of material to blue
         geom.setMaterial(mat);                   // set the cube's material
-        rootNode.attachChild(geom);              // make the cube appear in the scene
-
-        geom.setLocalTranslation(new Vector3f(0.0f,0.0f,-40.0f));
-
+      //  rootNode.attachChild(geom);              // make the cube appear in the scene
+       
+        //geom.setLocalTranslation(new Vector3f(0.0f,-5.0f,-8.0f));
+		*/
 		
 		// Load a model from test_data (OgreXML + material + texture)
         Spatial ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
-        ninja.scale(0.125f, 0.125f, 0.125f);
+        ninja.scale(0.0125f, 0.0125f, 0.0125f);
         Quaternion rotateNinjaX=new Quaternion();
-        rotateNinjaX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
+        rotateNinjaX.fromAngleAxis(3.14f,new Vector3f(1.0f,0.0f,0.0f));
         Quaternion rotateNinjaZ=new Quaternion();
-        rotateNinjaZ.fromAngleAxis(3.14f,new Vector3f(0.0f,0.0f,1.0f));;
-
-        // comment
-        //rotateNinjaX.mult(rotateNinjaZ);
-
-        Quaternion rotateNinjaXZ=rotateNinjaZ.mult(rotateNinjaX);
+        rotateNinjaZ.fromAngleAxis(-3.14f,new Vector3f(0.0f,0.0f,1.0f));
+        Quaternion rotateNinjaY=new Quaternion();
+        rotateNinjaY.fromAngleAxis(-3.14f,new Vector3f(0.0f,1.0f,0.0f));
         
-        ninja.rotate(rotateNinjaXZ);
+        rotateNinjaX.mult(rotateNinjaZ);
+        Quaternion rotateNinjaXZ=rotateNinjaZ.mult(rotateNinjaX);
+        Quaternion rotateNinjaXYZ = rotateNinjaXZ.mult(rotateNinjaY);
+        
+        ninja.rotate(rotateNinjaXYZ);
         
         //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
-       // ninja.rotate(0.0f, -3.0f, 0.0f);
+        ninja.rotate(0.0f, -3.0f, 0.0f);
         ninja.setLocalTranslation(0.0f, 0.0f, 0.0f);
         rootNode.attachChild(ninja);
         
@@ -231,7 +232,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		//color,depth,stencil
 		fgVP.setClearFlags(false, true, false);
 		fgVP.setBackgroundColor(new ColorRGBA(0,0,0,1));
-		//fgVP.setBackgroundColor(new ColorRGBA(0,0,0,0));
+//		fgVP.setBackgroundColor(new ColorRGBA(0,0,0,0));
 	}
 	
 	
@@ -244,13 +245,13 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	  }
 
 	public void setCameraPerspectiveNative(float fovY,float aspectRatio) {
-         //Log.d(TAG,"Update Camera Perspective.. !NATIVE!");
+			// Log.d(TAG,"Update Camera Perspective..");
 
-         fgCam.setFrustumPerspective(fovY,aspectRatio, 1.f, 1000.f);
+			 fgCam.setFrustumPerspective(fovY,aspectRatio, 1.f, 100.f);
 	}
 	
 	public void setCameraViewportNative(float viewport_w,float viewport_h,float size_x,float size_y) {
-		//Log.d(TAG,"Update Camera Viewport.. !NATIVE!");
+		 //Log.d(TAG,"Update Camera Viewport..");
 		
 		float newWidth = 1.f;
 		float newHeight = 1.f;
@@ -284,25 +285,27 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	}
 	
 	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z) {
-		 //Log.d(TAG,"Update Camera Pose.. !NATIVE!");
+		 Log.d(TAG,"Update Camera Pose..");
 		 fgCam.setLocation(new Vector3f(cam_x,cam_y,cam_z));
+         List<Spatial> lst = rootNode.getChildren();
+        for(Spatial obj : lst){
+            obj.setLocalTranslation(cam_x,cam_y,cam_z -8.0f);
+        }
+        
+
+
 	}
 	
 	public void setCameraOrientationNative(float cam_right_x,float cam_right_y,float cam_right_z,
 			float cam_up_x,float cam_up_y,float cam_up_z,float cam_dir_x,float cam_dir_y,float cam_dir_z) {
 		 
-		//Log.d(TAG,"Update Orientation Pose.. !NATIVE!");
+		//Log.d(TAG,"Update Orientation Pose..");
 
 		 //left,up,direction
-//		 fgCam.setAxes(
-//				 	new Vector3f(cam_right_x,cam_right_y,cam_right_z),
-//			 		new Vector3f(cam_up_x,cam_up_y,cam_up_z),
-//			 		new Vector3f(cam_dir_x,cam_dir_y,cam_dir_z));
-
-        fgCam.setAxes(
-                new Vector3f(-cam_right_x,-cam_right_y,-cam_right_z),
-                new Vector3f(-cam_up_x,-cam_up_y,-cam_up_z),
-                new Vector3f(cam_dir_x,cam_dir_y,cam_dir_z));
+		 fgCam.setAxes(
+				 	new Vector3f(-cam_right_x,-cam_right_y,-cam_right_z),
+			 		new Vector3f(-cam_up_x,-cam_up_y,-cam_up_z),
+			 		new Vector3f(cam_dir_x,cam_dir_y,cam_dir_z));
 	}
 		 
 	// This method retrieves the preview images from the Android world and puts them into a JME image.
@@ -333,7 +336,6 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		@Override
 		public void simpleRender(RenderManager rm) {
 			// TODO: add render code
-            //Log.d(TAG,"IT RENDERS! !WOW!");
 		}
 	
 }
