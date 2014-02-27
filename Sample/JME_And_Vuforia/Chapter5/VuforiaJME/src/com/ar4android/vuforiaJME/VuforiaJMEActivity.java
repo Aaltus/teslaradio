@@ -193,7 +193,7 @@ public class VuforiaJMEActivity extends AndroidHarness {
 
         protected void onPostExecute(Boolean result)
         {
-            // Done initializing QCAR, proceed to next applicationsetRGB565CameraImage
+            // Done initializing QCAR, proceed to next application
             // initialization status:
             if (result)
             {
@@ -257,27 +257,26 @@ public class VuforiaJMEActivity extends AndroidHarness {
  
     private void updateActivityOrientation()
     {
-        //Configuration config = getResources().getConfiguration();
+        Configuration config = getResources().getConfiguration();
 
         boolean isPortrait = false;
 
-//        switch (config.orientation)
-//        {
-//        case Configuration.ORIENTATION_PORTRAIT:
-//            isPortrait = false;
-//            break;
-//        case Configuration.ORIENTATION_LANDSCAPE:
-//            isPortrait = false;
-//            break;
-//        case Configuration.ORIENTATION_UNDEFINED:
-//        default:
-//            isPortrait = false;
-//            break;
-//        }
-//
-//        Log.d(TAG,"Activity is in "
-//                + (isPortrait ? "PORTRAIT" : "LANDSCAPE"));
-//        setActivityPortraitMode(isPortrait);
+       /* switch (config.orientation)
+        {
+        case Configuration.ORIENTATION_PORTRAIT:
+            isPortrait = true;
+            break;
+        case Configuration.ORIENTATION_LANDSCAPE:
+            isPortrait = false;
+            break;
+        case Configuration.ORIENTATION_UNDEFINED:
+        default:
+            break;
+        }*/
+
+        Log.d(TAG,"Activity is in "
+                + (isPortrait ? "PORTRAIT" : "LANDSCAPE"));
+        setActivityPortraitMode(isPortrait);
     }
 
 
@@ -300,7 +299,7 @@ public class VuforiaJMEActivity extends AndroidHarness {
 
                 // Update viewport via renderer:
                 //TODO SET Screen here
-                //mRenderer.updateRendering(mScreenWidth, mScreenHeight);
+               // mRenderer.updateRendering(mScreenWidth, mScreenHeight);
 
                 // Update projection matrix:
                 setProjectionMatrix();
@@ -458,28 +457,28 @@ public class VuforiaJMEActivity extends AndroidHarness {
         int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 
         // This is necessary for enabling AutoRotation in the Augmented View
-//        if (screenOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR)
-//        {
-//            // NOTE: We use reflection here to see if the current platform
-//            // supports the full sensor mode (available only on Gingerbread
-//            // and above.
-//            try
-//            {
-//                // SCREEN_ORIENTATION_FULL_SENSOR is required to allow all
-//                // 4 screen rotations if API level >= 9:
-//                Field fullSensorField = ActivityInfo.class
-//                        .getField("SCREEN_ORIENTATION_FULL_SENSOR");
-//                screenOrientation = fullSensorField.getInt(null);
-//            }
-//            catch (NoSuchFieldException e)
-//            {
-//                // App is running on API level < 9, do nothing.
-//            }
-//            catch (Exception e)
-//            {
-//                e.printStackTrace();
-//            }
-//        }
+        /*if (screenOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR)
+        {
+            // NOTE: We use reflection here to see if the current platform
+            // supports the full sensor mode (available only on Gingerbread
+            // and above.
+            try
+            {
+                // SCREEN_ORIENTATION_FULL_SENSOR is required to allow all 
+                // 4 screen rotations if API level >= 9:
+                Field fullSensorField = ActivityInfo.class
+                        .getField("SCREEN_ORIENTATION_FULL_SENSOR");
+                screenOrientation = fullSensorField.getInt(null);
+            }
+            catch (NoSuchFieldException e)
+            {
+                // App is running on API level < 9, do nothing.
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }*/
 
         // Apply screen orientation
         setRequestedOrientation(screenOrientation);
@@ -603,7 +602,7 @@ public class VuforiaJMEActivity extends AndroidHarness {
 		mPreviewByteBufferRGB565.clear();
 	
 	}
-	    // This method is called by native C++
+	
 	 public void setRGB565CameraImage(byte[] buffer, int width, int height)  {
 		 
 		    // Log.d(TAG,"Update Camera Image..");
@@ -729,7 +728,7 @@ public class VuforiaJMEActivity extends AndroidHarness {
 	@Override
     public void onConfigurationChanged(Configuration config)
     {
-        Log.w(TAG, "VuforiaJMEActivity::onConfigurationChanged");
+       // DebugLog.LOGD("VuforiaJMEActivity::onConfigurationChanged");
         super.onConfigurationChanged(config);
 
         updateActivityOrientation();
