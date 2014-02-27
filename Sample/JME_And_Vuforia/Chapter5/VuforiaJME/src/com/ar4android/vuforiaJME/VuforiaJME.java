@@ -4,7 +4,7 @@
  * accompanying the book
  * "Augmented Reality for Android Application Development", Packt Publishing, 2013.
  * 
- * Copyright © 2013 Jens Grubert, Raphael Grasset / Packt Publishing.
+ * Copyright ï¿½ 2013 Jens Grubert, Raphael Grasset / Packt Publishing.
  * 
  * This example is dependent of the Qualcomm Vuforia SDK 
  * The Vuforia SDK is a product of Qualcomm Austria Research Center GmbH
@@ -19,6 +19,8 @@
 package com.ar4android.vuforiaJME;
 
 import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.Callable;
 
 import android.util.Log;
@@ -110,7 +112,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		
 		initTracking(settings.getWidth(), settings.getHeight());
 		initVideoBackground(settings.getWidth(), settings.getHeight());
-		initBackgroundCamera();		
+		initBackgroundCamera();
 		
 		initForegroundScene();	
 		
@@ -147,7 +149,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		// Create a custom virtual camera with orthographic projection
 		videoBGCam = new Camera(settings.getWidth(), settings.getHeight());
 		videoBGCam.setViewPort(0.0f, 1.0f, 0.f, 1.0f);
-		videoBGCam.setLocation(new Vector3f(0f, 0f, 1.f));		
+		videoBGCam.setLocation(new Vector3f(0f, 0f, 1.f));
 		videoBGCam.setAxes(new Vector3f(-1f,0f,0f), new Vector3f(0f,1f,0f), new Vector3f(0f,0f,-1f));
 		videoBGCam.setParallelProjection(true);
 		
@@ -172,26 +174,29 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
           "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
         mat.setColor("Color", ColorRGBA.Blue);   // set color of material to blue
         geom.setMaterial(mat);                   // set the cube's material
-        rootNode.attachChild(geom);              // make the cube appear in the scene
+      //  rootNode.attachChild(geom);              // make the cube appear in the scene
        
-        geom.setLocalTranslation(new Vector3f(0.0f,5.0f,0.0f));
-        */
+        //geom.setLocalTranslation(new Vector3f(0.0f,-5.0f,-8.0f));
+		*/
 		
 		// Load a model from test_data (OgreXML + material + texture)
         Spatial ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
-        ninja.scale(0.125f, 0.125f, 0.125f);
+        ninja.scale(0.0125f, 0.0125f, 0.0125f);
         Quaternion rotateNinjaX=new Quaternion();
-        rotateNinjaX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
+        rotateNinjaX.fromAngleAxis(3.14f,new Vector3f(1.0f,0.0f,0.0f));
         Quaternion rotateNinjaZ=new Quaternion();
-        rotateNinjaZ.fromAngleAxis(3.14f,new Vector3f(0.0f,0.0f,1.0f));;
+        rotateNinjaZ.fromAngleAxis(-3.14f,new Vector3f(0.0f,0.0f,1.0f));
+        Quaternion rotateNinjaY=new Quaternion();
+        rotateNinjaY.fromAngleAxis(-3.14f,new Vector3f(0.0f,1.0f,0.0f));
         
-       // rotateNinjaX.mult(rotateNinjaZ);
+        rotateNinjaX.mult(rotateNinjaZ);
         Quaternion rotateNinjaXZ=rotateNinjaZ.mult(rotateNinjaX);
+        Quaternion rotateNinjaXYZ = rotateNinjaXZ.mult(rotateNinjaY);
         
-        ninja.rotate(rotateNinjaXZ);
+        ninja.rotate(rotateNinjaXYZ);
         
         //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
-       // ninja.rotate(0.0f, -3.0f, 0.0f);
+        ninja.rotate(0.0f, -3.0f, 0.0f);
         ninja.setLocalTranslation(0.0f, 0.0f, 0.0f);
         rootNode.attachChild(ninja);
         
@@ -280,8 +285,15 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	}
 	
 	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z) {
-		 //Log.d(TAG,"Update Camera Pose..");
+		 Log.d(TAG,"Update Camera Pose..");
 		 fgCam.setLocation(new Vector3f(cam_x,cam_y,cam_z));
+         List<Spatial> lst = rootNode.getChildren();
+        for(Spatial obj : lst){
+            obj.setLocalTranslation(cam_x,cam_y,cam_z -8.0f);
+        }
+        
+
+
 	}
 	
 	public void setCameraOrientationNative(float cam_right_x,float cam_right_y,float cam_right_z,
