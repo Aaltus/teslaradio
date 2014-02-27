@@ -2,10 +2,15 @@ package com.galimatias.teslaradio;
 
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 
 /**
  * An activity representing a list of Items. This activity
@@ -26,13 +31,15 @@ import android.view.MenuInflater;
 
 //Jonathan Desmarais: We extend ActionBarActivity instead of FragmentActivity for support v7
 public class ItemListActivity extends ActionBarActivity implements
-	ItemListFragment.Callbacks {
+	ItemListFragment.Callbacks, View.OnClickListener {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
     private boolean mTwoPane;
+
+    AsyncTask<Integer, Void, Void> createCameraPreviewAsyncTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +60,24 @@ public class ItemListActivity extends ActionBarActivity implements
                     .setActivateOnItemClick(true);
         }
 
+        int xmlIdForCameraPreview = R.id.CameraPreviewButtonView_List;
+        if(savedInstanceState == null)
+        {
+//            Fragment newFragment = new DemoCameraFragment();
+//            FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
+//            ft.add(xmlIdForCameraPreview, newFragment).commit();
+
+            new CreateCameraPreviewAsyncTask().execute(xmlIdForCameraPreview);
+        }
+
+
+
+
+//        DemoCameraFragment demoFragment = new DemoCameraFragment();
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.CameraPreviewButtonView, demoFragment)
+//                .commit();
+
         // TODO: If exposing deep links into your app, handle intents here.
     }
 
@@ -70,6 +95,11 @@ public class ItemListActivity extends ActionBarActivity implements
         }
 
         return true;
+    }
+
+    @Override
+    public void onClick(View view) {
+        Log.e("TAG", "setSingleTapListener");
     }
 
     /**
@@ -98,4 +128,20 @@ public class ItemListActivity extends ActionBarActivity implements
             startActivity(detailIntent);
         }
     }
+
+    private class CreateCameraPreviewAsyncTask extends AsyncTask<Integer, Void, Void> {
+
+        Integer fragmentId;
+        protected Void doInBackground(Integer...xmlIdForCameraPreview) {
+            fragmentId = xmlIdForCameraPreview[0];
+            Fragment newFragment = new DemoCameraFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(fragmentId, newFragment).commit();
+
+            return null;
+        }
+
+    }
+
+
 }
