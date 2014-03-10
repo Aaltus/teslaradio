@@ -16,12 +16,18 @@
             android:layout_weight="1"
             />
     <com.viewpagerindicator.CirclePageIndicator
+
             android:id="@+id/indicator"
             android:padding="10dip"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:radius="10dp"
-            app:strokeWidth="2dp"
-            android:layout_width="fill_parent"
+            app:radius="8dp"
+            app:strokeWidth="1dp"
+            android:layout_width="wrap_content"
+            app:fillColor="@drawable/global_app_color"
+            app:pageColor="#FFFFFFFF"
+            app:strokeColor="#FF000000"
+
+
             />
 </LinearLayout>
