@@ -25,13 +25,13 @@ public class DummyContent {
 
     static {
         //Jonathan Desmarais: Add 7 static sample items.
-        addItem(new DummyItem("1", "Introduction", new int[]{R.layout.test}));
+        addItem(new DummyItem("1", "Introduction", new int[]{R.layout.test2}));
         addItem(new DummyItem("2", "Transmission du son", new int[]{R.layout.test, R.layout.test}));
         addItem(new DummyItem("3", "Modulation", new int[]{R.layout.test, R.layout.test, R.layout.test}));
         addItem(new DummyItem("4", "Transmission et antennes", new int[]{R.layout.test, R.layout.test, R.layout.test}));
         addItem(new DummyItem("5", "Demodulation", new int[]{R.layout.test, R.layout.test, R.layout.test,R.layout.test}));
         addItem(new DummyItem("6", "Reference", new int[]{R.layout.test, R.layout.test}));
-        addItem(new DummyItem("7", "Qui sommes nous ?", new int[]{R.layout.test}));
+        addItem(new DummyItem("7", "Qui sommes nous ?", new int[]{R.layout.test2}));
     }
 
     private static void addItem(DummyItem item) {
