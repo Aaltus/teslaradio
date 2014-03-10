@@ -28,6 +28,7 @@
     <orderEntry type="module" module-name="camera-v9" />
     <orderEntry type="module" module-name="camera" />
     <orderEntry type="library" name="libs" level="project" />
+    <orderEntry type="library" name="Vuforia" level="project" />
   </component>
 </module>
 
