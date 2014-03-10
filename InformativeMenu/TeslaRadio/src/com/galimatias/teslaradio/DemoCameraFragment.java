@@ -121,7 +121,7 @@ public class DemoCameraFragment extends CameraFragment implements View.OnClickLi
     public void onClick(View view) {
         Log.e("Chat", "Blob");
 
-        Intent myIntent = new Intent( getActivity(), com.ar4android.cameraAccessJME.CameraAccessJMEActivity.class);
+        Intent myIntent = new Intent( getActivity(), com.ar4android.vuforiaJME.VuforiaJMEActivity.class);
         startActivityForResult(myIntent, 0);
         getActivity().overridePendingTransition(R.anim.zoom_enter, R.anim.zoom_exit);
     }
