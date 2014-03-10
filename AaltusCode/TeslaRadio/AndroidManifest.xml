@@ -47,6 +47,7 @@
         <activity android:label="CameraAccessJME"
                   android:name="com.ar4android.vuforiaJME.VuforiaJMEActivity"
                   android:configChanges="keyboardHidden|screenLayout|orientation"
+                  android:screenOrientation="landscape"
                 />
 
         <activity
