@@ -7,10 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
+import android.view.MenuItem;
 
 /**
  * An activity representing a list of Items. This activity
@@ -31,7 +30,7 @@ import android.view.View;
 
 //Jonathan Desmarais: We extend ActionBarActivity instead of FragmentActivity for support v7
 public class ItemListActivity extends ActionBarActivity implements
-	ItemListFragment.Callbacks, View.OnClickListener {
+	ItemListFragment.Callbacks {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -71,14 +70,22 @@ public class ItemListActivity extends ActionBarActivity implements
         }
 
 
-
-
-//        DemoCameraFragment demoFragment = new DemoCameraFragment();
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.CameraPreviewButtonView, demoFragment)
-//                .commit();
-
         // TODO: If exposing deep links into your app, handle intents here.
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // action with ID action_refresh was selected
+            case R.id.item_action_language_eng:
+                //Intent myIntent = new Intent( this, com.ar4android.vuforiaJME.VuforiaJMEActivity.class);
+                //startActivityForResult(myIntent, 0);
+                break;
+            default:
+                break;
+        }
+
+        return true;
     }
 
     @Override
@@ -97,10 +104,6 @@ public class ItemListActivity extends ActionBarActivity implements
         return true;
     }
 
-    @Override
-    public void onClick(View view) {
-        Log.e("TAG", "setSingleTapListener");
-    }
 
     /**
      * Callback method from {@link ItemListFragment.Callbacks}
