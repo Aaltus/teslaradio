@@ -255,31 +255,6 @@ public class VuforiaJMEActivity extends AndroidHarness {
     }
     
  
-    private void updateActivityOrientation()
-    {
-        Configuration config = getResources().getConfiguration();
-
-        boolean isPortrait = false;
-
-       /* switch (config.orientation)
-        {
-        case Configuration.ORIENTATION_PORTRAIT:
-            isPortrait = true;
-            break;
-        case Configuration.ORIENTATION_LANDSCAPE:
-            isPortrait = false;
-            break;
-        case Configuration.ORIENTATION_UNDEFINED:
-        default:
-            break;
-        }*/
-
-        Log.d(TAG,"Activity is in "
-                + (isPortrait ? "PORTRAIT" : "LANDSCAPE"));
-        setActivityPortraitMode(isPortrait);
-    }
-
-
     /**
      * Updates projection matrix and viewport after a screen rotation
      * change was detected.
@@ -456,34 +431,8 @@ public class VuforiaJMEActivity extends AndroidHarness {
         //       to lock the screen orientation for this activity.
         int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 
-        // This is necessary for enabling AutoRotation in the Augmented View
-        /*if (screenOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR)
-        {
-            // NOTE: We use reflection here to see if the current platform
-            // supports the full sensor mode (available only on Gingerbread
-            // and above.
-            try
-            {
-                // SCREEN_ORIENTATION_FULL_SENSOR is required to allow all 
-                // 4 screen rotations if API level >= 9:
-                Field fullSensorField = ActivityInfo.class
-                        .getField("SCREEN_ORIENTATION_FULL_SENSOR");
-                screenOrientation = fullSensorField.getInt(null);
-            }
-            catch (NoSuchFieldException e)
-            {
-                // App is running on API level < 9, do nothing.
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }*/
-
         // Apply screen orientation
         setRequestedOrientation(screenOrientation);
-
-        updateActivityOrientation();
 
         // Query display dimensions:
         storeScreenDimensions();
@@ -616,7 +565,8 @@ public class VuforiaJMEActivity extends AndroidHarness {
 			mPreviewByteBufferRGB565.put(buffer);
 			
 			cameraJMEImageRGB565.setData(mPreviewByteBufferRGB565);
-			
+
+            // Set our camera image as the JME background
 			if ((com.ar4android.vuforiaJME.VuforiaJME) app != null) {
 				((com.ar4android.vuforiaJME.VuforiaJME) app)
 						.setVideoBGTexture(cameraJMEImageRGB565);
@@ -730,8 +680,6 @@ public class VuforiaJMEActivity extends AndroidHarness {
     {
        // DebugLog.LOGD("VuforiaJMEActivity::onConfigurationChanged");
         super.onConfigurationChanged(config);
-
-        updateActivityOrientation();
 
         storeScreenDimensions();
 

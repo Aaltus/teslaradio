@@ -197,7 +197,6 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
         
         //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
         ninja.rotate(0.0f, -3.0f, 0.0f);
-        ninja.setLocalTranslation(0.0f, 0.0f, 0.0f);
         rootNode.attachChild(ninja);
         
         // You must add a light to make the model visible
@@ -238,16 +237,16 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	
 	 public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
 		 // unused
-	  }
+     }
 
 	 public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
 	    // unused
 	  }
 
 	public void setCameraPerspectiveNative(float fovY,float aspectRatio) {
-			// Log.d(TAG,"Update Camera Perspective..");
+        // Log.d(TAG,"Update Camera Perspective..");
 
-			 fgCam.setFrustumPerspective(fovY,aspectRatio, 1.f, 100.f);
+        fgCam.setFrustumPerspective(fovY,aspectRatio, 1.f, 100.f);
 	}
 	
 	public void setCameraViewportNative(float viewport_w,float viewport_h,float size_x,float size_y) {
@@ -291,7 +290,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
         for(Spatial obj : lst){
             obj.setLocalTranslation(cam_x,cam_y,cam_z -8.0f);
         }
-        
+
 
 
 	}
