@@ -14,14 +14,17 @@ public class AnimatedWebview extends WebView{
 
     public AnimatedWebview(Context context) {
         super(context);
+        //this.setVisibility(INVISIBLE);
     }
 
     public AnimatedWebview(Context context, AttributeSet attrs) {
         super(context, attrs);
+        //this.setVisibility(INVISIBLE);
     }
 
     public AnimatedWebview(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        //this.setVisibility(INVISIBLE);
 
 
     }

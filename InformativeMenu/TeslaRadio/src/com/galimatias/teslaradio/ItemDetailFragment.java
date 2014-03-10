@@ -78,6 +78,7 @@ public class ItemDetailFragment extends Fragment  {
             //Attach adapter to ViewPager
             mViewPager    = (ViewPager) rootView.findViewById(R.id.pager);
             mViewPager.setAdapter(new SwipeAdapter(this.getActivity()));
+            mViewPager.setOffscreenPageLimit(4);
 
             //Attach page indicator to the ViewPager
             mIndicator = (CirclePageIndicator)rootView.findViewById(R.id.indicator);
