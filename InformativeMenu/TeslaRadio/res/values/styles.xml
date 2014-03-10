@@ -31,12 +31,17 @@
            parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@drawable/global_app_color</item>
 
+
+        <!--<item name="android:actionButtonStyle">@drawable/state_list_drawable</item>-->
         <!-- Support library compatibility -->
+
         <item name="background">@drawable/global_app_color</item>
+        <item name="android:itemBackground">@drawable/state_list_drawable</item>
     </style>
 
     <!--Change this color if you want to change the action bar color-->
     <drawable name="global_app_color">#A5B7EC</drawable>
+    <drawable name="button_pressed_app_color">@color/LightSteelBlue</drawable>
 
 <!--For splashscreen-->
     <style name="Theme.NoBackground" parent="android:Theme">
