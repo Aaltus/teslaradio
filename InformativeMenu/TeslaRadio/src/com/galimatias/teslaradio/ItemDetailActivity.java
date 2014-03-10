@@ -2,7 +2,10 @@ package com.galimatias.teslaradio;
 
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -18,7 +21,7 @@ import android.view.MenuItem;
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link ItemDetailFragment}.
  */
-public class ItemDetailActivity extends ActionBarActivity {
+public class ItemDetailActivity extends ActionBarActivity  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,16 +46,29 @@ public class ItemDetailActivity extends ActionBarActivity {
         // http://developer.android.com/guide/components/fragments.html
         //
         if (savedInstanceState == null) {
+
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
             arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
                     getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
             ItemDetailFragment fragment = new ItemDetailFragment();
+
+
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.item_detail_container, fragment)
                     .commit();
+
+
+            new CreateCameraPreviewAsyncTask().execute(R.id.CameraPreviewButtonView);
+            //Camera preview fragment
+//            DemoCameraFragment demoFragment = new DemoCameraFragment();
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.CameraPreviewButtonView, demoFragment)
+//                    .commit();
+
+
         }
     }
 
@@ -82,4 +98,14 @@ public class ItemDetailActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
    }
+
+    private class CreateCameraPreviewAsyncTask extends AsyncTask<Integer, Void, Void> {
+        protected Void doInBackground(Integer...xmlIdForCameraPreview) {
+            Fragment newFragment = new DemoCameraFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(xmlIdForCameraPreview[0], newFragment).commit();
+            return null;
+        }
+
+    }
 }
