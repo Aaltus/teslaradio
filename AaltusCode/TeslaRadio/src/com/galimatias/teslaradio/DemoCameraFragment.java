@@ -123,7 +123,8 @@ public class DemoCameraFragment extends CameraFragment implements View.OnClickLi
 
         Intent myIntent = new Intent( getActivity(), com.ar4android.vuforiaJME.VuforiaJMEActivity.class);
         startActivityForResult(myIntent, 0);
-        getActivity().overridePendingTransition(R.anim.zoom_enter, R.anim.zoom_exit);
+        //Transition between jmonkey activity and our activity
+        //getActivity().overridePendingTransition(R.anim.zoom_enter, R.anim.zoom_exit);
     }
 
 
