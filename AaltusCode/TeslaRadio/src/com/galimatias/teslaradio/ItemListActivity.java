@@ -4,12 +4,11 @@ package com.galimatias.teslaradio;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import com.CreateCameraPreviewAsyncTask;
 
 /**
  * An activity representing a list of Items. This activity
@@ -62,11 +61,7 @@ public class ItemListActivity extends ActionBarActivity implements
         int xmlIdForCameraPreview = R.id.CameraPreviewButtonView_List;
         if(savedInstanceState == null)
         {
-//            Fragment newFragment = new DemoCameraFragment();
-//            FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
-//            ft.add(xmlIdForCameraPreview, newFragment).commit();
-
-            new CreateCameraPreviewAsyncTask().execute(xmlIdForCameraPreview);
+            new CreateCameraPreviewAsyncTask().execute(xmlIdForCameraPreview, getSupportFragmentManager());
         }
 
 
@@ -131,20 +126,4 @@ public class ItemListActivity extends ActionBarActivity implements
             startActivity(detailIntent);
         }
     }
-
-    private class CreateCameraPreviewAsyncTask extends AsyncTask<Integer, Void, Void> {
-
-        Integer fragmentId;
-        protected Void doInBackground(Integer...xmlIdForCameraPreview) {
-            fragmentId = xmlIdForCameraPreview[0];
-            Fragment newFragment = new DemoCameraFragment();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(fragmentId, newFragment).commit();
-
-            return null;
-        }
-
-    }
-
-
 }
