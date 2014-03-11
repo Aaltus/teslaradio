@@ -4,6 +4,7 @@ package com.galimatias.teslaradio;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -114,9 +115,10 @@ public class ItemListActivity extends ActionBarActivity implements
             arguments.putString(ItemDetailFragment.ARG_ITEM_ID, id);
             ItemDetailFragment fragment = new ItemDetailFragment();
             fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.item_detail_container, fragment)
-                    .commit();
+
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.setCustomAnimations(R.anim.long_fade_in,R.anim.long_fade_out);
+            ft.replace(R.id.item_detail_container, fragment).commit();
 
         } else {
             // In single-pane mode, simply start the detail activity
