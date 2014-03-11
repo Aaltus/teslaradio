@@ -166,20 +166,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	}
 	
 	public void initForegroundScene() {
-		
-		//use the box for debugging
 
-//        Box b = new Box(Vector3f.ZERO, 1000, 1000, 1000); // create cube shape at the origin
-//        Geometry geom = new Geometry("Box", b);  // create cube geometry from the shape
-//        Material mat = new Material(assetManager,
-//          "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
-//        mat.setColor("Color", ColorRGBA.Blue);   // set color of material to blue
-//        geom.setMaterial(mat);                   // set the cube's material
-//        rootNode.attachChild(geom);              // make the cube appear in the scene
-//
-//        geom.setLocalTranslation(new Vector3f(0.0f,0.0f,1000.0f));
-
-		
 		// Load a model from test_data (OgreXML + material + texture)
         Spatial ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
         ninja.scale(5.0f, 5.0f, 5.0f);
@@ -257,13 +244,14 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		float newWidth = 1.f;
 		float newHeight = 1.f;
 		
-		if (viewport_h != settings.getHeight())
+		if (viewport_h != settings.getHeight() || viewport_w != settings.getWidth())
 		{
-			newWidth=viewport_w/viewport_h;
-			newHeight=1.0f;
+			newWidth = viewport_w/viewport_h;
+			newHeight = viewport_h/viewport_w;
 			videoBGCam.resize((int)viewport_w,(int)viewport_h,true);
 			videoBGCam.setParallelProjection(true);
 		}
+
 		//exercise: find the similar transformation 
 		//when viewport_w != settings.getWidth
 		
