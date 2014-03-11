@@ -24,15 +24,18 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.animation.LoopMode;
 import com.jme3.app.SimpleApplication;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
+import com.jme3.math.*;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Image;
@@ -67,6 +70,8 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
   
 	Camera videoBGCam;
 	Camera fgCam;
+    Node shootables;
+    Geometry geom;
 	
     /** Native function for initializing the renderer. */
     public native void initTracking(int width, int height);
@@ -101,8 +106,67 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		
 		initForegroundScene();	
 		
-		initForegroundCamera(mForegroundCamFOVY);		
+		initForegroundCamera(mForegroundCamFOVY);
+
+        inputManager.addMapping("Shoot", // Declare...
+                new MouseButtonTrigger(0)); // trigger 1: left-button click
+        inputManager.addListener(actionListener, "Shoot");
+
 	}
+
+    /** Defining the "Shoot" action: Determine what was hit and how to respond. */
+    private ActionListener actionListener = new ActionListener() {
+
+        public void onAction(String name, boolean keyPressed, float tpf) {
+            Log.d(TAG,"Shooting.");
+
+            if (name.equals("Shoot") && !keyPressed) {
+
+                // 1. Reset results list.
+                CollisionResults results = new CollisionResults();
+
+                // 2. Mode 1: user touch location.
+                Vector2f click2d = inputManager.getCursorPosition();
+                Vector3f click3d = fgCam.getWorldCoordinates(
+                        new Vector2f(click2d.x, click2d.y), 0f).clone();
+                Vector3f dir = fgCam.getWorldCoordinates(
+                        new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+                Ray ray = new Ray(click3d, dir);
+
+                // 3. Collect intersections between Ray and Shootables in results list.
+                shootables.collideWith(ray, results);
+                // 4. Print the results
+                Log.d(TAG,"----- Collisions? " + results.size() + "-----");
+                for (int i = 0; i < results.size(); i++) {
+                    // For each hit, we know distance, impact point, name of geometry.
+                    float dist = results.getCollision(i).getDistance();
+                    Vector3f pt = results.getCollision(i).getContactPoint();
+                    String hit = results.getCollision(i).getGeometry().getName();
+
+                    Log.d(TAG,"* Collision #" + i + hit);
+                    //         Log.d(TAG,"  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+                }
+
+                // 5. Use the results (we mark the hit object)
+                if (results.size() > 0) {
+                    // The closest collision point is what was truly hit:
+                    CollisionResult closest = results.getClosestCollision();
+
+                    if (mAniChannel.getSpeed() != 0){
+                        mAniChannel.setSpeed(0.f);
+                    }
+                    else {
+
+                        mAniChannel.setSpeed(1.f);
+
+                    }
+                }
+
+                else{
+                }
+            }
+        }
+    };
 
 	// This function creates the geometry, the viewport and the virtual camera
 	// needed for rendering the incoming Android camera frames in the scene
@@ -170,7 +234,13 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
         //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
         ninja.rotate(0.0f, -3.0f, 0.0f);
         ninja.setLocalTranslation(0.0f, 0.0f, 0.0f);
-        rootNode.attachChild(ninja);
+
+        //Jonathan: To make the ninja shootable we add it to a new node "shootable", the we add it to the root node
+        shootables = new Node("Shootables");
+        shootables.attachChild(ninja);
+        rootNode.attachChild(shootables);
+        //Jonathan: Old way (without shootable) to add the ninja to the scene
+        //rootNode.attachChild(ninja);
         
         // You must add a light to make the model visible
         DirectionalLight back = new DirectionalLight();
@@ -180,7 +250,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
         DirectionalLight front = new DirectionalLight();
         front.setDirection(new Vector3f(0.f,1.f,1.0f));
         rootNode.addLight(front);
-	
+
         mAniControl = ninja.getControl(AnimControl.class);
         mAniControl.addListener(this);
         mAniChannel = mAniControl.createChannel();
