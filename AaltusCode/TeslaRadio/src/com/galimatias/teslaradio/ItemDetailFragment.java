@@ -8,8 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.galimatias.teslaradio.dummy.DummyContent;
-import com.utils.TextViewJustifiedUtils;
+import com.galimatias.teslaradio.subject.SubjectContent;
 import com.viewpagerindicator.CirclePageIndicator;
 
 /**
@@ -28,7 +27,7 @@ public class ItemDetailFragment extends Fragment  {
     /**
      * The dummy content this fragment is presenting.
      */
-    private DummyContent.DummyItem mItem;
+    private SubjectContent.SubjectItem mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -47,6 +46,9 @@ public class ItemDetailFragment extends Fragment  {
      */
     private static int[] mLayouts;
 
+    /**
+     * PageIndicator object that we use in our fragment to show which page we are in
+     */
     private CirclePageIndicator mIndicator;
 
     @Override
@@ -58,7 +60,7 @@ public class ItemDetailFragment extends Fragment  {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem    = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            mItem    = SubjectContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
             mLayouts = mItem.listXml;
         }
 
@@ -70,7 +72,7 @@ public class ItemDetailFragment extends Fragment  {
             Bundle savedInstanceState) {
 
         //Get ViewPager xml layout view
-        View rootView = inflater.inflate(R.layout.view_pagerlayoutswipe, container, false);
+        View rootView = inflater.inflate(R.layout.viewpager_container, container, false);
 
         // Show the dummy content xml as xml
         if (mItem != null) {
@@ -78,6 +80,7 @@ public class ItemDetailFragment extends Fragment  {
             //Attach adapter to ViewPager
             mViewPager    = (ViewPager) rootView.findViewById(R.id.pager);
             mViewPager.setAdapter(new SwipeAdapter(this.getActivity()));
+            //Make the viewpager load 4 offscreen page
             mViewPager.setOffscreenPageLimit(4);
 
             //Attach page indicator to the ViewPager
@@ -90,7 +93,7 @@ public class ItemDetailFragment extends Fragment  {
     }
 
 
-    //PagerAdapter implementation
+    //PagerAdapter implementation. This is the code that populate the ViewPager
     private static class SwipeAdapter extends PagerAdapter {
 
 
@@ -118,7 +121,9 @@ public class ItemDetailFragment extends Fragment  {
             ViewGroup pageView = (ViewGroup) mInflater.inflate(
                     currentPageRootId, container, false);
 
-            TextViewJustifiedUtils.setTextViewJustified(pageView, mContext);
+            //Uncomment this to make all the textview in the current viewgroup justified as webview
+            //TextViewJustifiedUtils.setTextViewJustified(pageView, mContext);
+
             container.addView(pageView);
 
             return pageView;
