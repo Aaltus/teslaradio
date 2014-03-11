@@ -18,48 +18,22 @@
 
 package com.ar4android.vuforiaJME;
 
-import com.jme3.app.AndroidHarness;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.hardware.Camera;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.ImageFormat;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.NinePatchDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.ViewGroup.LayoutParams;
-
+import android.widget.RelativeLayout;
+import com.jme3.app.AndroidHarness;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
 import com.qualcomm.QCAR.QCAR;
+
+import java.nio.ByteBuffer;
+import java.util.logging.Level;
 
 
 public class VuforiaJMEActivity extends AndroidHarness {
