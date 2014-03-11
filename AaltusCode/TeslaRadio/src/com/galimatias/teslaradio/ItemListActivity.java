@@ -9,7 +9,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import com.CreateCameraPreviewAsyncTask;
+import com.utils.CreateCameraPreviewAsyncTask;
+import com.utils.LanguageLocaleChanger;
 
 /**
  * An activity representing a list of Items. This activity
@@ -42,6 +43,10 @@ public class ItemListActivity extends ActionBarActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //We load the language saved in the sharedpreferences to have the correct language
+        LanguageLocaleChanger.loadLanguageLocaleInActivity(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
 
@@ -72,11 +77,21 @@ public class ItemListActivity extends ActionBarActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // action with ID action_refresh was selected
+
+            // We load the correct language, saved it to sharedpreferences and reload the current activity with this value
             case R.id.item_action_language_eng:
-                //Intent myIntent = new Intent( this, com.ar4android.vuforiaJME.VuforiaJMEActivity.class);
-                //startActivityForResult(myIntent, 0);
+                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"en");
                 break;
+            case R.id.item_action_language_fr:
+                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"fr");
+                break;
+            case R.id.item_action_language_de:
+                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"de");
+                break;
+            case R.id.item_action_language_es:
+                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"es");
+                break;
+
             default:
                 break;
         }
