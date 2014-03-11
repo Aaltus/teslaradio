@@ -58,8 +58,6 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	boolean mNewCameraFrameAvailable = false;
 
     private float mForegroundCamFOVY = 30;
-//  private float mForegroundCamFOVY = 50; // for a Samsung Galaxy SII
-
 
 	// for animation	
 	// The controller allows access to the animation sequences of the model
