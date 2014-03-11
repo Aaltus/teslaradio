@@ -18,39 +18,25 @@
 
 package com.ar4android.vuforiaJME;
 
-import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.Vector;
-import java.util.concurrent.Callable;
-
 import android.util.Log;
-
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.animation.LoopMode;
 import com.jme3.app.SimpleApplication;
-import com.jme3.input.FlyByCamera;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
-
-import com.jme3.app.AndroidHarness;
-
-
-import jme3tools.optimize.GeometryBatchFactory;
 
 public class VuforiaJME extends SimpleApplication implements AnimEventListener  {
 
@@ -244,10 +230,10 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		float newWidth = 1.f;
 		float newHeight = 1.f;
 		
-		if (viewport_h != settings.getHeight() || viewport_w != settings.getWidth())
+		if (viewport_h != settings.getHeight())
 		{
 			newWidth = viewport_w/viewport_h;
-			newHeight = viewport_h/viewport_w;
+			newHeight = 1.0f;
 			videoBGCam.resize((int)viewport_w,(int)viewport_h,true);
 			videoBGCam.setParallelProjection(true);
 		}
