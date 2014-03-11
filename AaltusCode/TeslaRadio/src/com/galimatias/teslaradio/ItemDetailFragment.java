@@ -80,6 +80,7 @@ public class ItemDetailFragment extends Fragment  {
             //Attach adapter to ViewPager
             mViewPager    = (ViewPager) rootView.findViewById(R.id.pager);
             mViewPager.setAdapter(new SwipeAdapter(this.getActivity()));
+
             //Make the viewpager load 4 offscreen page
             mViewPager.setOffscreenPageLimit(4);
 
@@ -98,11 +99,9 @@ public class ItemDetailFragment extends Fragment  {
 
 
         private LayoutInflater mInflater;
-        private Context mContext;
 
         SwipeAdapter(Context context) {
             mInflater = LayoutInflater.from(context);
-            mContext  = context;
         }
 
         @Override
