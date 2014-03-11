@@ -71,9 +71,10 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	// A flag indicating if a new Android camera image is available.
 	boolean mNewCameraFrameAvailable = false;
 
-//	private float mForegroundCamFOVY = 30;
-	private float mForegroundCamFOVY = 50; // for a Samsung Galaxy SII
-	
+    private float mForegroundCamFOVY = 30;
+//  private float mForegroundCamFOVY = 50; // for a Samsung Galaxy SII
+
+
 	// for animation	
 	// The controller allows access to the animation sequences of the model
 	private AnimControl mAniControl;
@@ -167,36 +168,37 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	public void initForegroundScene() {
 		
 		//use the box for debugging
-		/*
-        Box b = new Box(Vector3f.ZERO, 7, 4, 5); // create cube shape at the origin
-        Geometry geom = new Geometry("Box", b);  // create cube geometry from the shape
-        Material mat = new Material(assetManager,
-          "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
-        mat.setColor("Color", ColorRGBA.Blue);   // set color of material to blue
-        geom.setMaterial(mat);                   // set the cube's material
-      //  rootNode.attachChild(geom);              // make the cube appear in the scene
-       
-        //geom.setLocalTranslation(new Vector3f(0.0f,-5.0f,-8.0f));
-		*/
+
+//        Box b = new Box(Vector3f.ZERO, 1000, 1000, 1000); // create cube shape at the origin
+//        Geometry geom = new Geometry("Box", b);  // create cube geometry from the shape
+//        Material mat = new Material(assetManager,
+//          "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
+//        mat.setColor("Color", ColorRGBA.Blue);   // set color of material to blue
+//        geom.setMaterial(mat);                   // set the cube's material
+//        rootNode.attachChild(geom);              // make the cube appear in the scene
+//
+//        geom.setLocalTranslation(new Vector3f(0.0f,0.0f,1000.0f));
+
 		
 		// Load a model from test_data (OgreXML + material + texture)
         Spatial ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
-        ninja.scale(0.0125f, 0.0125f, 0.0125f);
+        ninja.scale(5.0f, 5.0f, 5.0f);
         Quaternion rotateNinjaX=new Quaternion();
-        rotateNinjaX.fromAngleAxis(3.14f,new Vector3f(1.0f,0.0f,0.0f));
+        rotateNinjaX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
         Quaternion rotateNinjaZ=new Quaternion();
-        rotateNinjaZ.fromAngleAxis(-3.14f,new Vector3f(0.0f,0.0f,1.0f));
+        rotateNinjaZ.fromAngleAxis(3.14f, new Vector3f(0.0f,0.0f,1.0f));
         Quaternion rotateNinjaY=new Quaternion();
-        rotateNinjaY.fromAngleAxis(-3.14f,new Vector3f(0.0f,1.0f,0.0f));
-        
+        rotateNinjaY.fromAngleAxis(3.14f,new Vector3f(0.0f,1.0f,0.0f));
+
         rotateNinjaX.mult(rotateNinjaZ);
         Quaternion rotateNinjaXZ=rotateNinjaZ.mult(rotateNinjaX);
         Quaternion rotateNinjaXYZ = rotateNinjaXZ.mult(rotateNinjaY);
-        
+
         ninja.rotate(rotateNinjaXYZ);
         
         //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
         ninja.rotate(0.0f, -3.0f, 0.0f);
+        ninja.setLocalTranslation(0.0f, 0.0f, 0.0f);
         rootNode.attachChild(ninja);
         
         // You must add a light to make the model visible
@@ -224,7 +226,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		fgCam.setViewPort(0, 1.0f, 0.f,1.0f);
 		fgCam.setLocation(new Vector3f(0f, 0f, 0f));
 		fgCam.setAxes(new Vector3f(-1f,0f,0f), new Vector3f(0f,1f,0f), new Vector3f(0f,0f,-1f));
-		fgCam.setFrustumPerspective(fovY,  settings.getWidth()/settings.getHeight(), 1, 1000);
+		fgCam.setFrustumPerspective(fovY,  settings.getWidth()/settings.getHeight(), 1000, 10000);
 
 		ViewPort fgVP = renderManager.createMainView("ForegroundView", fgCam);
 		fgVP.attachScene(rootNode);
@@ -246,7 +248,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	public void setCameraPerspectiveNative(float fovY,float aspectRatio) {
         // Log.d(TAG,"Update Camera Perspective..");
 
-        fgCam.setFrustumPerspective(fovY,aspectRatio, 1.f, 100.f);
+        fgCam.setFrustumPerspective(fovY,aspectRatio, 1.f, 100000.f);
 	}
 	
 	public void setCameraViewportNative(float viewport_w,float viewport_h,float size_x,float size_y) {
@@ -285,13 +287,12 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	
 	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z) {
 		 Log.d(TAG,"Update Camera Pose..");
-		 fgCam.setLocation(new Vector3f(cam_x,cam_y,cam_z));
-         List<Spatial> lst = rootNode.getChildren();
-        for(Spatial obj : lst){
-            obj.setLocalTranslation(cam_x,cam_y,cam_z -8.0f);
-        }
 
+//         Log.d(TAG, "Coordinates : x = " + Float.toString(cam_x) + " y = "
+//                 + Float.toString(cam_y) + " z = " + Float.toString(cam_z));
 
+         // Set the new foreground camera position
+		 fgCam.setLocation(new Vector3f(cam_x, cam_y, cam_z));
 
 	}
 	
@@ -300,7 +301,10 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		 
 		//Log.d(TAG,"Update Orientation Pose..");
 
-		 //left,up,direction
+//        Log.d(TAG, "direction : x = " + Float.toString(cam_dir_x) + " y = "
+//                + Float.toString(cam_dir_y) + " z = " + Float.toString(cam_dir_z));
+
+   		 //left,up,direction
 		 fgCam.setAxes(
 				 	new Vector3f(-cam_right_x,-cam_right_y,-cam_right_z),
 			 		new Vector3f(-cam_up_x,-cam_up_y,-cam_up_z),
