@@ -17,8 +17,8 @@
           android:icon="@drawable/ic_action_language_es"
           android:title="@string/string_action_language_es"
           app:showAsAction="collapseActionView"/>
-    <item android:id="@+id/item_action_language_ge"
-          android:icon="@drawable/ic_action_language_ge"
+    <item android:id="@+id/item_action_language_de"
+          android:icon="@drawable/ic_action_language_de"
           android:title="@string/string_action_language_ge"
           app:showAsAction="collapseActionView"/>
 </menu>
