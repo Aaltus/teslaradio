@@ -8,7 +8,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import com.CreateCameraPreviewAsyncTask;
+import com.utils.CreateCameraPreviewAsyncTask;
+import com.utils.LanguageLocaleChanger;
 
 /**
  * An activity representing a single Item detail screen. This
@@ -23,6 +24,10 @@ public class ItemDetailActivity extends ActionBarActivity  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //We load the language saved in the sharedpreferences to have the correct language
+        LanguageLocaleChanger.loadLanguageLocaleInActivity(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_detail);
 
@@ -88,6 +93,21 @@ public class ItemDetailActivity extends ActionBarActivity  {
                 //
                 NavUtils.navigateUpTo(this, new Intent(this, ItemListActivity.class));
                 return true;
+
+            // We load the correct language, saved it to sharedpreferences and reload the current activity with this value
+            case R.id.item_action_language_eng:
+                LanguageLocaleChanger.reloadAppWithNewLanguage(this, "en");
+                break;
+            case R.id.item_action_language_fr:
+                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"fr");
+                break;
+            case R.id.item_action_language_de:
+                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"de");
+                break;
+            case R.id.item_action_language_es:
+                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"es");
+                break;
+
         }
         return super.onOptionsItemSelected(item);
    }
