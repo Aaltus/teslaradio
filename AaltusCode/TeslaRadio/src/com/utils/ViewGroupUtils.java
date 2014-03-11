@@ -3,6 +3,11 @@ package com.utils;
 import android.view.View;
 import android.view.ViewGroup;
 
+
+
+/*
+ * Simple static function to add,remove or replace a view in a layout
+ */
 public class ViewGroupUtils {
 
     public static ViewGroup getParent(View view) {
