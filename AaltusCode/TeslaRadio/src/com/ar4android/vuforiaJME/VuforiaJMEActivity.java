@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import com.galimatias.teslaradio.R;
 import com.jme3.app.AndroidHarness;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
@@ -280,6 +281,18 @@ public class VuforiaJMEActivity extends AndroidHarness {
 
                 // Proceed to next application initialization status:
                 updateApplicationStatus(APPSTATUS_INIT_QCAR);
+
+                //Working...
+                splashPicID = R.drawable.logo;
+                layoutDisplay();
+                //LayoutTransition lt = new LayoutTransition();
+                //frameLayout.setLayoutTransition(lt);
+
+
+                //Not working maybe because internal splashscreen is not correct
+                //setContentView(R.layout.splashscreen);
+
+
                 break;
 
             case APPSTATUS_INIT_QCAR:
