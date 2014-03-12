@@ -71,8 +71,6 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	Camera videoBGCam;
 	Camera fgCam;
     Node shootables;
-    Geometry geom;
-	
     /** Native function for initializing the renderer. */
     public native void initTracking(int width, int height);
 
