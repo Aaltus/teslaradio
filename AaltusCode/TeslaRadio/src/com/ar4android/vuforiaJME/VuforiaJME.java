@@ -60,6 +60,8 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	// A flag indicating if a new Android camera image is available.
 	boolean mNewCameraFrameAvailable = false;
 
+    private Spatial ninja;
+
     private float mForegroundCamFOVY = 30;
 
 	// for animation	
@@ -210,11 +212,12 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		//videoBGVP.setBackgroundColor(new ColorRGBA(1,0,0,1));
 
 	}
-	
-	public void initForegroundScene() {
 
-		// Load a model from test_data (OgreXML + material + texture)
-        Spatial ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
+    protected void initNinja(){
+
+        // Load a model from test_data (OgreXML + material + texture)
+        ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
+        ninja.setName("ninja");
         ninja.scale(5.0f, 5.0f, 5.0f);
         Quaternion rotateNinjaX=new Quaternion();
         rotateNinjaX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
@@ -228,17 +231,57 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
         Quaternion rotateNinjaXYZ = rotateNinjaXZ.mult(rotateNinjaY);
 
         ninja.rotate(rotateNinjaXYZ);
-        
+
         //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
         ninja.rotate(0.0f, -3.0f, 0.0f);
         ninja.setLocalTranslation(0.0f, 0.0f, 0.0f);
 
         //Jonathan: To make the ninja shootable we add it to a new node "shootable", the we add it to the root node
         shootables = new Node("Shootables");
-        shootables.attachChild(ninja);
         rootNode.attachChild(shootables);
-        //Jonathan: Old way (without shootable) to add the ninja to the scene
-        //rootNode.attachChild(ninja);
+        attachNinja();
+
+        mAniControl = ninja.getControl(AnimControl.class);
+        mAniControl.addListener(this);
+        mAniChannel = mAniControl.createChannel();
+        // show animation from beginning
+        mAniChannel.setAnim("Walk");
+        mAniChannel.setLoopMode(LoopMode.Loop);
+        mAniChannel.setSpeed(1f);
+    }
+
+    public void attachNinja(){
+
+        if (!isNinjaInNode()){
+
+            shootables.attachChild(ninja);
+        }
+    }
+
+    public void detachNinja(){
+
+        if (isNinjaInNode()){
+
+            shootables.detachChild(ninja);
+        }
+
+    }
+
+    public boolean isNinjaInNode(){
+
+        Node ninjaNode = (Node) rootNode.getChild(ninja.getName());
+        if (ninjaNode == null){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+
+    public void initForegroundScene() {
+
+
         
         // You must add a light to make the model visible
         DirectionalLight back = new DirectionalLight();
@@ -249,13 +292,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
         front.setDirection(new Vector3f(0.f,1.f,1.0f));
         rootNode.addLight(front);
 
-        mAniControl = ninja.getControl(AnimControl.class);
-        mAniControl.addListener(this);
-        mAniChannel = mAniControl.createChannel();
-        // show animation from beginning
-        mAniChannel.setAnim("Walk");
-        mAniChannel.setLoopMode(LoopMode.Loop);
-        mAniChannel.setSpeed(1f);
+        initNinja();
 	}
 	
 	public void initForegroundCamera(float fovY) {
