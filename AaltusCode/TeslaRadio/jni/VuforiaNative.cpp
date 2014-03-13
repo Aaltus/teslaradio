@@ -285,98 +285,112 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
   //  if(QCAR::Renderer::getInstance().getVideoBackgroundConfig().mReflection == QCAR::VIDEO_BACKGROUND_REFLECTION_ON)
 
-    // Did we find any trackables this frame?
-    for(int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++)
-    {
-        // Get the trackable:
-        const QCAR::TrackableResult* result = state.getTrackableResult(tIdx);
-        //const QCAR::Trackable& trackable = result->getTrackable();
 
-        QCAR::Matrix44F modelViewMatrix =
-            QCAR::Tool::convertPose2GLMatrix(result->getPose());
+   jclass activityClass = env->GetObjectClass(obj);
 
-        //get the camera transformation
-        QCAR::Matrix44F inverseMV = MathUtil::Matrix44FInverse(modelViewMatrix);
-        //QCAR::Matrix44F invTranspMV = modelViewMatrix;
-        QCAR::Matrix44F invTranspMV = MathUtil::Matrix44FTranspose(inverseMV);
-
-        //get position
-        float cam_x = invTranspMV.data[12];
-        float cam_y = invTranspMV.data[13];
-        float cam_z = invTranspMV.data[14];
-
-        //get rotation
-        float cam_right_x = invTranspMV.data[0];
-        float cam_right_y = invTranspMV.data[1];
-        float cam_right_z = invTranspMV.data[2];
-        float cam_up_x = invTranspMV.data[4];
-        float cam_up_y = invTranspMV.data[5];
-        float cam_up_z = invTranspMV.data[6];
-        float cam_dir_x = invTranspMV.data[8];
-        float cam_dir_y = invTranspMV.data[9];
-        float cam_dir_z = invTranspMV.data[10];
-
-        //get perspective transformation
-        float nearPlane = 1.0f;
-        float farPlane = 1000.0f;
-        const QCAR::CameraCalibration& cameraCalibration =
-                                    QCAR::CameraDevice::getInstance().getCameraCalibration();
-
-        QCAR::VideoBackgroundConfig config = QCAR::Renderer::getInstance().getVideoBackgroundConfig();
-
-        float viewportWidth = config.mSize.data[0];
-        float viewportHeight = config.mSize.data[1];
-
-        QCAR::Vec2F size = cameraCalibration.getSize();
-        QCAR::Vec2F focalLength = cameraCalibration.getFocalLength();
-        float fovRadians = 2 * atan(0.5f * (size.data[1] / focalLength.data[1]));
-        float fovDegrees = fovRadians * 180.0f / M_PI;
-        float aspectRatio=(size.data[0]/size.data[1]);
-
-        //adjust for screen vs camera size distorsion
-        float viewportDistort=1.0;
-
-        if (viewportWidth != screenWidth)
+    //Jonathan Desmarais: Check if we have a trackable result
+    if (state.getNumTrackableResults() > 0){
+        // Did we find any trackables this frame?
+        for(int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++)
         {
-        	viewportDistort = viewportWidth / (float) screenWidth;
-            fovDegrees=fovDegrees*viewportDistort;
-            aspectRatio=aspectRatio/viewportDistort;
+            // Get the trackable:
+            const QCAR::TrackableResult* result = state.getTrackableResult(tIdx);
+            //const QCAR::Trackable& trackable = result->getTrackable();
+
+            QCAR::Matrix44F modelViewMatrix =
+                QCAR::Tool::convertPose2GLMatrix(result->getPose());
+
+            //get the camera transformation
+            QCAR::Matrix44F inverseMV = MathUtil::Matrix44FInverse(modelViewMatrix);
+            //QCAR::Matrix44F invTranspMV = modelViewMatrix;
+            QCAR::Matrix44F invTranspMV = MathUtil::Matrix44FTranspose(inverseMV);
+
+            //get position
+            float cam_x = invTranspMV.data[12];
+            float cam_y = invTranspMV.data[13];
+            float cam_z = invTranspMV.data[14];
+
+            //get rotation
+            float cam_right_x = invTranspMV.data[0];
+            float cam_right_y = invTranspMV.data[1];
+            float cam_right_z = invTranspMV.data[2];
+            float cam_up_x = invTranspMV.data[4];
+            float cam_up_y = invTranspMV.data[5];
+            float cam_up_z = invTranspMV.data[6];
+            float cam_dir_x = invTranspMV.data[8];
+            float cam_dir_y = invTranspMV.data[9];
+            float cam_dir_z = invTranspMV.data[10];
+
+            //get perspective transformation
+            float nearPlane = 1.0f;
+            float farPlane = 1000.0f;
+            const QCAR::CameraCalibration& cameraCalibration =
+                                        QCAR::CameraDevice::getInstance().getCameraCalibration();
+
+            QCAR::VideoBackgroundConfig config = QCAR::Renderer::getInstance().getVideoBackgroundConfig();
+
+            float viewportWidth = config.mSize.data[0];
+            float viewportHeight = config.mSize.data[1];
+
+            QCAR::Vec2F size = cameraCalibration.getSize();
+            QCAR::Vec2F focalLength = cameraCalibration.getFocalLength();
+            float fovRadians = 2 * atan(0.5f * (size.data[1] / focalLength.data[1]));
+            float fovDegrees = fovRadians * 180.0f / M_PI;
+            float aspectRatio=(size.data[0]/size.data[1]);
+
+            //adjust for screen vs camera size distorsion
+            float viewportDistort=1.0;
+
+            if (viewportWidth != screenWidth)
+            {
+                viewportDistort = viewportWidth / (float) screenWidth;
+                fovDegrees=fovDegrees*viewportDistort;
+                aspectRatio=aspectRatio/viewportDistort;
+            }
+
+            if (viewportHeight != screenHeight)
+            {
+                viewportDistort = viewportHeight / (float) screenHeight;
+                fovDegrees=fovDegrees/viewportDistort;
+                aspectRatio=aspectRatio*viewportDistort;
+            }
+
+            //JNIEnv *env;
+            //jvm->AttachCurrentThread((void **)&env, NULL);
+
+
+            jmethodID attachNinja = env->GetMethodID(activityClass,"attachNinja", "()V");
+            env->CallVoidMethod(obj,attachNinja);
+
+            jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
+            env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
+
+            // jclass activityClass = env->GetObjectClass(obj);
+            jmethodID setCameraViewportMethod = env->GetMethodID(activityClass,"setCameraViewportNative", "(FFFF)V");
+            env->CallVoidMethod(obj,setCameraViewportMethod,viewportWidth,viewportHeight,cameraCalibration.getSize().data[0],cameraCalibration.getSize().data[1]);
+
+            //JNIEnv *env;
+            //jvm->AttachCurrentThread((void **)&env, NULL);
+
+           // jclass activityClass = env->GetObjectClass(obj);
+            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFF)V");
+            env->CallVoidMethod(obj,setCameraPoseMethod,cam_x,cam_y,cam_z);
+
+            //jclass activityClass = env->GetObjectClass(obj);
+            jmethodID setCameraOrientationMethod = env->GetMethodID(activityClass,"setCameraOrientationNative", "(FFFFFFFFF)V");
+            env->CallVoidMethod(obj,setCameraOrientationMethod,cam_right_x,cam_right_y,cam_right_z,
+                    cam_up_x,cam_up_y,cam_up_z,cam_dir_x,cam_dir_y,cam_dir_z);
+
+           // jvm->DetachCurrentThread();
+
+           // LOG("Got tracking...");
+
         }
+    }
+    else{
 
-        if (viewportHeight != screenHeight)
-        {
-        	viewportDistort = viewportHeight / (float) screenHeight;
-            fovDegrees=fovDegrees/viewportDistort;
-            aspectRatio=aspectRatio*viewportDistort;
-        }
-
-        //JNIEnv *env;
-        //jvm->AttachCurrentThread((void **)&env, NULL);
-
-        jclass activityClass = env->GetObjectClass(obj);
-        jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
-        env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
-
-        // jclass activityClass = env->GetObjectClass(obj);
-        jmethodID setCameraViewportMethod = env->GetMethodID(activityClass,"setCameraViewportNative", "(FFFF)V");
-        env->CallVoidMethod(obj,setCameraViewportMethod,viewportWidth,viewportHeight,cameraCalibration.getSize().data[0],cameraCalibration.getSize().data[1]);
-
-        //JNIEnv *env;
-        //jvm->AttachCurrentThread((void **)&env, NULL);
-
-       // jclass activityClass = env->GetObjectClass(obj);
-        jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFF)V");
-        env->CallVoidMethod(obj,setCameraPoseMethod,cam_x,cam_y,cam_z);
-
-        //jclass activityClass = env->GetObjectClass(obj);
-        jmethodID setCameraOrientationMethod = env->GetMethodID(activityClass,"setCameraOrientationNative", "(FFFFFFFFF)V");
-        env->CallVoidMethod(obj,setCameraOrientationMethod,cam_right_x,cam_right_y,cam_right_z,
-        		cam_up_x,cam_up_y,cam_up_z,cam_dir_x,cam_dir_y,cam_dir_z);
-
-       // jvm->DetachCurrentThread();
-
-       // LOG("Got tracking...");
-
+        jmethodID detachNinja = env->GetMethodID(activityClass,"detachNinja", "()V");
+        env->CallVoidMethod(obj,detachNinja);
     }
 
     QCAR::Renderer::getInstance().end();
