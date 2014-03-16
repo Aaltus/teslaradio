@@ -48,16 +48,19 @@
                   android:name="com.ar4android.vuforiaJME.VuforiaJMEActivity"
                   android:configChanges="keyboardHidden|screenLayout|orientation"
                   android:screenOrientation="landscape"
-                />
+                >
 
-        <activity
-            android:name="com.galimatias.teslaradio.ItemListActivity"
-            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+         </activity>
+
+        <activity
+            android:name="com.galimatias.teslaradio.ItemListActivity"
+            android:label="@string/app_name" >
+
         </activity>
         <activity
             android:name="com.galimatias.teslaradio.ItemDetailActivity"
