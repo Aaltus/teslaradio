@@ -33,6 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import com.galimatias.teslaradio.ItemDetailFragment;
 import com.galimatias.teslaradio.ItemListFragment;
 import com.galimatias.teslaradio.R;
 import com.galimatias.teslaradio.subject.SubjectContent;
@@ -136,20 +137,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         loadLibrary(NATIVE_LIB_SAMPLE);
     }
 
-    @Override
-    public void onClick(View view) {
 
-        int id = view.getId();
-
-        switch (id){
-            case R.id.test_button:
-                toggleListFragmentVisibility();
-                break;
-            default:
-                break;
-        }
-
-    }
 
     /** An async task to initialize QCAR asynchronously. */
     private class InitQCARTask extends AsyncTask<Void, Integer, Boolean>
@@ -454,29 +442,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     }
 
-    private void toggleListFragmentVisibility(){
 
-        Log.e(VuforiaJMEActivity.class.getName(),"toggle");
-        FragmentManager fm =     getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        Fragment fragment = (Fragment) fm.findFragmentByTag("item_list_fragment_vuforia");
-
-        if (fragment != null){
-
-            //ft.setCustomAnimations(android.support.v7.appcompat.R.anim.abc_fade_in, android.support.v7.appcompat.R.anim.abc_fade_out);
-            ft.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
-            if (fragment.isHidden()){
-                Log.e(VuforiaJMEActivity.class.getName(),"toggle to show");
-                ft.show(fragment);
-            }
-            else
-            {
-                Log.e(VuforiaJMEActivity.class.getName(),"toggle to hide");
-                ft.hide(fragment);
-            }
-            ft.commit();
-        }
-    }
 
     /** Initializes AR application components. */
     private void initApplicationAR()
@@ -812,14 +778,75 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     public void onItemSelected(String id) {
 
 
-//            Bundle arguments = new Bundle();
-//            arguments.putString(ItemDetailFragment.ARG_ITEM_ID, id);
-//            ItemDetailFragment fragment = new ItemDetailFragment();
-//            fragment.setArguments(arguments);
-//
-//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//            ft.setCustomAnimations(R.anim.long_fade_in,R.anim.long_fade_out);
-//            ft.replace(R.id.item_list_fragment_vuforia, fragment).commit();
+            Bundle arguments = new Bundle();
+            arguments.putString(ItemDetailFragment.ARG_ITEM_ID, id);
+            ItemDetailFragment fragment = new ItemDetailFragment();
+            fragment.setArguments(arguments);
+
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            //ft.setCustomAnimations(R.anim.long_fade_in,R.anim.long_fade_out);
+            ft.replace(R.id.item_detail_fragment_vuforia, fragment,"item_detail_fragment_vuforia").commit();
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        int id = view.getId();
+
+        switch (id){
+            case R.id.test_button:
+                toggleListFragmentVisibility();
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    private void toggleListFragmentVisibility(){
+
+        Log.e(VuforiaJMEActivity.class.getName(),"toggle");
+        FragmentManager fm =     getSupportFragmentManager();
+
+
+        //Hide list_fragment
+        Fragment fragment = (Fragment) fm.findFragmentByTag("item_list_fragment_vuforia");
+
+
+        if (fragment != null){
+            FragmentTransaction ft = fm.beginTransaction();
+            //ft.setCustomAnimations(android.support.v7.appcompat.R.anim.abc_fade_in, android.support.v7.appcompat.R.anim.abc_fade_out);
+            ft.setCustomAnimations(R.anim.enter_left, R.anim.exit_left, R.anim.pop_enter, R.anim.pop_exit);
+            if (fragment.isHidden()){
+                Log.e(VuforiaJMEActivity.class.getName(),"toggle to show");
+                ft.show(fragment);
+            }
+            else
+            {
+                Log.e(VuforiaJMEActivity.class.getName(),"toggle to hide");
+                ft.hide(fragment);
+            }
+
+            ft.commit();
+        }
+        Fragment fragmentDetail = (Fragment) fm.findFragmentByTag("item_detail_fragment_vuforia");
+
+        if (fragmentDetail != null){
+            FragmentTransaction ft = fm.beginTransaction();
+            //ft.setCustomAnimations(android.support.v7.appcompat.R.anim.abc_fade_in, android.support.v7.appcompat.R.anim.abc_fade_out);
+            ft.setCustomAnimations(R.anim.enter_right, R.anim.exit_right, R.anim.pop_enter, R.anim.pop_exit);
+            if (fragmentDetail.isHidden()){
+                Log.e(VuforiaJMEActivity.class.getName(),"toggle to show");
+                ft.show(fragmentDetail);
+            }
+            else
+            {
+                Log.e(VuforiaJMEActivity.class.getName(),"toggle to hide");
+                ft.hide(fragmentDetail);
+            }
+            ft.commit();
+        }
+
     }
 
 }
