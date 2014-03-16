@@ -20,15 +20,22 @@ package com.ar4android.vuforiaJME;
 
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.WindowManager;
+import android.view.*;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
+import com.galimatias.teslaradio.ItemListFragment;
 import com.galimatias.teslaradio.R;
-import com.jme3.app.AndroidHarness;
+import com.galimatias.teslaradio.subject.SubjectContent;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
 import com.qualcomm.QCAR.QCAR;
@@ -37,7 +44,8 @@ import java.nio.ByteBuffer;
 import java.util.logging.Level;
 
 
-public class VuforiaJMEActivity extends AndroidHarness {
+//public class VuforiaJMEActivity extends AndroidHarness {
+public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements ItemListFragment.Callbacks, View.OnClickListener {
 
 	private static final String TAG = "VuforiaJMEActivity";
 	
@@ -127,7 +135,22 @@ public class VuforiaJMEActivity extends AndroidHarness {
         loadLibrary(NATIVE_LIB_QCAR);
         loadLibrary(NATIVE_LIB_SAMPLE);
     }
-    
+
+    @Override
+    public void onClick(View view) {
+
+        int id = view.getId();
+
+        switch (id){
+            case R.id.test_button:
+                toggleListFragmentVisibility();
+                break;
+            default:
+                break;
+        }
+
+    }
+
     /** An async task to initialize QCAR asynchronously. */
     private class InitQCARTask extends AsyncTask<Void, Integer, Boolean>
     {
@@ -283,14 +306,8 @@ public class VuforiaJMEActivity extends AndroidHarness {
                 updateApplicationStatus(APPSTATUS_INIT_QCAR);
 
                 //Working...
-                splashPicID = R.drawable.logo;
-                layoutDisplay();
-                //LayoutTransition lt = new LayoutTransition();
-                //frameLayout.setLayoutTransition(lt);
-
-
-                //Not working maybe because internal splashscreen is not correct
-                //setContentView(R.layout.splashscreen);
+               // splashPicID = R.drawable.logo;
+                //layoutDisplay();
 
 
                 break;
@@ -429,6 +446,36 @@ public class VuforiaJMEActivity extends AndroidHarness {
         getWindow().setFlags(
             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+
+
+        //createDrawerLayout();
+
+
+    }
+
+    private void toggleListFragmentVisibility(){
+
+        Log.e(VuforiaJMEActivity.class.getName(),"toggle");
+        FragmentManager fm =     getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        Fragment fragment = (Fragment) fm.findFragmentByTag("item_list_fragment_vuforia");
+
+        if (fragment != null){
+
+            //ft.setCustomAnimations(android.support.v7.appcompat.R.anim.abc_fade_in, android.support.v7.appcompat.R.anim.abc_fade_out);
+            ft.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
+            if (fragment.isHidden()){
+                Log.e(VuforiaJMEActivity.class.getName(),"toggle to show");
+                ft.show(fragment);
+            }
+            else
+            {
+                Log.e(VuforiaJMEActivity.class.getName(),"toggle to hide");
+                ft.hide(fragment);
+            }
+            ft.commit();
+        }
     }
 
     /** Initializes AR application components. */
@@ -559,17 +606,22 @@ public class VuforiaJMEActivity extends AndroidHarness {
 						.setVideoBGTexture(cameraJMEImageRGB565);
 			}	
 		}
-	 
+
+
+
+
 	// We override AndroidHarness.onCreate() to be able to add the SurfaceView
 	// needed for camera preview
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		        
-      //eglConfigType=ConfigType.BEST_TRANSLUCENT;
-      super.onCreate(savedInstanceState);
-      	
-      // Update the application status to start initializing application:
-      updateApplicationStatus(APPSTATUS_INIT_APP);
+        //eglConfigType=ConfigType.BEST_TRANSLUCENT;
+        super.onCreate(savedInstanceState);
+
+        // Update the application status to start initializing application:
+        updateApplicationStatus(APPSTATUS_INIT_APP);
+
+
 
 	}
 	
@@ -592,6 +644,12 @@ public class VuforiaJMEActivity extends AndroidHarness {
         }
         
         firstTimeGetImage=true;
+
+        createItemListFragment();
+
+
+
+        //createMenu();
 
 	}
 
@@ -674,5 +732,94 @@ public class VuforiaJMEActivity extends AndroidHarness {
         mLastScreenRotation = INVALID_SCREEN_ROTATION;
     }
 
+    private int getScreenWidthInPixel() {
+        Display display = getWindowManager().getDefaultDisplay();
+
+        //ViewGroup rootView = (ViewGroup) findViewById(android.R.id.content);
+        //return rootView.getWidth();
+        if (android.os.Build.VERSION.SDK_INT >= 13) {
+
+
+            Point size = new Point();
+            display.getSize(size);
+            int width = size.x;
+            return width;
+        } else {
+            return display.getWidth();
+        }
+    }
+
+
+    //Test with library slidingmenu
+//    private void createMenu(){
+//
+//        SlidingMenu menu = new SlidingMenu(this);
+//        menu.setMode(SlidingMenu.LEFT);
+//        menu.setBehindOffset(Math.round(getScreenWidthInPixel()*2/3));
+//        //menu.setShadowWidthRes(R.dimen.shadow_width);
+//        //menu.setShadowDrawable(R.drawable.shadow);
+//        //menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+//        menu.setFadeDegree(0.35f);
+//        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+//        menu.setMenu(R.layout.sliding_menu_frame);
+//        ItemListFragment itemListFragment = new ItemListFragment();
+//        //slidingMenuListFragment.setMenuBuilder(this);
+//
+//        // We replace a FrameLayout, which is a content of sliding menu, with
+//        // created list fragment filled with data from menu builder.
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.sliding_menu_frame, itemListFragment)
+//                .commit();
+//
+//
+//
+//    }
+
+    public void createDrawerLayout(){
+
+    ListView listView = (ListView) findViewById(R.id.left_drawer);
+
+    ArrayAdapter<SubjectContent.SubjectItem> arrayAdapter = new ArrayAdapter<SubjectContent.SubjectItem>(this,
+            R.layout.simple_list_item_activated_1, SubjectContent.ITEMS);
+
+    listView.setAdapter(arrayAdapter);
+    }
+
+    public void createItemListFragment(){
+
+
+        ViewGroup rootView = (ViewGroup) findViewById(android.R.id.content);
+
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        LayoutInflater factory = LayoutInflater.from(this);
+        View myView = factory.inflate(R.layout.activity_item_twopane_2, null);
+
+        rootView.addView(myView);
+
+        Fragment fragment = new ItemListFragment();
+
+        ft.replace(R.id.item_list_fragment_vuforia, fragment, "item_list_fragment_vuforia");
+        ft.commit();
+        fm.executePendingTransactions(); //TO do it quickly instead of commit()
+        ((ItemListFragment) fm.findFragmentByTag("item_list_fragment_vuforia")).setActivateOnItemClick(true);
+
+        Button testButton = (Button)findViewById(R.id.test_button);
+        testButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onItemSelected(String id) {
+
+
+//            Bundle arguments = new Bundle();
+//            arguments.putString(ItemDetailFragment.ARG_ITEM_ID, id);
+//            ItemDetailFragment fragment = new ItemDetailFragment();
+//            fragment.setArguments(arguments);
+//
+//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//            ft.setCustomAnimations(R.anim.long_fade_in,R.anim.long_fade_out);
+//            ft.replace(R.id.item_list_fragment_vuforia, fragment).commit();
+    }
 
 }
