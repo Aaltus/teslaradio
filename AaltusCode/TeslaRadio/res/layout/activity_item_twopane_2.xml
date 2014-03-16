@@ -1,0 +1,60 @@
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/activity_item_twopane_2_rootview">
+
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+     >
+<!-- 	android:divider="?android:attr/dividerHorizontal" -->
+    <!--
+    This layout is a two-pane layout for the Items
+    master/detail flow. See res/values-large/refs.xml and
+    res/values-sw600dp/refs.xml for an example of layout aliases
+    that replace the single-pane version of the layout with
+    this two-pane version.
+
+    For more on layout aliases, see:
+    http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
+    -->
+    <!--<com.darvds.ribbonmenu.RibbonMenuView-->
+            <!--android:id="@+id/ribbonMenuView1"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1">-->
+
+    <FrameLayout
+        android:id="@+id/item_list_fragment_vuforia"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        />
+    <!--</com.darvds.ribbonmenu.RibbonMenuView>-->
+
+    <FrameLayout
+        android:id="@+id/item_detail_fragment_vuforia"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"/>
+
+</LinearLayout>
+
+    <Button
+            android:id="@+id/test_button"
+            android:layout_height="100dp"
+            android:layout_width="75dp"
+            android:layout_gravity="right|top"
+            android:text="test"
+
+            />
+
+</FrameLayout>
