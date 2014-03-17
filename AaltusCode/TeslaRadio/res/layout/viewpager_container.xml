@@ -19,10 +19,10 @@
     <com.viewpagerindicator.CirclePageIndicator
 
             android:id="@+id/indicator"
-            android:padding="10dip"
+            android:padding="3dip"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:radius="8dp"
+            app:radius="5dp"
             app:strokeWidth="1dp"
             android:layout_width="wrap_content"
             app:fillColor="@drawable/global_app_color"
