@@ -44,7 +44,7 @@
         <!--android:theme="@style/AppTheme" >-->
 
 
-        <activity android:label="CameraAccessJME"
+        <activity android:label="@string/app_name"
                   android:name="com.ar4android.vuforiaJME.VuforiaJMEActivity"
                   android:configChanges="keyboardHidden|screenLayout|orientation"
                   android:screenOrientation="landscape"
@@ -59,7 +59,7 @@
 
         <activity
             android:name="com.galimatias.teslaradio.ItemListActivity"
-            android:label="@string/app_name" >
+            android:label="OldAatlus" >
 
         </activity>
         <activity
