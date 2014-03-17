@@ -9,12 +9,14 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+
         android:baselineAligned="false"
         android:orientation="horizontal"
         android:showDividers="middle"
      >
+    <!--android:layout_marginLeft="16dp"-->
+    <!--android:layout_marginRight="16dp"-->
+
 <!-- 	android:divider="?android:attr/dividerHorizontal" -->
     <!--
     This layout is a two-pane layout for the Items
@@ -50,11 +52,9 @@
 
     <Button
             android:id="@+id/test_button"
-            android:layout_height="100dp"
+            android:layout_height="75dp"
             android:layout_width="75dp"
             android:layout_gravity="right|top"
-            android:text="test"
-
-            />
+            android:text="test"/>
 
 </FrameLayout>
