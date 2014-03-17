@@ -5,15 +5,18 @@
         android:layout_height="match_parent"
         android:id="@+id/activity_item_twopane_2_rootview">
 
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
 
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:showDividers="middle"
-     >
+
+        <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:showDividers="middle"
+                android:layout_weight="1"
+             >
     <!--android:layout_marginLeft="16dp"-->
     <!--android:layout_marginRight="16dp"-->
 
@@ -34,27 +37,63 @@
             <!--android:layout_height="match_parent"-->
             <!--android:layout_weight="1">-->
 
-    <FrameLayout
-        android:id="@+id/item_list_fragment_vuforia"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        />
-    <!--</com.darvds.ribbonmenu.RibbonMenuView>-->
+            <FrameLayout
+                android:id="@+id/item_list_fragment_vuforia"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                />
+            <!--</com.darvds.ribbonmenu.RibbonMenuView>-->
 
-    <FrameLayout
-        android:id="@+id/item_detail_fragment_vuforia"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="3"/>
+            <FrameLayout
+                android:id="@+id/item_detail_fragment_vuforia"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"/>
 
-</LinearLayout>
+        </LinearLayout>
 
-    <Button
-            android:id="@+id/test_button"
-            android:layout_height="75dp"
-            android:layout_width="75dp"
-            android:layout_gravity="right|top"
-            android:text="test"/>
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|top">
+
+        <Button
+                android:id="@+id/camera_toggle_en_button"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="en"/>
+        <Button
+                android:id="@+id/camera_toggle_fr_button"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_toRightOf="@id/camera_toggle_en_button"
+                android:text="fr"/>
+        <Button
+                android:id="@+id/camera_toggle_es_button"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_toRightOf="@id/camera_toggle_fr_button"
+                android:text="es"/>
+        <Button
+                android:id="@+id/camera_toggle_de_button"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="de"
+                android:layout_toRightOf="@id/camera_toggle_es_button"/>
+        <Button
+                android:id="@+id/camera_toggle_info_button"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="info"
+                android:layout_below="@id/camera_toggle_de_button"
+                android:layout_toRightOf="@id/camera_toggle_es_button"/>
+
+    </RelativeLayout>
+
+
+
+
+
+
 
 </FrameLayout>
