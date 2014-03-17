@@ -99,8 +99,11 @@ public class LanguageLocaleChanger {
      */
     private static void reloadActivity(Activity currentActivity){
 
-        currentActivity.finish();
-        currentActivity.startActivity(currentActivity.getIntent());
+        //since we are mainly using activityfragment, the recreae method exist
+        //currentActivity.finish();
+        //currentActivity.startActivity(currentActivity.getIntent());
+
+        currentActivity.recreate();
     }
 
 
