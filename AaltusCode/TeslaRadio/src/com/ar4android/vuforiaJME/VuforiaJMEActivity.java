@@ -377,10 +377,15 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 // Sets the UILayout to be drawn in front of the camera
               //  mUILayout.bringToFront();
 
+                //We do that here because we know the view has been created
+                //TODO Change this call to a case APPSTATUS...
+                createItemListFragment();
+
                 // Start the camera:
                 updateApplicationStatus(APPSTATUS_CAMERA_RUNNING);
 
                 break;
+
 
             case APPSTATUS_CAMERA_STOPPED:
                 // Call the native function to stop the camera:
@@ -437,7 +442,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
 
 
-        //createDrawerLayout();
 
 
     }
@@ -611,7 +615,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         
         firstTimeGetImage=true;
 
-        createItemListFragment();
+        //createItemListFragment();
 
 
 
@@ -764,11 +768,15 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         rootView.addView(myView);
 
         Fragment fragment = new ItemListFragment();
+        ft.hide(fragment);
+
 
         ft.replace(R.id.item_list_fragment_vuforia, fragment, "item_list_fragment_vuforia");
         ft.commit();
         fm.executePendingTransactions(); //TO do it quickly instead of commit()
         ((ItemListFragment) fm.findFragmentByTag("item_list_fragment_vuforia")).setActivateOnItemClick(true);
+        fragment.getView().setBackgroundColor(getResources().getColor(R.color.white));
+
 
         Button testButton = (Button)findViewById(R.id.test_button);
         testButton.setOnClickListener(this);
@@ -783,10 +791,15 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             ItemDetailFragment fragment = new ItemDetailFragment();
             fragment.setArguments(arguments);
 
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            //ft.setCustomAnimations(R.anim.long_fade_in,R.anim.long_fade_out);
+            FragmentManager fm     = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            //ft.setCustomAnimations(R.anim.enter_right, R.anim.exit_right, R.anim.pop_enter, R.anim.pop_exit);
             ft.replace(R.id.item_detail_fragment_vuforia, fragment,"item_detail_fragment_vuforia").commit();
+            fm.executePendingTransactions();
+            fragment.getView().setBackgroundColor(getResources().getColor(R.color.white));
+
     }
+
 
     @Override
     public void onClick(View view) {
@@ -815,7 +828,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         if (fragment != null){
             FragmentTransaction ft = fm.beginTransaction();
-            //ft.setCustomAnimations(android.support.v7.appcompat.R.anim.abc_fade_in, android.support.v7.appcompat.R.anim.abc_fade_out);
             ft.setCustomAnimations(R.anim.enter_left, R.anim.exit_left, R.anim.pop_enter, R.anim.pop_exit);
             if (fragment.isHidden()){
                 Log.e(VuforiaJMEActivity.class.getName(),"toggle to show");
@@ -833,7 +845,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         if (fragmentDetail != null){
             FragmentTransaction ft = fm.beginTransaction();
-            //ft.setCustomAnimations(android.support.v7.appcompat.R.anim.abc_fade_in, android.support.v7.appcompat.R.anim.abc_fade_out);
             ft.setCustomAnimations(R.anim.enter_right, R.anim.exit_right, R.anim.pop_enter, R.anim.pop_exit);
             if (fragmentDetail.isHidden()){
                 Log.e(VuforiaJMEActivity.class.getName(),"toggle to show");
