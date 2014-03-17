@@ -40,6 +40,7 @@ import com.galimatias.teslaradio.subject.SubjectContent;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
 import com.qualcomm.QCAR.QCAR;
+import com.utils.LanguageLocaleChanger;
 
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
@@ -584,7 +585,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 	// needed for camera preview
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		        
+
+        //We load the language saved in the sharedpreferences to have the correct language
+        LanguageLocaleChanger.loadLanguageLocaleInActivity(this);
+
         //eglConfigType=ConfigType.BEST_TRANSLUCENT;
         super.onCreate(savedInstanceState);
 
@@ -778,8 +782,17 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         fragment.getView().setBackgroundColor(getResources().getColor(R.color.white));
 
 
-        Button testButton = (Button)findViewById(R.id.test_button);
-        testButton.setOnClickListener(this);
+        Button infoButton = (Button)findViewById(R.id.camera_toggle_info_button);
+        Button enButton = (Button)findViewById(R.id.camera_toggle_en_button);
+        Button esButton = (Button)findViewById(R.id.camera_toggle_es_button);
+        Button deButton = (Button)findViewById(R.id.camera_toggle_de_button);
+        Button frButton = (Button)findViewById(R.id.camera_toggle_fr_button);
+
+        infoButton.setOnClickListener(this);
+        enButton.setOnClickListener(this);
+        esButton.setOnClickListener(this);
+        frButton.setOnClickListener(this);
+        deButton.setOnClickListener(this);
     }
 
     @Override
@@ -807,9 +820,22 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         int id = view.getId();
 
         switch (id){
-            case R.id.test_button:
+            case R.id.camera_toggle_info_button:
                 toggleListFragmentVisibility();
                 break;
+            case R.id.camera_toggle_en_button:
+                LanguageLocaleChanger.reloadAppWithNewLanguage(this, "en");
+                break;
+            case R.id.camera_toggle_fr_button:
+                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"fr");
+                break;
+            case R.id.camera_toggle_de_button:
+                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"de");
+                break;
+            case R.id.camera_toggle_es_button:
+                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"es");
+                break;
+
             default:
                 break;
         }
