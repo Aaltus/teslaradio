@@ -17,7 +17,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.galimatias.teslaradio.R;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioRenderer;
@@ -45,11 +44,15 @@ import java.util.logging.Logger;
 
 /**
  * <code>AndroidHarness</code> wraps a jme application object and runs it on
- * Android
+ * Android.
+ * Aaltus: We have modified this class to extend from FragmentActivity
+ * instead of Activity to be able to manage fragments
  *
- * @author Kirill
+ * @author Kirill modified by Jonathan Desmarais
  * @author larynx
  */
+//Original code
+//public class AndroidHarnessFragmentActivity extends Activity implements TouchListener, DialogInterface.OnClickListener, SystemListener {
 public class AndroidHarnessFragmentActivity extends FragmentActivity implements TouchListener, DialogInterface.OnClickListener, SystemListener {
 
     protected final static Logger logger = Logger.getLogger(AndroidHarnessFragmentActivity.class.getName());
@@ -497,57 +500,6 @@ public class AndroidHarnessFragmentActivity extends FragmentActivity implements 
             logger.log(Level.FINE, "Splash Screen Skipped.");
             setContentView(view);
         }
-    }
-
-    public void drawerLayoutDisplay(){
-
-        logger.log(Level.FINE, "Splash Screen Picture Resource ID: {0}", splashPicID);
-        if (view == null) {
-            logger.log(Level.FINE, "view is null!");
-        }
-        if (splashPicID != 0) {
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
-                    LayoutParams.FILL_PARENT,
-                    LayoutParams.FILL_PARENT,
-                    Gravity.CENTER);
-
-            frameLayout = new FrameLayout(this);
-            splashImageView = new ImageView(this);
-
-            Drawable drawable = this.getResources().getDrawable(splashPicID);
-            if (drawable instanceof NinePatchDrawable) {
-                splashImageView.setBackgroundDrawable(drawable);
-            } else {
-                splashImageView.setImageResource(splashPicID);
-            }
-
-            if (view.getParent() != null) {
-                ((ViewGroup) view.getParent()).removeView(view);
-            }
-            frameLayout.addView(view);
-
-            if (splashImageView.getParent() != null) {
-                ((ViewGroup) splashImageView.getParent()).removeView(splashImageView);
-            }
-            frameLayout.addView(splashImageView, lp);
-
-            setContentView(frameLayout);
-            logger.log(Level.FINE, "Splash Screen Created");
-        } else {
-            logger.log(Level.FINE, "DrawerLayout. Splash Screen Skipped.");
-
-            //ViewGroup rootView = (ViewGroup) getLayoutInflater().inflate(R.layout.drawer_layout,null);
-            //FrameLayout frameLayout1 = (FrameLayout) rootView.findViewById(R.id.content_frame);
-            //frameLayout1.addView(view);
-            setContentView(R.layout.drawer_layout);
-            FrameLayout frameLayout1 = (FrameLayout) findViewById(R.id.content_frame);
-            frameLayout1.addView(view);
-
-
-
-            //setContentView(view);
-        }
-
     }
 
     public void removeSplashScreen() {
