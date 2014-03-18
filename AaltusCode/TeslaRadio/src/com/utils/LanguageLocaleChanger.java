@@ -9,7 +9,10 @@ import android.util.Log;
 import java.util.Locale;
 
 /**
- * Custom static language changer for the global app
+ * Static function to save language locale to sharedpreferences and
+ * to restart activity
+ *
+ * @author jimbojd72
  */
 public class LanguageLocaleChanger {
 
