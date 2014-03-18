@@ -20,7 +20,6 @@ package com.ar4android.vuforiaJME;
 
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -29,14 +28,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import com.galimatias.teslaradio.ItemDetailFragment;
 import com.galimatias.teslaradio.ItemListFragment;
 import com.galimatias.teslaradio.R;
-import com.galimatias.teslaradio.subject.SubjectContent;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
 import com.qualcomm.QCAR.QCAR;
@@ -45,7 +42,7 @@ import com.utils.LanguageLocaleChanger;
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
 
-
+//Old code
 //public class VuforiaJMEActivity extends AndroidHarness {
 public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements ItemListFragment.Callbacks, View.OnClickListener {
 
@@ -378,9 +375,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 // Sets the UILayout to be drawn in front of the camera
               //  mUILayout.bringToFront();
 
-                //We do that here because we know the view has been created
+                //create the layout on top of the jmonkey view to add button and fragments
                 //TODO Change this call to a case APPSTATUS...
-                createItemListFragment();
+                initTopLayout();
 
                 // Start the camera:
                 updateApplicationStatus(APPSTATUS_CAMERA_RUNNING);
@@ -619,12 +616,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         
         firstTimeGetImage=true;
 
-        //createItemListFragment();
-
-
-
-        //createMenu();
-
 	}
 
 	@Override
@@ -692,8 +683,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         System.gc();
         
     }
-	
-	
+
+
 	@Override
     public void onConfigurationChanged(Configuration config)
     {
@@ -706,88 +697,43 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         mLastScreenRotation = INVALID_SCREEN_ROTATION;
     }
 
-    private int getScreenWidthInPixel() {
-        Display display = getWindowManager().getDefaultDisplay();
+   /* Initialize the top layout that contains button
+    * and fragments
+    *
+   */
+    public void initTopLayout(){
 
-        //ViewGroup rootView = (ViewGroup) findViewById(android.R.id.content);
-        //return rootView.getWidth();
-        if (android.os.Build.VERSION.SDK_INT >= 13) {
-
-
-            Point size = new Point();
-            display.getSize(size);
-            int width = size.x;
-            return width;
-        } else {
-            return display.getWidth();
-        }
-    }
-
-
-    //Test with library slidingmenu
-//    private void createMenu(){
-//
-//        SlidingMenu menu = new SlidingMenu(this);
-//        menu.setMode(SlidingMenu.LEFT);
-//        menu.setBehindOffset(Math.round(getScreenWidthInPixel()*2/3));
-//        //menu.setShadowWidthRes(R.dimen.shadow_width);
-//        //menu.setShadowDrawable(R.drawable.shadow);
-//        //menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-//        menu.setFadeDegree(0.35f);
-//        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-//        menu.setMenu(R.layout.sliding_menu_frame);
-//        ItemListFragment itemListFragment = new ItemListFragment();
-//        //slidingMenuListFragment.setMenuBuilder(this);
-//
-//        // We replace a FrameLayout, which is a content of sliding menu, with
-//        // created list fragment filled with data from menu builder.
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.sliding_menu_frame, itemListFragment)
-//                .commit();
-//
-//
-//
-//    }
-
-    public void createDrawerLayout(){
-
-    ListView listView = (ListView) findViewById(R.id.left_drawer);
-
-    ArrayAdapter<SubjectContent.SubjectItem> arrayAdapter = new ArrayAdapter<SubjectContent.SubjectItem>(this,
-            R.layout.simple_list_item_activated_1, SubjectContent.ITEMS);
-
-    listView.setAdapter(arrayAdapter);
-    }
-
-    public void createItemListFragment(){
-
-
+        //Get the rootView of the activity. This view is on the direct parent
+        //to the android jme opengl view
         ViewGroup rootView = (ViewGroup) findViewById(android.R.id.content);
 
+        //Inflate and add the top level layout to the rootview
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         LayoutInflater factory = LayoutInflater.from(this);
-        View myView = factory.inflate(R.layout.activity_item_twopane_2, null);
-
+        View myView = factory.inflate(R.layout.vuforia_jme_overlay_layout, null);
         rootView.addView(myView);
 
+        //Setup the ListFragment
         Fragment fragment = new ItemListFragment();
         ft.hide(fragment);
-
-
         ft.replace(R.id.item_list_fragment_vuforia, fragment, "item_list_fragment_vuforia");
         ft.commit();
-        fm.executePendingTransactions(); //TO do it quickly instead of commit()
+        fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
+        //Make the listfragment activable
         ((ItemListFragment) fm.findFragmentByTag("item_list_fragment_vuforia")).setActivateOnItemClick(true);
+        //set background white
         fragment.getView().setBackgroundColor(getResources().getColor(R.color.white));
 
-
+        //Set onClickListener for all buttons
+        Button languageButton = (Button)findViewById(R.id.camera_toggle_language_button);
         Button infoButton = (Button)findViewById(R.id.camera_toggle_info_button);
         Button enButton = (Button)findViewById(R.id.camera_toggle_en_button);
         Button esButton = (Button)findViewById(R.id.camera_toggle_es_button);
         Button deButton = (Button)findViewById(R.id.camera_toggle_de_button);
         Button frButton = (Button)findViewById(R.id.camera_toggle_fr_button);
 
+        languageButton.setOnClickListener(this);
         infoButton.setOnClickListener(this);
         enButton.setOnClickListener(this);
         esButton.setOnClickListener(this);
@@ -795,21 +741,23 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         deButton.setOnClickListener(this);
     }
 
+    /** Action when a listfragment item is selected*/
     @Override
     public void onItemSelected(String id) {
 
+        //Create the details fragment with the specified Id
+        Bundle arguments = new Bundle();
+        arguments.putString(ItemDetailFragment.ARG_ITEM_ID, id);
+        ItemDetailFragment fragment = new ItemDetailFragment();
+        fragment.setArguments(arguments);
 
-            Bundle arguments = new Bundle();
-            arguments.putString(ItemDetailFragment.ARG_ITEM_ID, id);
-            ItemDetailFragment fragment = new ItemDetailFragment();
-            fragment.setArguments(arguments);
-
-            FragmentManager fm     = getSupportFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            //ft.setCustomAnimations(R.anim.enter_right, R.anim.exit_right, R.anim.pop_enter, R.anim.pop_exit);
-            ft.replace(R.id.item_detail_fragment_vuforia, fragment,"item_detail_fragment_vuforia").commit();
-            fm.executePendingTransactions();
-            fragment.getView().setBackgroundColor(getResources().getColor(R.color.white));
+        FragmentManager fm     = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.enter_right, R.anim.abc_fade_out, R.anim.pop_enter, R.anim.pop_exit);
+        ft.replace(R.id.item_detail_fragment_vuforia, fragment,"item_detail_fragment_vuforia").commit();
+        fm.executePendingTransactions();
+        //Set the fragment background
+        fragment.getView().setBackgroundColor(getResources().getColor(R.color.white));
 
     }
 
@@ -820,9 +768,17 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         int id = view.getId();
 
         switch (id){
+
+
+            case R.id.camera_toggle_language_button:
+                toggleLanguageButtonVisibility();
+                break;
+
             case R.id.camera_toggle_info_button:
                 toggleListFragmentVisibility();
                 break;
+
+            //Restart the activity with the specified languages
             case R.id.camera_toggle_en_button:
                 LanguageLocaleChanger.reloadAppWithNewLanguage(this, "en");
                 break;
@@ -842,6 +798,25 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     }
 
+    private void toggleLanguageButtonVisibility()
+    {
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linear_layout_language_buttons);
+        if (linearLayout.getVisibility() ==  View.VISIBLE)
+        {
+            //Animation fadeOut = AnimationUtils.loadAnimation(this, android.support.v7.appcompat.R.anim.abc_fade_out);
+            //linearLayout.startAnimation(fadeOut);
+            linearLayout.setVisibility(View.GONE);
+        }
+        else
+        {
+            //Animation fadeIn = AnimationUtils.loadAnimation(this, android.support.v7.appcompat.R.anim.abc_fade_in);
+            //linearLayout.startAnimation(fadeIn);
+            linearLayout.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+
     private void toggleListFragmentVisibility(){
 
         Log.e(VuforiaJMEActivity.class.getName(),"toggle");
@@ -849,7 +824,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
 
         //Hide list_fragment
-        Fragment fragment = (Fragment) fm.findFragmentByTag("item_list_fragment_vuforia");
+        Fragment fragment = fm.findFragmentByTag("item_list_fragment_vuforia");
 
 
         if (fragment != null){
