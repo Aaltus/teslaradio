@@ -26,13 +26,13 @@ public class SubjectContent {
     static {
         //Jonathan Desmarais: Add 7 static sample items.
         // THIS HERE YOU WILL ADD CATEGORY OF INFORMATIVE MENU AND SUBPAGES
-        addItem(new SubjectItem("1", "Introduction", new int[]{R.layout.test2}));
-        addItem(new SubjectItem("2", "Transmission du son", new int[]{R.layout.test, R.layout.test}));
-        addItem(new SubjectItem("3", "Modulation", new int[]{R.layout.test, R.layout.test, R.layout.test}));
-        addItem(new SubjectItem("4", "Transmission et antennes", new int[]{R.layout.test, R.layout.test, R.layout.test}));
-        addItem(new SubjectItem("5", "Demodulation", new int[]{R.layout.test, R.layout.test, R.layout.test,R.layout.test}));
-        addItem(new SubjectItem("6", "Reference", new int[]{R.layout.test, R.layout.test}));
-        addItem(new SubjectItem("7", "Qui sommes nous ?", new int[]{R.layout.test2}));
+        addItem(new SubjectItem("1", "Introduction", new int[]{R.layout.informative_info_detail_test2}));
+        addItem(new SubjectItem("2", "Transmission du son", new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
+        addItem(new SubjectItem("3", "Modulation", new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
+        addItem(new SubjectItem("4", "Transmission et antennes", new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
+        addItem(new SubjectItem("5", "Demodulation", new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test,R.layout.informative_info_detail_test}));
+        addItem(new SubjectItem("6", "Reference", new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
+        addItem(new SubjectItem("7", "Qui sommes nous ?", new int[]{R.layout.informative_info_detail_test2}));
     }
 
     private static void addItem(SubjectItem item) {
