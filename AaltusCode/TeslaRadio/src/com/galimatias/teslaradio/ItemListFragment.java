@@ -73,10 +73,8 @@ public class ItemListFragment extends ListFragment {
         setHasOptionsMenu(true);
 
         int layout = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) ?
-                R.layout.simple_list_item_activated_1 :
-                R.layout.simple_list_item_activated_1;
-                //android.R.layout.simple_list_item_activated_1;
-                //android.R.layout.simple_list_item_checked;
+                R.layout.list_fragment_layout :
+                R.layout.list_fragment_layout;
 
             setListAdapter(new ArrayAdapter<SubjectContent.SubjectItem>(getActivity(),
                 layout, SubjectContent.ITEMS));
