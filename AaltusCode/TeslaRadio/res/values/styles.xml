@@ -48,13 +48,4 @@
         <item name="android:windowBackground">@null</item>
     </style>
 
-    <!--Camera Preview-->
-    <style name="CameraPreviewButtonStyle" parent="android:Theme">
-        <item name="android:layout_width">100dp</item>
-        <item name="android:layout_height">75dp</item>
-        <item name="android:layout_gravity">right|bottom</item>
-        <item name="android:scaleType">fitXY</item>
-        <item name="android:padding">10dp</item>
-    </style>
-
 </resources>
