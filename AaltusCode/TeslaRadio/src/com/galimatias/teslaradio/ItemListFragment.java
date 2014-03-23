@@ -3,10 +3,10 @@ package com.galimatias.teslaradio;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.support.v4.app.ListFragment;
 import com.galimatias.teslaradio.subject.SubjectContent;
 
 /**
@@ -83,6 +83,7 @@ public class ItemListFragment extends ListFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
 
         // Restore the previously serialized activated item position.
         if (savedInstanceState != null

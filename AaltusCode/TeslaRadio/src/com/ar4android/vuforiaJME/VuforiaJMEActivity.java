@@ -29,10 +29,10 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import com.galimatias.teslaradio.ItemDetailFragment;
 import com.galimatias.teslaradio.ItemListFragment;
+import com.galimatias.teslaradio.LanguageDialogFragment;
 import com.galimatias.teslaradio.R;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
@@ -723,22 +723,22 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         //Make the listfragment activable
         ((ItemListFragment) fm.findFragmentByTag("item_list_fragment_vuforia")).setActivateOnItemClick(true);
         //set background white
-        fragment.getView().setBackgroundColor(getResources().getColor(R.color.white));
+        //fragment.getView().setBackgroundColor(getResources().getColor(R.color.white));
 
         //Set onClickListener for all buttons
         Button languageButton = (Button)findViewById(R.id.camera_toggle_language_button);
         Button infoButton = (Button)findViewById(R.id.camera_toggle_info_button);
-        Button enButton = (Button)findViewById(R.id.camera_toggle_en_button);
-        Button esButton = (Button)findViewById(R.id.camera_toggle_es_button);
-        Button deButton = (Button)findViewById(R.id.camera_toggle_de_button);
-        Button frButton = (Button)findViewById(R.id.camera_toggle_fr_button);
+        //Button enButton = (Button)findViewById(R.id.camera_toggle_en_button);
+        //Button esButton = (Button)findViewById(R.id.camera_toggle_es_button);
+        //Button deButton = (Button)findViewById(R.id.camera_toggle_de_button);
+        //Button frButton = (Button)findViewById(R.id.camera_toggle_fr_button);
 
         languageButton.setOnClickListener(this);
         infoButton.setOnClickListener(this);
-        enButton.setOnClickListener(this);
-        esButton.setOnClickListener(this);
-        frButton.setOnClickListener(this);
-        deButton.setOnClickListener(this);
+//        enButton.setOnClickListener(this);
+//        esButton.setOnClickListener(this);
+//        frButton.setOnClickListener(this);
+//        deButton.setOnClickListener(this);
     }
 
     /** Action when a listfragment item is selected*/
@@ -757,7 +757,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         ft.replace(R.id.item_detail_fragment_vuforia, fragment,"item_detail_fragment_vuforia").commit();
         fm.executePendingTransactions();
         //Set the fragment background
-        fragment.getView().setBackgroundColor(getResources().getColor(R.color.white));
+        //fragment.getView().setBackgroundColor(getResources().getColor(R.color.white));
 
     }
 
@@ -779,18 +779,18 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 break;
 
             //Restart the activity with the specified languages
-            case R.id.camera_toggle_en_button:
-                LanguageLocaleChanger.reloadAppWithNewLanguage(this, "en");
-                break;
-            case R.id.camera_toggle_fr_button:
-                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"fr");
-                break;
-            case R.id.camera_toggle_de_button:
-                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"de");
-                break;
-            case R.id.camera_toggle_es_button:
-                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"es");
-                break;
+//            case R.id.camera_toggle_en_button:
+//                LanguageLocaleChanger.reloadAppWithNewLanguage(this, "en");
+//                break;
+//            case R.id.camera_toggle_fr_button:
+//                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"fr");
+//                break;
+//            case R.id.camera_toggle_de_button:
+//                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"de");
+//                break;
+//            case R.id.camera_toggle_es_button:
+//                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"es");
+//                break;
 
             default:
                 break;
@@ -800,19 +800,24 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     private void toggleLanguageButtonVisibility()
     {
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linear_layout_language_buttons);
-        if (linearLayout.getVisibility() ==  View.VISIBLE)
-        {
-            //Animation fadeOut = AnimationUtils.loadAnimation(this, android.support.v7.appcompat.R.anim.abc_fade_out);
-            //linearLayout.startAnimation(fadeOut);
-            linearLayout.setVisibility(View.GONE);
-        }
-        else
-        {
-            //Animation fadeIn = AnimationUtils.loadAnimation(this, android.support.v7.appcompat.R.anim.abc_fade_in);
-            //linearLayout.startAnimation(fadeIn);
-            linearLayout.setVisibility(View.VISIBLE);
-        }
+        FragmentManager fm = getSupportFragmentManager();
+        LanguageDialogFragment languageDialogFragment = new LanguageDialogFragment();
+        languageDialogFragment.show(fm, "language_dialog_fragment");
+
+
+//        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linear_layout_language_buttons);
+//        if (linearLayout.getVisibility() ==  View.VISIBLE)
+//        {
+//            //Animation fadeOut = AnimationUtils.loadAnimation(this, android.support.v7.appcompat.R.anim.abc_fade_out);
+//            //linearLayout.startAnimation(fadeOut);
+//            linearLayout.setVisibility(View.GONE);
+//        }
+//        else
+//        {
+//            //Animation fadeIn = AnimationUtils.loadAnimation(this, android.support.v7.appcompat.R.anim.abc_fade_in);
+//            //linearLayout.startAnimation(fadeIn);
+//            linearLayout.setVisibility(View.VISIBLE);
+//        }
 
     }
 

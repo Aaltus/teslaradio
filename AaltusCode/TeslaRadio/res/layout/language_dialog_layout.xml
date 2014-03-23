@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#55000000"
+        >
+
+<LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal"
+        >
+
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center_vertical|center_horizontal"
+                  android:layout_weight="25"
+                  android:orientation="vertical"
+                  >
+    <ImageButton android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/camera_toggle_en_button"
+            android:background="@drawable/ic_action_language_eng"
+            android:layout_gravity="center_vertical|center_horizontal"
+            />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/string_action_language_eng"
+                style="@style/LanguageMenuTextStyle"/>
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="25"
+                  android:layout_gravity="center_vertical|center_horizontal"
+                  android:orientation="vertical"
+            >
+    <ImageButton android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/camera_toggle_fr_button"
+                 android:layout_gravity="center_vertical|center_horizontal"
+                 android:background="@drawable/ic_action_language_fr"
+
+        />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/string_action_language_fr"
+                style="@style/LanguageMenuTextStyle"/>
+    </LinearLayout>
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="25"
+                  android:layout_gravity="center_vertical|center_horizontal"
+                  android:orientation="vertical"
+            >
+    <ImageButton android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/camera_toggle_de_button"
+                 android:layout_gravity="center_vertical|center_horizontal"
+                 android:background="@drawable/ic_action_language_de"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/string_action_language_ge"
+                style="@style/LanguageMenuTextStyle"/>
+    </LinearLayout >
+
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="25"
+                  android:layout_gravity="center_vertical|center_horizontal"
+                  android:orientation="vertical"
+            >
+    <ImageButton android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/camera_toggle_es_button"
+                 android:layout_gravity="center_vertical|center_horizontal"
+                 android:background="@drawable/ic_action_language_es"
+            />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/string_action_language_es"
+            style="@style/LanguageMenuTextStyle"
+            />
+
+    </LinearLayout >
+
+</LinearLayout>
+
+    <LinearLayout android:layout_width="60dp"
+                  android:layout_height="60dp"
+                  android:layout_gravity="top|left"
+                  android:orientation="horizontal"
+            >
+
+        <ImageButton android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:id="@+id/camera_toggle_cancel_button"
+                     android:background="@drawable/ic_navigation_cancel"
+                     android:scaleType="fitCenter"
+                />
+
+    </LinearLayout>
+
+
+</FrameLayout>
