@@ -754,7 +754,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         FragmentManager fm     = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.setCustomAnimations(R.anim.enter_right, R.anim.abc_fade_out, R.anim.pop_enter, R.anim.pop_exit);
+        ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out, R.anim.pop_enter, R.anim.pop_exit);
         ft.replace(R.id.item_detail_fragment_vuforia, fragment,"item_detail_fragment_vuforia").commit();
         fm.executePendingTransactions();
 
@@ -849,11 +849,12 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
             ft.commit();
         }
-        Fragment fragmentDetail = (Fragment) fm.findFragmentByTag("item_detail_fragment_vuforia");
 
+
+        Fragment fragmentDetail = (Fragment) fm.findFragmentByTag("item_detail_fragment_vuforia");
         if (fragmentDetail != null){
             FragmentTransaction ft = fm.beginTransaction();
-            ft.setCustomAnimations(R.anim.enter_right, R.anim.exit_right, R.anim.pop_enter, R.anim.pop_exit);
+            ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out, R.anim.pop_enter, R.anim.pop_exit);
             if (fragmentDetail.isHidden()){
                 Log.e(VuforiaJMEActivity.class.getName(),"toggle to show");
                 ft.show(fragmentDetail);
