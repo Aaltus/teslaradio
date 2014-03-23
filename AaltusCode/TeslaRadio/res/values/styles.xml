@@ -40,8 +40,8 @@
     </style>
 
     <!--Change this color if you want to change the action bar color-->
-    <drawable name="global_app_color">#A5B7EC</drawable>
-    <drawable name="button_pressed_app_color">@color/LightSteelBlue</drawable>
+    <drawable name="global_app_color">#FAC9D6</drawable>
+    <drawable name="button_pressed_app_color">#E5BEC8</drawable>
 
 <!--For splashscreen-->
     <style name="Theme.NoBackground" parent="android:Theme">

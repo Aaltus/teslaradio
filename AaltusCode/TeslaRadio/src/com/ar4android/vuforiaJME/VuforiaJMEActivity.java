@@ -749,6 +749,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         Bundle arguments = new Bundle();
         arguments.putString(ItemDetailFragment.ARG_ITEM_ID, id);
         ItemDetailFragment fragment = new ItemDetailFragment();
+
         fragment.setArguments(arguments);
 
         FragmentManager fm     = getSupportFragmentManager();
@@ -756,8 +757,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         ft.setCustomAnimations(R.anim.enter_right, R.anim.abc_fade_out, R.anim.pop_enter, R.anim.pop_exit);
         ft.replace(R.id.item_detail_fragment_vuforia, fragment,"item_detail_fragment_vuforia").commit();
         fm.executePendingTransactions();
+
         //Set the fragment background
-        //fragment.getView().setBackgroundColor(getResources().getColor(R.color.white));
+        //fragment.getView().setBackground(getResources().getDrawable(R.drawable.detail_fragment_layout_bg));
 
     }
 
