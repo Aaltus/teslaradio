@@ -10,5 +10,12 @@ import com.jme3.scene.Geometry;
 public abstract class AnimatedObject extends Geometry {
     //TODO: Define global method of the AnimatedObject here
 
+    public AnimatedObject()
+    {
+
+    }
+
+
+
     //TODO: Study if AnimatedObject should be a node that contains multiple objects itself rather than a geometry
 }

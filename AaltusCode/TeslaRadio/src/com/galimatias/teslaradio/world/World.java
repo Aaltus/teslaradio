@@ -1,10 +1,14 @@
 package com.galimatias.teslaradio.world;
 
-import com.galimatias.teslaradio.world.Scenarios.Scenario;
+import android.util.Log;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
+import com.jme3.light.DirectionalLight;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-
-import java.util.List;
 
 /**
  * World: Defines the root node of the 3D World
@@ -13,22 +17,79 @@ import java.util.List;
 public class World extends Node {
 
     //Private attributes
-    private List<Scenario> lstScenario;
-    private Scenario mScenarioInFocus;
+    private Geometry mScenarioInFocus;
+    private static final String TAG = "World";
+    private Node Scenario = new Node("Scenario");
 
-    public World() {
+    public World(Node rootNode) {
+
+        // You must add a light to make the model visible
+        DirectionalLight back = new DirectionalLight();
+        back.setDirection(new Vector3f(0.f,-1.f,1.0f));
+        rootNode.addLight(back);
+
+        DirectionalLight front = new DirectionalLight();
+        front.setDirection(new Vector3f(0.f,1.f,1.0f));
+        rootNode.addLight(front);
     }
 
 
-    public void UpdateFocus(Vector3f newVector){
+    public void UpdateFocus(Camera fgCam)
+    {
+
+        // 1. Reset results list.
+        CollisionResults results = new CollisionResults();
+
+        // 2. Mode 1: Find the location and direction of the camera and trace a ray.
+        Ray ray = new Ray(fgCam.getLocation(), fgCam.getDirection());
+
+        // 3. Collect intersections between Ray and Shootables in results list.
+        Scenario.collideWith(ray, results);
+
+        // 4. Print the results
+        Log.d(TAG, "----- Collisions? " + results.size() + "-----");
+        for (int i = 0; i < results.size(); i++)
+        {
+            // For each hit, we know distance, impact point, name of geometry.
+            float dist = results.getCollision(i).getDistance();
+            Vector3f pt = results.getCollision(i).getContactPoint();
+            String hit = results.getCollision(i).getGeometry().getName();
+
+            Log.d(TAG,"* Collision #" + i + hit);
+            // Log.d(TAG,"  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+        }
+
+        // 5. Use the results (we mark the hit object)
+        if (results.size() > 0)
+        {
+            // The closest collision point is what was truly hit:
+            CollisionResult closest = results.getClosestCollision();
+
+            /**
+             * Passing the control to the scenario via the mScenarioInFocus pointer
+             * needs to be implemented. CollisionResult class will need a scenario getter
+             * method for it to work. UpdateScenarioState could be called here.
+             */
+
+            mScenarioInFocus = closest.getGeometry();
+            Scenario.attachChild(mScenarioInFocus.getParent());
+
+        }
+        else
+            Scenario.detachAllChildren();
 
     }
 
-    public void UpdateViewables(){
-
+    public void UpdateViewables(Node rootNode)
+    {
+        if (mScenarioInFocus != null)
+        {
+            rootNode.attachChild(Scenario);
+        }
     }
 
-    public void UpdateScenarioState(){
+    public void UpdateScenarioState()
+    {
 
     }
 

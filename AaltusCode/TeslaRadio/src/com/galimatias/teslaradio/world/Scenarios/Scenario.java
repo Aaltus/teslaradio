@@ -1,10 +1,14 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 
-import com.galimatias.teslaradio.world.AnimatedObjects.AnimatedObject;
 import com.galimatias.teslaradio.world.ViewState;
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.AnimEventListener;
+import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.qualcomm.vuforia.Vec3F;
 
 import java.util.List;
@@ -12,23 +16,35 @@ import java.util.List;
 
 /**
  * Scenario: Defines a Scenario node that will includes multiple objects and
- * manage interaction between thems. This could be refered as a Scene
+ * manage interaction between them. This could be referred as a Scene
  * Created by jean-christophelavoie on 2014-03-23.
  */
-public abstract class Scenario extends Node {
+public abstract class Scenario extends Node implements AnimEventListener{
+
+    private final static String TAG = "Scenario";
+
+    protected ViewState mViewState;
+
+    protected Node unmovableObjects = new Node("unmovable");
+
+    protected Node movableObjects = new Node("movable");
+
+    protected AssetManager assetManager;
+
+    public Scenario(AssetManager assetManager)
+    {
+        this.assetManager = assetManager;
+    }
 
     /**
-     * The list of AnimatedObjects that are static
+     * Methods to load the associated 3D objects with the scenario
      */
-    private List<AnimatedObject> lstStaticObjects;
-    /**
-     * The List of AnimatedObjects that are moveable
-     */
-    private List<AnimatedObject> listMoveableObjects;
+    protected abstract void loadStaticAnimatedObjects();
 
-    private Vector3f mOrigin;
+    protected abstract void loadMovableAnimatedObjects();
 
-    private ViewState mViewState;
+    public abstract void onAnimCycleDone(AnimControl animControl, AnimChannel animChannel, String s);
 
+    public abstract void onAnimChange(AnimControl animControl, AnimChannel animChannel, String s);
 
 }
