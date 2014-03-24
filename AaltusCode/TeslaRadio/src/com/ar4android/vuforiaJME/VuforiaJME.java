@@ -61,6 +61,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	boolean mNewCameraFrameAvailable = false;
 
     private Spatial ninja;
+    private Node scotty;
 
     private float mForegroundCamFOVY = 30;
 
@@ -213,6 +214,42 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 
 	}
 
+    //Here is a model coming from the web
+    protected void initScotty(){
+
+        // Load a model from j3o data
+        scotty = (Node) assetManager.loadModel("Models/male/male.j3o");
+        //scotty = assetManager.loadModel("Models/male/Body.mesh.xml");
+        scotty.setName("scotty");
+        scotty.scale(100.0f, 100.0f, 100.0f);
+        Quaternion rotateNinjaX=new Quaternion();
+        rotateNinjaX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
+        Quaternion rotateNinjaZ=new Quaternion();
+        rotateNinjaZ.fromAngleAxis(3.14f, new Vector3f(0.0f,0.0f,1.0f));
+        Quaternion rotateNinjaY=new Quaternion();
+        rotateNinjaY.fromAngleAxis(3.14f,new Vector3f(0.0f,1.0f,0.0f));
+
+        rotateNinjaX.mult(rotateNinjaZ);
+        Quaternion rotateNinjaXZ=rotateNinjaZ.mult(rotateNinjaX);
+        Quaternion rotateNinjaXYZ = rotateNinjaXZ.mult(rotateNinjaY);
+
+        scotty.rotate(rotateNinjaXYZ);
+
+        //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
+        scotty.rotate(0.0f, -3.0f, 0.0f);
+        scotty.setLocalTranslation(1000.0f, 0.0f, 0.0f);
+        shootables.attachChild(scotty);
+
+        //We need to get the AnimControl from the child man of the rootnode
+        AnimControl control = scotty.getChild("Man").getControl(AnimControl.class);
+        control.addListener(this);
+        AnimChannel mAniChannel = control.createChannel();
+
+        mAniChannel.setAnim("ArmatureAction.001");
+        mAniChannel.setLoopMode(LoopMode.Loop);
+        mAniChannel.setSpeed(2f);
+    }
+
     protected void initNinja(){
 
         // Load a model from test_data (OgreXML + material + texture)
@@ -236,10 +273,9 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
         ninja.rotate(0.0f, -3.0f, 0.0f);
         ninja.setLocalTranslation(0.0f, 0.0f, 0.0f);
 
-        //Jonathan: To make the ninja shootable we add it to a new node "shootable", the we add it to the root node
-        shootables = new Node("Shootables");
-        rootNode.attachChild(shootables);
-        attachNinja();
+
+        //attachShootables();
+        shootables.attachChild(ninja);
 
         mAniControl = ninja.getControl(AnimControl.class);
         mAniControl.addListener(this);
@@ -250,27 +286,30 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
         mAniChannel.setSpeed(1f);
     }
 
-    public void attachNinja(){
+    public void attachShootables(){
 
-        if (!isNinjaInNode()){
+        if (!isShootablesInRootNode()){
 
-            shootables.attachChild(ninja);
+            rootNode.attachChild(shootables);
+            //shootables.attachChild(ninja);
         }
     }
 
-    public void detachNinja(){
+    public void detachShootables(){
 
-        if (isNinjaInNode()){
+        if (isShootablesInRootNode()){
 
-            shootables.detachChild(ninja);
+            rootNode.detachChild(shootables);
+            //shootables.detachChild(ninja);
         }
-
     }
 
-    public boolean isNinjaInNode(){
+    public boolean isShootablesInRootNode(){
 
-        Node ninjaNode = (Node) rootNode.getChild(ninja.getName());
-        if (ninjaNode == null){
+        //Node ninjaNode = (Node) rootNode.getChild(ninja.getName());
+        Node shootableNode = (Node) rootNode.getChild(shootables.getName());
+
+        if (shootableNode == null){
             return false;
         }
         else {
@@ -292,7 +331,13 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
         front.setDirection(new Vector3f(0.f,1.f,1.0f));
         rootNode.addLight(front);
 
+        //Jonathan: To make the ninja shootable we add it to a new node "shootable", the we add it to the root node
+        shootables = new Node("Shootables");
+        rootNode.attachChild(shootables);
+
         initNinja();
+        initScotty();
+
 	}
 	
 	public void initForegroundCamera(float fovY) {

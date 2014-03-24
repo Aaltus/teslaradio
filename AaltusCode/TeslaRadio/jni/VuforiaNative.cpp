@@ -359,8 +359,8 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
             //jvm->AttachCurrentThread((void **)&env, NULL);
 
 
-            jmethodID attachNinja = env->GetMethodID(activityClass,"attachNinja", "()V");
-            env->CallVoidMethod(obj,attachNinja);
+            jmethodID attachShootables = env->GetMethodID(activityClass,"attachShootables", "()V");
+            env->CallVoidMethod(obj,attachShootables);
 
             jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
             env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
@@ -389,8 +389,8 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
     }
     else{
 
-        jmethodID detachNinja = env->GetMethodID(activityClass,"detachNinja", "()V");
-        env->CallVoidMethod(obj,detachNinja);
+        jmethodID detachShootables = env->GetMethodID(activityClass,"detachShootables", "()V");
+        env->CallVoidMethod(obj,detachShootables);
     }
 
     QCAR::Renderer::getInstance().end();
