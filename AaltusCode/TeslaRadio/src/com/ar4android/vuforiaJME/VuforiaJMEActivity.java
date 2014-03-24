@@ -44,7 +44,8 @@ import java.util.logging.Level;
 
 //Old code
 //public class VuforiaJMEActivity extends AndroidHarness {
-public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements ItemListFragment.Callbacks, View.OnClickListener {
+public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements ItemListFragment.Callbacks, View.OnClickListener,
+ItemDetailFragment.OnItemSelectedListener{
 
 	private static final String TAG = "VuforiaJMEActivity";
 	
@@ -135,6 +136,20 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         loadLibrary(NATIVE_LIB_SAMPLE);
     }
 
+    @Override
+    public void onRssItemSelected(View view) {
+
+        Log.e("item_detail_fragment_close_button", "chat");
+        int id = view.getId();
+
+        switch (id){
+
+            case R.id.item_detail_fragment_close_button:
+                Log.e("item_detail_fragment_close_button", "chat");
+                toggleListFragmentVisibility();
+                break;
+        }
+    }
 
 
     /** An async task to initialize QCAR asynchronously. */
@@ -437,9 +452,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         getWindow().setFlags(
             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-
-
 
 
     }
@@ -749,7 +761,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         Bundle arguments = new Bundle();
         arguments.putString(ItemDetailFragment.ARG_ITEM_ID, id);
         ItemDetailFragment fragment = new ItemDetailFragment();
-
         fragment.setArguments(arguments);
 
         FragmentManager fm     = getSupportFragmentManager();
@@ -758,10 +769,13 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         ft.replace(R.id.item_detail_fragment_vuforia, fragment,"item_detail_fragment_vuforia").commit();
         fm.executePendingTransactions();
 
+
+
         //Set the fragment background
         //fragment.getView().setBackground(getResources().getDrawable(R.drawable.detail_fragment_layout_bg));
 
     }
+
 
 
     @Override
@@ -771,7 +785,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         switch (id){
 
-
             case R.id.camera_toggle_language_button:
                 toggleLanguageButtonVisibility();
                 break;
@@ -779,20 +792,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             case R.id.camera_toggle_info_button:
                 toggleListFragmentVisibility();
                 break;
-
-            //Restart the activity with the specified languages
-//            case R.id.camera_toggle_en_button:
-//                LanguageLocaleChanger.reloadAppWithNewLanguage(this, "en");
-//                break;
-//            case R.id.camera_toggle_fr_button:
-//                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"fr");
-//                break;
-//            case R.id.camera_toggle_de_button:
-//                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"de");
-//                break;
-//            case R.id.camera_toggle_es_button:
-//                LanguageLocaleChanger.reloadAppWithNewLanguage(this,"es");
-//                break;
 
             default:
                 break;
@@ -802,24 +801,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     private void toggleLanguageButtonVisibility()
     {
+
         FragmentManager fm = getSupportFragmentManager();
         LanguageDialogFragment languageDialogFragment = new LanguageDialogFragment();
         languageDialogFragment.show(fm, "language_dialog_fragment");
-
-
-//        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linear_layout_language_buttons);
-//        if (linearLayout.getVisibility() ==  View.VISIBLE)
-//        {
-//            //Animation fadeOut = AnimationUtils.loadAnimation(this, android.support.v7.appcompat.R.anim.abc_fade_out);
-//            //linearLayout.startAnimation(fadeOut);
-//            linearLayout.setVisibility(View.GONE);
-//        }
-//        else
-//        {
-//            //Animation fadeIn = AnimationUtils.loadAnimation(this, android.support.v7.appcompat.R.anim.abc_fade_in);
-//            //linearLayout.startAnimation(fadeIn);
-//            linearLayout.setVisibility(View.VISIBLE);
-//        }
 
     }
 

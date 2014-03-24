@@ -1,13 +1,17 @@
 package com.galimatias.teslaradio;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -17,7 +21,10 @@ import com.viewpagerindicator.CirclePageIndicator;
  * in two-pane mode (on tablets) or a {@link ItemDetailActivity}
  * on handsets.
  */
-public class ItemDetailFragment extends Fragment  {
+public class ItemDetailFragment extends Fragment  implements View.OnClickListener{
+
+
+
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -51,9 +58,39 @@ public class ItemDetailFragment extends Fragment  {
      */
     private CirclePageIndicator mIndicator;
 
+    private OnItemSelectedListener listener;
+
+    @Override
+    public void onClick(View view) {
+
+        Log.e("onclick", view.toString());
+        listener.onRssItemSelected(view);
+    }
+
+    // Define the events that the fragment will use to communicate
+    public interface OnItemSelectedListener {
+        public void onRssItemSelected(View view);
+    }
+
+    // Store the listener (activity) that will have events fired once the fragment is attached
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof OnItemSelectedListener) {
+            listener = (OnItemSelectedListener) activity;
+            Log.e("add listener","addListener");
+        } else {
+            throw new ClassCastException(activity.toString()
+                    + " must implement MyListFragment.OnItemSelectedListener");
+        }
+    }
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 
         setHasOptionsMenu(true);
         if (getArguments().containsKey(ARG_ITEM_ID)) {
@@ -73,6 +110,12 @@ public class ItemDetailFragment extends Fragment  {
 
         //Get ViewPager xml layout view
         View rootView = inflater.inflate(R.layout.viewpager_container, container, false);
+
+        TextView titleTextView= (TextView) rootView.findViewById(R.id.item_detail_fragment_title_textview);
+        titleTextView.setText(mItem.title);
+
+        ImageButton cancelImageButton = (ImageButton) rootView.findViewById(R.id.item_detail_fragment_close_button);
+        cancelImageButton.setOnClickListener(this);
 
         // Show the dummy content xml as xml
         if (mItem != null) {

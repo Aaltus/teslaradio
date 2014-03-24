@@ -47,61 +47,37 @@ button on the handset.
                 <!--android:layout_height="match_parent"-->
                 <!--android:layout_weight="3"/>-->
 
+            <LinearLayout android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:id="@+id/linear_layout_global_buttons"
+                          android:gravity="center"
+
+                    >
+                <Button
+                        android:id="@+id/camera_toggle_language_button"
+                        android:layout_height="50dp"
+                        android:layout_width="50dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/browser"/>
+                <Button
+                        android:id="@+id/camera_toggle_info_button"
+                        android:layout_height="50dp"
+                        android:layout_width="50dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/ic_info_button"
+                        />
+            </LinearLayout>
+
         </LinearLayout>
 
-    <RelativeLayout android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|top">
-        <!--<LinearLayout android:layout_width="wrap_content"-->
-                      <!--android:layout_height="wrap_content"-->
-                      <!--android:orientation="horizontal"-->
-                      <!--android:id="@+id/linear_layout_language_buttons"-->
-                      <!--android:visibility="gone"-->
-                      <!--android:gravity="center"-->
-                <!-->-->
-            <!--<Button-->
-                    <!--android:id="@+id/camera_toggle_en_button"-->
+    <!--<RelativeLayout android:layout_width="wrap_content"-->
                     <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:text="en"-->
-                    <!--/>-->
-            <!--<Button-->
-                    <!--android:id="@+id/camera_toggle_fr_button"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:text="fr"/>-->
-            <!--<Button-->
-                    <!--android:id="@+id/camera_toggle_es_button"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:text="es"/>-->
-            <!--<Button-->
-                    <!--android:id="@+id/camera_toggle_de_button"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:text="de"/>-->
+                    <!--android:layout_gravity="right|top">-->
 
-        <!--</LinearLayout>-->
-        <LinearLayout android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:orientation="vertical"
-                      android:id="@+id/linear_layout_global_buttons"
-                      android:gravity="center"
-                >
-        <Button
-                android:id="@+id/camera_toggle_language_button"
-                android:layout_height="75dp"
-                android:layout_width="75dp"
-                android:background="@drawable/browser"/>
-        <Button
-                android:id="@+id/camera_toggle_info_button"
-                android:layout_height="75dp"
-                android:layout_width="75dp"
-                android:background="@drawable/ic_info_button"
-                />
-        </LinearLayout>
 
-    </RelativeLayout>
+
+    <!--</RelativeLayout>-->
 
 
 
