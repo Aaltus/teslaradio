@@ -6,10 +6,7 @@ import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.asset.AssetManager;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import com.qualcomm.vuforia.Vec3F;
 
 import java.util.List;
 
