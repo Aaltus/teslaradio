@@ -19,7 +19,6 @@ public class World extends Node {
     //Private attributes
     private Geometry mScenarioInFocus;
     private static final String TAG = "World";
-    private Node Scenario = new Node("Scenario");
 
     public World(Node rootNode) {
 
@@ -34,7 +33,7 @@ public class World extends Node {
     }
 
 
-    public void UpdateFocus(Camera fgCam)
+    public void UpdateFocus(Camera fgCam, Node Scenario)
     {
 
         // 1. Reset results list.
@@ -71,6 +70,8 @@ public class World extends Node {
              * method for it to work. UpdateScenarioState could be called here.
              */
 
+        // TODO: Add support for scenario type classes in CollisionResult class
+
             mScenarioInFocus = closest.getGeometry();
             Scenario.attachChild(mScenarioInFocus.getParent());
 
@@ -80,7 +81,7 @@ public class World extends Node {
 
     }
 
-    public void UpdateViewables(Node rootNode)
+    public void UpdateViewables(Node rootNode, Node Scenario)
     {
         if (mScenarioInFocus != null)
         {

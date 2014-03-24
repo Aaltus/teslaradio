@@ -74,7 +74,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	Camera videoBGCam;
 	Camera fgCam;
 
-    Node focusableObjects;
+    private Node focusableObjects = new Node("Scenario");
 
     /** Native function for initializing the renderer. */
     public native void initTracking(int width, int height);
@@ -222,6 +222,11 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 
         virtualWorld = new World(rootNode);
         soundCapture = new Capture(assetManager);
+
+        Log.d(TAG,soundCapture.getChild("ninja").getName());
+
+        focusableObjects.attachChild(soundCapture);
+        rootNode.attachChild(soundCapture);
 	}
 
 
@@ -342,8 +347,8 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 			mVideoBGGeom.updateGeometricState();
 
             // Update the world depending on what is in focus
-            virtualWorld.UpdateFocus(fgCam);
-			virtualWorld.UpdateViewables(rootNode);
+            virtualWorld.UpdateFocus(fgCam,focusableObjects);
+			virtualWorld.UpdateViewables(rootNode,focusableObjects);
 		}
 
 		@Override

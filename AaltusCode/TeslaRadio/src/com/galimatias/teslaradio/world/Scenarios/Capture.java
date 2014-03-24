@@ -1,5 +1,6 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import android.util.Log;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
@@ -24,6 +25,8 @@ public class Capture extends Scenario {
     {
         super(assetManager);
 
+        Log.d(TAG, "Capture : ");
+        loadStaticAnimatedObjects();
     }
 
     @Override
@@ -63,9 +66,7 @@ public class Capture extends Scenario {
         ninja.rotate(0.0f, -3.0f, 0.0f);
         ninja.setLocalTranslation(0.0f, 0.0f, 0.0f);
 
-
-        //attachShootables();
-        this.attachChild(ninja);
+        this.attachChild(unmovableObjects);
 
         mAniControl = ninja.getControl(AnimControl.class);
         mAniControl.addListener(this);
