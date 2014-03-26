@@ -720,13 +720,14 @@ ItemDetailFragment.OnItemSelectedListener{
         ViewGroup rootView = (ViewGroup) findViewById(android.R.id.content);
 
         //Inflate and add the top level layout to the rootview
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
         LayoutInflater factory = LayoutInflater.from(this);
         View myView = factory.inflate(R.layout.vuforia_jme_overlay_layout, null);
         rootView.addView(myView);
 
         //Setup the ListFragment
+
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
         Fragment fragment = new ItemListFragment();
         ft.hide(fragment);
         ft.replace(R.id.item_list_fragment_vuforia, fragment, "item_list_fragment_vuforia");
@@ -765,7 +766,7 @@ ItemDetailFragment.OnItemSelectedListener{
 
         FragmentManager fm     = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out, R.anim.pop_enter, R.anim.pop_exit);
+        ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
         ft.replace(R.id.item_detail_fragment_vuforia, fragment,"item_detail_fragment_vuforia").commit();
         fm.executePendingTransactions();
 
@@ -821,7 +822,7 @@ ItemDetailFragment.OnItemSelectedListener{
 
         if (fragment != null){
             FragmentTransaction ft = fm.beginTransaction();
-            ft.setCustomAnimations(R.anim.enter_left, R.anim.exit_left, R.anim.pop_enter, R.anim.pop_exit);
+            ft.setCustomAnimations(R.anim.enter_left, R.anim.exit_left);
             if (fragment.isHidden()){
                 Log.e(VuforiaJMEActivity.class.getName(),"toggle to show");
                 ft.show(fragment);
@@ -839,7 +840,7 @@ ItemDetailFragment.OnItemSelectedListener{
         Fragment fragmentDetail = (Fragment) fm.findFragmentByTag("item_detail_fragment_vuforia");
         if (fragmentDetail != null){
             FragmentTransaction ft = fm.beginTransaction();
-            ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out, R.anim.pop_enter, R.anim.pop_exit);
+            ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
             if (fragmentDetail.isHidden()){
                 Log.e(VuforiaJMEActivity.class.getName(),"toggle to show");
                 ft.show(fragmentDetail);

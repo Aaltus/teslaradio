@@ -42,8 +42,9 @@
     <!--Change this color if you want to change the action bar color-->
     <drawable name="global_app_color">#FAC9D6</drawable>
     <drawable name="button_pressed_app_color">#E5BEC8</drawable>
+    <drawable name="GreyTransparent">#CC212121</drawable>
 
-<!--For splashscreen-->
+    <!--For splashscreen-->
     <style name="Theme.NoBackground" parent="android:Theme">
         <item name="android:windowBackground">@null</item>
     </style>
@@ -63,7 +64,6 @@
 
     <style name="MyDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
-        <!--<item name="android:windowBackground">@color/orange_transparent</item>-->
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowTitleStyle">@null</item>
@@ -71,6 +71,11 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
         <item name="android:gravity">center</item>
+
+        <!--<item name="android:windowIsTranslucent">true</item>-->
+        <!--<item name="android:backgroundDimEnabled">false</item>-->
+        <!--<item name="android:windowBackground">@drawable/detail_fragment_layout_bg</item>-->
+
     </style>
 
     <style name="LanguageMenuTextStyle">
@@ -80,5 +85,10 @@
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
 
     </style>
+    <style name="ListFragmentPadding">
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
 
 </resources>

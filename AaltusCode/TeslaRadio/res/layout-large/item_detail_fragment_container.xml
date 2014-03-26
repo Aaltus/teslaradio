@@ -13,8 +13,7 @@
     <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="50dp"
             android:id="@+id/item_detail_fragment_vuforia"
             android:layout_gravity="center_vertical|center_horizontal"
-            />
+            android:padding="50dp"/>
 </FrameLayout>
