@@ -19,16 +19,16 @@
 package com.ar4android.vuforiaJME;
 
 import android.util.Log;
+import com.galimatias.teslaradio.world.Scenarios.Capture;
+import com.galimatias.teslaradio.world.World;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
-import com.jme3.animation.LoopMode;
 import com.jme3.app.SimpleApplication;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.*;
 import com.jme3.renderer.Camera;
@@ -36,7 +36,6 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
@@ -60,8 +59,12 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	// A flag indicating if a new Android camera image is available.
 	boolean mNewCameraFrameAvailable = false;
 
-    private Spatial ninja;
-    private Node scotty;
+//    private Spatial ninja;
+//    private Node scotty;
+
+    // The virtual world object, it is in fact the scene
+    private World virtualWorld;
+    private Capture soundCapture;
 
     private float mForegroundCamFOVY = 30;
 
@@ -73,7 +76,9 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
   
 	Camera videoBGCam;
 	Camera fgCam;
-    Node shootables;
+
+    private Node focusableObjects = new Node("Scenario");
+
     /** Native function for initializing the renderer. */
     public native void initTracking(int width, int height);
 
@@ -90,7 +95,8 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	@Override
 	public void simpleInitApp() {
 		Log.e(TAG, "simpleInitApp");
-		
+
+
 		// Do not display statistics or frames per second	
 		setDisplayStatView(false);
 		setDisplayFps(false);
@@ -116,7 +122,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	}
 
     /** Defining the "Shoot" action: Determine what was hit and how to respond. */
-    private ActionListener actionListener = new ActionListener() {
+    private ActionListener actionListener = new ActionListener(){
 
         public void onAction(String name, boolean keyPressed, float tpf) {
             Log.d(TAG,"Shooting.");
@@ -135,7 +141,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
                 Ray ray = new Ray(click3d, dir);
 
                 // 3. Collect intersections between Ray and Shootables in results list.
-                shootables.collideWith(ray, results);
+                focusableObjects.collideWith(ray, results);
                 // 4. Print the results
                 Log.d(TAG,"----- Collisions? " + results.size() + "-----");
                 for (int i = 0; i < results.size(); i++) {
@@ -214,133 +220,129 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 
 	}
 
-    //Here is a model coming from the web
-    protected void initScotty(){
-
-        // Load a model from j3o data
-        scotty = (Node) assetManager.loadModel("Models/male/male.j3o");
-        //scotty = assetManager.loadModel("Models/male/Body.mesh.xml");
-        scotty.setName("scotty");
-        scotty.scale(100.0f, 100.0f, 100.0f);
-        Quaternion rotateNinjaX=new Quaternion();
-        rotateNinjaX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
-        Quaternion rotateNinjaZ=new Quaternion();
-        rotateNinjaZ.fromAngleAxis(3.14f, new Vector3f(0.0f,0.0f,1.0f));
-        Quaternion rotateNinjaY=new Quaternion();
-        rotateNinjaY.fromAngleAxis(3.14f,new Vector3f(0.0f,1.0f,0.0f));
-
-        rotateNinjaX.mult(rotateNinjaZ);
-        Quaternion rotateNinjaXZ=rotateNinjaZ.mult(rotateNinjaX);
-        Quaternion rotateNinjaXYZ = rotateNinjaXZ.mult(rotateNinjaY);
-
-        scotty.rotate(rotateNinjaXYZ);
-
-        //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
-        scotty.rotate(0.0f, -3.0f, 0.0f);
-        scotty.setLocalTranslation(1000.0f, 0.0f, 0.0f);
-        shootables.attachChild(scotty);
-
-        //We need to get the AnimControl from the child man of the rootnode
-        AnimControl control = scotty.getChild("Man").getControl(AnimControl.class);
-        control.addListener(this);
-        AnimChannel mAniChannel = control.createChannel();
-
-        mAniChannel.setAnim("ArmatureAction.001");
-        mAniChannel.setLoopMode(LoopMode.Loop);
-        mAniChannel.setSpeed(2f);
-    }
-
-    protected void initNinja(){
-
-        // Load a model from test_data (OgreXML + material + texture)
-        ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
-        ninja.setName("ninja");
-        ninja.scale(5.0f, 5.0f, 5.0f);
-        Quaternion rotateNinjaX=new Quaternion();
-        rotateNinjaX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
-        Quaternion rotateNinjaZ=new Quaternion();
-        rotateNinjaZ.fromAngleAxis(3.14f, new Vector3f(0.0f,0.0f,1.0f));
-        Quaternion rotateNinjaY=new Quaternion();
-        rotateNinjaY.fromAngleAxis(3.14f,new Vector3f(0.0f,1.0f,0.0f));
-
-        rotateNinjaX.mult(rotateNinjaZ);
-        Quaternion rotateNinjaXZ=rotateNinjaZ.mult(rotateNinjaX);
-        Quaternion rotateNinjaXYZ = rotateNinjaXZ.mult(rotateNinjaY);
-
-        ninja.rotate(rotateNinjaXYZ);
-
-        //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
-        ninja.rotate(0.0f, -3.0f, 0.0f);
-        ninja.setLocalTranslation(0.0f, 0.0f, 0.0f);
-
-
-        //attachShootables();
-        shootables.attachChild(ninja);
-
-        mAniControl = ninja.getControl(AnimControl.class);
-        mAniControl.addListener(this);
-        mAniChannel = mAniControl.createChannel();
-        // show animation from beginning
-        mAniChannel.setAnim("Walk");
-        mAniChannel.setLoopMode(LoopMode.Loop);
-        mAniChannel.setSpeed(1f);
-    }
-
-    public void attachShootables(){
-
-        if (!isShootablesInRootNode()){
-
-            rootNode.attachChild(shootables);
-            //shootables.attachChild(ninja);
-        }
-    }
-
-    public void detachShootables(){
-
-        if (isShootablesInRootNode()){
-
-            rootNode.detachChild(shootables);
-            //shootables.detachChild(ninja);
-        }
-    }
-
-    public boolean isShootablesInRootNode(){
-
-        //Node ninjaNode = (Node) rootNode.getChild(ninja.getName());
-        Node shootableNode = (Node) rootNode.getChild(shootables.getName());
-
-        if (shootableNode == null){
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
+//    //Here is a model coming from the web
+//    protected void initScotty(){
+//
+//        // Load a model from j3o data
+//        scotty = (Node) assetManager.loadModel("Models/male/male.j3o");
+//        //scotty = assetManager.loadModel("Models/male/Body.mesh.xml");
+//        scotty.setName("scotty");
+//        scotty.scale(100.0f, 100.0f, 100.0f);
+//        Quaternion rotateNinjaX=new Quaternion();
+//        rotateNinjaX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
+//        Quaternion rotateNinjaZ=new Quaternion();
+//        rotateNinjaZ.fromAngleAxis(3.14f, new Vector3f(0.0f,0.0f,1.0f));
+//        Quaternion rotateNinjaY=new Quaternion();
+//        rotateNinjaY.fromAngleAxis(3.14f,new Vector3f(0.0f,1.0f,0.0f));
+//
+//        rotateNinjaX.mult(rotateNinjaZ);
+//        Quaternion rotateNinjaXZ=rotateNinjaZ.mult(rotateNinjaX);
+//        Quaternion rotateNinjaXYZ = rotateNinjaXZ.mult(rotateNinjaY);
+//
+//        scotty.rotate(rotateNinjaXYZ);
+//
+//        //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
+//        scotty.rotate(0.0f, -3.0f, 0.0f);
+//        scotty.setLocalTranslation(1000.0f, 0.0f, 0.0f);
+//        shootables.attachChild(scotty);
+//
+//        //We need to get the AnimControl from the child man of the rootnode
+//        AnimControl control = scotty.getChild("Man").getControl(AnimControl.class);
+//        control.addListener(this);
+//        AnimChannel mAniChannel = control.createChannel();
+//
+//        mAniChannel.setAnim("ArmatureAction.001");
+//        mAniChannel.setLoopMode(LoopMode.Loop);
+//        mAniChannel.setSpeed(2f);
+//    }
+//
+//    protected void initNinja(){
+//
+//        // Load a model from test_data (OgreXML + material + texture)
+//        ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
+//        ninja.setName("ninja");
+//        ninja.scale(5.0f, 5.0f, 5.0f);
+//        Quaternion rotateNinjaX=new Quaternion();
+//        rotateNinjaX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
+//        Quaternion rotateNinjaZ=new Quaternion();
+//        rotateNinjaZ.fromAngleAxis(3.14f, new Vector3f(0.0f,0.0f,1.0f));
+//        Quaternion rotateNinjaY=new Quaternion();
+//        rotateNinjaY.fromAngleAxis(3.14f,new Vector3f(0.0f,1.0f,0.0f));
+//
+//        rotateNinjaX.mult(rotateNinjaZ);
+//        Quaternion rotateNinjaXZ=rotateNinjaZ.mult(rotateNinjaX);
+//        Quaternion rotateNinjaXYZ = rotateNinjaXZ.mult(rotateNinjaY);
+//
+//        ninja.rotate(rotateNinjaXYZ);
+//
+//        //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
+//        ninja.rotate(0.0f, -3.0f, 0.0f);
+//        ninja.setLocalTranslation(0.0f, 0.0f, 0.0f);
+//
+//
+//        //attachShootables();
+//        shootables.attachChild(ninja);
+//
+//        mAniControl = ninja.getControl(AnimControl.class);
+//        mAniControl.addListener(this);
+//        mAniChannel = mAniControl.createChannel();
+//        // show animation from beginning
+//        mAniChannel.setAnim("Walk");
+//        mAniChannel.setLoopMode(LoopMode.Loop);
+//        mAniChannel.setSpeed(1f);
+//    }
+//
+//    public void attachShootables(){
+//
+//        if (!isShootablesInRootNode()){
+//
+//            rootNode.attachChild(shootables);
+//            //shootables.attachChild(ninja);
+//        }
+//    }
+//
+//    public void detachShootables(){
+//
+//        if (isShootablesInRootNode()){
+//
+//            rootNode.detachChild(shootables);
+//            //shootables.detachChild(ninja);
+//        }
+//    }
+//
+//    public boolean isShootablesInRootNode(){
+//
+//        //Node ninjaNode = (Node) rootNode.getChild(ninja.getName());
+//        Node shootableNode = (Node) rootNode.getChild(shootables.getName());
+//
+//        if (shootableNode == null){
+//            return false;
+//        }
+//        else {
+//            return true;
+//        }
+//    }
 
 
     public void initForegroundScene() {
 
+        virtualWorld = new World(rootNode);
+        soundCapture = new Capture(assetManager);
 
-        
-        // You must add a light to make the model visible
-        DirectionalLight back = new DirectionalLight();
-        back.setDirection(new Vector3f(0.f,-1.f,1.0f));
-        rootNode.addLight(back);
-
-        DirectionalLight front = new DirectionalLight();
-        front.setDirection(new Vector3f(0.f,1.f,1.0f));
-        rootNode.addLight(front);
+        Log.d(TAG,soundCapture.getChild("ninja").getName());
 
         //Jonathan: To make the ninja shootable we add it to a new node "shootable", the we add it to the root node
-        shootables = new Node("Shootables");
-        rootNode.attachChild(shootables);
-
-        initNinja();
-        initScotty();
-
+//        shootables = new Node("Shootables");
+//        rootNode.attachChild(shootables);
+//
+//        initNinja();
+//        initScotty();
+        focusableObjects.attachChild(soundCapture);
+        rootNode.attachChild(soundCapture);
 	}
-	
-	public void initForegroundCamera(float fovY) {
+
+
+    public void initForegroundCamera(float fovY) {
 
 		fgCam = new Camera(settings.getWidth(), settings.getHeight());
 		
@@ -455,7 +457,10 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 //			mCubeGeom.rotate(new Quaternion(1.f, 0.f, 0.f, 0.01f));
 			mVideoBGGeom.updateLogicalState(tpf);
 			mVideoBGGeom.updateGeometricState();
-			
+
+            // Update the world depending on what is in focus
+            virtualWorld.UpdateFocus(fgCam,focusableObjects);
+			virtualWorld.UpdateViewables(rootNode,focusableObjects);
 		}
 
 		@Override
