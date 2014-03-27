@@ -1,0 +1,94 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <!--parent="@style/Theme.AppCompat">-->
+    <style name="AppBaseTheme"
+           parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+        <!-- For post 10 sdk compatibility -->
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/MyActionBar</item>
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+
+
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="MyActionBar"
+           parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@drawable/global_app_color</item>
+
+
+        <!--<item name="android:actionButtonStyle">@drawable/state_list_drawable</item>-->
+        <!-- Support library compatibility -->
+
+        <item name="background">@drawable/global_app_color</item>
+        <item name="android:itemBackground">@drawable/state_list_drawable</item>
+    </style>
+
+    <!--Change this color if you want to change the action bar color-->
+    <drawable name="global_app_color">#FAC9D6</drawable>
+    <drawable name="button_pressed_app_color">#E5BEC8</drawable>
+    <drawable name="GreyTransparent">#CC212121</drawable>
+
+    <!--For splashscreen-->
+    <style name="Theme.NoBackground" parent="android:Theme">
+        <item name="android:windowBackground">@null</item>
+    </style>
+
+    <!--Informative menu style-->
+    <style name="InformativeMenuTextStyle">
+        <item name="android:gravity">left</item>
+        <item name="android:layout_gravity">center_vertical|right</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <!--<item name="android:textSize">10sp</item>-->
+
+    </style>
+    <style name="InformativeMenuImageViewStyle">
+        <item name="android:background">@drawable/imageview_bg</item>
+    </style>
+
+    <style name="MyDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTitleStyle">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:gravity">center</item>
+
+        <!--<item name="android:windowIsTranslucent">true</item>-->
+        <!--<item name="android:backgroundDimEnabled">false</item>-->
+        <!--<item name="android:windowBackground">@drawable/detail_fragment_layout_bg</item>-->
+
+    </style>
+
+    <style name="LanguageMenuTextStyle">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center_vertical|center_horizontal</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+
+    </style>
+    <style name="ListFragmentPadding">
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
+
+</resources>
