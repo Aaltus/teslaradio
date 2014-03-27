@@ -1,0 +1,61 @@
+<!--
+Jonathan Desmarais 3/18/2014
+
+This layout is inflated on top of the jMonkey view
+to superpose list and detail fragment and put some
+button on the handset.
+-->
+
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/activity_item_twopane_2_rootview">
+
+
+        <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:showDividers="middle"
+                android:layout_weight="1"
+             >
+
+
+            <FrameLayout
+                    android:id="@+id/item_list_fragment_vuforia"
+                    android:layout_height="fill_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    style="@style/ListFragmentPadding"/>
+
+            <include layout="@layout/item_detail_fragment_container"/>
+
+            <LinearLayout android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:id="@+id/linear_layout_global_buttons"
+                          android:gravity="center"
+                    >
+                <Button
+                        android:id="@+id/camera_toggle_language_button"
+                        android:layout_height="50dp"
+                        android:layout_width="50dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/browser"/>
+                <Button
+                        android:id="@+id/camera_toggle_info_button"
+                        android:layout_height="50dp"
+                        android:layout_width="50dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/ic_info_button"
+                        />
+            </LinearLayout>
+
+        </LinearLayout>
+</FrameLayout>
