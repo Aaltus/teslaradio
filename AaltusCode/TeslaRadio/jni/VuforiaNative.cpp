@@ -20,6 +20,15 @@
 
 #include <jni.h>
 #include <android/log.h>
+
+//#define LOG_TAG "VuforiaNative"
+#define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG,__VA_ARGS__)
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG  , LOG_TAG,__VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO   , LOG_TAG,__VA_ARGS__)
+#define LOGW(...) __android_log_print(ANDROID_LOG_WARN   , LOG_TAG,__VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR  , LOG_TAG,__VA_ARGS__)
+
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
@@ -74,7 +83,7 @@ jobject activityObj = 0;
 
 JNIEXPORT jint JNICALL
 JNI_OnLoad(JavaVM* vm,  void* reserved) {
-    LOG("JNI_OnLoad");
+    LOGI("JNI_OnLoad");
     javaVM = vm;
     return JNI_VERSION_1_4;
 }
@@ -111,7 +120,7 @@ class VuforiaJME_UpdateCallback : public QCAR::UpdateCallback
                 int height = imageRGB565->getHeight();
                 int numPixels = width * height;
 
-                LOG("Update video image... !OnUpdate!");
+                LOGD("Update video image... !OnUpdate!");
                 jbyteArray pixelArray = env->NewByteArray(numPixels * 2);
                 env->SetByteArrayRegion(pixelArray, 0, numPixels * 2, (const jbyte*) pixels);
                 jclass javaClass = env->GetObjectClass(activityObj);
@@ -148,18 +157,18 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_switchDatasetAsap(JNIEnv *, jo
 JNIEXPORT int JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initTracker(JNIEnv *, jobject)
 {
-    LOG("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initTracker");
+    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initTracker");
     
     // Initialize the image tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
     QCAR::Tracker* tracker = trackerManager.initTracker(QCAR::ImageTracker::getClassType());
     if (tracker == NULL)
     {
-        LOG("Failed to initialize ImageTracker.");
+        LOGE("Failed to initialize ImageTracker.");
         return 0;
     }
 
-    LOG("Successfully initialized ImageTracker.");
+    LOGI("Successfully initialized ImageTracker.");
     return 1;
 }
 
@@ -178,7 +187,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitTracker(JNIEnv *, jobjec
 JNIEXPORT int JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData(JNIEnv *, jobject)
 {
-    LOG("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData");
+    LOGD("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData");
     
     // Get the image tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
@@ -186,7 +195,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData(JNIEnv *, jobj
                     trackerManager.getTracker(QCAR::ImageTracker::getClassType()));
     if (imageTracker == NULL)
     {
-        LOG("Failed to load tracking data set because the ImageTracker has not"
+        LOGE("Failed to load tracking data set because the ImageTracker has not"
             " been initialized.");
         return 0;
     }
@@ -195,25 +204,25 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData(JNIEnv *, jobj
     dataSetStonesAndChips = imageTracker->createDataSet();
     if (dataSetStonesAndChips == 0)
     {
-        LOG("Failed to create a new tracking data.");
+        LOGE("Failed to create a new tracking data.");
         return 0;
     }
 
     // Load the data sets:
     if (!dataSetStonesAndChips->load("VuforiaJME.xml", QCAR::DataSet::STORAGE_APPRESOURCE))
     {
-        LOG("Failed to load data set.");
+        LOGE("Failed to load data set.");
         return 0;
     }
 
     // Activate the data set:
     if (!imageTracker->activateDataSet(dataSetStonesAndChips))
     {
-        LOG("Failed to activate data set.");
+        LOGE("Failed to activate data set.");
         return 0;
     }
 
-    LOG("Successfully loaded and activated data set.");
+    LOGI("Successfully loaded and activated data set.");
     return 1;
 }
 
@@ -221,7 +230,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData(JNIEnv *, jobj
 JNIEXPORT int JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData(JNIEnv *, jobject)
 {
-    LOG("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData");
+    LOGD("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData");
 
     // Get the image tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
@@ -229,7 +238,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData(JNIEnv *, j
         trackerManager.getTracker(QCAR::ImageTracker::getClassType()));
     if (imageTracker == NULL)
     {
-        LOG("Failed to destroy the tracking data set because the ImageTracker has not"
+        LOGE("Failed to destroy the tracking data set because the ImageTracker has not"
             " been initialized.");
         return 0;
     }
@@ -239,18 +248,18 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData(JNIEnv *, j
         if (imageTracker->getActiveDataSet() == dataSetStonesAndChips &&
             !imageTracker->deactivateDataSet(dataSetStonesAndChips))
         {
-            LOG("Failed to destroy the tracking data set StonesAndChips because the data set "
+            LOGE("Failed to destroy the tracking data set StonesAndChips because the data set "
                 "could not be deactivated.");
             return 0;
         }
 
         if (!imageTracker->destroyDataSet(dataSetStonesAndChips))
         {
-            LOG("Failed to destroy the tracking data set StonesAndChips.");
+            LOGE("Failed to destroy the tracking data set StonesAndChips.");
             return 0;
         }
 
-        LOG("Successfully destroyed the data set StonesAndChips.");
+        LOGI("Successfully destroyed the data set StonesAndChips.");
         dataSetStonesAndChips = 0;
     }
 
@@ -261,6 +270,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData(JNIEnv *, j
 JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative(JNIEnv *, jobject)
 {
+    LOGI("com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative registerCallback");
     // Register the update callback where we handle the data set swap:
     QCAR::registerCallback(&updateCallback);
 
@@ -290,12 +300,26 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
     //Jonathan Desmarais: Check if we have a trackable result
     if (state.getNumTrackableResults() > 0){
+
+
         // Did we find any trackables this frame?
         for(int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++)
         {
+
+
             // Get the trackable:
             const QCAR::TrackableResult* result = state.getTrackableResult(tIdx);
-            //const QCAR::Trackable& trackable = result->getTrackable();
+
+            //Stuplid code to simply log to trackable name
+            const QCAR::Trackable& trackable = result->getTrackable();
+            const char* trackableNameChar = trackable.getName();
+            const char* loggingPrefix = "UpdateTracking: Find trackable: ";
+            char logTrackableName[75];
+            strcpy(logTrackableName,loggingPrefix);
+            strcat(logTrackableName,trackableNameChar);
+            const char * trackableToPrint = (const char *)logTrackableName;
+            LOGD(trackableToPrint);
+
 
             QCAR::Matrix44F modelViewMatrix =
                 QCAR::Tool::convertPose2GLMatrix(result->getPose());
@@ -343,13 +367,16 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
             if (viewportWidth != screenWidth)
             {
+                LOGW("updateTraking viewportWidth != screenWidth");
                 viewportDistort = viewportWidth / (float) screenWidth;
                 fovDegrees=fovDegrees*viewportDistort;
                 aspectRatio=aspectRatio/viewportDistort;
+
             }
 
             if (viewportHeight != screenHeight)
             {
+                LOGW("updateTraking viewportHeight != screenHeight");
                 viewportDistort = viewportHeight / (float) screenHeight;
                 fovDegrees=fovDegrees/viewportDistort;
                 aspectRatio=aspectRatio*viewportDistort;
@@ -398,9 +425,10 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 }
 
 
-void
-configureVideoBackground()
+void configureVideoBackground()
 {
+    LOGI("configureVideoBackground");
+
     // Get the default video mode:
     QCAR::CameraDevice& cameraDevice = QCAR::CameraDevice::getInstance();
     QCAR::VideoMode videoMode = cameraDevice.
@@ -425,7 +453,7 @@ configureVideoBackground()
 
         if(config.mSize.data[0] < screenWidth)
         {
-            LOG("Correcting rendering background size to handle missmatch between screen and video aspect ratios.");
+            LOGI("Correcting rendering background size to handle missmatch between screen and video aspect ratios.");
             config.mSize.data[0] = screenWidth;
             config.mSize.data[1] = screenWidth * 
                               (videoMode.mWidth / (float)videoMode.mHeight);
@@ -440,14 +468,14 @@ configureVideoBackground()
 
         if(config.mSize.data[1] < screenHeight)
         {
-            LOG("Correcting rendering background size to handle missmatch between screen and video aspect ratios.");
+            LOGI("Correcting rendering background size to handle missmatch between screen and video aspect ratios.");
             config.mSize.data[0] = screenHeight
                                 * (videoMode.mWidth / (float)videoMode.mHeight);
             config.mSize.data[1] = screenHeight;
         }
     }
 
-    LOG("Configure Video Background : Video (%d,%d), Screen (%d,%d), mSize (%d,%d)", videoMode.mWidth, videoMode.mHeight, screenWidth, screenHeight, config.mSize.data[0], config.mSize.data[1]);
+    LOGI("Configure Video Background : Video (%d,%d), Screen (%d,%d), mSize (%d,%d)", videoMode.mWidth, videoMode.mHeight, screenWidth, screenHeight, config.mSize.data[0], config.mSize.data[1]);
 
     // Set the config:
     QCAR::Renderer::getInstance().setVideoBackgroundConfig(config);
@@ -458,7 +486,7 @@ JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative(
                             JNIEnv* env, jobject obj, jint width, jint height)
 {
-    LOG("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative");
+    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative");
     
     // Store screen dimensions
     screenWidth = width;
@@ -468,7 +496,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative(
 
     env->GetJavaVM(&javaVM);
     activityObj = env->NewGlobalRef(obj);
-    LOG("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative finished");
+    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative finished");
 }
 
 
@@ -476,7 +504,7 @@ JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitApplicationNative(
                                                         JNIEnv* env, jobject obj)
 {
-    LOG("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitApplicationNative");
+    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitApplicationNative");
 
 
 }
@@ -486,7 +514,7 @@ JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera(JNIEnv *,
                                                                          jobject)
 {
-    LOG("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera");
+    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera");
     
     // Select the camera to open, set this to QCAR::CameraDevice::CAMERA_FRONT 
     // to activate the front camera instead.
@@ -532,7 +560,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera(JNIEnv *,
 JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_stopCamera(JNIEnv *, jobject)
 {
-    LOG("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_stopCamera");
+    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_stopCamera");
 
     // Stop the tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
@@ -548,7 +576,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_stopCamera(JNIEnv *, jobject)
 JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setProjectionMatrix(JNIEnv *, jobject)
 {
-    LOG("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setProjectionMatrix");
+    LOGD("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setProjectionMatrix");
 
     // Cache the projection matrix:
     const QCAR::CameraCalibration& cameraCalibration =
@@ -562,12 +590,14 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setProjectionMatrix(JNIEnv *, 
 JNIEXPORT jboolean JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_activateFlash(JNIEnv*, jobject, jboolean flash)
 {
+    //LOGD("com_ar4android_vuforiaJME_VuforiaJMEActivity_activateFlash");
     return QCAR::CameraDevice::getInstance().setFlashTorchMode((flash==JNI_TRUE)) ? JNI_TRUE : JNI_FALSE;
 }
 
 JNIEXPORT jboolean JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_autofocus(JNIEnv*, jobject)
 {
+    //LOGD("com_ar4android_vuforiaJME_VuforiaJMEActivity_autofocus");
     return QCAR::CameraDevice::getInstance().setFocusMode(QCAR::CameraDevice::FOCUS_MODE_TRIGGERAUTO) ? JNI_TRUE : JNI_FALSE;
 }
 
@@ -575,6 +605,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_autofocus(JNIEnv*, jobject)
 JNIEXPORT jboolean JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setFocusMode(JNIEnv*, jobject, jint mode)
 {
+    //LOGD("com_ar4android_vuforiaJME_VuforiaJMEActivity_setFocusMode");
     int qcarFocusMode;
 
     switch ((int)mode)
@@ -606,7 +637,7 @@ JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJME_initTracking(
                         JNIEnv* env, jobject obj, jint width, jint height)
 {
-    LOG("Java_com_ar4android_vuforiaJME_VuforiaJME_initTracking");
+    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJME_initTracking");
 
     // Update screen dimensions
     screenWidth = width;
