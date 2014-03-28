@@ -58,30 +58,30 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
      */
     private CirclePageIndicator mIndicator;
 
-    private OnItemSelectedListener listener;
+    private OnClickDetailFragmentListener listener;
 
     @Override
     public void onClick(View view) {
 
         Log.e("onclick", view.toString());
-        listener.onRssItemSelected(view);
+        listener.onClickDetailFragment(view);
     }
 
     // Define the events that the fragment will use to communicate
-    public interface OnItemSelectedListener {
-        public void onRssItemSelected(View view);
+    public interface OnClickDetailFragmentListener {
+        public void onClickDetailFragment(View view);
     }
 
     // Store the listener (activity) that will have events fired once the fragment is attached
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity instanceof OnItemSelectedListener) {
-            listener = (OnItemSelectedListener) activity;
+        if (activity instanceof OnClickDetailFragmentListener) {
+            listener = (OnClickDetailFragmentListener) activity;
             Log.e("add listener","addListener");
         } else {
             throw new ClassCastException(activity.toString()
-                    + " must implement MyListFragment.OnItemSelectedListener");
+                    + " must implement MyListFragment.OnClickDetailFragmentListener");
         }
     }
 
