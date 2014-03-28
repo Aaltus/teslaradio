@@ -45,7 +45,7 @@ import java.util.logging.Level;
 //Old code
 //public class VuforiaJMEActivity extends AndroidHarness {
 public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements ItemListFragment.Callbacks, View.OnClickListener,
-ItemDetailFragment.OnItemSelectedListener{
+        ItemDetailFragment.OnClickDetailFragmentListener {
 
 	private static final String TAG = "VuforiaJMEActivity";
 	
@@ -137,7 +137,7 @@ ItemDetailFragment.OnItemSelectedListener{
     }
 
     @Override
-    public void onRssItemSelected(View view) {
+    public void onClickDetailFragment(View view) {
 
         Log.e("item_detail_fragment_close_button", "chat");
         int id = view.getId();
@@ -773,7 +773,7 @@ ItemDetailFragment.OnItemSelectedListener{
 
 
         //Set the fragment background
-        //fragment.getView().setBackground(getResources().getDrawable(R.drawable.detail_fragment_layout_bg));
+        //fragment.getView().setBackground(getResources().getDrawable(R.drawable.window_layout_bg));
 
     }
 
