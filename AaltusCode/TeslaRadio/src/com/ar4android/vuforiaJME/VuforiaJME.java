@@ -209,7 +209,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 
         int settingsWidth = settings.getWidth();
         int settingsHeight = settings.getHeight();
-        Log.d(TAG,"* initBackgroundCamera with width : " + Integer.toString(settings.getWidth()) + " height: " + Integer.toString(settings.getHeight()) );
+        Log.d(TAG,"* initBackgroundCamera with width : " + Integer.toString(settingsWidth) + " height: " + Integer.toString(settingsHeight) );
 		videoBGCam = new Camera(settingsWidth, settingsHeight);
 		videoBGCam.setViewPort(0.0f, 1.0f, 0.f, 1.0f);
 		videoBGCam.setLocation(new Vector3f(0f, 0f, 1.f));
