@@ -74,7 +74,7 @@
 
         <!--<item name="android:windowIsTranslucent">true</item>-->
         <!--<item name="android:backgroundDimEnabled">false</item>-->
-        <!--<item name="android:windowBackground">@drawable/detail_fragment_layout_bg</item>-->
+        <!--<item name="android:windowBackground">@drawable/window_layout_bg</item>-->
 
     </style>
 
