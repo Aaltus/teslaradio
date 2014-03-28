@@ -125,7 +125,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
     private ActionListener actionListener = new ActionListener(){
 
         public void onAction(String name, boolean keyPressed, float tpf) {
-            Log.d(TAG,"Shooting.");
+            Log.d(TAG,"Action on screen");
 
             if (name.equals("Shoot") && !keyPressed) {
 
@@ -179,6 +179,9 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	// needed for rendering the incoming Android camera frames in the scene
 	// graph
 	public void initVideoBackground(int screenWidth, int screenHeight) {
+
+        Log.d(TAG,"* initVideoBackground with width : " + Integer.toString(screenWidth) + " height: " + Integer.toString(screenHeight) );
+
 		// Create a Quad shape.
 		Quad videoBGQuad = new Quad(1, 1, true);
 		// Create a Geometry with the Quad shape
@@ -203,7 +206,11 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 
 	public void initBackgroundCamera() {
 		// Create a custom virtual camera with orthographic projection
-		videoBGCam = new Camera(settings.getWidth(), settings.getHeight());
+
+        int settingsWidth = settings.getWidth();
+        int settingsHeight = settings.getHeight();
+        Log.d(TAG,"* initBackgroundCamera with width : " + Integer.toString(settings.getWidth()) + " height: " + Integer.toString(settings.getHeight()) );
+		videoBGCam = new Camera(settingsWidth, settingsHeight);
 		videoBGCam.setViewPort(0.0f, 1.0f, 0.f, 1.0f);
 		videoBGCam.setLocation(new Vector3f(0f, 0f, 1.f));
 		videoBGCam.setAxes(new Vector3f(-1f,0f,0f), new Vector3f(0f,1f,0f), new Vector3f(0f,0f,-1f));
@@ -326,6 +333,9 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 
     public void initForegroundScene() {
 
+        Log.d(TAG,"initForegroundScene" );
+
+
         virtualWorld = new World(rootNode);
         soundCapture = new Capture(assetManager);
 
@@ -344,12 +354,15 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 
     public void initForegroundCamera(float fovY) {
 
-		fgCam = new Camera(settings.getWidth(), settings.getHeight());
+        int settingsWidth = settings.getWidth();
+        int settingsHeight = settings.getHeight();
+        Log.d(TAG,"initForegroundCamera with width : " + Integer.toString(settings.getWidth()) + " height: " + Integer.toString(settings.getHeight()) );
+		fgCam = new Camera(settingsWidth, settingsHeight);
 		
 		fgCam.setViewPort(0, 1.0f, 0.f,1.0f);
 		fgCam.setLocation(new Vector3f(0f, 0f, 0f));
-		fgCam.setAxes(new Vector3f(-1f,0f,0f), new Vector3f(0f,1f,0f), new Vector3f(0f,0f,-1f));
-		fgCam.setFrustumPerspective(fovY,  settings.getWidth()/settings.getHeight(), 1000, 10000);
+		fgCam.setAxes(new Vector3f(-1f, 0f, 0f), new Vector3f(0f, 1f, 0f), new Vector3f(0f, 0f, -1f));
+		fgCam.setFrustumPerspective(fovY, settingsWidth / settingsHeight, 1000, 10000);
 
 		ViewPort fgVP = renderManager.createMainView("ForegroundView", fgCam);
 		fgVP.attachScene(rootNode);
@@ -371,12 +384,14 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	public void setCameraPerspectiveNative(float fovY,float aspectRatio) {
         // Log.d(TAG,"Update Camera Perspective..");
 
+        //Log.d(TAG,"setCameraPerspectiveNative with fovY : " + Float.toString(fovY) + " aspectRatio: " + Float.toString(aspectRatio) );
         fgCam.setFrustumPerspective(fovY,aspectRatio, 1.f, 100000.f);
 	}
 	
 	public void setCameraViewportNative(float viewport_w,float viewport_h,float size_x,float size_y) {
 		 //Log.d(TAG,"Update Camera Viewport..");
-		
+
+        Log.d(TAG,"setCameraViewportNative with viewport_w : " + Float.toString(viewport_w) + " viewport_h: " + Float.toString(viewport_h   ));
 		float newWidth = 1.f;
 		float newHeight = 1.f;
 		
