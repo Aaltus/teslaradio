@@ -553,6 +553,12 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 		eglConfigType = ConfigType.BEST;
 		// Exit Dialog title & messages
 
+        //Not working so far..
+        //setString(R.string.string_test);
+        //getApplicationContext().getString(R.string.string_test);
+        //getApplicationContext().getResources().getString(R.string.string_test);
+        //Resources.getSystem().getString(R.string.string_test);
+
         exitDialogTitle   = "Exit?";
 		exitDialogMessage = "Press Yes";
 		// Enable verbose logging
