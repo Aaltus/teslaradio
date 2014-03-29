@@ -21,6 +21,8 @@ public class LanguageLocaleChanger {
      */
     public static final String DEFAULT_LANGUAGE = "en";
 
+    private static final String TAG = "VuforiaJMEActivity";
+
     /*
     Save new language to sharedpreferences an restart the current activity
      */
@@ -51,7 +53,7 @@ public class LanguageLocaleChanger {
 
         String languageToLoad = loadLanguageLocaleFromSharedPreferences(currentActivity);
 
-        Log.e("LanguageChanger", languageToLoad);
+        Log.i(TAG, "loadLanguageLocaleInActivity with : " + languageToLoad);
 
 
         Locale locale = new Locale(languageToLoad);
@@ -68,6 +70,8 @@ public class LanguageLocaleChanger {
     Save to sharepreferences "language" string the specified languageToLoad value
      */
     private static void saveLanguageLocaleToSharedPreferences(Activity currentActivity, String languageToLoad){
+
+        Log.i(TAG, "saveLanguageLocaleToSharedPreferences : " + languageToLoad);
 
         SharedPreferences languagepref = currentActivity.getSharedPreferences("language", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = languagepref.edit();
@@ -106,6 +110,7 @@ public class LanguageLocaleChanger {
         //currentActivity.finish();
         //currentActivity.startActivity(currentActivity.getIntent());
 
+        Log.i(TAG, "reloadActivity");
         currentActivity.recreate();
     }
 
