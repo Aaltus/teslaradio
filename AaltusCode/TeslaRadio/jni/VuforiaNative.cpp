@@ -65,6 +65,8 @@ QCAR::Matrix44F projectionMatrix;
 static const float kObjectScale = 3.f;
 
 QCAR::DataSet* dataSetStonesAndChips    = 0;
+QCAR::DataSet* dataSetLena              = 0;
+const int      numberOfDataSet          = 2;
 
 bool switchDataSetAsap          = false;
 
@@ -191,23 +193,28 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData(JNIEnv *, jobj
         return 0;
     }
 
+    //TODO Fix this to be generic
     // Create the data sets:
     dataSetStonesAndChips = imageTracker->createDataSet();
-    if (dataSetStonesAndChips == 0)
+    dataSetLena           = imageTracker->createDataSet();
+
+    if (dataSetStonesAndChips == 0 || dataSetLena == 0)
     {
         LOG("Failed to create a new tracking data.");
         return 0;
     }
 
     // Load the data sets:
-    if (!dataSetStonesAndChips->load("VuforiaJME.xml", QCAR::DataSet::STORAGE_APPRESOURCE))
+    if (!dataSetStonesAndChips->load("VuforiaJME.xml", QCAR::DataSet::STORAGE_APPRESOURCE) ||
+            !dataSetLena->load("JME2.xml", QCAR::DataSet::STORAGE_APPRESOURCE) )
     {
         LOG("Failed to load data set.");
         return 0;
     }
 
     // Activate the data set:
-    if (!imageTracker->activateDataSet(dataSetStonesAndChips))
+    if (!imageTracker->activateDataSet(dataSetStonesAndChips) ||
+            !imageTracker->activateDataSet(dataSetLena))
     {
         LOG("Failed to activate data set.");
         return 0;
@@ -233,7 +240,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData(JNIEnv *, j
             " been initialized.");
         return 0;
     }
-    
+    //TODO: Fix this to be generic
     if (dataSetStonesAndChips != 0)
     {
         if (imageTracker->getActiveDataSet() == dataSetStonesAndChips &&
@@ -254,6 +261,26 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData(JNIEnv *, j
         dataSetStonesAndChips = 0;
     }
 
+    if (dataSetLena != 0)
+        {
+            if (imageTracker->getActiveDataSet() == dataSetLena &&
+                !imageTracker->deactivateDataSet(dataSetLena))
+            {
+                LOG("Failed to destroy the tracking data set Lena because the data set "
+                    "could not be deactivated.");
+                return 0;
+            }
+
+            if (!imageTracker->destroyDataSet(dataSetLena))
+            {
+                LOG("Failed to destroy the tracking data set Lena.");
+                return 0;
+            }
+
+            LOG("Successfully destroyed the data set Lena.");
+            dataSetLena = 0;
+        }
+
     return 1;
 }
 
@@ -266,7 +293,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative(JNIEnv
 
     // Comment in to enable tracking of up to 2 targets simultaneously and
     // split the work over multiple frames:
-    // QCAR::setHint(QCAR::HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, 2);
+     QCAR::setHint(QCAR::HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, numberOfDataSet);
 }
 
 // RENDERING CALL
