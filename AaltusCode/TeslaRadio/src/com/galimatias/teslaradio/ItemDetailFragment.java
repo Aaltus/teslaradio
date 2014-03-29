@@ -24,7 +24,7 @@ import com.viewpagerindicator.CirclePageIndicator;
 public class ItemDetailFragment extends Fragment  implements View.OnClickListener{
 
 
-
+    private static final String TAG = "ItemDetailFragment";
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -58,30 +58,29 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
      */
     private CirclePageIndicator mIndicator;
 
-    private OnItemSelectedListener listener;
+    private OnClickDetailFragmentListener listener;
 
     @Override
     public void onClick(View view) {
 
-        Log.e("onclick", view.toString());
-        listener.onRssItemSelected(view);
+        listener.onClickDetailFragment(view);
     }
 
     // Define the events that the fragment will use to communicate
-    public interface OnItemSelectedListener {
-        public void onRssItemSelected(View view);
+    public interface OnClickDetailFragmentListener {
+        public void onClickDetailFragment(View view);
     }
 
     // Store the listener (activity) that will have events fired once the fragment is attached
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity instanceof OnItemSelectedListener) {
-            listener = (OnItemSelectedListener) activity;
-            Log.e("add listener","addListener");
+        if (activity instanceof OnClickDetailFragmentListener) {
+            listener = (OnClickDetailFragmentListener) activity;
+            Log.d(TAG,"Add calling activity as listener.");
         } else {
             throw new ClassCastException(activity.toString()
-                    + " must implement MyListFragment.OnItemSelectedListener");
+                    + " must implement MyListFragment.OnClickDetailFragmentListener");
         }
     }
 
@@ -90,6 +89,7 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.i(TAG,"onCreate");
 
 
         setHasOptionsMenu(true);
@@ -99,6 +99,7 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
             // to load content from a content provider.
             mItem    = SubjectContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
             mLayouts = mItem.listXml;
+            Log.i(TAG,"Loading SubjectContent : " + mItem.title);
         }
 
     }
@@ -108,6 +109,8 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
+
+        Log.d(TAG,"onCreateView");
         //Get ViewPager xml layout view
         View rootView = inflater.inflate(R.layout.viewpager_container, container, false);
 
