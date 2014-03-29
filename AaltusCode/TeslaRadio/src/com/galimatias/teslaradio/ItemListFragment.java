@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ import com.galimatias.teslaradio.subject.SubjectContent;
  */
 public class ItemListFragment extends ListFragment {
 
+
+    private static final String TAG = "ItemListFragment";
     /**
      * The serialization (saved instance state) Bundle key representing the
      * activated item position. Only used on tablets.
@@ -70,6 +73,9 @@ public class ItemListFragment extends ListFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        Log.i(TAG,"onCreate");
+
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
@@ -86,6 +92,7 @@ public class ItemListFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
          super.onViewCreated(view, savedInstanceState);
 
+        Log.i(TAG,"onViewCreated");
 
         // Restore the previously serialized activated item position.
         if (savedInstanceState != null
@@ -97,6 +104,7 @@ public class ItemListFragment extends ListFragment {
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 
+        Log.i(TAG,"onCreateView");
         View v = inflater.inflate(R.layout.list_fragment_global_layout, container, false);
 
         return v;

@@ -45,7 +45,7 @@ import java.util.logging.Level;
 //Old code
 //public class VuforiaJMEActivity extends AndroidHarness {
 public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements ItemListFragment.Callbacks, View.OnClickListener,
-ItemDetailFragment.OnItemSelectedListener{
+        ItemDetailFragment.OnClickDetailFragmentListener {
 
 	private static final String TAG = "VuforiaJMEActivity";
 	
@@ -104,24 +104,24 @@ ItemDetailFragment.OnItemSelectedListener{
     
     private RelativeLayout mUILayout;
 
-    
+
     /** A helper for loading native libraries stored in "libs/armeabi*". */
     public static boolean loadLibrary(String nLibName)
     {
         try
         {
             System.loadLibrary(nLibName);
-            Log.d(TAG, "Native library lib" + nLibName + ".so loaded");
+            Log.e(TAG, "Native library lib" + nLibName + ".so loaded");
             return true;
         }
         catch (UnsatisfiedLinkError ulee)
         {
-            Log.d(TAG, "The library lib" + nLibName +
+            Log.e(TAG, "The library lib" + nLibName +
                             ".so could not be loaded");
         }
         catch (SecurityException se)
         {
-        	Log.d(TAG, "The library lib" + nLibName +
+        	Log.e(TAG, "The library lib" + nLibName +
                             ".so was not allowed to be loaded");
         }
 
@@ -137,16 +137,17 @@ ItemDetailFragment.OnItemSelectedListener{
     }
 
     @Override
-    public void onRssItemSelected(View view) {
+    public void onClickDetailFragment(View view) {
 
-        Log.e("item_detail_fragment_close_button", "chat");
         int id = view.getId();
+        Log.d(TAG, "OnClick Callback from detail fragment");
+
 
         switch (id){
 
             case R.id.item_detail_fragment_close_button:
-                Log.e("item_detail_fragment_close_button", "chat");
-                toggleListFragmentVisibility();
+                //Log.d(TAG, "OnClick Callback from detail fragment");
+                toggleFragmentsVisibility();
                 break;
         }
     }
@@ -249,6 +250,9 @@ ItemDetailFragment.OnItemSelectedListener{
         // Query display dimensions:
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        Log.d(TAG, "Store screen dimension width: " + Integer.toString(metrics.widthPixels) + " heigth: " + Integer.toString(metrics.heightPixels) );
+
         mScreenWidth = metrics.widthPixels;
         mScreenHeight = metrics.heightPixels;
     }
@@ -303,6 +307,7 @@ ItemDetailFragment.OnItemSelectedListener{
                 // initialization:
                 initApplication();
 
+                Log.i(TAG,"In APPSTATUS_INIT_APP");
                 // Proceed to next application initialization status:
                 updateApplicationStatus(APPSTATUS_INIT_QCAR);
 
@@ -319,6 +324,7 @@ ItemDetailFragment.OnItemSelectedListener{
                 //
                 // NOTE: This task instance must be created and invoked on the
                 // UI thread and it can be executed only once!
+                Log.i(TAG,"In APPSTATUS_INIT_QCAR");
                 try
                 {
                     mInitQCARTask = new InitQCARTask();
@@ -326,12 +332,13 @@ ItemDetailFragment.OnItemSelectedListener{
                 }
                 catch (Exception e)
                 {
-                   Log.d(TAG,"Initializing QCAR SDK failed");
+                   Log.w(TAG,"Initializing QCAR SDK failed");
                 }
                 break;
 
             case APPSTATUS_INIT_TRACKER:
                 // Initialize the ImageTracker:
+                Log.i(TAG,"In APPSTATUS_INIT_TRACKER");
                 if (initTracker() > 0)
                 {
                     // Proceed to next application initialization status:
@@ -340,6 +347,8 @@ ItemDetailFragment.OnItemSelectedListener{
                 break;
 
             case APPSTATUS_INIT_APP_AR:
+
+                Log.i(TAG,"In APPSTATUS_INIT_AR");
                 // Initialize Augmented Reality-specific application elements
                 // that may rely on the fact that the QCAR SDK has been
                 // already initialized:
@@ -350,6 +359,8 @@ ItemDetailFragment.OnItemSelectedListener{
                 break;
 
             case APPSTATUS_LOAD_TRACKER:
+
+                Log.i(TAG,"In APPSTATUS_LOAD_TRACKER");
                 // Load the tracking data set:
                 //
                 // NOTE: This task instance must be created and invoked on the
@@ -361,11 +372,13 @@ ItemDetailFragment.OnItemSelectedListener{
                 }
                 catch (Exception e)
                 {
-                    Log.d(TAG,"Loading tracking data set failed");
+                    Log.w(TAG,"Loading tracking data set failed");
                 }
                 break;
 
             case APPSTATUS_INITED:
+
+                Log.i(TAG,"In APPSTATUS_INITED");
                 // Hint to the virtual machine that it would be a good time to
                 // run the garbage collector:
                 //
@@ -401,11 +414,14 @@ ItemDetailFragment.OnItemSelectedListener{
 
 
             case APPSTATUS_CAMERA_STOPPED:
+                Log.i(TAG,"In APPSTATUS_CAMERA_STOPPED");
                 // Call the native function to stop the camera:
                 stopCamera();
                 break;
 
             case APPSTATUS_CAMERA_RUNNING:
+
+                Log.i(TAG,"In APPSTATUS_CAMERA_RUNNING");
                 // Call the native function to start the camera:
                 startCamera();
 
@@ -429,13 +445,17 @@ ItemDetailFragment.OnItemSelectedListener{
                 break;
 
             default:
-                throw new RuntimeException("Invalid application state");
+                String errorMesasge = "Invalid application state";
+                Log.e(TAG,errorMesasge);
+                throw new RuntimeException(errorMesasge);
         }
     }
 
     /** Initialize application GUI elements that are not related to AR. */
     private void initApplication()
     {
+        Log.d(TAG,"initApplication");
+
         // Set the screen orientation:
         // NOTE: Use SCREEN_ORIENTATION_LANDSCAPE or SCREEN_ORIENTATION_PORTRAIT
         //       to lock the screen orientation for this activity.
@@ -461,6 +481,7 @@ ItemDetailFragment.OnItemSelectedListener{
     /** Initializes AR application components. */
     private void initApplicationAR()
     {
+        Log.d(TAG,"initApplicationAR");
         // Do application initialization in native code (e.g. registering
         // callbacks, etc.):
         initApplicationNative(mScreenWidth, mScreenHeight);
@@ -524,14 +545,15 @@ ItemDetailFragment.OnItemSelectedListener{
     private native boolean activateFlash(boolean flash);
 
 	private boolean mCreatedBefore = false;
-	
+
 	public VuforiaJMEActivity() {
-		// Set the application class to run
+		// Set the application class to runs
 		appClass = "com.ar4android.vuforiaJME.VuforiaJME";
 		// Try ConfigType.FASTEST; or ConfigType.LEGACY if you have problems
 		eglConfigType = ConfigType.BEST;
-		// Exit Dialog title & message
-		exitDialogTitle = "Exit?";
+		// Exit Dialog title & messages
+
+        exitDialogTitle   = "Exit?";
 		exitDialogMessage = "Press Yes";
 		// Enable verbose logging
 		eglConfigVerboseLogging = false;
@@ -553,6 +575,8 @@ ItemDetailFragment.OnItemSelectedListener{
 	
 	public void initializeImageBuffer(int width,int height)
 	{
+        Log.d(TAG,"initializeImageBuffer");
+
 		int bufferSizeRGB565 = width * height * 2 + 4096;
 
 		mPreviewBufferRGB656 = null;
@@ -568,7 +592,7 @@ ItemDetailFragment.OnItemSelectedListener{
 	
 	 public void setRGB565CameraImage(byte[] buffer, int width, int height)  {
 		 
-		    // Log.d(TAG,"Update Camera Image..");
+		    Log.d(TAG,"setRGB565CameraImage Update Camera Image..");
 		 	if (firstTimeGetImage) 
 		 	{
 		 		initializeImageBuffer(width,height);
@@ -595,6 +619,8 @@ ItemDetailFragment.OnItemSelectedListener{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
+        Log.i(TAG,"onCreate");
+
         //We load the language saved in the sharedpreferences to have the correct language
         LanguageLocaleChanger.loadLanguageLocaleInActivity(this);
 
@@ -610,6 +636,7 @@ ItemDetailFragment.OnItemSelectedListener{
 	
 	@Override
     public void onResume() {
+        Log.i(TAG,"onResume");
     	super.onResume();
     	
     	// make sure the AndroidGLSurfaceView view is on top of the view
@@ -632,6 +659,8 @@ ItemDetailFragment.OnItemSelectedListener{
 
 	@Override
 	protected void onPause() {
+
+        Log.i(TAG,"onPause");
 		super.onPause();		
 	
 
@@ -658,6 +687,7 @@ ItemDetailFragment.OnItemSelectedListener{
 	@Override
     protected void onDestroy()
     {
+        Log.i(TAG,"onDestroy");
         super.onDestroy();
         
         // Cancel potentially running tasks
@@ -700,6 +730,7 @@ ItemDetailFragment.OnItemSelectedListener{
 	@Override
     public void onConfigurationChanged(Configuration config)
     {
+        Log.i(TAG,"onConfigurationChanged");
        // DebugLog.LOGD("VuforiaJMEActivity::onConfigurationChanged");
         super.onConfigurationChanged(config);
 
@@ -714,6 +745,8 @@ ItemDetailFragment.OnItemSelectedListener{
     *
    */
     public void initTopLayout(){
+
+        Log.d(TAG,"Initialize Top Layout");
 
         //Get the rootView of the activity. This view is on the direct parent
         //to the android jme opengl view
@@ -735,23 +768,13 @@ ItemDetailFragment.OnItemSelectedListener{
         fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
         //Make the listfragment activable
         ((ItemListFragment) fm.findFragmentByTag("item_list_fragment_vuforia")).setActivateOnItemClick(true);
-        //set background white
-        //fragment.getView().setBackgroundColor(getResources().getColor(R.color.white));
 
         //Set onClickListener for all buttons
         Button languageButton = (Button)findViewById(R.id.camera_toggle_language_button);
         Button infoButton = (Button)findViewById(R.id.camera_toggle_info_button);
-        //Button enButton = (Button)findViewById(R.id.camera_toggle_en_button);
-        //Button esButton = (Button)findViewById(R.id.camera_toggle_es_button);
-        //Button deButton = (Button)findViewById(R.id.camera_toggle_de_button);
-        //Button frButton = (Button)findViewById(R.id.camera_toggle_fr_button);
 
         languageButton.setOnClickListener(this);
         infoButton.setOnClickListener(this);
-//        enButton.setOnClickListener(this);
-//        esButton.setOnClickListener(this);
-//        frButton.setOnClickListener(this);
-//        deButton.setOnClickListener(this);
     }
 
     /** Action when a listfragment item is selected*/
@@ -771,10 +794,6 @@ ItemDetailFragment.OnItemSelectedListener{
         fm.executePendingTransactions();
 
 
-
-        //Set the fragment background
-        //fragment.getView().setBackground(getResources().getDrawable(R.drawable.detail_fragment_layout_bg));
-
     }
 
 
@@ -787,11 +806,11 @@ ItemDetailFragment.OnItemSelectedListener{
         switch (id){
 
             case R.id.camera_toggle_language_button:
-                toggleLanguageButtonVisibility();
+                showLanguageDialog();
                 break;
 
             case R.id.camera_toggle_info_button:
-                toggleListFragmentVisibility();
+                toggleFragmentsVisibility();
                 break;
 
             default:
@@ -800,9 +819,10 @@ ItemDetailFragment.OnItemSelectedListener{
 
     }
 
-    private void toggleLanguageButtonVisibility()
+    private void showLanguageDialog()
     {
 
+        Log.d(TAG,"Show language dialog");
         FragmentManager fm = getSupportFragmentManager();
         LanguageDialogFragment languageDialogFragment = new LanguageDialogFragment();
         languageDialogFragment.show(fm, "language_dialog_fragment");
@@ -810,9 +830,9 @@ ItemDetailFragment.OnItemSelectedListener{
     }
 
 
-    private void toggleListFragmentVisibility(){
+    private void toggleFragmentsVisibility(){
 
-        Log.e(VuforiaJMEActivity.class.getName(),"toggle");
+
         FragmentManager fm =     getSupportFragmentManager();
 
 
@@ -824,12 +844,12 @@ ItemDetailFragment.OnItemSelectedListener{
             FragmentTransaction ft = fm.beginTransaction();
             ft.setCustomAnimations(R.anim.enter_left, R.anim.exit_left);
             if (fragment.isHidden()){
-                Log.e(VuforiaJMEActivity.class.getName(),"toggle to show");
+                Log.d(TAG,"Showing list fragment");
                 ft.show(fragment);
             }
             else
             {
-                Log.e(VuforiaJMEActivity.class.getName(),"toggle to hide");
+                Log.d(TAG,"Hiding list fragment");
                 ft.hide(fragment);
             }
 
@@ -842,12 +862,12 @@ ItemDetailFragment.OnItemSelectedListener{
             FragmentTransaction ft = fm.beginTransaction();
             ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
             if (fragmentDetail.isHidden()){
-                Log.e(VuforiaJMEActivity.class.getName(),"toggle to show");
+                Log.d(TAG,"Showing detail fragment");
                 ft.show(fragmentDetail);
             }
             else
             {
-                Log.e(VuforiaJMEActivity.class.getName(),"toggle to hide");
+                Log.d(TAG,"Hiding detail fragment");
                 ft.hide(fragmentDetail);
             }
             ft.commit();
