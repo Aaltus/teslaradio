@@ -43,17 +43,24 @@ button on the handset.
                           android:gravity="center"
                     >
                 <Button
+                        android:id="@+id/camera_toggle_refresh_button"
+                        android:layout_height="50dp"
+                        android:layout_width="50dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/layer_list_refresh"/>
+                <Button
                         android:id="@+id/camera_toggle_language_button"
                         android:layout_height="50dp"
                         android:layout_width="50dp"
                         android:layout_margin="5dp"
-                        android:background="@drawable/browser"/>
+                        android:background="@drawable/layer_list_language"/>
+                <!--android:background="@drawable/browser"-->
                 <Button
                         android:id="@+id/camera_toggle_info_button"
                         android:layout_height="50dp"
                         android:layout_width="50dp"
                         android:layout_margin="5dp"
-                        android:background="@drawable/ic_info_button"
+                        android:background="@drawable/layer_list_info"
                         />
             </LinearLayout>
 
