@@ -142,6 +142,7 @@ VuforiaJME_UpdateCallback updateCallback;
 JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setActivityPortraitMode(JNIEnv *, jobject, jboolean isPortrait)
 {
+    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setActivityPortraitMode");
     isActivityInPortraitMode = isPortrait;
 }
 
@@ -176,7 +177,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initTracker(JNIEnv *, jobject)
 JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitTracker(JNIEnv *, jobject)
 {
-    LOG("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitTracker");
+    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitTracker");
 
     // Deinit the image tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
@@ -187,7 +188,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitTracker(JNIEnv *, jobjec
 JNIEXPORT int JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData(JNIEnv *, jobject)
 {
-    LOGD("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData");
+    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData");
     
     // Get the image tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
@@ -230,7 +231,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData(JNIEnv *, jobj
 JNIEXPORT int JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData(JNIEnv *, jobject)
 {
-    LOGD("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData");
+    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData");
 
     // Get the image tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
@@ -367,7 +368,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
             if (viewportWidth != screenWidth)
             {
-                LOGW("updateTraking viewportWidth != screenWidth");
+                LOGW("updateTracking viewportWidth != screenWidth");
                 viewportDistort = viewportWidth / (float) screenWidth;
                 fovDegrees=fovDegrees*viewportDistort;
                 aspectRatio=aspectRatio/viewportDistort;
@@ -376,7 +377,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
             if (viewportHeight != screenHeight)
             {
-                LOGW("updateTraking viewportHeight != screenHeight");
+                LOGW("updateTracking viewportHeight != screenHeight");
                 viewportDistort = viewportHeight / (float) screenHeight;
                 fovDegrees=fovDegrees/viewportDistort;
                 aspectRatio=aspectRatio*viewportDistort;

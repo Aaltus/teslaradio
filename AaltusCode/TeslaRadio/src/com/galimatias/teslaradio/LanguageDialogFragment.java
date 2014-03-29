@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.*;
 import android.widget.ImageButton;
 import com.utils.LanguageLocaleChanger;
@@ -15,6 +16,9 @@ import com.utils.LanguageLocaleChanger;
  */
 public class LanguageDialogFragment extends DialogFragment {
 
+
+    private static final String TAG = "LanguageDialogFragment";
+
     public LanguageDialogFragment() {
         // Empty constructor required for DialogFragment
     }
@@ -23,7 +27,7 @@ public class LanguageDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        Log.i(TAG, "onCreate");
         //setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.MyDialog);
     }
@@ -31,6 +35,8 @@ public class LanguageDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Log.i(TAG, "onCreateView");
 
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
