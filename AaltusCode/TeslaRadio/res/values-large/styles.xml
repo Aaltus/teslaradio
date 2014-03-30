@@ -15,5 +15,9 @@
         <item name="android:paddingBottom">50dp</item>
     </style>
 
+    <style name="SeekBarLinearLayoutStyle">
+        <item name="android:layout_height">250dp</item>
+    </style>
+
 
 </resources>
