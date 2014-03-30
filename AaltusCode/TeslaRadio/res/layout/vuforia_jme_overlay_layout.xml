@@ -40,7 +40,7 @@ button on the handset.
                           android:layout_height="fill_parent"
                           android:orientation="vertical"
                           android:id="@+id/linear_layout_global_buttons"
-                          android:gravity="center"
+                          android:gravity="top"
                     >
                 <Button
                         android:id="@+id/camera_toggle_refresh_button"
@@ -63,32 +63,29 @@ button on the handset.
                         android:background="@drawable/layer_list_info"
                         />
                 <LinearLayout android:layout_width="50dp"
-                              android:layout_height="wrap_content"
                               android:layout_margin="5dp"
-                              android:layout_weight="1"
                               android:orientation="vertical"
-                        android:background="@drawable/button_bg">
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:layout_gravity="center"
-                          android:text="Speed"
-                        android:textColor="@color/white"/>
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:id="@+id/seekbar_value_text"
-                          android:layout_gravity="center"
-                          android:text="50%"
-                          android:textColor="@color/white"/>
-                <com.utils.VerticalSeekBar
-                        android:id="@+id/seekBar1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_gravity="center"
-                        android:progressDrawable="@drawable/apptheme_scrubber_progress_horizontal_holo_light"
-                        android:thumb="@drawable/apptheme_scrubber_control_selector_holo_light"
-
-                        />
+                              android:background="@drawable/button_bg"
+                              style="@style/SeekBarLinearLayoutStyle">
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_gravity="center"
+                              android:text="Speed"
+                              android:textColor="@color/white"/>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:id="@+id/seekbar_value_text"
+                              android:layout_gravity="center"
+                              android:text="50%"
+                              android:textColor="@color/white"/>
+                    <com.utils.VerticalSeekBar
+                            android:id="@+id/seekBar1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"
+                            android:progressDrawable="@drawable/apptheme_scrubber_progress_horizontal_holo_light"
+                            android:thumb="@drawable/apptheme_scrubber_control_selector_holo_light"/>
                 </LinearLayout>
 
             </LinearLayout>
