@@ -22,6 +22,14 @@
         Falaises pressait soudaine encontre en empilait ah ma trahison. Pic vous fut moi hors dont sent pale tout fer. Courtes revetit peu general but prairie vif fatigue. Bourreau ils cervelle uns eux piquette trophees dur respirer. Caracolent bouquetins etonnement crispation roc ete les. Feu ses prennent certains flottent des epanouir but tambours. Comment sa courtes te on quitter la paysage. Hesitante epluchant mal existence comprenez regardent ces.</string>
 
 
-    <string name="string_test">chat</string>
+    <string name="exit_dialog_title">Quitter?</string>
+    <string name="exit_dialog_message">Appuyer sur oui.</string>
+    <string name="sound_capture_title">Capture du Son</string>
+    <string name="modulation_am_title">Modulation AM</string>
+    <string name="modulation_fm_title">Modulation FM</string>
+    <string name="transmit_title">Transmission d\'information</string>
+    <string name="reception_title">Radio Réceptrice</string>
+    <string name="reference_title">Reference</string>
+    <string name="about_us_title">Qui sommes nous ?</string>
 
 </resources>
