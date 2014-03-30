@@ -16,7 +16,7 @@
  * 
  */
 
-package com.ar4android.vuforiaJME;
+package com.ar4android.AaltusVuforia;
 
 import android.util.Log;
 import com.galimatias.teslaradio.world.Scenarios.Capture;
@@ -42,9 +42,9 @@ import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
 
-public class VuforiaJME extends SimpleApplication implements AnimEventListener  {
+public class AaltusVuforia extends SimpleApplication implements AnimEventListener  {
 
-	private static final String TAG = "VuforiaJME";
+	private static final String TAG = "AaltusVuforia";
 	// The geometry which will represent the video background
 	private Geometry mVideoBGGeom;
 	// The material which will be applied to the video background geometry.
@@ -95,7 +95,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 
     
 	public static void main(String[] args) {
-		VuforiaJME app = new VuforiaJME();
+		AaltusVuforia app = new AaltusVuforia();
 		app.start();
 	}
 

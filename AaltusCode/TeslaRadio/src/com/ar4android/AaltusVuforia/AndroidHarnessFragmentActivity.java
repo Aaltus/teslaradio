@@ -1,4 +1,4 @@
-package com.ar4android.vuforiaJME;
+package com.ar4android.AaltusVuforia;
 
 /**
  * Created by jimbojd72 on 3/14/14.

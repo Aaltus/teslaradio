@@ -43,7 +43,7 @@ include $(CLEAR_VARS)
 # prefix and suffix to the corresponding generated file. In other words,
 # a shared library module named 'foo' will generate 'libfoo.so'.
 
-LOCAL_MODULE := VuforiaNative
+LOCAL_MODULE := AaltusNative
 
 # The variable USE_OPENGL_ES_1_1 determines the OpenGL ES API version
 # to use. If set to true, OpenGL ES 1.1 is used, otherwise OpenGL ES 2.0.
@@ -84,7 +84,7 @@ LOCAL_SHARED_LIBRARIES := QCAR-prebuilt
 # compute dependencies automatically for you, just list the source files
 # that will be passed directly to a compiler.
 
-LOCAL_SRC_FILES :=  VuforiaNative.cpp MathUtils.cpp
+LOCAL_SRC_FILES :=  AaltusNative.cpp MathUtils.cpp
 
 # By default, ARM target binaries will be generated in 'thumb' mode, where
 # each instruction is 16-bit wide. You can set this variable to 'arm' to
