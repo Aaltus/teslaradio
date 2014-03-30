@@ -35,6 +35,14 @@
 
     </string>
 
-    <string name="string_test">cat</string>
+    <string name="exit_dialog_title">Exit?</string>
+    <string name="exit_dialog_message">Press yes</string>
+    <string name="sound_capture_title">Sound Capture</string>
+    <string name="modulation_am_title">Amplitude Modulation</string>
+    <string name="modulation_fm_title">Frequency Modulation</string>
+    <string name="transmit_title">Transmit</string>
+    <string name="reception_title">Reception</string>
+    <string name="reference_title">Reference</string>
+    <string name="about_us_title">About us</string>
 
 </resources>
