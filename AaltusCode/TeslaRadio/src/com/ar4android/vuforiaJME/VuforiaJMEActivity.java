@@ -30,14 +30,18 @@ import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import com.galimatias.teslaradio.ItemDetailFragment;
 import com.galimatias.teslaradio.ItemListFragment;
 import com.galimatias.teslaradio.LanguageDialogFragment;
 import com.galimatias.teslaradio.R;
+import com.galimatias.teslaradio.subject.SubjectContent;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
 import com.qualcomm.QCAR.QCAR;
 import com.utils.LanguageLocaleChanger;
+import com.utils.VerticalSeekBar;
 
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
@@ -45,7 +49,7 @@ import java.util.logging.Level;
 //Old code
 //public class VuforiaJMEActivity extends AndroidHarness {
 public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements ItemListFragment.Callbacks, View.OnClickListener,
-        ItemDetailFragment.OnClickDetailFragmentListener {
+        ItemDetailFragment.OnClickDetailFragmentListener, SeekBar.OnSeekBarChangeListener {
 
 	private static final String TAG = "VuforiaJMEActivity";
 	
@@ -553,11 +557,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 		eglConfigType = ConfigType.BEST;
 		// Exit Dialog title & messages
 
-        //Not working so far..
-        //setString(R.string.string_test);
-        //getApplicationContext().getString(R.string.string_test);
-        //getApplicationContext().getResources().getString(R.string.string_test);
-        //Resources.getSystem().getString(R.string.string_test);
+
 
         exitDialogTitle   = "Exit?";
 		exitDialogMessage = "Press Yes";
@@ -629,6 +629,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         //We load the language saved in the sharedpreferences to have the correct language
         LanguageLocaleChanger.loadLanguageLocaleInActivity(this);
+
+        initLanguageSpecificStrings();
 
         //eglConfigType=ConfigType.BEST_TRANSLUCENT;
         super.onCreate(savedInstanceState);
@@ -781,7 +783,34 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         languageButton.setOnClickListener(this);
         infoButton.setOnClickListener(this);
+
+
+        VerticalSeekBar sb = (VerticalSeekBar)findViewById(R.id.seekBar1);
+        if (sb != null){
+            sb.setMax(100);
+            sb.setProgress(50);
+            sb.setOnSeekBarChangeListener(this);
+        }
     }
+
+
+    @Override public void onProgressChanged(SeekBar v, int progress, boolean isUser) {
+        TextView tv = (TextView)findViewById(R.id.seekbar_value_text);
+        tv.setText(Integer.toString(progress)+"%");
+
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
+
+
 
     /** Action when a listfragment item is selected*/
     @Override
@@ -835,6 +864,24 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     }
 
+
+    private void initLanguageSpecificStrings(){
+
+        exitDialogTitle = getString(R.string.exit_dialog_title);
+        exitDialogMessage = getString(R.string.exit_dialog_message);
+
+        //Empty the SubjectContent list and readd items with correct language title
+        SubjectContent.removeAllItems();
+        SubjectContent.addItem(new SubjectContent.SubjectItem("1", getString(R.string.sound_capture_title), new int[]{R.layout.informative_info_detail_test2}));
+        SubjectContent.addItem(new SubjectContent.SubjectItem("2", getString(R.string.modulation_am_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
+        SubjectContent.addItem(new SubjectContent.SubjectItem("3", getString(R.string.modulation_fm_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
+        SubjectContent.addItem(new SubjectContent.SubjectItem("4", getString(R.string.transmit_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
+        SubjectContent.addItem(new SubjectContent.SubjectItem("5", getString(R.string.reception_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
+        SubjectContent.addItem(new SubjectContent.SubjectItem("6", getString(R.string.reference_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
+        SubjectContent.addItem(new SubjectContent.SubjectItem("7", getString(R.string.about_us_title), new int[]{R.layout.informative_info_detail_test2}));
+
+
+    }
 
     private void toggleFragmentsVisibility(){
 
