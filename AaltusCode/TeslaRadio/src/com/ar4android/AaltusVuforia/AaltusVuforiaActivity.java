@@ -16,7 +16,7 @@
  * 
  */
 
-package com.ar4android.vuforiaJME;
+package com.ar4android.AaltusVuforia;
 
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -44,7 +44,7 @@ import java.util.logging.Level;
 
 //Old code
 //public class VuforiaJMEActivity extends AndroidHarness {
-public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements ItemListFragment.Callbacks, View.OnClickListener,
+public class AaltusVuforiaActivity extends AndroidHarnessFragmentActivity implements ItemListFragment.Callbacks, View.OnClickListener,
         ItemDetailFragment.OnClickDetailFragmentListener {
 
 	private static final String TAG = "VuforiaJMEActivity";
@@ -164,7 +164,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             // Prevent the onDestroy() method to overlap with initialization:
             synchronized (mShutdownLock)
             {
-                QCAR.setInitParameters(VuforiaJMEActivity.this, mQCARFlags);
+                QCAR.setInitParameters(AaltusVuforiaActivity.this, mQCARFlags);
 
                 do
                 {
@@ -546,9 +546,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
 	private boolean mCreatedBefore = false;
 
-	public VuforiaJMEActivity() {
+	public AaltusVuforiaActivity() {
 		// Set the application class to runs
-		appClass = "com.ar4android.vuforiaJME.VuforiaJME";
+		appClass = "com.ar4android.AaltusVuforia.AaltusVuforia";
 		// Try ConfigType.FASTEST; or ConfigType.LEGACY if you have problems
 		eglConfigType = ConfigType.BEST;
 		// Exit Dialog title & messages
@@ -605,8 +605,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 			cameraJMEImageRGB565.setData(mPreviewByteBufferRGB565);
 
             // Set our camera image as the JME background
-			if ((com.ar4android.vuforiaJME.VuforiaJME) app != null) {
-				((com.ar4android.vuforiaJME.VuforiaJME) app)
+			if ((AaltusVuforia) app != null) {
+				((AaltusVuforia) app)
 						.setVideoBGTexture(cameraJMEImageRGB565);
 			}	
 		}
