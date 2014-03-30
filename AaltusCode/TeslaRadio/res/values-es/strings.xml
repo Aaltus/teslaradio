@@ -26,6 +26,14 @@
 
     </string>
 
-    <string name="string_test">gato</string>
+    <string name="exit_dialog_title">Salida?</string>
+    <string name="exit_dialog_message">Prensa sís</string>
+    <string name="sound_capture_title">Capture du Son</string>
+    <string name="modulation_am_title">Modulation AM</string>
+    <string name="modulation_fm_title">Modulation FM</string>
+    <string name="transmit_title">Transmission d\'information</string>
+    <string name="reception_title">Radio Réceptrice</string>
+    <string name="reference_title">Reference</string>
+    <string name="about_us_title">Qui sommes nous ?</string>
 
 </resources>
