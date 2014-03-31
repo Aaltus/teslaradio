@@ -329,7 +329,7 @@ Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_updateTracking(JNIEnv *e
 
 
         // Did we find any trackables this frame?
-        for(int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++)
+        for(float tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++)
         {
 
 
@@ -426,13 +426,13 @@ Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_updateTracking(JNIEnv *e
             //jvm->AttachCurrentThread((void **)&env, NULL);
 
            // jclass activityClass = env->GetObjectClass(obj);
-            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFF)V");
-            env->CallVoidMethod(obj,setCameraPoseMethod,cam_x,cam_y,cam_z);
+            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFFF)V");
+            env->CallVoidMethod(obj,setCameraPoseMethod,cam_x,cam_y,cam_z, tIdx);
 
             //jclass activityClass = env->GetObjectClass(obj);
-            jmethodID setCameraOrientationMethod = env->GetMethodID(activityClass,"setCameraOrientationNative", "(FFFFFFFFF)V");
+            jmethodID setCameraOrientationMethod = env->GetMethodID(activityClass,"setCameraOrientationNative", "(FFFFFFFFFF)V");
             env->CallVoidMethod(obj,setCameraOrientationMethod,cam_right_x,cam_right_y,cam_right_z,
-                    cam_up_x,cam_up_y,cam_up_z,cam_dir_x,cam_dir_y,cam_dir_z);
+                    cam_up_x,cam_up_y,cam_up_z,cam_dir_x,cam_dir_y,cam_dir_z, tIdx);
 
            // jvm->DetachCurrentThread();
 
