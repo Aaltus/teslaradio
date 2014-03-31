@@ -1,4 +1,8 @@
-/* AaltusTrackbles.cpp
+/* VuforiaNative - VuforiaJME Example
+ *
+ * Example Chapter 5
+ * accompanying the book
+ * "Augmented Reality for Android Application Development", Packt Publishing, 2013.
  *
  * Copyright � 2013 Jens Grubert, Raphael Grasset / Packt Publishing.
  *
@@ -8,13 +12,16 @@
  *
  * https://developer.vuforia.com
  *
- * Modified by and for Aaltus Project, Université de Sherbrooke, 2014
+ * This example was built from the ImageTarget example accompanying the Vuforia SDK
+ * https://developer.vuforia.com/resources/sample-apps/image-targets-sample-app
+ *
+ * This class is based on the ImageTarget.cpp from the Vuforia ImageTarget example
  */
 
 #include <jni.h>
 #include <android/log.h>
 
-//#define LOG_TAG "AaltusNative"
+//#define LOG_TAG "VuforiaNative"
 #define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG,__VA_ARGS__)
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG  , LOG_TAG,__VA_ARGS__)
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO   , LOG_TAG,__VA_ARGS__)
@@ -66,11 +73,6 @@ QCAR::Matrix44F projectionMatrix;
 // Constants:
 static const float kObjectScale = 3.f;
 
-/*Tracker structures*/
-typedef struct AaltusTrackables{
-    QCAR::DataSet* dataSet;
-
-}AaltusTrackables;
 QCAR::DataSet* dataSetStonesAndChips    = 0;
 QCAR::DataSet* dataSetLena              = 0;
 const int      numberOfDataSet          = 2;
@@ -91,7 +93,7 @@ JNI_OnLoad(JavaVM* vm,  void* reserved) {
 // Object to receive update callbacks from QCAR SDK
 //1) The QCAR_onUpdate method runs in a separate thread from the renderer, so OpenGL calls will not work.
 //2) The State object received in the QCAR_onUpdate method is only valid for the scope of the method.
-class AaltusVuforia_UpdateCallback : public QCAR::UpdateCallback
+class VuforiaJME_UpdateCallback : public QCAR::UpdateCallback
 {   
     virtual void QCAR_onUpdate(QCAR::State& state)
     {
@@ -135,12 +137,12 @@ class AaltusVuforia_UpdateCallback : public QCAR::UpdateCallback
     }
 };
 
-AaltusVuforia_UpdateCallback updateCallback;
+VuforiaJME_UpdateCallback updateCallback;
 
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_setActivityPortraitMode(JNIEnv *, jobject, jboolean isPortrait)
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setActivityPortraitMode(JNIEnv *, jobject, jboolean isPortrait)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setActivityPortraitMode");
     isActivityInPortraitMode = isPortrait;
@@ -149,14 +151,14 @@ Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_setActivityPortraitMode(
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_switchDatasetAsap(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_switchDatasetAsap(JNIEnv *, jobject)
 {
     switchDataSetAsap = true;
 }
 
 
 JNIEXPORT int JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_initTracker(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initTracker(JNIEnv *, jobject)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initTracker");
     
@@ -175,7 +177,7 @@ Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_initTracker(JNIEnv *, jo
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_deinitTracker(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitTracker(JNIEnv *, jobject)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitTracker");
 
@@ -186,7 +188,7 @@ Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_deinitTracker(JNIEnv *, 
 
 
 JNIEXPORT int JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_loadTrackerData(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData(JNIEnv *, jobject)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData");
     
@@ -234,9 +236,9 @@ Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_loadTrackerData(JNIEnv *
 
 
 JNIEXPORT int JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_destroyTrackerData(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData(JNIEnv *, jobject)
 {
-    LOGI("Java_com_ar4androidAaltusVuforia_AaltusVuforiaActivity_destroyTrackerData");
+    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData");
 
     // Get the image tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
@@ -294,7 +296,7 @@ Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_destroyTrackerData(JNIEn
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_onQCARInitializedNative(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative(JNIEnv *, jobject)
 {
     LOGI("com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative registerCallback");
     // Register the update callback where we handle the data set swap:
@@ -308,7 +310,7 @@ Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_onQCARInitializedNative(
 // RENDERING CALL
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_updateTracking(JNIEnv *env, jobject obj)
+Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject obj)
 {
     //LOG("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_GLRenderer_renderFrame");
 
@@ -509,7 +511,7 @@ void configureVideoBackground()
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_initApplicationNative(
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative(
                             JNIEnv* env, jobject obj, jint width, jint height)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative");
@@ -527,7 +529,7 @@ Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_initApplicationNative(
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_deinitApplicationNative(
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitApplicationNative(
                                                         JNIEnv* env, jobject obj)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitApplicationNative");
@@ -537,7 +539,7 @@ Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_deinitApplicationNative(
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_startCamera(JNIEnv *,
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera(JNIEnv *,
                                                                          jobject)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera");
@@ -584,7 +586,7 @@ Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_startCamera(JNIEnv *,
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_stopCamera(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_stopCamera(JNIEnv *, jobject)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_stopCamera");
 
@@ -600,7 +602,7 @@ Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_stopCamera(JNIEnv *, job
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_setProjectionMatrix(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setProjectionMatrix(JNIEnv *, jobject)
 {
     LOGD("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setProjectionMatrix");
 
@@ -614,14 +616,14 @@ Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_setProjectionMatrix(JNIE
 // Activates Camera Flash
 // ----------------------------------------------------------------------------
 JNIEXPORT jboolean JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_activateFlash(JNIEnv*, jobject, jboolean flash)
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_activateFlash(JNIEnv*, jobject, jboolean flash)
 {
     //LOGD("com_ar4android_vuforiaJME_VuforiaJMEActivity_activateFlash");
     return QCAR::CameraDevice::getInstance().setFlashTorchMode((flash==JNI_TRUE)) ? JNI_TRUE : JNI_FALSE;
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_autofocus(JNIEnv*, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_autofocus(JNIEnv*, jobject)
 {
     //LOGD("com_ar4android_vuforiaJME_VuforiaJMEActivity_autofocus");
     return QCAR::CameraDevice::getInstance().setFocusMode(QCAR::CameraDevice::FOCUS_MODE_TRIGGERAUTO) ? JNI_TRUE : JNI_FALSE;
@@ -629,7 +631,7 @@ Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_autofocus(JNIEnv*, jobje
 
 
 JNIEXPORT jboolean JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_setFocusMode(JNIEnv*, jobject, jint mode)
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setFocusMode(JNIEnv*, jobject, jint mode)
 {
     //LOGD("com_ar4android_vuforiaJME_VuforiaJMEActivity_setFocusMode");
     int qcarFocusMode;
@@ -660,7 +662,7 @@ Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_setFocusMode(JNIEnv*, jo
 }
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_AaltusVuforia_AaltusVuforiaActivity_initTracking(
+Java_com_ar4android_vuforiaJME_VuforiaJME_initTracking(
                         JNIEnv* env, jobject obj, jint width, jint height)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJME_initTracking");
