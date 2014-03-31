@@ -44,4 +44,6 @@ public abstract class Scenario extends Node implements AnimEventListener{
 
     public abstract void onAnimChange(AnimControl animControl, AnimChannel animChannel, String s);
 
+    public abstract void setAnimSpeed(float newSpeed);
+
 }
