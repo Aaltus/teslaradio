@@ -18,7 +18,6 @@ public class Capture extends Scenario {
 
     private Spatial ninja;
 
-
     private AnimControl mAniControl;
     private AnimChannel mAniChannel;
 
@@ -40,7 +39,6 @@ public class Capture extends Scenario {
         initNinja();
 
         unmovableObjects.attachChild(ninja);
-
     }
 
     @Override
@@ -79,10 +77,6 @@ public class Capture extends Scenario {
         mAniChannel.setSpeed(1f);
     }
 
-    @Override
-    public void setAnimSpeed(float newSpeed){
-        mAniChannel.setSpeed(newSpeed);
-    }
     @Override
     public void onAnimCycleDone(AnimControl animControl, AnimChannel animChannel, String s) {
         // ...do nothing
