@@ -37,6 +37,12 @@ public abstract class Scenario extends Node implements AnimEventListener{
     protected abstract void loadStaticAnimatedObjects();
 
     protected abstract void loadMovableAnimatedObjects();
+    
+    protected abstract void restartScenario();
+    
+    protected abstract void initAllMovableObjects();
+    
+    protected abstract void initAllUnmovableObjects();
 
     public abstract void onAnimCycleDone(AnimControl animControl, AnimChannel animChannel, String s);
 
