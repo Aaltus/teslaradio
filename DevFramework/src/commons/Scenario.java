@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mygame;
+package commons;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
