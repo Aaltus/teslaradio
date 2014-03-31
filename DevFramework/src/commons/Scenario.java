@@ -20,8 +20,6 @@ public abstract class Scenario extends Node implements AnimEventListener{
 
     protected ViewState mViewState;
 
-    protected Node unmovableObjects = new Node("unmovable");
-
     protected Node movableObjects = new Node("movable");
 
     protected AssetManager assetManager;
@@ -34,16 +32,14 @@ public abstract class Scenario extends Node implements AnimEventListener{
     /**
      * Methods to load the associated 3D objects with the scenario
      */
-    protected abstract void loadStaticAnimatedObjects();
+    protected abstract void loadUnmovableObjects();
 
-    protected abstract void loadMovableAnimatedObjects();
+    protected abstract void loadMovableObjects();
     
     protected abstract void restartScenario();
     
     protected abstract void initAllMovableObjects();
     
-    protected abstract void initAllUnmovableObjects();
-
     public abstract void onAnimCycleDone(AnimControl animControl, AnimChannel animChannel, String s);
 
     public abstract void onAnimChange(AnimControl animControl, AnimChannel animChannel, String s);
