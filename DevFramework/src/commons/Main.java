@@ -1,5 +1,6 @@
-package mygame;
+package commons;
 
+import scenario.SoundCapture;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
