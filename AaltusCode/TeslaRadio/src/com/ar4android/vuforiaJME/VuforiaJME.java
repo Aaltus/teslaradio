@@ -19,7 +19,7 @@
 package com.ar4android.vuforiaJME;
 
 import android.util.Log;
-import com.galimatias.teslaradio.world.Scenarios.Capture;
+import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.galimatias.teslaradio.world.World;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
@@ -64,7 +64,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 
     // The virtual world object, it is in fact the scene
     private World virtualWorld;
-    private Capture soundCapture;
+    private SoundCapture soundCapture;
 
     private float mForegroundCamFOVY = 30;
 
@@ -337,9 +337,13 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 
 
         virtualWorld = new World(rootNode);
-        soundCapture = new Capture(assetManager);
-
-        Log.d(TAG,soundCapture.getChild("ninja").getName());
+        soundCapture = new SoundCapture(assetManager);
+        soundCapture.scale(20.0f);
+        Quaternion rot = new Quaternion();
+        rot.fromAngleAxis(3.14f/2, new Vector3f(1.0f,0.0f,0.0f));
+        soundCapture.rotate(rot);
+        soundCapture.initAllMovableObjects();
+        //Log.d(TAG,soundCapture.getChild("ninja").getName());
 
         //Jonathan: To make the ninja shootable we add it to a new node "shootable", the we add it to the root node
 //        shootables = new Node("Shootables");
