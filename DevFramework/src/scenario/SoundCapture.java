@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mygame;
+package scenario;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
@@ -10,7 +10,6 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.AnimationFactory;
 import com.jme3.animation.LoopMode;
 import com.jme3.asset.AssetManager;
-import com.jme3.cinematic.MotionPath;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
@@ -20,6 +19,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import commons.Scenario;
 
 /**
  *
@@ -253,6 +253,11 @@ public final class SoundCapture extends Scenario {
     public void onAnimChange(AnimControl animControl, AnimChannel animChannel, String s) 
     {
         // ...do nothing
+    }
+
+    @Override
+    protected void restartScenario() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 
