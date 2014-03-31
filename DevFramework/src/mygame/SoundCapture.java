@@ -10,6 +10,7 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.AnimationFactory;
 import com.jme3.animation.LoopMode;
 import com.jme3.asset.AssetManager;
+import com.jme3.cinematic.MotionPath;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
@@ -31,7 +32,7 @@ public final class SoundCapture extends Scenario {
 
     private final static String TAG = "Capture";
 
-    private Spatial tambour;
+    private Spatial drums;
     private Node micro = new Node("Micro");
     private Spatial baseMicro;
     private Spatial bouleMicro;
@@ -45,7 +46,7 @@ public final class SoundCapture extends Scenario {
     private ParticleEmitter soundWaves;
     
     private boolean firstTry = true;
-    
+       
     public SoundCapture(AssetManager assetManager)
     {
         super(assetManager);
@@ -61,8 +62,8 @@ public final class SoundCapture extends Scenario {
     protected void loadStaticAnimatedObjects()
     {
         // Load a model from test_data (OgreXML + material + texture)
-        tambour = assetManager.loadModel("Models/Tambour.j3o");
-        tambour.setName("Tambour");
+        drums = assetManager.loadModel("Models/Tambour.j3o");
+        drums.setName("Tambour");
         
         baseMicro = assetManager.loadModel("Models/Base_micro.j3o");
         baseMicro.setName("Base_micro");
@@ -89,7 +90,10 @@ public final class SoundCapture extends Scenario {
     @Override
     protected void loadMovableAnimatedObjects()
     {
-        
+        /**
+         * TODO : Load the sound particules models
+         */
+
     }
 
     /**
@@ -97,26 +101,26 @@ public final class SoundCapture extends Scenario {
      */
     private void initTambour()
     {
-        tambour.scale(10.0f, 10.0f, 10.0f);
-        Quaternion rotateTambourX=new Quaternion();
-        rotateTambourX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
-        Quaternion rotateTambourZ=new Quaternion();
-        rotateTambourZ.fromAngleAxis(3.14f, new Vector3f(0.0f,0.0f,1.0f));
-        Quaternion rotateTambourY=new Quaternion();
-        rotateTambourY.fromAngleAxis(3.14f,new Vector3f(0.0f,1.0f,0.0f));
+        drums.scale(10.0f, 10.0f, 10.0f);
+        Quaternion rotateDrumsX=new Quaternion();
+        rotateDrumsX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
+        Quaternion rotateDrumsZ=new Quaternion();
+        rotateDrumsZ.fromAngleAxis(3.14f, new Vector3f(0.0f,0.0f,1.0f));
+        Quaternion rotateDrumsY=new Quaternion();
+        rotateDrumsY.fromAngleAxis(3.14f,new Vector3f(0.0f,1.0f,0.0f));
 
-        rotateTambourX.mult(rotateTambourZ);
-        Quaternion rotateTambourXZ=rotateTambourZ.mult(rotateTambourX);
-        Quaternion rotateTambourXYZ = rotateTambourXZ.mult(rotateTambourY);
+        rotateDrumsX.mult(rotateDrumsZ);
+        Quaternion rotateTambourXZ=rotateDrumsZ.mult(rotateDrumsX);
+        Quaternion rotateTambourXYZ = rotateTambourXZ.mult(rotateDrumsY);
 
         //tambour.rotate(rotateTambourXYZ);
 
         //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
-        tambour.rotate(0.0f, -3.0f, 0.0f);
-        tambour.setLocalTranslation(0.0f, 0.0f, 0.0f);
+        drums.rotate(0.0f, -3.0f, 0.0f);
+        drums.setLocalTranslation(0.0f, 0.0f, 0.0f);
         
         // Attach the object to the scene
-        unmovableObjects.attachChild(tambour);
+        unmovableObjects.attachChild(drums);
     }
 
     /**
@@ -144,41 +148,52 @@ public final class SoundCapture extends Scenario {
     private void initCircles()
     {
         circles.scale(10.0f, 10.0f, 10.0f);
-        circles.setLocalTranslation(0.0f, 25.0f, 0.0f);
         
         Material circleMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         circleMat.setColor("Color", ColorRGBA.Pink);
         circles.setMaterial(circleMat);
 
         float duration = 5.0f; 
-        AnimationFactory animationFactory = new AnimationFactory(duration,"EffetTambour");
+        AnimationFactory animationFactory = new AnimationFactory(duration,"DrumEffect");
                 
+        animationFactory.addTimeTranslation(0.0f, new Vector3f(0.0f, 20.0f, 0.0f));
         animationFactory.addTimeScale(0.0f, new Vector3f(0.2f, 0.0f, 0.2f));
         animationFactory.addTimeScale(5.0f, new Vector3f(8.0f, 0.0f, 8.0f));
         
-        animation = animationFactory.buildAnimation();             
+        animation = animationFactory.buildAnimation();
+        
+        mAnimControl.addAnim(animation);
+        circles.addControl(mAnimControl);
+   
+        mAnimChannel = mAnimControl.createChannel();
     }
     
     private void initParticles()
-    {
-        soundWaves = new ParticleEmitter("Sound",ParticleMesh.Type.Triangle, 100);
+    {        
+        soundWaves = new ParticleEmitter("Sound",ParticleMesh.Type.Triangle, 10);
         soundWaves.setLocalTranslation(0.0f, 20.0f, 0.0f);
         
         Material soundMat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
         soundWaves.setMaterial(soundMat);
-        
+                
         soundWaves.setImagesX(2);
         soundWaves.setImagesY(2);
         
         soundWaves.setStartColor(ColorRGBA.Red);
         soundWaves.setEndColor(ColorRGBA.Yellow);
-        soundWaves.getParticleInfluencer().setInitialVelocity(new Vector3f(5.0f, 10.0f, 5.0f));
+        soundWaves.getParticleInfluencer().setInitialVelocity(new Vector3f(5.0f, 15.0f, 5.0f));
+        soundWaves.getParticleInfluencer().setVelocityVariation(0.0f);
         
         soundWaves.setGravity(0.0f, 0.0f, 0.0f);
         
-        soundWaves.setShape(new EmitterSphereShape(Vector3f.ZERO, 5.0f));
+        soundWaves.setShape(new EmitterSphereShape(Vector3f.ZERO, 7.0f));
         
         soundWaves.getParticleInfluencer().setVelocityVariation(0.5f);
+        
+        soundWaves.setParticlesPerSec(10.0f);
+        
+        soundWaves.setFacingVelocity(true);
+                
     }
     
     /**
@@ -188,7 +203,6 @@ public final class SoundCapture extends Scenario {
     {
         initTambour();
         initMic();
-        initCircles();
         
         this.attachChild(unmovableObjects);
     }
@@ -196,44 +210,43 @@ public final class SoundCapture extends Scenario {
     public void initAllUnmovableObjects()
     {
         initParticles();
+        initCircles();
         
         this.attachChild(movableObjects);
     }
     
     public void tambourTouchEffect()
     {
-        unmovableObjects.attachChild(circles);
+        movableObjects.attachChild(circles);
         movableObjects.attachChild(soundWaves);
         
         if(firstTry == true)
             mAnimControl.addListener(this);
-        
+
         /**
          * Animation for a better touch feeling
          */
-        mAnimControl.addAnim(animation);
-        circles.addControl(mAnimControl);
-   
-        mAnimChannel = mAnimControl.createChannel();
-        mAnimChannel.setAnim("EffetTambour");
+        mAnimChannel.reset(true);
+        mAnimChannel.setAnim("DrumEffect");
         mAnimChannel.setLoopMode(LoopMode.DontLoop);
-        mAnimChannel.setSpeed(10.0f);  
+        mAnimChannel.setSpeed(20.0f);
         
         /**
          * Shooting the particles when we touch the tambour
          */
         soundWaves.emitAllParticles();
-        
+              
         // Not the first time the object is touched
         firstTry = false;
+        
     }
     
     @Override
     public void onAnimCycleDone(AnimControl animControl, AnimChannel animChannel, String s) 
     {
         // ...do nothing
-        if(mAnimChannel.getAnimationName() == "EffetTambour")
-            unmovableObjects.detachChild(circles);
+        if(mAnimChannel.getAnimationName().equals("DrumEffect"))
+            movableObjects.detachChild(circles);
     }
 
     @Override
