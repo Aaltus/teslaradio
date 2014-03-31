@@ -1,9 +1,14 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.galimatias.teslaradio.world;
 
-import android.util.Log;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -11,8 +16,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
 /**
- * World: Defines the root node of the 3D World
- * Created by jean-christophelavoie on 2014-03-23.
+ *
+ * @author Alexandre Hamel
  */
 public class World extends Node {
 
@@ -30,6 +35,12 @@ public class World extends Node {
         DirectionalLight front = new DirectionalLight();
         front.setDirection(new Vector3f(0.f,1.f,1.0f));
         rootNode.addLight(front);
+        
+        /** A white ambient light source. */ 
+        AmbientLight ambient = new AmbientLight();
+        ambient.setColor(ColorRGBA.White);
+        rootNode.addLight(ambient);
+        
     }
 
 
@@ -46,7 +57,6 @@ public class World extends Node {
         Scenario.collideWith(ray, results);
 
         // 4. Print the results
-        Log.d(TAG, "----- Collisions? " + results.size() + "-----");
         for (int i = 0; i < results.size(); i++)
         {
             // For each hit, we know distance, impact point, name of geometry.
@@ -54,7 +64,6 @@ public class World extends Node {
             Vector3f pt = results.getCollision(i).getContactPoint();
             String hit = results.getCollision(i).getGeometry().getName();
 
-            Log.d(TAG,"* Collision #" + i + hit);
             // Log.d(TAG,"  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
         }
 
