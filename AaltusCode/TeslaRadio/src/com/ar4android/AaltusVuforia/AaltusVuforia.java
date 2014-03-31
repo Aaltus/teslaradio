@@ -20,8 +20,6 @@ package com.ar4android.AaltusVuforia;
 
 import android.util.Log;
 import com.galimatias.teslaradio.world.Scenarios.Capture;
-import com.galimatias.teslaradio.world.Scenarios.Scenario;
-
 import com.galimatias.teslaradio.world.World;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
@@ -63,13 +61,10 @@ public class AaltusVuforia extends SimpleApplication implements AnimEventListene
 
 //    private Spatial ninja;
 //    private Node scotty;
-    private Node node1;
-    private Node node2;
 
     // The virtual world object, it is in fact the scene
     private World virtualWorld;
-    private Scenario soundCapture;
-    private Scenario soundCapture2;
+    private Capture soundCapture;
 
     private float mForegroundCamFOVY = 30;
 
@@ -81,11 +76,8 @@ public class AaltusVuforia extends SimpleApplication implements AnimEventListene
   
 	Camera videoBGCam;
 	Camera fgCam;
-    Camera fgCam2;
-
 
     private Node focusableObjects = new Node("Scenario");
-    private Node getFocusableObjects2 = new Node("Scenario2");
 
     /** Native function for initializing the renderer. */
     public native void initTracking(int width, int height);
@@ -346,10 +338,8 @@ public class AaltusVuforia extends SimpleApplication implements AnimEventListene
 
         virtualWorld = new World(rootNode);
         soundCapture = new Capture(assetManager);
-        soundCapture2 = new Capture(assetManager);
-        soundCapture2.setAnimSpeed(3f);
 
-       // Log.d(TAG, ((Node) soundCapture.getChild("scotty")).getChild("Man").getName());
+        Log.d(TAG,soundCapture.getChild("ninja").getName());
 
         //Jonathan: To make the ninja shootable we add it to a new node "shootable", the we add it to the root node
 //        shootables = new Node("Shootables");
@@ -357,17 +347,8 @@ public class AaltusVuforia extends SimpleApplication implements AnimEventListene
 //
 //        initNinja();
 //        initScotty();
-
-        node1 = new Node("Scene1");
-        node2 = new Node("Scene2");
-        rootNode.attachChild(node1);
-        rootNode.attachChild(node2);
-
         focusableObjects.attachChild(soundCapture);
-        node1.attachChild(soundCapture);
-
-        focusableObjects.attachChild(soundCapture2);
-        node2.attachChild(soundCapture2);
+        rootNode.attachChild(soundCapture);
 	}
 
 
@@ -377,31 +358,18 @@ public class AaltusVuforia extends SimpleApplication implements AnimEventListene
         int settingsHeight = settings.getHeight();
         Log.d(TAG,"initForegroundCamera with width : " + Integer.toString(settings.getWidth()) + " height: " + Integer.toString(settings.getHeight()) );
 		fgCam = new Camera(settingsWidth, settingsHeight);
-        fgCam2 = new Camera(settingsWidth,settingsHeight);
 		
 		fgCam.setViewPort(0, 1.0f, 0.f,1.0f);
 		fgCam.setLocation(new Vector3f(0f, 0f, 0f));
 		fgCam.setAxes(new Vector3f(-1f, 0f, 0f), new Vector3f(0f, 1f, 0f), new Vector3f(0f, 0f, -1f));
 		fgCam.setFrustumPerspective(fovY, settingsWidth / settingsHeight, 1000, 10000);
 
-        fgCam2.setViewPort(0, 1.0f, 0.f,1.0f);
-        fgCam2.setLocation(new Vector3f(0f, 0f, 0f));
-        fgCam2.setAxes(new Vector3f(-1f, 0f, 0f), new Vector3f(0f, 1f, 0f), new Vector3f(0f, 0f, -1f));
-        fgCam2.setFrustumPerspective(fovY, settingsWidth / settingsHeight, 1000, 10000);
-
-
 		ViewPort fgVP = renderManager.createMainView("ForegroundView", fgCam);
-
-		fgVP.attachScene(node1);
+		fgVP.attachScene(rootNode);
 		//color,depth,stencil
 		fgVP.setClearFlags(false, true, false);
 		fgVP.setBackgroundColor(new ColorRGBA(0,0,0,1));
 //		fgVP.setBackgroundColor(new ColorRGBA(0,0,0,0));
-
-        ViewPort fgVP2 = renderManager.createMainView("ForegroundView2", fgCam2);
-        fgVP2.attachScene(node2);
-        fgVP2.setClearFlags(false, true, false);
-        fgVP2.setBackgroundColor(new ColorRGBA(0,0,0,1));
 	}
 	
 	
@@ -418,7 +386,6 @@ public class AaltusVuforia extends SimpleApplication implements AnimEventListene
 
         //Log.d(TAG,"setCameraPerspectiveNative with fovY : " + Float.toString(fovY) + " aspectRatio: " + Float.toString(aspectRatio) );
         fgCam.setFrustumPerspective(fovY,aspectRatio, 1.f, 100000.f);
-        fgCam2.setFrustumPerspective(fovY,aspectRatio, 1.f, 100000.f);
 	}
 	
 	public void setCameraViewportNative(float viewport_w,float viewport_h,float size_x,float size_y) {
@@ -457,26 +424,19 @@ public class AaltusVuforia extends SimpleApplication implements AnimEventListene
 		mVideoBGGeom.setLocalScale(newWidth, newHeight, 1.f);
 	}
 	
-	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z, float  id) {
+	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z) {
 		 Log.d(TAG,"Update Camera Pose..");
 
 //         Log.d(TAG, "Coordinates : x = " + Float.toString(cam_x) + " y = "
 //                 + Float.toString(cam_y) + " z = " + Float.toString(cam_z));
 
          // Set the new foreground camera position
-
-        if (id == 0){
 		 fgCam.setLocation(new Vector3f(cam_x, cam_y, cam_z));
-        }else{
-         fgCam2.setLocation(new Vector3f(cam_x, cam_y, cam_z));
-        }
-
-
 
 	}
 	
 	public void setCameraOrientationNative(float cam_right_x,float cam_right_y,float cam_right_z,
-			float cam_up_x,float cam_up_y,float cam_up_z,float cam_dir_x,float cam_dir_y,float cam_dir_z, float id) {
+			float cam_up_x,float cam_up_y,float cam_up_z,float cam_dir_x,float cam_dir_y,float cam_dir_z) {
 		 
 		//Log.d(TAG,"Update Orientation Pose..");
 
@@ -484,17 +444,10 @@ public class AaltusVuforia extends SimpleApplication implements AnimEventListene
 //                + Float.toString(cam_dir_y) + " z = " + Float.toString(cam_dir_z));
 
    		 //left,up,direction
-        if( id==0 ){
 		 fgCam.setAxes(
 				 	new Vector3f(-cam_right_x,-cam_right_y,-cam_right_z),
 			 		new Vector3f(-cam_up_x,-cam_up_y,-cam_up_z),
 			 		new Vector3f(cam_dir_x,cam_dir_y,cam_dir_z));
-        }else{
-        fgCam2.setAxes(
-                new Vector3f(-cam_right_x,-cam_right_y,-cam_right_z),
-                new Vector3f(-cam_up_x,-cam_up_y,-cam_up_z),
-                new Vector3f(cam_dir_x,cam_dir_y,cam_dir_z));
-        }
 	}
 		 
 	// This method retrieves the preview images from the Android world and puts them into a JME image.
@@ -522,9 +475,7 @@ public class AaltusVuforia extends SimpleApplication implements AnimEventListene
 
             // Update the world depending on what is in focus
             virtualWorld.UpdateFocus(fgCam,focusableObjects);
-            virtualWorld.UpdateFocus(fgCam2,focusableObjects);
 			virtualWorld.UpdateViewables(rootNode,focusableObjects);
-
 		}
 
 		@Override
