@@ -15,9 +15,14 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Sphere;
 import commons.Scenario;
+import effects.SignalEmitter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -33,6 +38,8 @@ public final class SoundCapture extends Scenario {
 
     private Spatial scene;
     private Spatial circles;
+    
+    private SignalEmitter DrumSoundEmitter;
     
     private Animation animation;
     private AnimControl mAnimControl = new AnimControl();
@@ -75,6 +82,19 @@ public final class SoundCapture extends Scenario {
          */
         circles = assetManager.loadModel("Models/Effet_tambour.j3o");
         circles.setName("Circles");  
+        
+        List<Vector3f> listPaths = new ArrayList<Vector3f>();
+        listPaths.add(new Vector3f(0,1,0));
+        
+        // instantiate 3d Sound particul model
+        Sphere sphere = new Sphere(8, 8, 0.9f);
+        Geometry soundParticle = new Geometry("particul",sphere);
+        Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        soundParticul_mat.setColor("Color", ColorRGBA.Pink);
+        soundParticle.setMaterial(soundParticul_mat);
+                
+        DrumSoundEmitter = new SignalEmitter(listPaths, soundParticle);
+        
     }
 
     /**
@@ -174,6 +194,10 @@ public final class SoundCapture extends Scenario {
     
     public void drumTouchEffect()
     {
+        DrumSoundEmitter.emitParticles();
+        
+        
+        
         movableObjects.attachChild(circles);
         
         if(firstTry == true)
@@ -188,7 +212,9 @@ public final class SoundCapture extends Scenario {
         mAnimChannel.setSpeed(20.0f);
               
         // Not the first time the object is touched
-        firstTry = false;        
+        firstTry = false;   
+        
+        
     }
     
     @Override
@@ -210,5 +236,9 @@ public final class SoundCapture extends Scenario {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+     public void simpleUpdate(float tpf) {
+         
+         DrumSoundEmitter.simpleUpdate(tpf);
+     }
 
 }
