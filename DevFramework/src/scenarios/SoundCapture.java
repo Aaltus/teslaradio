@@ -114,58 +114,57 @@ public final class SoundCapture extends Scenario {
         this.attachChild(movableObjects);
     }
       
-    public void initTrajectories(float nbDirections)
+    public void initTrajectories(int nbDirections)
     {
-//        /**
-//         * Get the position of the drum and microphone
-//         */
-//        Spatial drum = scene.getParent().getChild("Tambour");
-//        Spatial boule_micro = scene.getParent().getChild("Boule_micro");
-//        
-//        Vector3f drumPosition = drum.getLocalTranslation();
-//        Vector3f microPosition = boule_micro.getLocalTranslation();
-//        
-//        Vector3f drum2MicDirection = microPosition.subtract(drumPosition);
-//        drum2MicDirection.normalize();
-//       
-//        /**
-//         * Find the angles of the microphone-drum vector with X axis and Y axis
-//         */
-//        float angleHeight = drum2MicDirection.angleBetween(new Vector3f(drumPosition.x, 0.0f, drumPosition.z));
-//        float angleWidth = drum2MicDirection.angleBetween(new Vector3f(drumPosition.x, drumPosition.y, 0.0f));
         
-        Quaternion rotationHeight = new Quaternion();
-        Quaternion rotationWidth = new Quaternion();
+        int XZmaxAngle = 360;
+        int YXmaxAngle = 90;
+        int nbYXrotations = 5;
+        
+        /**
+         * Get the position of the drum and microphone
+         */
+        Spatial drum = scene.getParent().getChild("Tambour");
+        Spatial boule_micro = scene.getParent().getChild("Boule_micro");
+        
+        Vector3f drumPosition = drum.getLocalTranslation();
+        Vector3f microPosition = boule_micro.getLocalTranslation();
+        
+        Vector3f drum2MicDirection = microPosition.subtract(drumPosition);
+        drum2MicDirection.normalize();
+        
+        Quaternion rotationPlanXY = new Quaternion();
+        Quaternion rotationPlanXZ = new Quaternion();
         Quaternion normalRotation = new Quaternion();
         
-        Matrix3f rotMatrixHeight = new Matrix3f();
-        Matrix3f rotMatrixWidth = new Matrix3f();
+        Matrix3f rotMatrixXY = new Matrix3f();
+        Matrix3f rotMatrixXZ = new Matrix3f();
         Matrix3f rotMatrixNormal = new Matrix3f();
         
-        trajectories.add(Vector3f.UNIT_X);
+        drum2MicDirection.y = 0;
+        trajectories.add(drum2MicDirection);
         
         Vector3f normalVector = new Vector3f();
         Vector3f XZPlanVector = new Vector3f();
         
-        for(int i=0; i < 20; i++)
+        for(int i=0; i < nbDirections/nbYXrotations; i++)
         {                       
-            rotationWidth.fromAngleAxis(i*(360.0f/20.0f)*2.0f*3.14f, Vector3f.UNIT_Y);
-            rotMatrixWidth = rotationWidth.toRotationMatrix();
-            XZPlanVector = rotMatrixWidth.mult(trajectories.elementAt(i*5));
+            rotationPlanXZ.fromAngleAxis(i*(XZmaxAngle/20.0f)*2.0f*3.14f, Vector3f.UNIT_Y);
+            rotMatrixXY = rotationPlanXZ.toRotationMatrix();
+            XZPlanVector = rotMatrixXY.mult(trajectories.elementAt(i*5));
             
             normalRotation.fromAngleAxis(3.14f/2.0f, Vector3f.UNIT_Y);            
             rotMatrixNormal = normalRotation.toRotationMatrix();
             normalVector = rotMatrixNormal.mult(trajectories.elementAt(i*5));
                         
-            for(int j=0; j < 5; j++)
+            for(int j=0; j < YXmaxAngle; j++)
             {                  
-                rotationHeight.fromAngleAxis(j*(90.0f/5.0f)*2.0f*3.14f, normalVector);
+                rotationPlanXY.fromAngleAxis(j*(YXmaxAngle/5.0f)*2.0f*3.14f, normalVector);
 
-                rotMatrixHeight = rotationHeight.toRotationMatrix();
+                rotMatrixXZ = rotationPlanXY.toRotationMatrix();
                 
                 XZPlanVector.y = 0;
-                trajectories.add(rotMatrixHeight.mult(XZPlanVector));
-                
+                trajectories.add(rotMatrixXZ.mult(XZPlanVector));
             }
         }
         
