@@ -98,8 +98,8 @@ public final class SoundCapture extends Scenario {
         
         // Getting all the trajectories from the position of the mic-drums and 
         // the number of directions
-        Vector3f startPosition = drum.getLocalTranslation();
-        Vector3f endPosition = micro.getLocalTranslation();
+        Vector3f startPosition = drum.getWorldTranslation();
+        Vector3f endPosition = micro.getWorldTranslation();
         
         int totalNbDirections = 100;
         int nbXYDirections = 5;
@@ -121,9 +121,9 @@ public final class SoundCapture extends Scenario {
         soundParticle.setMaterial(soundParticul_mat);
                 
         DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle);
-        Vector3f v = scene.getParent().getChild("Tambour").getLocalTranslation();
-        DrumSoundEmitter.setLocalTranslation(v.x, v.y + 20, v.y); // TO DO: utiliser le object handle blender pour position
+        Vector3f v = drum.getWorldTranslation();
         this.attachChild(DrumSoundEmitter);
+        DrumSoundEmitter.setLocalTranslation(v.x, v.y + 20, v.z); // TO DO: utiliser le object handle blender pour position
     }
 
     /**
@@ -141,8 +141,9 @@ public final class SoundCapture extends Scenario {
 
         float duration = 5.0f; 
         AnimationFactory animationFactory = new AnimationFactory(duration,"DrumEffect");
-                
-        animationFactory.addTimeTranslation(0.0f, new Vector3f(0.0f, 20.0f, 0.0f));
+        
+        Vector3f v = drum.getWorldTranslation();
+        animationFactory.addTimeTranslation(0.0f, new Vector3f(v.x, v.y + 20.0f, v.z));
         animationFactory.addTimeRotation(0.0f, rot);
         animationFactory.addTimeScale(0.0f, new Vector3f(0.2f, 0.0f, 0.2f));
         animationFactory.addTimeScale(5.0f, new Vector3f(10.0f, 0.0f, 10.0f));
