@@ -24,6 +24,8 @@ public class Signal extends Geometry {
     public Signal(Geometry particle, Vector3f path, float speed) {
             this.setMesh(particle.getMesh());
             this.setMaterial(particle.getMaterial());
+            this.speed = speed;
+            this.path = path;
     }
     
     public void updatePosition(float tpf) {
