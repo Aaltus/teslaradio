@@ -4,9 +4,12 @@
  */
 package effects;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -14,11 +17,15 @@ import java.util.ArrayList;
  */
 public class SignalEmitter {
     
-    private ArrayList<Signal> signals;
-    private ArrayList<Vector3f> paths;
+    private List<Signal> signals = new ArrayList<Signal>();
+    private List<Vector3f> paths = new ArrayList<Vector3f>();
+    private Geometry particle;
     
-    public SignalEmitter(ArrayList<Vector3f> paths) {
+    
+    public SignalEmitter(List<Vector3f> paths, Geometry particle) {
         this.paths = paths;
+        this.particle = particle;
+        
     }
     
     public void simpleUpdate(float tpf) {
@@ -27,9 +34,9 @@ public class SignalEmitter {
         }
     }
 
-    public void emitParticles(String name, boolean isPressed, float tpf) {
+    public void emitParticles() {
         for (Vector3f path : paths) {
-            Signal mySignal = new Signal(SignalType.Sound, path, 1.0f);
+            Signal mySignal = new Signal(particle, path, 1.0f);
             signals.add(mySignal);
         }
     }
