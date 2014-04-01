@@ -2,22 +2,18 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package scenarios;
+package com.galimatias.teslaradio.world.Scenarios;
 
-import com.jme3.animation.AnimChannel;
-import com.jme3.animation.AnimControl;
-import com.jme3.animation.Animation;
-import com.jme3.animation.AnimationFactory;
-import com.jme3.animation.LoopMode;
+import com.jme3.animation.*;
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
+import com.jme3.collision.CollisionResult;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import commons.Scenario;
 import java.util.Vector;
 
 /**
@@ -31,7 +27,10 @@ public final class SoundCapture extends Scenario {
 
     private final static String TAG = "Capture";
 
+
+    private AudioNode drum_sound;
     private Spatial scene;
+    private Spatial drum;
     private Spatial circles;
     
     private Animation animation;
@@ -61,6 +60,16 @@ public final class SoundCapture extends Scenario {
         scene.setName("SoundCapture");
         scene.scale(10.0f,10.0f,10.0f);
         this.attachChild(scene);
+
+        drum = scene.getParent().getChild("Tambour");
+
+        drum_sound = new AudioNode(assetManager, "Sounds/drum_taiko.wav", false);
+        drum_sound.setPositional(false);
+        drum_sound.setLooping(false);
+        drum_sound.setVolume(2);
+        //rootNode.attachChild(audio_gun);
+        this.attachChild(drum_sound);
+
     }
 
     /**
@@ -116,7 +125,6 @@ public final class SoundCapture extends Scenario {
       
     public void initTrajectories(int nbDirections)
     {
-        
         int XZmaxAngle = 360;
         int YXmaxAngle = 90;
         int nbYXrotations = 5;
@@ -187,7 +195,10 @@ public final class SoundCapture extends Scenario {
         mAnimChannel.setSpeed(20.0f);
               
         // Not the first time the object is touched
-        firstTry = false;        
+        firstTry = false;
+
+        drum_sound.playInstance();
+        
     }
     
     @Override
@@ -202,6 +213,29 @@ public final class SoundCapture extends Scenario {
     public void onAnimChange(AnimControl animControl, AnimChannel animChannel, String s) 
     {
         // ...do nothing
+    }
+
+    @Override
+    public void onScenarioClick(CollisionResult closestCollisionResult) {
+
+        Spatial touchedGeometry = closestCollisionResult.getGeometry();
+        while(touchedGeometry.getParent() != null)
+        {
+            //if(touchedGeometry.getParent() != null){
+                if (touchedGeometry.getParent().getName() == drum.getName())
+                {
+                    this.drumTouchEffect();
+                    break;
+                }
+                else{
+                    touchedGeometry = touchedGeometry.getParent();
+                }
+//            }
+//            else{
+//                break;
+//            }
+        }
+
     }
 
     @Override
