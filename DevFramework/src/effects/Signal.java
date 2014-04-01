@@ -21,11 +21,9 @@ public class Signal extends Geometry {
     private float speed;
     private float distanceTraveled;
     
-    public Signal(SignalType type, Vector3f path, float speed) {
-        if (type == SignalType.Sound) {
-            Sphere sphere = new Sphere(8, 8, 5.0f);
-            this.setMesh(sphere);
-        }
+    public Signal(Geometry particle, Vector3f path, float speed) {
+            this.setMesh(particle.getMesh());
+            this.setMaterial(particle.getMaterial());
     }
     
     public void updatePosition(float tpf) {
