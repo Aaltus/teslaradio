@@ -8,6 +8,7 @@ import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -26,6 +27,12 @@ public class SignalTrajectories {
         this.nbYXrotations = nbYXrotations;
     }
     
+    /**
+     * Generates a bunch of sphere like directions vectors for generating a
+     * particle emittter.
+     * @param startPosition : The position of the first object in the world.
+     * @param endPosition : The position of the receiving object in the world.
+     */
     public void setTrajectories(Vector3f startPosition, Vector3f endPosition)
     {
         trajectories.clear();
@@ -57,11 +64,11 @@ public class SignalTrajectories {
         {                       
             rotationPlanXZ.fromAngleAxis(i*XYAngleIncrement, Vector3f.UNIT_Y);
             rotMatrixXY = rotationPlanXZ.toRotationMatrix();
-            XZPlanVector = rotMatrixXY.mult(trajectories.elementAt(i*5));
+            XZPlanVector = rotMatrixXY.mult(trajectories.get(i*nbYXrotations));
             
             normalRotation.fromAngleAxis(3.14f/2.0f, Vector3f.UNIT_Y);            
             rotMatrixNormal = normalRotation.toRotationMatrix();
-            normalVector = rotMatrixNormal.mult(trajectories.elementAt(i*5));
+            normalVector = rotMatrixNormal.mult(trajectories.get(i*nbYXrotations));
                         
             for(int j=0; j < nbYXrotations; j++)
             {                  
@@ -77,6 +84,27 @@ public class SignalTrajectories {
         trajectories.remove(0);
     }
     
+    /**
+     * Sets the norm of the direction vectors 
+     * @param vectorNorms 
+     */
+    public void setVectorsNorms(List<Float> vectorNorms)
+    {
+        int vecNormsSize = vectorNorms.size();
+        
+        for(int i=0; i < vecNormsSize; i++)
+        {
+            for(int j=0; j < trajectories.size(); j++)
+            { 
+                trajectories.set(j, trajectories.get(j).mult(vectorNorms.get(j%vecNormsSize).floatValue()));
+            }
+        }
+    }
+    
+    /**
+     * Get the trajectories that were created.
+     * @return trajectories
+     */
     public Vector<Vector3f> getTrajectories()
     {
         return trajectories;
