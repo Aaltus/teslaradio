@@ -176,21 +176,7 @@ public class VuforiaJME extends SimpleApplication  {
 
         Log.d(TAG,"initForegroundScene" );
 
-        // You must add a light to make the model visible
-        DirectionalLight back = new DirectionalLight();
-        back.setDirection(new Vector3f(0.f,-1.f,1.0f));
-        rootNode.addLight(back);
-
-        DirectionalLight front = new DirectionalLight();
-        front.setDirection(new Vector3f(0.f,1.f,1.0f));
-        rootNode.addLight(front);
-
-        /** A white ambient light source. */
-        AmbientLight ambient = new AmbientLight();
-        ambient.setColor(ColorRGBA.White);
-        rootNode.addLight(ambient);
-
-        //virtualWorld = new World(rootNode);
+        initLights();
 
         //Init SoundCapture scenario
         soundCapture = new SoundCapture(assetManager);
@@ -230,6 +216,26 @@ public class VuforiaJME extends SimpleApplication  {
 		fgVP.setBackgroundColor(new ColorRGBA(0,0,0,1));
 //		fgVP.setBackgroundColor(new ColorRGBA(0,0,0,0));
 	}
+
+    private void initLights(){
+
+
+        // You must add a light to make the model visible
+        DirectionalLight back = new DirectionalLight();
+        back.setDirection(new Vector3f(0.f,-1.f,1.0f));
+        rootNode.addLight(back);
+
+        DirectionalLight front = new DirectionalLight();
+        front.setDirection(new Vector3f(0.f,1.f,1.0f));
+        rootNode.addLight(front);
+
+        /** A white ambient light source. */
+        AmbientLight ambient = new AmbientLight();
+        ambient.setColor(ColorRGBA.White);
+        rootNode.addLight(ambient);
+
+    }
+
 
 	public void setCameraPerspectiveNative(float fovY,float aspectRatio) {
         // Log.d(TAG,"Update Camera Perspective..");
