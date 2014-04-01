@@ -36,6 +36,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
@@ -141,7 +142,9 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
                 Ray ray = new Ray(click3d, dir);
 
                 // 3. Collect intersections between Ray and Shootables in results list.
-                focusableObjects.collideWith(ray, results);
+                //focusableObjects.collideWith(ray, results);
+                rootNode.collideWith(ray, results);
+
                 // 4. Print the results
                 Log.d(TAG,"----- Collisions? " + results.size() + "-----");
                 for (int i = 0; i < results.size(); i++) {
@@ -156,17 +159,25 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 
                 // 5. Use the results (we mark the hit object)
                 if (results.size() > 0) {
+
                     // The closest collision point is what was truly hit:
                     CollisionResult closest = results.getClosestCollision();
 
-                    if (mAniChannel.getSpeed() != 0){
-                        mAniChannel.setSpeed(0.f);
-                    }
-                    else {
+                    Spatial touchedGeometry = closest.getGeometry();
+                    while(touchedGeometry.getParent() != null)
+                    {
 
-                        mAniChannel.setSpeed(1.f);
-
+                        if (touchedGeometry.getParent().getName() == soundCapture.getName())
+                        {
+                            soundCapture.onScenarioClick(closest);
+                            break;
+                        }
+                        else{
+                        touchedGeometry = touchedGeometry.getParent();
+                        }
                     }
+
+
                 }
 
                 else{
@@ -336,9 +347,10 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
         Log.d(TAG,"initForegroundScene" );
 
 
-        virtualWorld = new World(rootNode);
+        //virtualWorld = new World(rootNode);
         soundCapture = new SoundCapture(assetManager);
         soundCapture.scale(20.0f);
+        soundCapture.setName("SoundCapture");
         Quaternion rot = new Quaternion();
         rot.fromAngleAxis(3.14f/2, new Vector3f(1.0f,0.0f,0.0f));
         soundCapture.rotate(rot);
@@ -478,8 +490,8 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 			mVideoBGGeom.updateGeometricState();
 
             // Update the world depending on what is in focus
-            virtualWorld.UpdateFocus(fgCam,focusableObjects);
-			virtualWorld.UpdateViewables(rootNode,focusableObjects);
+            //virtualWorld.UpdateFocus(fgCam,focusableObjects);
+			//virtualWorld.UpdateViewables(rootNode,focusableObjects);
 		}
 
 		@Override
