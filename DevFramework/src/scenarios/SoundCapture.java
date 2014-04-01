@@ -84,7 +84,7 @@ public final class SoundCapture extends Scenario {
         circles.setName("Circles");  
         
         List<Vector3f> listPaths = new ArrayList<Vector3f>();
-        listPaths.add(new Vector3f(0,1,0));
+        listPaths.add(new Vector3f(0,40,0));
         
         // instantiate 3d Sound particul model
         Sphere sphere = new Sphere(8, 8, 0.9f);
@@ -94,6 +94,9 @@ public final class SoundCapture extends Scenario {
         soundParticle.setMaterial(soundParticul_mat);
                 
         DrumSoundEmitter = new SignalEmitter(listPaths, soundParticle);
+        Vector3f v = scene.getParent().getChild("Tambour").getLocalTranslation();
+        DrumSoundEmitter.setLocalTranslation(v.x, v.y + 20, v.y); // TO DO: utiliser le object handle blender pour position
+        this.attachChild(DrumSoundEmitter);
         
     }
 
