@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package effects;
+package com.galimatias.teslaradio.world.effects;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.input.controls.ActionListener;
