@@ -1,6 +1,6 @@
 package commons;
 
-import scenario.SoundCapture;
+import scenarios.SoundCapture;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -37,6 +37,7 @@ public class Main extends SimpleApplication
         
         soundCapture = new SoundCapture(assetManager);
         soundCapture.initAllMovableObjects();
+        soundCapture.initTrajectories(100);
                 
         // Attaching the modules to the scene
         rootNode.attachChild(soundCapture);
@@ -72,7 +73,7 @@ public class Main extends SimpleApplication
         public void onAction(String name, boolean keyPressed, float tpf) 
         {
           if (name.equals("Animate") && !keyPressed) {
-            soundCapture.tambourTouchEffect();
+            soundCapture.drumTouchEffect();
           }
         }
     };
