@@ -209,6 +209,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 
         int settingsWidth = settings.getWidth();
         int settingsHeight = settings.getHeight();
+
         Log.d(TAG,"* initBackgroundCamera with width : " + Integer.toString(settingsWidth) + " height: " + Integer.toString(settingsHeight) );
 		videoBGCam = new Camera(settingsWidth, settingsHeight);
 		videoBGCam.setViewPort(0.0f, 1.0f, 0.f, 1.0f);
@@ -392,6 +393,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		 //Log.d(TAG,"Update Camera Viewport..");
 
         Log.d(TAG,"setCameraViewportNative with viewport_w : " + Float.toString(viewport_w) + " viewport_h: " + Float.toString(viewport_h   ));
+        Log.d(TAG,"setCameraViewportNative with size_x : " + Float.toString(size_x) + " size_y: " + Float.toString(size_y));
 		float newWidth = 1.f;
 		float newHeight = 1.f;
 		
@@ -417,6 +419,9 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 	    viewportPosition_y =  (float)viewportPosition_y/(float)viewport_h;
 	    viewportSize_x = viewportSize_x/viewport_w;
 	    viewportSize_y = viewportSize_y/viewport_h;
+
+        Log.d(TAG,"setCameraViewportNative with viewportPosition_x : " + Float.toString(viewportPosition_x) + " viewportPosition_y: " + Float.toString(viewportPosition_y));
+        Log.d(TAG,"setCameraViewportNative with newWidth : " + Float.toString(newWidth) + " newHeight: " + Float.toString(newHeight));
 	       
 		//adjust for viewport start (modify video quad)
 		mVideoBGGeom.setLocalTranslation(-0.5f*newWidth+viewportPosition_x,-0.5f*newHeight+viewportPosition_y,0.f);
