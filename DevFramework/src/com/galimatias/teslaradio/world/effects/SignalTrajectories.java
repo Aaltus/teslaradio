@@ -33,12 +33,12 @@ public class SignalTrajectories {
      * @param startPosition : The position of the first object in the world.
      * @param endPosition : The position of the receiving object in the world.
      */
-    public void setTrajectories(Vector3f startPosition, Vector3f endPosition)
+    public void setTrajectories(Vector3f startPosition, Vector3f endPosition, float vectorNorms)
     {
         trajectories.clear();
         
-        int XZmaxAngle = 360;
-        int YXmaxAngle = 180;
+        float XZmaxAngle = 360f;
+        float YXmaxAngle = 90f;
         
         Vector3f start2EndDirection = endPosition.subtract(startPosition);
         start2EndDirection.normalize();
@@ -57,50 +57,39 @@ public class SignalTrajectories {
         Vector3f normalVector = new Vector3f();
         Vector3f XZPlanVector = new Vector3f();
         
-        int XYAngleIncrement = (int) ((YXmaxAngle/nbYXrotations)*2.0f*3.14f);
-        int XZAngleIncrement = (int) ((XZmaxAngle/(nbDirections/nbYXrotations))*2.0f*3.14f);
+        float XYAngleIncrement = ((YXmaxAngle/nbYXrotations)*2.0f*3.141592654f/360);
+        float XZAngleIncrement = ((XZmaxAngle/(nbDirections/nbYXrotations))*2.0f*3.141592654f/360);
         
+        normalVector = Vector3f.UNIT_Z;
         for(int i=0; i < nbDirections/nbYXrotations; i++)
         {                       
-            rotationPlanXZ.fromAngleAxis(i*XYAngleIncrement, Vector3f.UNIT_Y);
-            rotMatrixXY = rotationPlanXZ.toRotationMatrix();
-            XZPlanVector = rotMatrixXY.mult(trajectories.get(i*nbYXrotations));
+
+        
+            rotationPlanXZ.fromAngleAxis(i*XZAngleIncrement, Vector3f.UNIT_Y);
+            rotMatrixXZ = rotationPlanXZ.toRotationMatrix();
+            XZPlanVector = rotMatrixXZ.mult(trajectories.get(0).normalizeLocal());
             
             normalRotation.fromAngleAxis(3.14f/2.0f, Vector3f.UNIT_Y);            
             rotMatrixNormal = normalRotation.toRotationMatrix();
-            normalVector = rotMatrixNormal.mult(trajectories.get(i*nbYXrotations));
-                        
+            normalVector = rotMatrixNormal.mult(XZPlanVector.normalizeLocal());
+ 
+        
+            
             for(int j=0; j < nbYXrotations; j++)
             {                  
-                rotationPlanXY.fromAngleAxis(j*XZAngleIncrement, normalVector);
+                rotationPlanXY.fromAngleAxis(-j*XYAngleIncrement, normalVector);
 
-                rotMatrixXZ = rotationPlanXY.toRotationMatrix();
+                rotMatrixXY = rotationPlanXY.toRotationMatrix();
                 
-                XZPlanVector.y = 0;
-                trajectories.add(rotMatrixXZ.mult(XZPlanVector));
+                trajectories.add((rotMatrixXY.mult(XZPlanVector)).normalizeLocal().mult(vectorNorms));
+                
             }
         }
         
         trajectories.remove(0);
     }
     
-    /**
-     * Sets the norm of the direction vectors 
-     * @param vectorNorms 
-     */
-    public void setVectorsNorms(List<Float> vectorNorms)
-    {
-        int vecNormsSize = vectorNorms.size();
-        
-        for(int i=0; i < vecNormsSize; i++)
-        {
-            for(int j=0; j < trajectories.size(); j++)
-            { 
-                trajectories.set(j, trajectories.get(j).mult(vectorNorms.get(j%vecNormsSize).floatValue()));
-            }
-        }
-    }
-    
+
     /**
      * Get the trajectories that were created.
      * @return trajectories
