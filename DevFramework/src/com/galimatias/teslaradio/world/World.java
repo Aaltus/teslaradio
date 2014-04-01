@@ -2,13 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package commons;
+package com.galimatias.teslaradio.world;
 
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
-import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -27,19 +24,19 @@ public class World extends Node {
 
     public World(Node rootNode) {
 
-        // You must add a light to make the model visible
-        DirectionalLight back = new DirectionalLight();
-        back.setDirection(new Vector3f(0.f,-1.f,1.0f));
-        rootNode.addLight(back);
-
-        DirectionalLight front = new DirectionalLight();
-        front.setDirection(new Vector3f(0.f,1.f,1.0f));
-        rootNode.addLight(front);
-        
-        /** A white ambient light source. */ 
-        AmbientLight ambient = new AmbientLight();
-        ambient.setColor(ColorRGBA.White);
-        rootNode.addLight(ambient);
+//        // You must add a light to make the model visible
+//        DirectionalLight back = new DirectionalLight();
+//        back.setDirection(new Vector3f(0.f,-1.f,1.0f));
+//        rootNode.addLight(back);
+//
+//        DirectionalLight front = new DirectionalLight();
+//        front.setDirection(new Vector3f(0.f,1.f,1.0f));
+//        rootNode.addLight(front);
+//
+//        /** A white ambient light source. */
+//        AmbientLight ambient = new AmbientLight();
+//        ambient.setColor(ColorRGBA.White);
+//        rootNode.addLight(ambient);
         
     }
 

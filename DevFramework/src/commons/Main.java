@@ -1,6 +1,6 @@
 package commons;
 
-import scenarios.SoundCapture;
+import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -22,7 +22,6 @@ public class Main extends SimpleApplication
 
     private Spatial sceneModel;
     private SoundCapture soundCapture;
-    private World world;
     
     
     @Override
@@ -32,9 +31,6 @@ public class Main extends SimpleApplication
         
         sceneModel = assetManager.loadModel("Scenes/World.j3o");
         rootNode.attachChild(sceneModel);
-        
-        // Initialisation of the modules
-        world = new World(rootNode);
         
         soundCapture = new SoundCapture(assetManager);
         soundCapture.initAllMovableObjects();
