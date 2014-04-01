@@ -24,6 +24,7 @@ public class Main extends SimpleApplication
     private SoundCapture soundCapture;
     private World world;
     
+    
     @Override
     public void simpleInitApp() 
     {
@@ -51,6 +52,8 @@ public class Main extends SimpleApplication
     {
         //TODO: add update code
         //soundCapture.AnimateCircles();
+        soundCapture.simpleUpdate(tpf);
+        
     }
 
     @Override
