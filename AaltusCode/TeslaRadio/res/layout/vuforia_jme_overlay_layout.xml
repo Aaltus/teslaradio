@@ -42,26 +42,20 @@ button on the handset.
                           android:id="@+id/linear_layout_global_buttons"
                           android:gravity="top"
                     >
-                <Button
-                        android:id="@+id/camera_toggle_refresh_button"
-                        android:layout_height="50dp"
-                        android:layout_width="50dp"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/layer_list_refresh"/>
-                <Button
-                        android:id="@+id/camera_toggle_language_button"
-                        android:layout_height="50dp"
-                        android:layout_width="50dp"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/layer_list_language"/>
-                <!--android:background="@drawable/browser"-->
+                <!--<Button-->
+                        <!--android:id="@+id/camera_toggle_refresh_button"-->
+                        <!--android:layout_height="50dp"-->
+                        <!--android:layout_width="50dp"-->
+                        <!--android:layout_margin="5dp"-->
+                        <!--android:background="@drawable/layer_list_refresh"/>-->
                 <Button
                         android:id="@+id/camera_toggle_info_button"
                         android:layout_height="50dp"
                         android:layout_width="50dp"
                         android:layout_margin="5dp"
-                        android:background="@drawable/layer_list_info"
-                        />
+                        android:background="@drawable/layer_list_info"/>
+                <!--android:background="@drawable/browser"-->
+
                 <LinearLayout android:layout_width="50dp"
                               android:layout_margin="5dp"
                               android:orientation="vertical"
@@ -87,7 +81,14 @@ button on the handset.
                             android:progressDrawable="@drawable/apptheme_scrubber_progress_horizontal_holo_light"
                             android:thumb="@drawable/apptheme_scrubber_control_selector_holo_light"/>
                 </LinearLayout>
+                <Button
+                        android:id="@+id/camera_toggle_language_button"
+                        android:layout_height="50dp"
+                        android:layout_width="50dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/layer_list_language"
 
+                        />
             </LinearLayout>
 
         </LinearLayout>
