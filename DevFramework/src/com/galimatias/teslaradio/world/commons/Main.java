@@ -38,7 +38,6 @@ public class Main extends SimpleApplication
         
         soundCapture = new SoundCapture(assetManager);
         soundCapture.initAllMovableObjects();
-        soundCapture.initTrajectories(100);
                 
         // Attaching the modules to the scene
         rootNode.attachChild(soundCapture);

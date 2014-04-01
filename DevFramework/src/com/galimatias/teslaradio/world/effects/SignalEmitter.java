@@ -11,6 +11,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  *
@@ -19,11 +20,11 @@ import java.util.List;
 public class SignalEmitter extends Node{
     
     private List<Signal> signals = new ArrayList<Signal>();
-    private List<Vector3f> paths = new ArrayList<Vector3f>();
+    private Vector<Vector3f> paths = new Vector<Vector3f>();
     private Geometry particle;
     
     
-    public SignalEmitter(List<Vector3f> paths, Geometry particle) {
+    public SignalEmitter(Vector<Vector3f> paths, Geometry particle) {
         this.paths = paths;
         this.particle = particle;
         
