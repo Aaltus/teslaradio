@@ -16,7 +16,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
-import effects.SignalEmitter;
+import com.galimatias.teslaradio.world.effects.SignalEmitter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
