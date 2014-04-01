@@ -60,11 +60,8 @@ public class SignalTrajectories {
         float XYAngleIncrement = ((YXmaxAngle/nbYXrotations)*2.0f*3.141592654f/360);
         float XZAngleIncrement = ((XZmaxAngle/(nbDirections/nbYXrotations))*2.0f*3.141592654f/360);
         
-        normalVector = Vector3f.UNIT_Z;
         for(int i=0; i < nbDirections/nbYXrotations; i++)
         {                       
-
-        
             rotationPlanXZ.fromAngleAxis(i*XZAngleIncrement, Vector3f.UNIT_Y);
             rotMatrixXZ = rotationPlanXZ.toRotationMatrix();
             XZPlanVector = rotMatrixXZ.mult(trajectories.get(0).normalizeLocal());
@@ -72,9 +69,7 @@ public class SignalTrajectories {
             normalRotation.fromAngleAxis(3.14f/2.0f, Vector3f.UNIT_Y);            
             rotMatrixNormal = normalRotation.toRotationMatrix();
             normalVector = rotMatrixNormal.mult(XZPlanVector.normalizeLocal());
- 
-        
-            
+
             for(int j=0; j < nbYXrotations; j++)
             {                  
                 rotationPlanXY.fromAngleAxis(-j*XYAngleIncrement, normalVector);
