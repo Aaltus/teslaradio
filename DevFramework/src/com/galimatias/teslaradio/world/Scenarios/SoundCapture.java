@@ -100,12 +100,22 @@ public final class SoundCapture extends Scenario {
         // the number of directions
         Vector3f startPosition = drum.getLocalTranslation();
         Vector3f endPosition = micro.getLocalTranslation();
-        int totalNbDirections = 1000;
-        int nbXYDirections = 20; 
         
+        int totalNbDirections = 1000;
+        int nbXYDirections = 20;
+        
+        // Setting the direction norms to the trajectories
+        List<Float> listVecDirectionNorms = new ArrayList<Float>();
+        
+        for(int i=1; i <= nbXYDirections; i++)
+        {
+            listVecDirectionNorms.add((Float)(i*2.0f));
+        }
+                
         // Creating the trajectories
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
         directionFactory.setTrajectories(startPosition, endPosition);
+        directionFactory.setVectorsNorms(listVecDirectionNorms);
         trajectories = directionFactory.getTrajectories();
         
         
