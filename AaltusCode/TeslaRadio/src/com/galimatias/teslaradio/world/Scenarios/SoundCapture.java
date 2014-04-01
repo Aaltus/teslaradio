@@ -6,6 +6,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.jme3.animation.*;
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -24,6 +25,8 @@ public final class SoundCapture extends Scenario {
 
     private final static String TAG = "Capture";
 
+
+    private AudioNode drum_sound;
     private Spatial scene;
     private Spatial drum;
     private Spatial circles;
@@ -58,6 +61,14 @@ public final class SoundCapture extends Scenario {
         this.attachChild(scene);
 
         drum = scene.getParent().getChild("Tambour");
+
+        drum_sound = new AudioNode(assetManager, "Sounds/drum_taiko.wav", false);
+        drum_sound.setPositional(false);
+        drum_sound.setLooping(false);
+        drum_sound.setVolume(2);
+        //rootNode.attachChild(audio_gun);
+        this.attachChild(drum_sound);
+
     }
 
     /**
@@ -159,6 +170,8 @@ public final class SoundCapture extends Scenario {
               
         // Not the first time the object is touched
         firstTry = false;
+
+        drum_sound.playInstance();
         
     }
     
