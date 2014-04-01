@@ -20,6 +20,8 @@ package com.ar4android.vuforiaJME;
 
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -756,6 +758,26 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         Log.d(TAG,"Initialize Top Layout");
 
+        //Replace the current language button to show the current choosed locale language
+        int drawableToGet = 0;
+        LayerDrawable languageButtonLayerDrawable = (LayerDrawable) getResources().getDrawable(R.drawable.layer_list_language);
+
+        String currentLanguage = LanguageLocaleChanger.loadLanguageLocaleFromSharedPreferences(this);
+        if (currentLanguage.equals("fr")){
+            drawableToGet = R.drawable.ic_action_language_fr;
+        }
+        else if (currentLanguage.equals("es")) {
+            drawableToGet = R.drawable.ic_action_language_es;
+        }
+        else if (currentLanguage.equals("en")) {
+            drawableToGet = R.drawable.ic_action_language_en;
+        }
+        else if (currentLanguage.equals("de")){
+            drawableToGet = R.drawable.ic_action_language_de;
+        }
+        Drawable imageReplacing = (Drawable) getResources().getDrawable(drawableToGet);
+        boolean testfactor = languageButtonLayerDrawable.setDrawableByLayerId(R.id.language_item_layer_list, imageReplacing);
+
         //Get the rootView of the activity. This view is on the direct parent
         //to the android jme opengl view
         ViewGroup rootView = (ViewGroup) findViewById(android.R.id.content);
@@ -866,6 +888,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
 
     private void initLanguageSpecificStrings(){
+
+
 
         exitDialogTitle = getString(R.string.exit_dialog_title);
         exitDialogMessage = getString(R.string.exit_dialog_message);
