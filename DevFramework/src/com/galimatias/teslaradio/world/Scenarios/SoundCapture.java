@@ -158,64 +158,6 @@ public final class SoundCapture extends Scenario {
         
         this.attachChild(movableObjects);
     }
-      
-    public void initTrajectories(int nbDirections, int nbYXrotations)
-    {
-        int XZmaxAngle = 360;
-        int YXmaxAngle = 180;
-        
-        /**
-         * Get the position of the drum and microphone
-         */
-        Spatial drum = scene.getParent().getChild("Tambour");
-        Spatial boule_micro = scene.getParent().getChild("Boule_micro");
-        
-        Vector3f drumPosition = drum.getLocalTranslation();
-        Vector3f microPosition = boule_micro.getLocalTranslation();
-        
-        Vector3f drum2MicDirection = microPosition.subtract(drumPosition);
-        drum2MicDirection.normalize();
-        
-        Quaternion rotationPlanXY = new Quaternion();
-        Quaternion rotationPlanXZ = new Quaternion();
-        Quaternion normalRotation = new Quaternion();
-        
-        Matrix3f rotMatrixXY = new Matrix3f();
-        Matrix3f rotMatrixXZ = new Matrix3f();
-        Matrix3f rotMatrixNormal = new Matrix3f();
-        
-        drum2MicDirection.y = 0;
-        trajectories.add(drum2MicDirection);
-        
-        Vector3f normalVector = new Vector3f();
-        Vector3f XZPlanVector = new Vector3f();
-        
-        int XYAngleIncrement = (int) ((YXmaxAngle/nbYXrotations)*2.0f*3.14f);
-        int XZAngleIncrement = (int) ((XZmaxAngle/(nbDirections/nbYXrotations))*2.0f*3.14f);
-        
-        for(int i=0; i < nbDirections/nbYXrotations; i++)
-        {                       
-            rotationPlanXZ.fromAngleAxis(i*XYAngleIncrement, Vector3f.UNIT_Y);
-            rotMatrixXY = rotationPlanXZ.toRotationMatrix();
-            XZPlanVector = rotMatrixXY.mult(trajectories.elementAt(i*5));
-            
-            normalRotation.fromAngleAxis(3.14f/2.0f, Vector3f.UNIT_Y);            
-            rotMatrixNormal = normalRotation.toRotationMatrix();
-            normalVector = rotMatrixNormal.mult(trajectories.elementAt(i*5));
-                        
-            for(int j=0; j < nbYXrotations; j++)
-            {                  
-                rotationPlanXY.fromAngleAxis(j*XZAngleIncrement, normalVector);
-
-                rotMatrixXZ = rotationPlanXY.toRotationMatrix();
-                
-                XZPlanVector.y = 0;
-                trajectories.add(rotMatrixXZ.mult(XZPlanVector));
-            }
-        }
-        
-        trajectories.remove(0);
-    }
     
     public void drumTouchEffect()
     {
