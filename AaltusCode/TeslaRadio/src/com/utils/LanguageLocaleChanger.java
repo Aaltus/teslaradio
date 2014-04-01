@@ -84,7 +84,7 @@ public class LanguageLocaleChanger {
     Return the String value from sharepreferences "language" string.
     It also create a default a the value is not existing.
      */
-    private static String loadLanguageLocaleFromSharedPreferences(Activity currentActivity){
+    public static String loadLanguageLocaleFromSharedPreferences(Activity currentActivity){
 
         SharedPreferences languagepref = currentActivity.getSharedPreferences("language", Context.MODE_PRIVATE);
         String languageToLoad = languagepref.getString("language", null);

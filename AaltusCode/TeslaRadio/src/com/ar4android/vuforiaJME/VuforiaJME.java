@@ -94,7 +94,7 @@ public class VuforiaJME extends SimpleApplication  {
 	// The default method used to initialize your JME application.
 	@Override
 	public void simpleInitApp() {
-		Log.e(TAG, "simpleInitApp");
+		Log.i(TAG, "simpleInitApp");
 
 
 		// Do not display statistics or frames per second	

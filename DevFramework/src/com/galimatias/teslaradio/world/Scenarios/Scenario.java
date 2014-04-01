@@ -2,12 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package commons;
+package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.ViewState;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.asset.AssetManager;
+import com.jme3.collision.CollisionResult;
 import com.jme3.scene.Node;
 
 /**
@@ -43,5 +45,7 @@ public abstract class Scenario extends Node implements AnimEventListener{
     public abstract void onAnimCycleDone(AnimControl animControl, AnimChannel animChannel, String s);
 
     public abstract void onAnimChange(AnimControl animControl, AnimChannel animChannel, String s);
+
+    public abstract void onScenarioClick(CollisionResult closestCollisionResult);
 
 }
