@@ -1,4 +1,4 @@
-package commons;
+package com.galimatias.teslaradio.world.commons;
 
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.jme3.app.SimpleApplication;
