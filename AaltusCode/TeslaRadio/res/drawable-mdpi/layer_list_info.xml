@@ -2,11 +2,9 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:drawable="@drawable/button_bg">
-        
     </item>
     <item>
-        <bitmap android:src="@drawable/ic_info_button"
-                android:gravity="fill"
-                />
+        <bitmap android:src="@drawable/browser"
+                android:gravity="fill" />
     </item>
 </layer-list>
