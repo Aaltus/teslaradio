@@ -8,6 +8,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  *
  * @author David
  */
-public class SignalEmitter {
+public class SignalEmitter extends Node{
     
     private List<Signal> signals = new ArrayList<Signal>();
     private List<Vector3f> paths = new ArrayList<Vector3f>();
@@ -36,7 +37,8 @@ public class SignalEmitter {
 
     public void emitParticles() {
         for (Vector3f path : paths) {
-            Signal mySignal = new Signal(particle, path, 1.0f);
+            Signal mySignal = new Signal(particle, path, 10f);
+            this.attachChild(mySignal);
             signals.add(mySignal);
         }
     }
