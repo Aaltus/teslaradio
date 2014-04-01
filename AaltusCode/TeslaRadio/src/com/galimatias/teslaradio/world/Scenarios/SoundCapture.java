@@ -6,6 +6,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.jme3.animation.*;
 import com.jme3.asset.AssetManager;
+import com.jme3.collision.CollisionResult;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -24,6 +25,7 @@ public final class SoundCapture extends Scenario {
     private final static String TAG = "Capture";
 
     private Spatial scene;
+    private Spatial drum;
     private Spatial circles;
     
     private Animation animation;
@@ -54,6 +56,8 @@ public final class SoundCapture extends Scenario {
         scene.setName("SoundCapture");
         scene.scale(10.0f,10.0f,10.0f);
         this.attachChild(scene);
+
+        drum = scene.getParent().getChild("Tambour");
     }
 
     /**
@@ -112,7 +116,7 @@ public final class SoundCapture extends Scenario {
         /**
          * Get the position of the drum and microphone
          */
-        Spatial drum = scene.getParent().getChild("Tambour");
+        //drum = scene.getParent().getChild("Tambour");
         Spatial boule_micro = scene.getParent().getChild("Boule_micro");
         
         Vector3f drumPosition = drum.getLocalTranslation();
@@ -170,6 +174,29 @@ public final class SoundCapture extends Scenario {
     public void onAnimChange(AnimControl animControl, AnimChannel animChannel, String s) 
     {
         // ...do nothing
+    }
+
+    @Override
+    public void onScenarioClick(CollisionResult closestCollisionResult) {
+
+        Spatial touchedGeometry = closestCollisionResult.getGeometry();
+        while(touchedGeometry.getParent() != null)
+        {
+            //if(touchedGeometry.getParent() != null){
+                if (touchedGeometry.getParent().getName() == drum.getName())
+                {
+                    this.tambourTouchEffect();
+                    break;
+                }
+                else{
+                    touchedGeometry = touchedGeometry.getParent();
+                }
+//            }
+//            else{
+//                break;
+//            }
+        }
+
     }
 
     @Override
