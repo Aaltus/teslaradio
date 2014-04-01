@@ -101,24 +101,18 @@ public final class SoundCapture extends Scenario {
         Vector3f startPosition = drum.getLocalTranslation();
         Vector3f endPosition = micro.getLocalTranslation();
         
-        int totalNbDirections = 1000;
-        int nbXYDirections = 20;
+        int totalNbDirections = 100;
+        int nbXYDirections = 5;
         
         // Setting the direction norms to the trajectories
-        List<Float> listVecDirectionNorms = new ArrayList<Float>();
-        
-        for(int i=1; i <= nbXYDirections; i++)
-        {
-            listVecDirectionNorms.add((Float)(i*2.0f));
-        }
+        float VecDirectionNorms = 100f;
                 
         // Creating the trajectories
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
-        directionFactory.setTrajectories(startPosition, endPosition);
-        directionFactory.setVectorsNorms(listVecDirectionNorms);
+        directionFactory.setTrajectories(startPosition, endPosition, VecDirectionNorms);
         trajectories = directionFactory.getTrajectories();
-        
-        
+       
+      
         // instantiate 3d Sound particul model
         Sphere sphere = new Sphere(8, 8, 0.9f);
         Geometry soundParticle = new Geometry("particul",sphere);
@@ -172,6 +166,7 @@ public final class SoundCapture extends Scenario {
     public void drumTouchEffect()
     {
         DrumSoundEmitter.emitParticles();
+        
         movableObjects.attachChild(circles);
         
         if(firstTry == true)
