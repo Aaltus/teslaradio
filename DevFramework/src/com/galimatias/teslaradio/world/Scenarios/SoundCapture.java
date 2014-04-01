@@ -17,6 +17,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 import com.galimatias.teslaradio.world.effects.SignalEmitter;
+import com.galimatias.teslaradio.world.effects.SignalTrajectories;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -36,6 +37,7 @@ public final class SoundCapture extends Scenario {
     private AudioNode drum_sound;
     private Spatial scene;
     private Spatial drum;
+    private Spatial micro;
     private Spatial circles;
     
     private SignalEmitter DrumSoundEmitter;
@@ -43,7 +45,7 @@ public final class SoundCapture extends Scenario {
     private AnimControl mAnimControl = new AnimControl();
     private AnimChannel mAnimChannel;
 
-    private Vector<Vector3f> trajectories = new Vector();
+    private Vector<Vector3f> trajectories = new Vector<Vector3f>();
     
     private boolean firstTry = true;
        
@@ -68,6 +70,7 @@ public final class SoundCapture extends Scenario {
         this.attachChild(scene);
 
         drum = scene.getParent().getChild("Tambour");
+        micro = scene.getParent().getChild("Boule_micro");
 
         drum_sound = new AudioNode(assetManager, "Sounds/drum_taiko.wav", false);
         drum_sound.setPositional(false);
@@ -90,8 +93,21 @@ public final class SoundCapture extends Scenario {
          */
         circles = assetManager.loadModel("Models/Effet_tambour.j3o");
         circles.setName("Circles");  
-        List<Vector3f> listPaths = new ArrayList<Vector3f>();
-        listPaths.add(new Vector3f(0,40,0));
+        //List<Vector3f> listPaths = new ArrayList<Vector3f>();
+        //listPaths.add(new Vector3f(0,40,0));
+        
+        // Getting all the trajectories from the position of the mic-drums and 
+        // the number of directions
+        Vector3f startPosition = drum.getLocalTranslation();
+        Vector3f endPosition = micro.getLocalTranslation();
+        int totalNbDirections = 1000;
+        int nbXYDirections = 20; 
+        
+        // Creating the trajectories
+        SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
+        directionFactory.setTrajectories(startPosition, endPosition);
+        trajectories = directionFactory.getTrajectories();
+        
         
         // instantiate 3d Sound particul model
         Sphere sphere = new Sphere(8, 8, 0.9f);
@@ -100,7 +116,7 @@ public final class SoundCapture extends Scenario {
         soundParticul_mat.setColor("Color", ColorRGBA.Pink);
         soundParticle.setMaterial(soundParticul_mat);
                 
-        DrumSoundEmitter = new SignalEmitter(listPaths, soundParticle);
+        DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle);
         Vector3f v = scene.getParent().getChild("Tambour").getLocalTranslation();
         DrumSoundEmitter.setLocalTranslation(v.x, v.y + 20, v.y); // TO DO: utiliser le object handle blender pour position
         this.attachChild(DrumSoundEmitter);
@@ -143,11 +159,10 @@ public final class SoundCapture extends Scenario {
         this.attachChild(movableObjects);
     }
       
-    public void initTrajectories(int nbDirections)
+    public void initTrajectories(int nbDirections, int nbYXrotations)
     {
         int XZmaxAngle = 360;
-        int YXmaxAngle = 90;
-        int nbYXrotations = 5;
+        int YXmaxAngle = 180;
         
         /**
          * Get the position of the drum and microphone
@@ -175,9 +190,12 @@ public final class SoundCapture extends Scenario {
         Vector3f normalVector = new Vector3f();
         Vector3f XZPlanVector = new Vector3f();
         
+        int XYAngleIncrement = (int) ((YXmaxAngle/nbYXrotations)*2.0f*3.14f);
+        int XZAngleIncrement = (int) ((XZmaxAngle/(nbDirections/nbYXrotations))*2.0f*3.14f);
+        
         for(int i=0; i < nbDirections/nbYXrotations; i++)
         {                       
-            rotationPlanXZ.fromAngleAxis(i*(XZmaxAngle/20.0f)*2.0f*3.14f, Vector3f.UNIT_Y);
+            rotationPlanXZ.fromAngleAxis(i*XYAngleIncrement, Vector3f.UNIT_Y);
             rotMatrixXY = rotationPlanXZ.toRotationMatrix();
             XZPlanVector = rotMatrixXY.mult(trajectories.elementAt(i*5));
             
@@ -185,9 +203,9 @@ public final class SoundCapture extends Scenario {
             rotMatrixNormal = normalRotation.toRotationMatrix();
             normalVector = rotMatrixNormal.mult(trajectories.elementAt(i*5));
                         
-            for(int j=0; j < YXmaxAngle; j++)
+            for(int j=0; j < nbYXrotations; j++)
             {                  
-                rotationPlanXY.fromAngleAxis(j*(YXmaxAngle/5.0f)*2.0f*3.14f, normalVector);
+                rotationPlanXY.fromAngleAxis(j*XZAngleIncrement, normalVector);
 
                 rotMatrixXZ = rotationPlanXY.toRotationMatrix();
                 
@@ -201,7 +219,7 @@ public final class SoundCapture extends Scenario {
     
     public void drumTouchEffect()
     {
-		DrumSoundEmitter.emitParticles();
+        DrumSoundEmitter.emitParticles();
         movableObjects.attachChild(circles);
         
         if(firstTry == true)
