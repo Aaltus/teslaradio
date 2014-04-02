@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -39,6 +40,7 @@ import com.galimatias.teslaradio.ItemListFragment;
 import com.galimatias.teslaradio.LanguageDialogFragment;
 import com.galimatias.teslaradio.R;
 import com.galimatias.teslaradio.subject.SubjectContent;
+import com.google.android.noisealert.SoundMeter;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
 import com.qualcomm.QCAR.QCAR;
@@ -109,6 +111,62 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     boolean mIsStonesAndChipsDataSetActive  = false;
     
     private RelativeLayout mUILayout;
+
+    //SoundAlert specific info
+    private int mThreshold;
+    private boolean mAudioRunning = false;
+    private SoundMeter mSensor;
+    private int mHitCount = 0;
+    private int mHitCountThreshold = 5;
+    private static final int POLL_INTERVAL = 100;
+    private Handler mHandler = new Handler();
+
+//    private Runnable mSleepTask = new Runnable() {
+//        public void run() {
+//            audioStart();
+//        }
+//    };
+    private Runnable mPollTask = new Runnable() {
+        public void run() {
+            double amp = mSensor.getAmplitude();
+
+            Log.d(TAG,"mPollTask: " + Double.toString(amp));
+            if ((amp > mThreshold)) {
+                mHitCount++;
+                if (mHitCount > mHitCountThreshold){
+                    mHitCount = 0;
+                    //generate event here
+                }
+            }
+            else{
+                mHitCount = 0;
+            }
+            if(mAudioRunning){
+                mHandler.postDelayed(mPollTask, POLL_INTERVAL);
+            }
+        }
+    };
+
+    private void audioStart() {
+        mHitCount = 0;
+        mAudioRunning = true;
+        mSensor.start();
+        mHandler.postDelayed(mPollTask, POLL_INTERVAL);
+    }
+
+    private void audioStop() {
+        //mHandler.removeCallbacks(mSleepTask);
+        mHandler.removeCallbacks(mPollTask);
+        mSensor.stop();
+        Log.i(TAG, "AudioStop");
+        mAudioRunning = false;
+    }
+
+    private void audioSleep() {
+        mSensor.stop();
+        Log.i(TAG, "AudioSleep");
+        //mHandler.postDelayed(mSleepTask, 1000*mPollDelay);
+    }
 
 
     /** A helper for loading native libraries stored in "libs/armeabi*". */
@@ -640,7 +698,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         // Update the application status to start initializing application:
         updateApplicationStatus(APPSTATUS_INIT_APP);
 
-
+        mSensor = new SoundMeter();
 
 	}
 	
@@ -664,6 +722,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         }
         
         firstTimeGetImage=true;
+
+        audioStart();
+
 
 	}
 
@@ -819,6 +880,12 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     @Override public void onProgressChanged(SeekBar v, int progress, boolean isUser) {
         TextView tv = (TextView)findViewById(R.id.seekbar_value_text);
         tv.setText(Integer.toString(progress)+"%");
+
+    }
+
+    @Override public void onStop(){
+        super.onStop();
+        audioStop();
 
     }
 
