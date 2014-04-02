@@ -54,6 +54,7 @@ public class Signal extends Geometry {
             this.removeFromParent();
         }
         else {
+            this.setLocalScale(1-(distanceTraveled/path.length()));
             this.setLocalTranslation(newPos);
         }
     }
