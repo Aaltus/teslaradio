@@ -328,6 +328,8 @@ public class VuforiaJME extends SimpleApplication  {
 			mVideoBGGeom.updateLogicalState(tpf);
 			mVideoBGGeom.updateGeometricState();
 
+            soundCapture.simpleUpdate(tpf);
+
             // Update the world depending on what is in focus
             //virtualWorld.UpdateFocus(fgCam,focusableObjects);
 			//virtualWorld.UpdateViewables(rootNode,focusableObjects);
