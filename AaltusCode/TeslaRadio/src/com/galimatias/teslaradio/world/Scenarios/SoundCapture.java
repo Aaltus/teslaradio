@@ -4,6 +4,8 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.SignalEmitter;
+import com.galimatias.teslaradio.world.effects.SignalTrajectories;
 import com.jme3.animation.*;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
@@ -12,15 +14,10 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
-import com.jme3.scene.Spatial;
-import com.galimatias.teslaradio.world.effects.SignalEmitter;
-import com.galimatias.teslaradio.world.effects.SignalTrajectories;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
-import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
+
 import java.util.Vector;
 
 /**
@@ -227,6 +224,11 @@ public final class SoundCapture extends Scenario {
 //            }
         }
 
+    }
+
+    @Override
+    public void onAudioEvent() {
+        drumTouchEffect();
     }
 
     @Override

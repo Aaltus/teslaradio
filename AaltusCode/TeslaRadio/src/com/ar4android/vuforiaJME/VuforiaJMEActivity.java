@@ -113,7 +113,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     private RelativeLayout mUILayout;
 
     //SoundAlert specific info
-    private int mThreshold;
+    private int mThreshold = 10;
     private boolean mAudioRunning = false;
     private SoundMeter mSensor;
     private int mHitCount = 0;
@@ -132,14 +132,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
             Log.d(TAG,"mPollTask: " + Double.toString(amp));
             if ((amp > mThreshold)) {
-                mHitCount++;
-                if (mHitCount > mHitCountThreshold){
-                    mHitCount = 0;
-                    //generate event here
-                }
-            }
-            else{
-                mHitCount = 0;
+
+                VuforiaJME.onAudioEvent task = ((VuforiaJME) app). new onAudioEvent();
+                ((VuforiaJME) app).enqueue(task);
+
             }
             if(mAudioRunning){
                 mHandler.postDelayed(mPollTask, POLL_INTERVAL);
@@ -151,6 +147,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         mHitCount = 0;
         mAudioRunning = true;
         mSensor.start();
+        Log.i(TAG, "AudioStart");
         mHandler.postDelayed(mPollTask, POLL_INTERVAL);
     }
 
@@ -160,12 +157,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         mSensor.stop();
         Log.i(TAG, "AudioStop");
         mAudioRunning = false;
-    }
-
-    private void audioSleep() {
-        mSensor.stop();
-        Log.i(TAG, "AudioSleep");
-        //mHandler.postDelayed(mSleepTask, 1000*mPollDelay);
     }
 
 
