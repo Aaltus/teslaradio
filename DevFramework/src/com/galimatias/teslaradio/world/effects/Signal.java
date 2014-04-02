@@ -6,7 +6,10 @@ package com.galimatias.teslaradio.world.effects;
 
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 
 
 
@@ -20,6 +23,7 @@ public class Signal extends Geometry {
     private Vector3f startPoint;
     private float speed;
     private float distanceTraveled;
+    private SignalEmitter emitter;
     
     public Signal(Geometry particle, Vector3f path, float speed) {
             this.setMesh(particle.getMesh());
@@ -37,7 +41,8 @@ public class Signal extends Geometry {
         
         //Deletion of the object if its at the end of its path.
         if (distanceTraveled>path.length()) {
-            this.setCullHint(CullHint.Always);
+          //  this.setCullHint(CullHint.Always);
+            this.removeFromParent();
         }
         else {
             this.setLocalTranslation(newPos);
