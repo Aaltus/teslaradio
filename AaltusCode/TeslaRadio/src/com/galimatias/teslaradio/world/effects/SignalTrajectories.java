@@ -33,15 +33,12 @@ public class SignalTrajectories {
      * @param startPosition : The position of the first object in the world.
      * @param endPosition : The position of the receiving object in the world.
      */
-    public void setTrajectories(Vector3f startPosition, Vector3f endPosition, float vectorNorms)
+    public void setTrajectories(Vector3f startDirection, float vectorNorms)
     {
         trajectories.clear();
 
         float XZmaxAngle = 360f;
         float YXmaxAngle = 90f;
-
-        Vector3f start2EndDirection = endPosition.subtract(startPosition);
-        start2EndDirection.normalize();
 
         Quaternion rotationPlanXY = new Quaternion();
         Quaternion rotationPlanXZ = new Quaternion();
@@ -51,8 +48,8 @@ public class SignalTrajectories {
         Matrix3f rotMatrixXZ = new Matrix3f();
         Matrix3f rotMatrixNormal = new Matrix3f();
 
-        start2EndDirection.y = 0;
-        trajectories.add(start2EndDirection);
+        startDirection.y = 0;
+        trajectories.add(startDirection);
 
         Vector3f normalVector = new Vector3f();
         Vector3f XZPlanVector = new Vector3f();
