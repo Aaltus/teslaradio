@@ -10,16 +10,24 @@ import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Sphere;
+import com.galimatias.teslaradio.world.effects.SignalEmitter;
+import com.galimatias.teslaradio.world.effects.SignalTrajectories;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 /**
  *
  * @author Alexandre Hamel
- * 
+ *
  * This class contains all the models and the animations related to sound capture
- * 
+ *
  */
 public final class SoundCapture extends Scenario {
 
@@ -29,17 +37,18 @@ public final class SoundCapture extends Scenario {
     private AudioNode drum_sound;
     private Spatial scene;
     private Spatial drum;
+    private Spatial micro;
     private Spatial circles;
-    
+
+    private SignalEmitter DrumSoundEmitter;
     private Animation animation;
     private AnimControl mAnimControl = new AnimControl();
     private AnimChannel mAnimChannel;
 
-    private int nbTrajectories = 100;
-    private Vector3f[] trajectories = new Vector3f[nbTrajectories];
-    
+    private Vector<Vector3f> trajectories = new Vector<Vector3f>();
+
     private boolean firstTry = true;
-       
+
     public SoundCapture(AssetManager assetManager)
     {
         super(assetManager);
@@ -61,6 +70,7 @@ public final class SoundCapture extends Scenario {
         this.attachChild(scene);
 
         drum = scene.getParent().getChild("Tambour");
+        micro = scene.getParent().getChild("Boule_micro");
 
         drum_sound = new AudioNode(assetManager, "Sounds/drum_taiko.wav", false);
         drum_sound.setPositional(false);
@@ -82,7 +92,38 @@ public final class SoundCapture extends Scenario {
          * TODO : Load the sound particules models
          */
         circles = assetManager.loadModel("Models/Effet_tambour.j3o");
-        circles.setName("Circles");  
+        circles.setName("Circles");
+        //List<Vector3f> listPaths = new ArrayList<Vector3f>();
+        //listPaths.add(new Vector3f(0,40,0));
+
+        // Getting all the trajectories from the position of the mic-drums and 
+        // the number of directions
+        Vector3f startPosition = drum.getWorldTranslation();
+        Vector3f endPosition = micro.getWorldTranslation();
+
+        int totalNbDirections = 50;
+        int nbXYDirections = 5;
+
+        // Setting the direction norms to the trajectories
+        float VecDirectionNorms = 100f;
+
+        // Creating the trajectories
+        SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
+        directionFactory.setTrajectories(startPosition, endPosition, VecDirectionNorms);
+        trajectories = directionFactory.getTrajectories();
+
+
+        // instantiate 3d Sound particul model
+        Sphere sphere = new Sphere(8, 8, 0.9f);
+        Geometry soundParticle = new Geometry("particul",sphere);
+        Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        soundParticul_mat.setColor("Color", ColorRGBA.Pink);
+        soundParticle.setMaterial(soundParticul_mat);
+
+        DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle);
+        Vector3f v = drum.getWorldTranslation();
+        this.attachChild(DrumSoundEmitter);
+        DrumSoundEmitter.setLocalTranslation(v.x, v.y + 20, v.z); // TO DO: utiliser le object handle blender pour position
     }
 
     /**
@@ -93,70 +134,42 @@ public final class SoundCapture extends Scenario {
         circles.scale(10.0f, 10.0f, 10.0f);
         Quaternion rot = new Quaternion();
         rot.fromAngleAxis(3.14f, new Vector3f(1.0f,0.0f,0.0f));
-        
+
         Material circleMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         circleMat.setColor("Color", ColorRGBA.Pink);
         circles.setMaterial(circleMat);
 
-        float duration = 5.0f; 
+        float duration = 5.0f;
         AnimationFactory animationFactory = new AnimationFactory(duration,"DrumEffect");
-                
-        animationFactory.addTimeTranslation(0.0f, new Vector3f(0.0f, 20.0f, 0.0f));
+
+        Vector3f v = drum.getWorldTranslation();
+        animationFactory.addTimeTranslation(0.0f, new Vector3f(v.x, v.y + 20.0f, v.z));
         animationFactory.addTimeRotation(0.0f, rot);
         animationFactory.addTimeScale(0.0f, new Vector3f(0.2f, 0.0f, 0.2f));
         animationFactory.addTimeScale(5.0f, new Vector3f(10.0f, 0.0f, 10.0f));
-        
+
         animation = animationFactory.buildAnimation();
-        
+
         mAnimControl.addAnim(animation);
         circles.addControl(mAnimControl);
-   
+
         mAnimChannel = mAnimControl.createChannel();
     }
-     
+
     @Override
     public void initAllMovableObjects()
     {
         initCircles();
-        
+
         this.attachChild(movableObjects);
     }
-      
-    public void initTrajectories(float nbDirections)
+
+    public void drumTouchEffect()
     {
-        /**
-         * Get the position of the drum and microphone
-         */
-        //drum = scene.getParent().getChild("Tambour");
-        Spatial boule_micro = scene.getParent().getChild("Boule_micro");
-        
-        Vector3f drumPosition = drum.getLocalTranslation();
-        Vector3f microPosition = boule_micro.getLocalTranslation();
-        
-        Vector3f drum2MicDirection = microPosition.subtract(drumPosition);
-        drum2MicDirection.normalize();
-       
-        float angleHeight = drum2MicDirection.angleBetween(new Vector3f(drumPosition.x, 0.0f, drumPosition.z));
-        float angleWidth = drum2MicDirection.angleBetween(new Vector3f(drumPosition.x, drumPosition.y, 0.0f));
-        
-        Quaternion rotationHeight = new Quaternion();
-        Quaternion rotationWidth = new Quaternion();
-        
-        for(int i=0; i < 20; i++)
-        {
-            for(int j=0; j < 5; j++)
-            {   
-                rotationHeight.fromAngleAxis(j*(90.0f/5.0f), trajectories[(i*5)-5]);
-                rotationWidth.fromAngleAxis(i*angleWidth, Vector3f.UNIT_Y);
-                trajectories[i*(j+1)] = Vector3f.ZERO;
-            }
-        }
-    }
-    
-    public void tambourTouchEffect()
-    {
+        DrumSoundEmitter.emitParticles();
+
         movableObjects.attachChild(circles);
-        
+
         if(firstTry == true)
             mAnimControl.addListener(this);
 
@@ -167,16 +180,16 @@ public final class SoundCapture extends Scenario {
         mAnimChannel.setAnim("DrumEffect");
         mAnimChannel.setLoopMode(LoopMode.DontLoop);
         mAnimChannel.setSpeed(20.0f);
-              
+
         // Not the first time the object is touched
         firstTry = false;
 
         drum_sound.playInstance();
-        
+
     }
-    
+
     @Override
-    public void onAnimCycleDone(AnimControl animControl, AnimChannel animChannel, String s) 
+    public void onAnimCycleDone(AnimControl animControl, AnimChannel animChannel, String s)
     {
         // ...do nothing
         if(mAnimChannel.getAnimationName().equals("DrumEffect"))
@@ -184,7 +197,7 @@ public final class SoundCapture extends Scenario {
     }
 
     @Override
-    public void onAnimChange(AnimControl animControl, AnimChannel animChannel, String s) 
+    public void onAnimChange(AnimControl animControl, AnimChannel animChannel, String s)
     {
         // ...do nothing
     }
@@ -196,14 +209,14 @@ public final class SoundCapture extends Scenario {
         while(touchedGeometry.getParent() != null)
         {
             //if(touchedGeometry.getParent() != null){
-                if (touchedGeometry.getParent().getName() == drum.getName())
-                {
-                    this.tambourTouchEffect();
-                    break;
-                }
-                else{
-                    touchedGeometry = touchedGeometry.getParent();
-                }
+            if (touchedGeometry.getParent().getName() == drum.getName())
+            {
+                this.drumTouchEffect();
+                break;
+            }
+            else{
+                touchedGeometry = touchedGeometry.getParent();
+            }
 //            }
 //            else{
 //                break;
@@ -217,5 +230,9 @@ public final class SoundCapture extends Scenario {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public void simpleUpdate(float tpf) {
+
+        DrumSoundEmitter.simpleUpdate(tpf);
+    }
 
 }
