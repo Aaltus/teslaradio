@@ -220,6 +220,11 @@ public class VuforiaJME extends SimpleApplication  {
 
 
         // You must add a light to make the model visible
+        DirectionalLight sun = new DirectionalLight();
+        sun.setDirection(new Vector3f(0.f,0.f,-1.0f));
+        rootNode.addLight(sun);
+
+        // You must add a light to make the model visible
         DirectionalLight back = new DirectionalLight();
         back.setDirection(new Vector3f(0.f,-1.f,1.0f));
         rootNode.addLight(back);
