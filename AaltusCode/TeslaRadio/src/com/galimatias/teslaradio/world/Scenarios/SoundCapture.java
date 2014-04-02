@@ -10,16 +10,17 @@ import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Sphere;
 import com.galimatias.teslaradio.world.effects.SignalEmitter;
 import com.galimatias.teslaradio.world.effects.SignalTrajectories;
-import java.util.ArrayList;
-import java.util.List;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
+import com.jme3.effect.shapes.EmitterSphereShape;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.shape.Sphere;
 import java.util.Vector;
 
 /**
@@ -32,7 +33,6 @@ import java.util.Vector;
 public final class SoundCapture extends Scenario {
 
     private final static String TAG = "Capture";
-
 
     private AudioNode drum_sound;
     private Spatial scene;
@@ -66,7 +66,7 @@ public final class SoundCapture extends Scenario {
     {
         scene = assetManager.loadModel("Models/SoundCapture.j3o");
         scene.setName("SoundCapture");
-        scene.scale(10.0f,10.0f,10.0f);
+        scene.scale(10.0f, 10.0f, 10.0f);
         this.attachChild(scene);
 
         drum = scene.getParent().getChild("Tambour");
@@ -101,29 +101,33 @@ public final class SoundCapture extends Scenario {
         Vector3f startPosition = drum.getWorldTranslation();
         Vector3f endPosition = micro.getWorldTranslation();
 
+        Vector3f drumMicDirection = endPosition.subtract(startPosition);
+
         int totalNbDirections = 50;
         int nbXYDirections = 5;
 
-        // Setting the direction norms to the trajectories
-        float VecDirectionNorms = 100f;
+        // Setting the direction norms and the speed displacement to the trajectories
+        float VecDirectionNorms = 80f;
+        float SoundParticles_Speed = 35f;
 
         // Creating the trajectories
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
-        directionFactory.setTrajectories(startPosition, endPosition, VecDirectionNorms);
+        directionFactory.setTrajectories(drumMicDirection, VecDirectionNorms);
         trajectories = directionFactory.getTrajectories();
-
 
         // instantiate 3d Sound particul model
         Sphere sphere = new Sphere(8, 8, 0.9f);
         Geometry soundParticle = new Geometry("particul",sphere);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         soundParticul_mat.setColor("Color", ColorRGBA.Pink);
+
         soundParticle.setMaterial(soundParticul_mat);
 
-        DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle);
+        DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle,SoundParticles_Speed );
         Vector3f v = drum.getWorldTranslation();
         this.attachChild(DrumSoundEmitter);
         DrumSoundEmitter.setLocalTranslation(v.x, v.y + 20, v.z); // TO DO: utiliser le object handle blender pour position
+
     }
 
     /**
