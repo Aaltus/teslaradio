@@ -105,8 +105,9 @@ public final class SoundCapture extends Scenario {
         int totalNbDirections = 50;
         int nbXYDirections = 5;
         
-        // Setting the direction norms to the trajectories
-        float VecDirectionNorms = 100f;
+        // Setting the direction norms and the speed displacement to the trajectories
+        float VecDirectionNorms = 80f;
+        float SoundParticles_Speed = 35f;
                 
         // Creating the trajectories
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
@@ -118,9 +119,10 @@ public final class SoundCapture extends Scenario {
         Geometry soundParticle = new Geometry("particul",sphere);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         soundParticul_mat.setColor("Color", ColorRGBA.Pink);
+
         soundParticle.setMaterial(soundParticul_mat);
                 
-        DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle);
+        DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle,SoundParticles_Speed );
         Vector3f v = drum.getWorldTranslation();
         this.attachChild(DrumSoundEmitter);
         DrumSoundEmitter.setLocalTranslation(v.x, v.y + 20, v.z); // TO DO: utiliser le object handle blender pour position
