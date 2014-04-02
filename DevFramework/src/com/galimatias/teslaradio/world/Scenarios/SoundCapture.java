@@ -15,10 +15,12 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.galimatias.teslaradio.world.effects.SignalEmitter;
 import com.galimatias.teslaradio.world.effects.SignalTrajectories;
+import com.galimatias.teslaradio.world.effects.TextBoxes;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import java.util.Vector;
 
@@ -34,6 +36,7 @@ public final class SoundCapture extends Scenario {
     private final static String TAG = "Capture";
 
     private AudioNode drum_sound;
+    private Node guiNode;
     private Spatial scene;
     private Spatial drum;
     private Spatial micro;
@@ -77,6 +80,11 @@ public final class SoundCapture extends Scenario {
         drum_sound.setVolume(2);
         //rootNode.attachChild(audio_gun);
         this.attachChild(drum_sound);
+        
+        TextBoxes text = new TextBoxes(assetManager);
+        text.initText("Hello World", 100.0f, new Vector3f(0.0f,100.0f,0.0f), ColorRGBA.Magenta);
+        text.setName("text");
+        this.attachChild(text);
 
     }
 
@@ -118,14 +126,14 @@ public final class SoundCapture extends Scenario {
         Sphere sphere = new Sphere(8, 8, 0.9f);
         Geometry soundParticle = new Geometry("particul",sphere);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        soundParticul_mat.setColor("Color", ColorRGBA.Pink);
+        soundParticul_mat.setColor("Color", ColorRGBA.Blue);
 
         soundParticle.setMaterial(soundParticul_mat);
                 
         DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle,SoundParticles_Speed );
         Vector3f v = drum.getWorldTranslation();
         this.attachChild(DrumSoundEmitter);
-        DrumSoundEmitter.setLocalTranslation(v.x, v.y + 20, v.z); // TO DO: utiliser le object handle blender pour position
+        DrumSoundEmitter.setLocalTranslation(v.x, v.y + 21f, v.z); // TO DO: utiliser le object handle blender pour position
 
     }
 
@@ -139,7 +147,7 @@ public final class SoundCapture extends Scenario {
         rot.fromAngleAxis(3.14f, new Vector3f(1.0f,0.0f,0.0f));
         
         Material circleMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        circleMat.setColor("Color", ColorRGBA.Pink);
+        circleMat.setColor("Color", ColorRGBA.Gray);
         circles.setMaterial(circleMat);
 
         float duration = 5.0f; 
