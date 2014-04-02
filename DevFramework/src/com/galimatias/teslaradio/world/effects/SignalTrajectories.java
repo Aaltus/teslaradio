@@ -4,10 +4,12 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
+import com.jme3.cinematic.MotionPath;
+import com.jme3.cinematic.events.MotionTrack;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Spatial;
+import com.jme3.scene.plugins.blender.curves.BezierCurve;
 import java.util.List;
 import java.util.Vector;
 
@@ -26,22 +28,21 @@ public class SignalTrajectories {
         this.nbDirections = nbDirections;
         this.nbYXrotations = nbYXrotations;
     }
-    
+
     /**
      * Generates a bunch of sphere like directions vectors for generating a
      * particle emittter.
      * @param startPosition : The position of the first object in the world.
      * @param endPosition : The position of the receiving object in the world.
      */
-    public void setTrajectories(Vector3f startPosition, Vector3f endPosition, float vectorNorms)
+    public void setTrajectories(Vector3f startDirection, float vectorNorms)
     {
         trajectories.clear();
         
         float XZmaxAngle = 360f;
         float YXmaxAngle = 90f;
-        
-        Vector3f start2EndDirection = endPosition.subtract(startPosition);
-        start2EndDirection.normalize();
+       
+        startDirection.normalize();
         
         Quaternion rotationPlanXY = new Quaternion();
         Quaternion rotationPlanXZ = new Quaternion();
@@ -51,8 +52,8 @@ public class SignalTrajectories {
         Matrix3f rotMatrixXZ = new Matrix3f();
         Matrix3f rotMatrixNormal = new Matrix3f();
         
-        start2EndDirection.y = 0;
-        trajectories.add(start2EndDirection);
+        startDirection.y = 0;
+        trajectories.add(startDirection);
         
         Vector3f normalVector = new Vector3f();
         Vector3f XZPlanVector = new Vector3f();
@@ -76,14 +77,18 @@ public class SignalTrajectories {
 
                 rotMatrixXY = rotationPlanXY.toRotationMatrix();
                 
-                trajectories.add((rotMatrixXY.mult(XZPlanVector)).normalizeLocal().mult(vectorNorms));
-                
+                trajectories.add((rotMatrixXY.mult(XZPlanVector)).normalizeLocal().mult(vectorNorms));  
             }
         }
         
         trajectories.remove(0);
     }
     
+    public List<Vector3f> getCurvedPath(BezierCurve bezier)
+    {
+        List<Vector3f> controlPts = bezier.getControlPoints();
+        return controlPts;
+    }
 
     /**
      * Get the trajectories that were created.
