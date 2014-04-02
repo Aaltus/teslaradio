@@ -4,16 +4,8 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
-import com.jme3.cinematic.MotionPath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
-import com.jme3.scene.shape.Sphere;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState;
-import java.util.Vector;
-
-
 
 /**
  *
@@ -22,39 +14,28 @@ import java.util.Vector;
 public class Signal extends Geometry {
     
     private Vector3f path;
-    
-    private Vector<Vector3f> curvedPath = new Vector<Vector3f>();
-    private boolean isCurved;
-    
+    private Vector3f curvedPath;
     private Vector3f startPoint;
     private float speed;
     private float distanceTraveled;
+    private SignalEmitter emitter;
     
     public Signal(Geometry particle, Vector3f path, float speed) {
             this.setMesh(particle.getMesh());
             this.setMaterial(particle.getMaterial());
             this.speed = speed;
             this.path = path;
-            this.isCurved = false;
     }
     
-    public Signal(Geometry particle, Vector<Vector3f> curvedPath, float speed)
+    public Signal(Geometry particle, Vector3f path)
     {
         this.setMesh(particle.getMesh());
         this.setMaterial(particle.getMaterial());
-        curvedPath.equals(curvedPath);
-        this.speed = speed;
-        this.isCurved = true;
+        this.curvedPath = path;
     }
     
-    private void updateCurvedPosition(float tpf)
-    {
+    public void updatePosition(float tpf) {
         
-        
-    }
-    private void updateLinearPosition(float tpf)
-    {
-            
         Vector3f currentPos = this.getLocalTranslation();
         float displacement = tpf*speed;
         Vector3f newPos = currentPos.add(path.divide(path.length()).mult(displacement));
@@ -66,23 +47,7 @@ public class Signal extends Geometry {
             this.removeFromParent();
         }
         else {
-            // set scaling
-            this.setLocalScale(1-(distanceTraveled/path.length()));
-            // set position
             this.setLocalTranslation(newPos);
-        }    
-        
-    }
-    
-    public void updatePosition(float tpf) {
-
-        if(isCurved)
-        {
-            updateCurvedPosition(tpf);
-        }
-        else
-        {
-            updateLinearPosition(tpf);
         }
     }
     
