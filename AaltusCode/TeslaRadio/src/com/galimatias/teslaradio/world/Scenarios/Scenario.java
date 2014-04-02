@@ -10,6 +10,7 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.asset.AssetManager;
 import com.jme3.collision.CollisionResult;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 
 /**

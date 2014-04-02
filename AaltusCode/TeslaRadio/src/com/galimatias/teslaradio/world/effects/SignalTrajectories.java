@@ -4,10 +4,12 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
+import com.jme3.cinematic.MotionPath;
+import com.jme3.cinematic.events.MotionTrack;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Spatial;
+import com.jme3.scene.plugins.blender.curves.BezierCurve;
 import java.util.List;
 import java.util.Vector;
 
@@ -39,6 +41,8 @@ public class SignalTrajectories {
 
         float XZmaxAngle = 360f;
         float YXmaxAngle = 90f;
+
+        startDirection.normalize();
 
         Quaternion rotationPlanXY = new Quaternion();
         Quaternion rotationPlanXZ = new Quaternion();
@@ -74,13 +78,17 @@ public class SignalTrajectories {
                 rotMatrixXY = rotationPlanXY.toRotationMatrix();
 
                 trajectories.add((rotMatrixXY.mult(XZPlanVector)).normalizeLocal().mult(vectorNorms));
-
             }
         }
 
         trajectories.remove(0);
     }
 
+    public List<Vector3f> getCurvedPath(BezierCurve bezier)
+    {
+        List<Vector3f> controlPts = bezier.getControlPoints();
+        return controlPts;
+    }
 
     /**
      * Get the trajectories that were created.
