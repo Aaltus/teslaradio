@@ -39,6 +39,8 @@ import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
 
+import java.util.concurrent.Callable;
+
 public class VuforiaJME extends SimpleApplication  {
 
 	private static final String TAG = "VuforiaJME";
@@ -204,7 +206,7 @@ public class VuforiaJME extends SimpleApplication  {
         Log.d(TAG,"initForegroundCamera with width : " + Integer.toString(settings.getWidth()) + " height: " + Integer.toString(settings.getHeight()) );
 		fgCam = new Camera(settingsWidth, settingsHeight);
 		
-		fgCam.setViewPort(0, 1.0f, 0.f,1.0f);
+		fgCam.setViewPort(0, 1.0f, 0.f, 1.0f);
 		fgCam.setLocation(new Vector3f(0f, 0f, 0f));
 		fgCam.setAxes(new Vector3f(-1f, 0f, 0f), new Vector3f(0f, 1f, 0f), new Vector3f(0f, 0f, -1f));
 		fgCam.setFrustumPerspective(fovY, settingsWidth / settingsHeight, 1000, 10000);
@@ -213,7 +215,7 @@ public class VuforiaJME extends SimpleApplication  {
 		fgVP.attachScene(rootNode);
 		//color,depth,stencil
 		fgVP.setClearFlags(false, true, false);
-		fgVP.setBackgroundColor(new ColorRGBA(0,0,0,1));
+		fgVP.setBackgroundColor(new ColorRGBA(0, 0, 0, 1));
 //		fgVP.setBackgroundColor(new ColorRGBA(0,0,0,0));
 	}
 
@@ -222,16 +224,16 @@ public class VuforiaJME extends SimpleApplication  {
 
         // You must add a light to make the model visible
         DirectionalLight sun = new DirectionalLight();
-        sun.setDirection(new Vector3f(0.f,0.f,-1.0f));
+        sun.setDirection(new Vector3f(0.f, 0.f, -1.0f));
         rootNode.addLight(sun);
 
         // You must add a light to make the model visible
         DirectionalLight back = new DirectionalLight();
-        back.setDirection(new Vector3f(0.f,-1.f,1.0f));
+        back.setDirection(new Vector3f(0.f, -1.f, 1.0f));
         rootNode.addLight(back);
 
         DirectionalLight front = new DirectionalLight();
-        front.setDirection(new Vector3f(0.f,1.f,1.0f));
+        front.setDirection(new Vector3f(0.f, 1.f, 1.0f));
         rootNode.addLight(front);
 
         /** A white ambient light source. */
@@ -310,9 +312,9 @@ public class VuforiaJME extends SimpleApplication  {
 
    		 //left,up,direction
 		 fgCam.setAxes(
-				 	new Vector3f(-cam_right_x,-cam_right_y,-cam_right_z),
-			 		new Vector3f(-cam_up_x,-cam_up_y,-cam_up_z),
-			 		new Vector3f(cam_dir_x,cam_dir_y,cam_dir_z));
+                 new Vector3f(-cam_right_x, -cam_right_y, -cam_right_z),
+                 new Vector3f(-cam_up_x, -cam_up_y, -cam_up_z),
+                 new Vector3f(cam_dir_x, cam_dir_y, cam_dir_z));
 	}
 		 
 	// This method retrieves the preview images from the Android world and puts them into a JME image.
@@ -415,6 +417,15 @@ public class VuforiaJME extends SimpleApplication  {
 		}
 
 
+
+    public class onAudioEvent implements Callable{
+        @Override
+        public Object call() throws Exception {
+
+            soundCapture.onAudioEvent();
+            return null;
+        }
+    }
 
 
 //    //Here is a model coming from the web
