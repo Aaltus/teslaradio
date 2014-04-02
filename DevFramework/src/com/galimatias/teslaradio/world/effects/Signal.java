@@ -4,15 +4,8 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
-import com.jme3.cinematic.MotionPath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
-import com.jme3.scene.shape.Sphere;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState;
-
-
 
 /**
  *
