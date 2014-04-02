@@ -4,6 +4,7 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
+import com.jme3.cinematic.MotionPath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Sphere;
@@ -17,6 +18,7 @@ import com.jme3.scene.shape.Sphere;
 public class Signal extends Geometry {
     
     private Vector3f path;
+    private Vector3f curvedPath;
     private Vector3f startPoint;
     private float speed;
     private float distanceTraveled;
@@ -26,6 +28,13 @@ public class Signal extends Geometry {
             this.setMaterial(particle.getMaterial());
             this.speed = speed;
             this.path = path;
+    }
+    
+    public Signal(Geometry particle, Vector3f path)
+    {
+        this.setMesh(particle.getMesh());
+        this.setMaterial(particle.getMaterial());
+        this.curvedPath = path;
     }
     
     public void updatePosition(float tpf) {
