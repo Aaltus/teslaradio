@@ -48,13 +48,15 @@ public final class SoundCapture extends Scenario {
     private AnimChannel mAnimChannel;
 
     private Vector<Vector3f> trajectories = new Vector<Vector3f>();
+    private Vector3f drumPosition;
+    private Vector3f micPosition;
            
     private boolean firstTry = true;
        
     public SoundCapture(AssetManager assetManager)
     {
         super(assetManager);
-
+        
         loadUnmovableObjects();
         loadMovableObjects();
     }
@@ -73,6 +75,9 @@ public final class SoundCapture extends Scenario {
 
         drum = scene.getParent().getChild("Tambour");
         micro = scene.getParent().getChild("Boule_micro");
+        
+        drumPosition = drum.getWorldTranslation();
+        micPosition = micro.getWorldTranslation();
 
         drum_sound = new AudioNode(assetManager, "Sounds/drum_taiko.wav", false);
         drum_sound.setPositional(false);
@@ -81,8 +86,13 @@ public final class SoundCapture extends Scenario {
         //rootNode.attachChild(audio_gun);
         this.attachChild(drum_sound);
         
+        Quaternion textRotation = new Quaternion();
+        textRotation.fromAngleAxis(-3.14159f/2.0f, Vector3f.UNIT_Y);
+        
+        Vector3f v = new Vector3f(micPosition.x, micPosition.y + 5.0f, micPosition.z);
+        
         TextBoxes text = new TextBoxes(assetManager);
-        text.initText("Hello World", 100.0f, new Vector3f(0.0f,100.0f,0.0f), ColorRGBA.Magenta);
+        text.initText("Hello World", 10.0f, v, textRotation, ColorRGBA.Magenta);
         text.setName("text");
         this.attachChild(text);
 
@@ -104,11 +114,8 @@ public final class SoundCapture extends Scenario {
         //listPaths.add(new Vector3f(0,40,0));
         
         // Getting all the trajectories from the position of the mic-drums and 
-        // the number of directions
-        Vector3f startPosition = drum.getWorldTranslation();
-        Vector3f endPosition = micro.getWorldTranslation();
-        
-        Vector3f drumMicDirection = endPosition.subtract(startPosition);        
+        // the number of directions        
+        Vector3f drumMicDirection = micPosition.subtract(drumPosition);        
                         
         int totalNbDirections = 50;
         int nbXYDirections = 5;
