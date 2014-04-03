@@ -42,6 +42,9 @@ public final class SoundCapture extends Scenario {
     private Spatial micro;
     private Spatial circles;
     
+    private Spatial drumHandleOut;
+    private Spatial micHandleIn;
+    
     private SignalEmitter DrumSoundEmitter;
     private Animation animation;
     private AnimControl mAnimControl = new AnimControl();
@@ -50,6 +53,8 @@ public final class SoundCapture extends Scenario {
     private Vector<Vector3f> trajectories = new Vector<Vector3f>();
     private Vector3f drumPosition;
     private Vector3f micPosition;
+    private Vector3f drumHandleOutPosition;
+    private Vector3f micHandleInPosition;
            
     private boolean firstTry = true;
        
@@ -69,15 +74,21 @@ public final class SoundCapture extends Scenario {
     protected void loadUnmovableObjects()
     {
         scene = assetManager.loadModel("Models/SoundCapture.j3o");
+           
+        scene = assetManager.loadModel("Models/SoundCapture.j3o");
         scene.setName("SoundCapture");
         scene.scale(10.0f,10.0f,10.0f);
         this.attachChild(scene);
 
         drum = scene.getParent().getChild("Tambour");
         micro = scene.getParent().getChild("Boule_micro");
+        drumHandleOut = scene.getParent().getChild("Drum_Output_Handle");
+        micHandleIn = scene.getParent().getChild("Mic_Input_Handle");
         
         drumPosition = drum.getWorldTranslation();
         micPosition = micro.getWorldTranslation();
+        drumHandleOutPosition = drumHandleOut.getWorldTranslation();
+        micHandleInPosition = micHandleIn.getWorldTranslation();
 
         drum_sound = new AudioNode(assetManager, "Sounds/drum_taiko.wav", false);
         drum_sound.setPositional(false);
@@ -115,7 +126,7 @@ public final class SoundCapture extends Scenario {
         
         // Getting all the trajectories from the position of the mic-drums and 
         // the number of directions        
-        Vector3f drumMicDirection = micPosition.subtract(drumPosition);        
+        Vector3f drumMicDirection = micHandleInPosition.subtract(drumHandleOutPosition);        
                         
         int totalNbDirections = 50;
         int nbXYDirections = 5;
@@ -137,7 +148,7 @@ public final class SoundCapture extends Scenario {
 
         soundParticle.setMaterial(soundParticul_mat);
                 
-        DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle,SoundParticles_Speed );
+        DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle,SoundParticles_Speed, ColorRGBA.Blue );
         Vector3f v = drum.getWorldTranslation();
         this.attachChild(DrumSoundEmitter);
         DrumSoundEmitter.setLocalTranslation(v.x, v.y + 21f, v.z); // TO DO: utiliser le object handle blender pour position
