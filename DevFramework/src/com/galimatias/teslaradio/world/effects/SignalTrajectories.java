@@ -10,6 +10,7 @@ import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.plugins.blender.curves.BezierCurve;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
@@ -44,6 +45,20 @@ public class SignalTrajectories {
        
         startDirection.normalize();
         
+        //Algo to ensure a straight beam of particles along our starting signal
+        //Find the vertical angle of startDirection
+        float vAngle = (float) Math.asin(startDirection.y/startDirection.length());
+        
+        float XYAngleIncrement = ((YXmaxAngle/nbYXrotations)*2.0f*3.141592654f/360);
+        float XZAngleIncrement = ((XZmaxAngle/(nbDirections/nbYXrotations))*2.0f*3.141592654f/360);
+        
+        float nIncrementInVertical = (float)Math.ceil(vAngle/XYAngleIncrement);
+        float skewingFactor = (float) (vAngle/(nIncrementInVertical*XYAngleIncrement));
+        XYAngleIncrement = XYAngleIncrement*skewingFactor;
+        
+        //Index of the main beam
+        int iMainBeam = (int) nIncrementInVertical;
+        
         Quaternion rotationPlanXY = new Quaternion();
         Quaternion rotationPlanXZ = new Quaternion();
         Quaternion normalRotation = new Quaternion();
@@ -57,9 +72,6 @@ public class SignalTrajectories {
         
         Vector3f normalVector = new Vector3f();
         Vector3f XZPlanVector = new Vector3f();
-        
-        float XYAngleIncrement = ((YXmaxAngle/nbYXrotations)*2.0f*3.141592654f/360);
-        float XZAngleIncrement = ((XZmaxAngle/(nbDirections/nbYXrotations))*2.0f*3.141592654f/360);
         
         for(int i=0; i < nbDirections/nbYXrotations; i++)
         {                       
@@ -82,6 +94,8 @@ public class SignalTrajectories {
         }
         
         trajectories.remove(0);
+        
+        Collections.swap(trajectories, 0, iMainBeam);
     }
     
     public List<Vector3f> getCurvedPath(BezierCurve bezier)
