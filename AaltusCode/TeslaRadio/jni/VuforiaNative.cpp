@@ -494,19 +494,19 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
 //            jmethodID attachShootables = env->GetMethodID(activityClass,"attachShootables", "()V");
 //            env->CallVoidMethod(obj,attachShootables);
-            LOGE("X=%f Y=%f Z=%f",cam_x,cam_y,cam_z);
+
             if(tIdx == 0)
             {
 
                 jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
                 env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
-
+            }
             //JNIEnv *env;
             //jvm->AttachCurrentThread((void **)&env, NULL);
 
            // jclass activityClass = env->GetObjectClass(obj);
-           LOGE("X=%f Y=%f Z=%f",cam_x,cam_y,cam_z);
-            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFFF)V");
+
+            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFFI)V");
             env->CallVoidMethod(obj,setCameraPoseMethod,cam_x,cam_y,cam_z,tIdx);
             LOGE("X=%f Y=%f Z=%f",cam_x,cam_y,cam_z);
             if(tIdx == 0)
@@ -519,6 +519,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
            // jvm->DetachCurrentThread();
 
            // LOG("Got tracking...");
+
 
         }
 //    }
