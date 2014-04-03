@@ -52,6 +52,8 @@
 #include <QCAR/DataSet.h>
 #include <QCAR/Image.h>
 
+#include "SampleMath.h"
+
 
 #include "MathUtils.h"
 
@@ -316,7 +318,17 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
     // Get the state from QCAR and mark the beginning of a rendering section
     QCAR::State state = QCAR::Renderer::getInstance().begin();
-    
+    static QCAR::Matrix44F centerInv;
+     //get rotation
+    static float cam_right_x =0;
+    static float cam_right_y =0;
+    static float cam_right_z =0;
+    static float cam_up_x = 0;
+    static float cam_up_y= 0;
+    static float cam_up_z =0;
+    static float cam_dir_x =0;
+    static float cam_dir_y =0;
+    static float cam_dir_z =0;
 
     // Explicitly render the Video Background
   //  QCAR::Renderer::getInstance().drawVideoBackground();
@@ -346,7 +358,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
             strcpy(logTrackableName,loggingPrefix);
             strcat(logTrackableName,trackableNameChar);
             const char * trackableToPrint = (const char *)logTrackableName;
-            LOGD(trackableToPrint);
+            LOGE(trackableToPrint);
 
 
             QCAR::Matrix44F modelViewMatrix =
@@ -356,22 +368,37 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
             QCAR::Matrix44F inverseMV = MathUtil::Matrix44FInverse(modelViewMatrix);
             //QCAR::Matrix44F invTranspMV = modelViewMatrix;
             QCAR::Matrix44F invTranspMV = MathUtil::Matrix44FTranspose(inverseMV);
+            if(tIdx == 0)
+            {
+                LOGE("VuforiaJME parsing matrix");
+                centerInv = inverseMV;
+                 //get rotation
+                cam_right_x = invTranspMV.data[0];
+                cam_right_y = invTranspMV.data[1];
+                cam_right_z = invTranspMV.data[2];
+                cam_up_x = invTranspMV.data[4];
+                cam_up_y = invTranspMV.data[5];
+                cam_up_z = invTranspMV.data[6];
+                cam_dir_x = invTranspMV.data[8];
+                cam_dir_y = invTranspMV.data[9];
+                cam_dir_z = invTranspMV.data[10];
+            }
+            else
+            {
+                QCAR::Matrix44F offset = QCAR::Tool::multiply(centerInv,MathUtil::Matrix44FTranspose(modelViewMatrix));
+                QCAR::Vec4F position(0.0f,0.0f,0.0f,1.0f);
+                position = SampleMath::Vec4FTransform(position,offset);
+                invTranspMV.data[12] = position.data[0];
+                invTranspMV.data[13] = position.data[1];
+                invTranspMV.data[14] = position.data[2];
+            }
 
             //get position
             float cam_x = invTranspMV.data[12];
             float cam_y = invTranspMV.data[13];
             float cam_z = invTranspMV.data[14];
 
-            //get rotation
-            float cam_right_x = invTranspMV.data[0];
-            float cam_right_y = invTranspMV.data[1];
-            float cam_right_z = invTranspMV.data[2];
-            float cam_up_x = invTranspMV.data[4];
-            float cam_up_y = invTranspMV.data[5];
-            float cam_up_z = invTranspMV.data[6];
-            float cam_dir_x = invTranspMV.data[8];
-            float cam_dir_y = invTranspMV.data[9];
-            float cam_dir_z = invTranspMV.data[10];
+
 
             //get perspective transformation
             float nearPlane = 1.0f;
@@ -415,27 +442,32 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
 //            jmethodID attachShootables = env->GetMethodID(activityClass,"attachShootables", "()V");
 //            env->CallVoidMethod(obj,attachShootables);
+            LOGE("X=%f Y=%f Z=%f",cam_x,cam_y,cam_z);
+            if(tIdx == 0)
+            {
 
-
-            jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
-            env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
+                jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
+                env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
 
             // jclass activityClass = env->GetObjectClass(obj);
-            jmethodID setCameraViewportMethod = env->GetMethodID(activityClass,"setCameraViewportNative", "(FFFF)V");
-            env->CallVoidMethod(obj,setCameraViewportMethod,viewportWidth,viewportHeight,cameraCalibration.getSize().data[0],cameraCalibration.getSize().data[1]);
-
+                jmethodID setCameraViewportMethod = env->GetMethodID(activityClass,"setCameraViewportNative", "(FFFF)V");
+                env->CallVoidMethod(obj,setCameraViewportMethod,viewportWidth,viewportHeight,cameraCalibration.getSize().data[0],cameraCalibration.getSize().data[1]);
+            }
             //JNIEnv *env;
             //jvm->AttachCurrentThread((void **)&env, NULL);
 
            // jclass activityClass = env->GetObjectClass(obj);
-            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFF)V");
-            env->CallVoidMethod(obj,setCameraPoseMethod,cam_x,cam_y,cam_z);
-
-            //jclass activityClass = env->GetObjectClass(obj);
-            jmethodID setCameraOrientationMethod = env->GetMethodID(activityClass,"setCameraOrientationNative", "(FFFFFFFFF)V");
-            env->CallVoidMethod(obj,setCameraOrientationMethod,cam_right_x,cam_right_y,cam_right_z,
-                    cam_up_x,cam_up_y,cam_up_z,cam_dir_x,cam_dir_y,cam_dir_z);
-
+           LOGE("X=%f Y=%f Z=%f",cam_x,cam_y,cam_z);
+            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFFF)V");
+            env->CallVoidMethod(obj,setCameraPoseMethod,cam_x,cam_y,cam_z,tIdx);
+            LOGE("X=%f Y=%f Z=%f",cam_x,cam_y,cam_z);
+            if(tIdx == 0)
+            {
+                //jclass activityClass = env->GetObjectClass(obj);
+                jmethodID setCameraOrientationMethod = env->GetMethodID(activityClass,"setCameraOrientationNative", "(FFFFFFFFF)V");
+                env->CallVoidMethod(obj,setCameraOrientationMethod,cam_right_x,cam_right_y,cam_right_z,
+                        cam_up_x,cam_up_y,cam_up_z,cam_dir_x,cam_dir_y,cam_dir_z);
+            }
            // jvm->DetachCurrentThread();
 
            // LOG("Got tracking...");
