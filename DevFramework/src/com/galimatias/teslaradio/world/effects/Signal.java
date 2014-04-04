@@ -4,13 +4,12 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
-import com.jme3.cinematic.MotionPath;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
-import com.jme3.scene.shape.Sphere;
-import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
+import com.jme3.scene.Geometry;
 import java.util.Vector;
 
 
@@ -30,12 +29,15 @@ public class Signal extends Geometry {
     private float speed;
     private float distanceTraveled;
     
-    public Signal(Geometry particle, Vector3f path, float speed) {
+    public Signal(Geometry particle, Vector3f path, float speed, ColorRGBA baseColor) {
             this.setMesh(particle.getMesh());
             this.setMaterial(particle.getMaterial());
             this.speed = speed;
             this.path = path;
             this.isCurved = false;
+            this.getMaterial().setColor("Color", baseColor);
+            this.getMaterial().getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+            this.setQueueBucket(Bucket.Translucent);
     }
     
     public Signal(Geometry particle, Vector<Vector3f> curvedPath, float speed)
