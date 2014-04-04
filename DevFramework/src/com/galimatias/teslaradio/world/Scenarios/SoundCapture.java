@@ -124,6 +124,13 @@ public final class SoundCapture extends Scenario {
         //List<Vector3f> listPaths = new ArrayList<Vector3f>();
         //listPaths.add(new Vector3f(0,40,0));
         
+    }
+
+    /**
+     * Initialisation of the tambour effects
+     */
+    private void initDrumParticlesEmitter()
+    {
         // Getting all the trajectories from the position of the mic-drums and 
         // the number of directions        
         Vector3f drumMicDirection = micHandleInPosition.subtract(drumHandleOutPosition);        
@@ -151,13 +158,10 @@ public final class SoundCapture extends Scenario {
         DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle,SoundParticles_Speed, ColorRGBA.Blue );
         Vector3f v = drum.getWorldTranslation();
         this.attachChild(DrumSoundEmitter);
-        DrumSoundEmitter.setLocalTranslation(v.x, v.y + 21f, v.z); // TO DO: utiliser le object handle blender pour position
-
+        DrumSoundEmitter.setLocalTranslation(v.x, v.y + 21f, v.z); // TO DO: utiliser le object handle blender pour position        
+        
     }
-
-    /**
-     * Initialisation of the tambour effects
-     */
+    
     private void initCircles()
     {
         circles.scale(10.0f, 10.0f, 10.0f);
@@ -184,11 +188,20 @@ public final class SoundCapture extends Scenario {
    
         mAnimChannel = mAnimControl.createChannel();
     }
+    
+    private void initMicWireParticlesEmitter()
+    {
+        
+        
+    }
+    
      
     @Override
     public void initAllMovableObjects()
     {
         initCircles();
+        initDrumParticlesEmitter();
+       // initMicWireParticlesEmitter();
         
         this.attachChild(movableObjects);
     }
