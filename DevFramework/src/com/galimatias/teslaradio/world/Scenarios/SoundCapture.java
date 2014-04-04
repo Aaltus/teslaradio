@@ -20,7 +20,9 @@ import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
+import com.jme3.scene.plugins.blender.curves.BezierCurve;
 import com.jme3.scene.shape.Sphere;
 import java.util.Vector;
 
@@ -42,10 +44,7 @@ public final class SoundCapture extends Scenario {
     private Spatial micro;
     private Spatial circles;
     
-    private Spatial drumHandleOut;
-    private Spatial micHandleIn;
-    
-    private SignalEmitter DrumSoundEmitter;
+    private SignalEmitter DrumParticlesEmitter;
     private Animation animation;
     private AnimControl mAnimControl = new AnimControl();
     private AnimChannel mAnimChannel;
@@ -53,8 +52,6 @@ public final class SoundCapture extends Scenario {
     private Vector<Vector3f> trajectories = new Vector<Vector3f>();
     private Vector3f drumPosition;
     private Vector3f micPosition;
-    private Vector3f drumHandleOutPosition;
-    private Vector3f micHandleInPosition;
            
     private boolean firstTry = true;
        
@@ -74,21 +71,15 @@ public final class SoundCapture extends Scenario {
     protected void loadUnmovableObjects()
     {
         scene = assetManager.loadModel("Models/SoundCapture.j3o");
-           
-        scene = assetManager.loadModel("Models/SoundCapture.j3o");
         scene.setName("SoundCapture");
         scene.scale(10.0f,10.0f,10.0f);
         this.attachChild(scene);
 
         drum = scene.getParent().getChild("Tambour");
         micro = scene.getParent().getChild("Boule_micro");
-        drumHandleOut = scene.getParent().getChild("Drum_Output_Handle");
-        micHandleIn = scene.getParent().getChild("Mic_Input_Handle");
         
         drumPosition = drum.getWorldTranslation();
         micPosition = micro.getWorldTranslation();
-        drumHandleOutPosition = drumHandleOut.getWorldTranslation();
-        micHandleInPosition = micHandleIn.getWorldTranslation();
 
         drum_sound = new AudioNode(assetManager, "Sounds/drum_taiko.wav", false);
         drum_sound.setPositional(false);
@@ -124,35 +115,6 @@ public final class SoundCapture extends Scenario {
         //List<Vector3f> listPaths = new ArrayList<Vector3f>();
         //listPaths.add(new Vector3f(0,40,0));
         
-        // Getting all the trajectories from the position of the mic-drums and 
-        // the number of directions        
-        Vector3f drumMicDirection = micHandleInPosition.subtract(drumHandleOutPosition);        
-                        
-        int totalNbDirections = 50;
-        int nbXYDirections = 5;
-        
-        // Setting the direction norms and the speed displacement to the trajectories
-        float VecDirectionNorms = 80f;
-        float SoundParticles_Speed = 35f;
-                
-        // Creating the trajectories
-        SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
-        directionFactory.setTrajectories(drumMicDirection, VecDirectionNorms);
-        trajectories = directionFactory.getTrajectories();
-        
-        // instantiate 3d Sound particul model
-        Sphere sphere = new Sphere(8, 8, 0.9f);
-        Geometry soundParticle = new Geometry("particul",sphere);
-        Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        soundParticul_mat.setColor("Color", ColorRGBA.Blue);
-
-        soundParticle.setMaterial(soundParticul_mat);
-                
-        DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle,SoundParticles_Speed, ColorRGBA.Blue );
-        Vector3f v = drum.getWorldTranslation();
-        this.attachChild(DrumSoundEmitter);
-        DrumSoundEmitter.setLocalTranslation(v.x, v.y + 21f, v.z); // TO DO: utiliser le object handle blender pour position
-
     }
 
     /**
@@ -184,18 +146,63 @@ public final class SoundCapture extends Scenario {
    
         mAnimChannel = mAnimControl.createChannel();
     }
+    
+    private void initMicWireEmitter()
+    {
+        //get the position of the mic
+        Vector3f dummy = this.micPosition;
+        
+        //get the path of the wire
+        Mesh curvePathBezier = (((Geometry) scene.getParent().getChild("Tambour")).getMesh());
+        
+    }
+    
+    private void initDrumParticlesEmitter()
+    {
+        // Getting all the trajectories from the position of the mic-drums and 
+        // the number of directions        
+        Vector3f drumMicDirection = micPosition.subtract(drumPosition);        
+                        
+        int totalNbDirections = 50;
+        int nbXYDirections = 5;
+        
+        // Setting the direction norms and the speed displacement to the trajectories
+        float VecDirectionNorms = 80f;
+        float SoundParticles_Speed = 35f;
+                
+        // Creating the trajectories
+        SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
+        directionFactory.setTrajectories(drumMicDirection, VecDirectionNorms);
+        trajectories = directionFactory.getTrajectories();
+        
+        // instantiate 3d Sound particul model   //TO DO: Geom should be instantiante in the load object part? 
+        Sphere sphere = new Sphere(8, 8, 0.9f);
+        Geometry soundParticle = new Geometry("particul",sphere);
+        Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        soundParticul_mat.setColor("Color", ColorRGBA.Blue);
+
+        soundParticle.setMaterial(soundParticul_mat);
+                
+        DrumParticlesEmitter = new SignalEmitter(trajectories, soundParticle,SoundParticles_Speed );
+        Vector3f v = drum.getWorldTranslation();
+        this.attachChild(DrumParticlesEmitter);
+        DrumParticlesEmitter.setLocalTranslation(v.x, v.y + 21f, v.z); // TO DO: utiliser le object handle blender pour position        
+        
+    }
      
     @Override
     public void initAllMovableObjects()
     {
         initCircles();
+        initDrumParticlesEmitter();
+        initMicWireEmitter();
         
         this.attachChild(movableObjects);
     }
     
     public void drumTouchEffect()
     {        
-        DrumSoundEmitter.emitParticles();
+        DrumParticlesEmitter.emitCurvedPathParticle();
         
         movableObjects.attachChild(circles);
         
@@ -261,7 +268,8 @@ public final class SoundCapture extends Scenario {
 
      public void simpleUpdate(float tpf) {
          
-         DrumSoundEmitter.simpleUpdate(tpf);
+         DrumParticlesEmitter.simpleUpdate(tpf);
+         //MicWireEmitter.
      }
 
 }
