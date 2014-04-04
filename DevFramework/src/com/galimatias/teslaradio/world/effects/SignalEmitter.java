@@ -47,5 +47,12 @@ public class SignalEmitter extends Node{
             Signal mySignal = new Signal(particle, path, particlesSpeed);
             this.attachChild(mySignal);
         }
-    }    
+    }
+    
+    public void emitCurvedPathParticle(){
+        
+        Signal myCurvedSignal = new Signal(particle, paths, particlesSpeed);
+        this.attachChild(myCurvedSignal);
+    }
+    
 }

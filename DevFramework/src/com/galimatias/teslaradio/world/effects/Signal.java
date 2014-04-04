@@ -23,7 +23,7 @@ public class Signal extends Geometry {
     
     private Vector3f path;
     
-    private Vector<Vector3f> curvedPath = new Vector<Vector3f>();
+    private Vector<Vector3f> curvedPath;
     private boolean isCurved;
     
     private Vector3f startPoint;
@@ -42,22 +42,45 @@ public class Signal extends Geometry {
     {
         this.setMesh(particle.getMesh());
         this.setMaterial(particle.getMaterial());
-        curvedPath.equals(curvedPath);
+        this.curvedPath = curvedPath;
         this.speed = speed;
         this.isCurved = true;
     }
     
     private void updateCurvedPosition(float tpf)
     {
+        Vector3f currentPath = curvedPath.firstElement();
+              
+        Vector3f currentPos = this.getLocalTranslation();
+        float displacement = tpf*speed;
+        Vector3f newPos = currentPos.add(currentPath.normalize().mult(displacement));
+        distanceTraveled += displacement;
         
-        
+        //Deletion of the object if its at the end of its path.
+        if (distanceTraveled>currentPath.length()) {
+          //  this.setCullHint(CullHint.Always);
+            
+            curvedPath.removeElementAt(0);
+            distanceTraveled = 0;
+            
+            if(curvedPath.isEmpty())
+            {
+                this.removeFromParent();
+            }
+
+        }
+        else {
+            // set position
+            this.setLocalTranslation(newPos);
+        } 
+  
     }
     private void updateLinearPosition(float tpf)
     {
             
         Vector3f currentPos = this.getLocalTranslation();
         float displacement = tpf*speed;
-        Vector3f newPos = currentPos.add(path.divide(path.length()).mult(displacement));
+        Vector3f newPos = currentPos.add(path.normalize().mult(displacement));
         distanceTraveled += displacement;
         
         //Deletion of the object if its at the end of its path.
@@ -101,9 +124,5 @@ public class Signal extends Geometry {
     public void SetAmplitudeValueQueue(int[] amplitudeArray) {
         
     }
-    
-    public void SetPath(/*bezier*/) {
         
-    }
-    
 }
