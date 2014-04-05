@@ -9,7 +9,12 @@ import com.jme3.cinematic.events.MotionTrack;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Mesh;
+import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.mesh.IndexBuffer;
 import com.jme3.scene.plugins.blender.curves.BezierCurve;
+import com.jme3.util.BufferUtils;
+import java.nio.FloatBuffer;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
@@ -28,6 +33,12 @@ public class SignalTrajectories {
     {
         this.nbDirections = nbDirections;
         this.nbYXrotations = nbYXrotations;
+    }
+    
+    public SignalTrajectories()
+    {
+        
+        
     }
 
     /**
@@ -98,10 +109,44 @@ public class SignalTrajectories {
         Collections.swap(trajectories, 0, iMainBeam);
     }
     
-    public List<Vector3f> getCurvedPath(BezierCurve bezier)
+    private Vector3f getPathVector(int index, Mesh bezier_mesh)
     {
-        List<Vector3f> controlPts = bezier.getControlPoints();
-        return controlPts;
+        Vector3f v1 = new Vector3f();
+        Vector3f v2 = new Vector3f();
+        Vector3f pathVector = new Vector3f();
+        
+        VertexBuffer pb = bezier_mesh.getBuffer(VertexBuffer.Type.Position);
+        IndexBuffer ib = bezier_mesh.getIndicesAsList();
+        if (pb != null && pb.getFormat() == VertexBuffer.Format.Float && pb.getNumComponents() == 3){
+            FloatBuffer fpb = (FloatBuffer) pb.getData();
+
+            // aquire triangle's vertex indices
+            int vertIndex = index;
+            int vert1 = ib.get(vertIndex);
+
+            BufferUtils.populateFromBuffer(v1, fpb, vert1);
+        }else{
+            throw new UnsupportedOperationException("Position buffer not set or "
+                                                  + " has incompatible format");
+        }                
+        
+        pathVector.set(v1);
+        
+        return pathVector;
+        
+    }
+    
+    public Vector<Vector3f> getCurvedPath(Mesh bezier_mesh)
+    {
+        int nbVertex = bezier_mesh.getVertexCount();
+        Vector<Vector3f> listPath = new Vector<Vector3f>();
+        
+        for(int index =0; index < (nbVertex); index++)
+        {
+            listPath.add(getPathVector(index,bezier_mesh));
+        }
+          
+        return listPath;
     }
 
     /**
