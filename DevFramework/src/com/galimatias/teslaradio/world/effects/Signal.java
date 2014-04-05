@@ -24,6 +24,7 @@ public class Signal extends Geometry {
     
     private Vector<Vector3f> curvedPath;
     private boolean isCurved;
+    private int index;
     
     private Vector3f startPoint;
     private float speed;
@@ -51,7 +52,7 @@ public class Signal extends Geometry {
     
     private void updateCurvedPosition(float tpf)
     {
-        Vector3f currentPath = curvedPath.firstElement();
+        Vector3f currentPath = curvedPath.get(index);
               
         Vector3f currentPos = this.getLocalTranslation();
         float displacement = tpf*speed;
@@ -62,10 +63,11 @@ public class Signal extends Geometry {
         if (distanceTraveled>currentPath.length()) {
           //  this.setCullHint(CullHint.Always);
             
-            curvedPath.removeElementAt(0);
+            index ++;
             distanceTraveled = 0;
+            int listSize = curvedPath.size();
             
-            if(curvedPath.isEmpty())
+            if(index >= listSize)
             {
                 this.removeFromParent();
             }

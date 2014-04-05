@@ -20,8 +20,13 @@ import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
+import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.plugins.blender.curves.BezierCurve;
+import com.jme3.scene.shape.Curve;
 import com.jme3.scene.shape.Sphere;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -46,6 +51,9 @@ public final class SoundCapture extends Scenario {
     private Spatial micHandleIn;
     
     private SignalEmitter DrumSoundEmitter;
+    private SignalEmitter MicWireEmitter;
+    
+    // animation encore utile?
     private Animation animation;
     private AnimControl mAnimControl = new AnimControl();
     private AnimChannel mAnimChannel;
@@ -191,7 +199,27 @@ public final class SoundCapture extends Scenario {
     
     private void initMicWireParticlesEmitter()
     {
+        SignalTrajectories directionFactory = new SignalTrajectories();
+        Vector<Vector3f> curvedPath = new Vector <Vector3f>();
         
+        Node micWire_node = (Node) scene.getParent().getChild("BezierCurve");
+        Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
+        Mesh micWire_mesh = micWire_geom.getMesh();
+        
+        curvedPath = directionFactory.getCurvedPath(micWire_mesh);
+        
+        
+        // instantiate 3d Sound particul model
+        Sphere sphere = new Sphere(8, 8, 0.9f);
+        Geometry electricParticle = new Geometry("particul",sphere);
+        Material electricParticle_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        electricParticle_mat.setColor("Color", ColorRGBA.Green);
+        electricParticle.setMaterial(electricParticle_mat);
+                
+        
+        MicWireEmitter = new SignalEmitter(curvedPath, electricParticle, 35f /*Speed*/, ColorRGBA.Green );
+        this.attachChild(MicWireEmitter);
+        MicWireEmitter.setLocalTranslation(micPosition.x, micPosition.y, micPosition.z); // TO DO: utiliser le object handle blender pour position        
         
     }
     
@@ -201,7 +229,7 @@ public final class SoundCapture extends Scenario {
     {
         initCircles();
         initDrumParticlesEmitter();
-       // initMicWireParticlesEmitter();
+        initMicWireParticlesEmitter();
         
         this.attachChild(movableObjects);
     }
@@ -209,6 +237,7 @@ public final class SoundCapture extends Scenario {
     public void drumTouchEffect()
     {        
         DrumSoundEmitter.emitParticles();
+        MicWireEmitter.emitCurvedPathParticle();
         
         movableObjects.attachChild(circles);
         
@@ -275,6 +304,7 @@ public final class SoundCapture extends Scenario {
      public void simpleUpdate(float tpf) {
          
          DrumSoundEmitter.simpleUpdate(tpf);
+         MicWireEmitter.simpleUpdate(tpf);
      }
 
 }
