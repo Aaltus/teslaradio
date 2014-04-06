@@ -123,14 +123,17 @@ public class SignalTrajectories {
             // aquire triangle's vertex indices
             int vertIndex = index;
             int vert1 = ib.get(vertIndex);
+            int vert2 = ib.get(vertIndex+1);
 
             BufferUtils.populateFromBuffer(v1, fpb, vert1);
+            BufferUtils.populateFromBuffer(v2, fpb, vert2);
         }else{
             throw new UnsupportedOperationException("Position buffer not set or "
                                                   + " has incompatible format");
         }                
         
-        pathVector.set(v1);
+        pathVector.set(v2);
+        pathVector.subtractLocal(v1);
         
         return pathVector;
         
@@ -138,14 +141,16 @@ public class SignalTrajectories {
     
     public Vector<Vector3f> getCurvedPath(Mesh bezier_mesh)
     {
-        int nbVertex = bezier_mesh.getVertexCount();
+        int nbVertex = bezier_mesh.getTriangleCount();
         Vector<Vector3f> listPath = new Vector<Vector3f>();
         
-        for(int index =0; index < (nbVertex); index++)
+        for(int index =0; index < (nbVertex*2-2); index++)
         {
-            listPath.add(getPathVector(index,bezier_mesh));
+            listPath.add(getPathVector(index,bezier_mesh).mult(10f));
         }
           
+        System.out.println(listPath);
+        
         return listPath;
     }
 
