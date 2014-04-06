@@ -24,7 +24,7 @@ public class Signal extends Geometry {
     
     private Vector<Vector3f> curvedPath;
     private boolean isCurved;
-    private int index;
+    private int index = 0;
     
     private Vector3f startPoint;
     private float speed;
@@ -64,6 +64,7 @@ public class Signal extends Geometry {
           //  this.setCullHint(CullHint.Always);
             
             index ++;
+            //this.setLocalTranslation(currentPos.subtract(currentPath.normalize().mult(distanceTraveled-displacement)));
             distanceTraveled = 0;
             int listSize = curvedPath.size();
             
