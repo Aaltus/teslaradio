@@ -166,7 +166,7 @@ public final class SoundCapture extends Scenario {
         DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle,SoundParticles_Speed, ColorRGBA.Blue );
         Vector3f v = drum.getWorldTranslation();
         this.attachChild(DrumSoundEmitter);
-        DrumSoundEmitter.setLocalTranslation(v.x, v.y + 21f, v.z); // TO DO: utiliser le object handle blender pour position        
+        DrumSoundEmitter.setLocalTranslation(v.x, v.y+21f,v.z ); // TO DO: utiliser le object handle blender pour position        
         
     }
     
@@ -206,8 +206,9 @@ public final class SoundCapture extends Scenario {
         Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
         Mesh micWire_mesh = micWire_geom.getMesh();
         
-        curvedPath = directionFactory.getCurvedPath(micWire_mesh);
+        //Vector3f f = micWire_node.getWorldScale();
         
+        curvedPath = directionFactory.getCurvedPath(micWire_mesh);
         
         // instantiate 3d Sound particul model
         Sphere sphere = new Sphere(8, 8, 0.9f);
@@ -219,7 +220,9 @@ public final class SoundCapture extends Scenario {
         
         MicWireEmitter = new SignalEmitter(curvedPath, electricParticle, 35f /*Speed*/, ColorRGBA.Green );
         this.attachChild(MicWireEmitter);
-        MicWireEmitter.setLocalTranslation(micPosition.x, micPosition.y, micPosition.z); // TO DO: utiliser le object handle blender pour position        
+        Vector3f test = new Vector3f();
+        test.set(curvedPath.lastElement());
+        MicWireEmitter.setLocalTranslation(micPosition.x, micPosition.y,micPosition.z); // TO DO: utiliser le object handle blender pour position        
         
     }
     
