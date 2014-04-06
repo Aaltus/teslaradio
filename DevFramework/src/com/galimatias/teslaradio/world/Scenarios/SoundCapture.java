@@ -15,6 +15,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.galimatias.teslaradio.world.effects.SignalEmitter;
 import com.galimatias.teslaradio.world.effects.SignalTrajectories;
+import com.galimatias.teslaradio.world.effects.SignalType;
 import com.galimatias.teslaradio.world.effects.TextBoxes;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -159,11 +160,10 @@ public final class SoundCapture extends Scenario {
         Sphere sphere = new Sphere(8, 8, 0.9f);
         Geometry soundParticle = new Geometry("particul",sphere);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        soundParticul_mat.setColor("Color", ColorRGBA.Blue);
 
         soundParticle.setMaterial(soundParticul_mat);
                 
-        DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle,SoundParticles_Speed, ColorRGBA.Blue );
+        DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle,SoundParticles_Speed, ColorRGBA.Blue, SignalType.Air );
         Vector3f v = drum.getWorldTranslation();
         this.attachChild(DrumSoundEmitter);
         DrumSoundEmitter.setLocalTranslation(v.x, v.y+21f,v.z ); // TO DO: utiliser le object handle blender pour position        
@@ -218,7 +218,7 @@ public final class SoundCapture extends Scenario {
         electricParticle.setMaterial(electricParticle_mat);
                 
         
-        MicWireEmitter = new SignalEmitter(curvedPath, electricParticle, 35f /*Speed*/, ColorRGBA.Green );
+        MicWireEmitter = new SignalEmitter(curvedPath, electricParticle, 35f /*Speed*/, ColorRGBA.Green, SignalType.Wire );
         this.attachChild(MicWireEmitter);
         Vector3f test = new Vector3f();
         test.set(curvedPath.lastElement());
@@ -240,7 +240,7 @@ public final class SoundCapture extends Scenario {
     public void drumTouchEffect()
     {        
         DrumSoundEmitter.emitParticles();
-        MicWireEmitter.emitCurvedPathParticle();
+        MicWireEmitter.emitParticles();
         
         movableObjects.attachChild(circles);
         
