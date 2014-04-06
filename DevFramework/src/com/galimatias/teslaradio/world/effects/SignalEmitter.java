@@ -56,7 +56,7 @@ public class SignalEmitter extends Node{
 
     }
     
-    public void emitAirParticles()
+    private void emitAirParticles()
     {
         boolean setTransparency=false;
         
@@ -88,10 +88,20 @@ public class SignalEmitter extends Node{
         }        
     }
     
-    public void emitCurWireParticles(){
+    private void emitCurWireParticles(){
         
         Signal myCurvedSignal = new Signal(particle, paths, particlesSpeed);
         this.attachChild(myCurvedSignal);
     }
     
+    public SignalType getSignalType()
+    {
+        return signalType;
+    }
+    
+    public void setSignalType(SignalType signalType)
+    {
+        this.signalType = signalType;
+    }
 }
+
