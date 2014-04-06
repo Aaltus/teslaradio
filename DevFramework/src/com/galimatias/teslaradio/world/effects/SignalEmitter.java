@@ -113,5 +113,15 @@ public class SignalEmitter extends Node{
     {
         this.signalType = signalType;
     }
+    
+    public float getCapturePathLength()
+    {
+        return capturePathLength;
+    }
+    
+    public void setCapturePathLength(float capturePathLength)
+    {
+        this.capturePathLength = capturePathLength;
+    }
 }
 
