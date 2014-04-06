@@ -22,13 +22,15 @@ public class SignalEmitter extends Node{
     private Geometry particle;
     private float particlesSpeed;
     private ColorRGBA baseColor;
+    private SignalType signalType;
     
     
-    public SignalEmitter(Vector<Vector3f> paths, Geometry particle, float particlesSpeed, ColorRGBA baseColor) {
+    public SignalEmitter(Vector<Vector3f> paths, Geometry particle, float particlesSpeed, ColorRGBA baseColor, SignalType signalType) {
         this.paths = paths;
         this.particle = particle;
         this.particlesSpeed = particlesSpeed;
         this.baseColor = baseColor;
+        this.signalType = signalType;
     }
     
     public void simpleUpdate(float tpf) {
@@ -42,6 +44,20 @@ public class SignalEmitter extends Node{
     }
 
     public void emitParticles() {
+        
+        if(signalType == SignalType.Air)
+        {
+            emitAirParticles();
+        }
+        else if(signalType == SignalType.Wire)
+        {
+            emitCurWireParticles();
+        }
+
+    }
+    
+    public void emitAirParticles()
+    {
         boolean setTransparency=false;
         
         Geometry translucentParticle = particle.clone();
@@ -69,10 +85,10 @@ public class SignalEmitter extends Node{
             }
             
             this.attachChild(mySignal);
-        }
+        }        
     }
     
-    public void emitCurvedPathParticle(){
+    public void emitCurWireParticles(){
         
         Signal myCurvedSignal = new Signal(particle, paths, particlesSpeed);
         this.attachChild(myCurvedSignal);
