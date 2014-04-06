@@ -23,6 +23,7 @@ public class SignalEmitter extends Node{
     private float particlesSpeed;
     private ColorRGBA baseColor;
     private SignalType signalType;
+    private float capturePathLength = -1;
     
     
     public SignalEmitter(Vector<Vector3f> paths, Geometry particle, float particlesSpeed, ColorRGBA baseColor, SignalType signalType) {
@@ -32,6 +33,15 @@ public class SignalEmitter extends Node{
         this.baseColor = baseColor;
         this.signalType = signalType;
     }
+    
+    public SignalEmitter(Vector<Vector3f> paths,float capturePathLength, Geometry particle, float particlesSpeed, ColorRGBA baseColor, SignalType signalType) {
+        this.paths = paths;
+        this.particle = particle;
+        this.particlesSpeed = particlesSpeed;
+        this.baseColor = baseColor;
+        this.signalType = signalType;
+        this.capturePathLength = capturePathLength;
+    }    
     
     public void simpleUpdate(float tpf) {
         
@@ -79,7 +89,7 @@ public class SignalEmitter extends Node{
             int a = paths.indexOf(path);
             System.out.println(a);
             if (paths.indexOf(path)==0)
-                mySignal = new Signal(particle, path, particlesSpeed, baseColor);
+                mySignal = new Signal(particle, path, particlesSpeed, baseColor, capturePathLength);
             else {
                 mySignal = new Signal(translucentParticle, path, particlesSpeed, translucentColor);
             }
