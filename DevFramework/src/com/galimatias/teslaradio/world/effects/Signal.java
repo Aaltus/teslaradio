@@ -29,7 +29,9 @@ public class Signal extends Geometry {
     private Vector3f startPoint;
     private float speed;
     private float distanceTraveled;
+    private float capturePathLength = -1;
     
+    // Linear path Particle
     public Signal(Geometry particle, Vector3f path, float speed, ColorRGBA baseColor) {
             this.setMesh(particle.getMesh());
             this.setMaterial(particle.getMaterial());
@@ -39,8 +41,23 @@ public class Signal extends Geometry {
             this.getMaterial().setColor("Color", baseColor);
             this.getMaterial().getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
             this.setQueueBucket(Bucket.Translucent);
+            this.capturePathLength = -1;
+    }
+ 
+    // Linear path Particle with capture
+    public Signal(Geometry particle, Vector3f path, float speed, ColorRGBA baseColor, float capturePathLength) {
+            this.setMesh(particle.getMesh());
+            this.setMaterial(particle.getMaterial());
+            this.speed = speed;
+            this.path = path;
+            this.isCurved = false;
+            this.getMaterial().setColor("Color", baseColor);
+            this.getMaterial().getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+            this.setQueueBucket(Bucket.Translucent);
+            this.capturePathLength = capturePathLength;
     }
     
+    // Curved path Particle
     public Signal(Geometry particle, Vector<Vector3f> curvedPath, float speed)
     {
         this.setMesh(particle.getMesh());
@@ -50,6 +67,7 @@ public class Signal extends Geometry {
         this.isCurved = true;
     }
     
+      
     private void updateCurvedPosition(float tpf)
     {
         Vector3f currentPath = curvedPath.get(index);
@@ -89,7 +107,7 @@ public class Signal extends Geometry {
         distanceTraveled += displacement;
         
         //Deletion of the object if its at the end of its path.
-        if (distanceTraveled>path.length()) {
+        if (distanceTraveled>path.length() || (distanceTraveled>capturePathLength && capturePathLength!= -1)) {
           //  this.setCullHint(CullHint.Always);
             this.removeFromParent();
         }
