@@ -32,26 +32,24 @@ public class Signal extends Geometry {
     private float capturePathLength = -1;
     
     // Linear path Particle
-    public Signal(Geometry particle, Vector3f path, float speed, ColorRGBA baseColor) {
+    public Signal(Geometry particle, Vector3f path, float speed) {
             this.setMesh(particle.getMesh());
             this.setMaterial(particle.getMaterial());
             this.speed = speed;
             this.path = path;
             this.isCurved = false;
-            this.getMaterial().setColor("Color", baseColor);
             this.getMaterial().getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
             this.setQueueBucket(Bucket.Translucent);
             this.capturePathLength = -1;
     }
  
     // Linear path Particle with capture
-    public Signal(Geometry particle, Vector3f path, float speed, ColorRGBA baseColor, float capturePathLength) {
+    public Signal(Geometry particle, Vector3f path, float speed, float capturePathLength) {
             this.setMesh(particle.getMesh());
             this.setMaterial(particle.getMaterial());
             this.speed = speed;
             this.path = path;
             this.isCurved = false;
-            this.getMaterial().setColor("Color", baseColor);
             this.getMaterial().getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
             this.setQueueBucket(Bucket.Translucent);
             this.capturePathLength = capturePathLength;

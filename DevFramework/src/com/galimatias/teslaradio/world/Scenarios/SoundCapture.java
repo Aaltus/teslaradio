@@ -165,10 +165,13 @@ public final class SoundCapture extends Scenario {
         Sphere sphere = new Sphere(8, 8, 0.9f);
         Geometry soundParticle = new Geometry("particul",sphere);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        soundParticul_mat.setColor("Color", ColorRGBA.Blue);
         soundParticle.setMaterial(soundParticul_mat);
-       
+        Geometry soundParticleTranslucent = soundParticle.clone();
+        soundParticleTranslucent.getMaterial().setColor("Color", new ColorRGBA(0f, 0f, 1f, 0.3f));
+
                 
-        DrumSoundEmitter = new SignalEmitter(trajectories, drum2MicLength, soundParticle,SoundParticles_Speed, ColorRGBA.Blue, SignalType.Air );
+        DrumSoundEmitter = new SignalEmitter(trajectories, drum2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
         DrumSoundEmitter.setLocalTranslation(drumPosition.x, drumPosition.y+21f,drumPosition.z ); // TO DO: utiliser le object handle blender pour position        
         this.attachChild(DrumSoundEmitter);
     }
@@ -205,7 +208,7 @@ public final class SoundCapture extends Scenario {
         SignalTrajectories directionFactory = new SignalTrajectories();
         Vector<Vector3f> curvedPath = new Vector <Vector3f>();
         
-        Node micWire_node = (Node) scene.getParent().getChild("BezierCurve");
+        Node micWire_node = (Node) scene.getParent().getChild("WirePath");
         Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
         Mesh micWire_mesh = micWire_geom.getMesh();
         
@@ -221,7 +224,7 @@ public final class SoundCapture extends Scenario {
         electricParticle.setMaterial(electricParticle_mat);
                 
         
-        MicWireEmitter = new SignalEmitter(curvedPath, electricParticle, 35f /*Speed*/, ColorRGBA.Green, SignalType.Wire );
+        MicWireEmitter = new SignalEmitter(curvedPath, electricParticle, electricParticle, 35f /*Speed*/, SignalType.Wire );
         this.attachChild(MicWireEmitter);
         Vector3f test = new Vector3f();
         test.set(curvedPath.lastElement());
