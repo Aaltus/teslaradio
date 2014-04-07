@@ -309,4 +309,9 @@ public final class SoundCapture extends Scenario {
          MicWireEmitter.simpleUpdate(tpf);
      }
 
+    @Override
+    public void onAudioEvent() {
+        drumTouchEffect();
+    }
+
 }
