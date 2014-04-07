@@ -105,7 +105,13 @@ public class Signal extends Geometry {
         distanceTraveled += displacement;
         
         //Deletion of the object if its at the end of its path.
-        if (distanceTraveled>path.length() || (distanceTraveled>capturePathLength && capturePathLength!= -1)) {
+        if(distanceTraveled>capturePathLength && capturePathLength!= -1)
+        {
+            ((SignalEmitter) this.getParent()).notifyObservers();
+            this.removeFromParent();
+            
+        }
+        else if (distanceTraveled>path.length()) {
           //  this.setCullHint(CullHint.Always);
             this.removeFromParent();
         }
