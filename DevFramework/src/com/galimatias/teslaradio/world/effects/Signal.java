@@ -86,6 +86,7 @@ public class Signal extends Geometry {
             
             if(index >= listSize)
             {
+                ((SignalEmitter) this.getParent()).notifyObservers();
                 this.removeFromParent();
             }
 
