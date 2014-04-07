@@ -77,16 +77,19 @@ public class Signal extends Geometry {
         
         //Deletion of the object if its at the end of its path.
         if (distanceTraveled>currentPath.length()) {
-          //  this.setCullHint(CullHint.Always);
+
+            //calculate end of line position
+            displacement = - currentPath.length() + distanceTraveled;
+            newPos = currentPos.add(currentPath.normalize().mult(displacement));
+            this.setLocalTranslation(newPos);
             
             index ++;
-            //this.setLocalTranslation(currentPos.subtract(currentPath.normalize().mult(distanceTraveled-displacement)));
             distanceTraveled = 0;
             int listSize = curvedPath.size();
-            
+             
             if(index >= listSize)
             {
-                ((SignalEmitter) this.getParent()).notifyObservers();
+                //((SignalEmitter) this.getParent()).notifyObservers();
                 this.removeFromParent();
             }
 
