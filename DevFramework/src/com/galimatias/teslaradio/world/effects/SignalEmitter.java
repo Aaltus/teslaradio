@@ -4,19 +4,24 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
+import com.galimatias.teslaradio.observer.Observable;
+import com.galimatias.teslaradio.observer.Observer;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 /**
  *
  * @author David
  */
-public class SignalEmitter extends Node{
+public class SignalEmitter extends Node implements Observer, Observable
+{
     
     private Vector<Vector3f> paths = new Vector<Vector3f>();
     private Geometry particle;
@@ -24,6 +29,7 @@ public class SignalEmitter extends Node{
     private ColorRGBA baseColor;
     private SignalType signalType;
     private float capturePathLength = -1;
+    private List<Observer> observers = new ArrayList<Observer>();
     
     
     public SignalEmitter(Vector<Vector3f> paths, Geometry particle, float particlesSpeed, ColorRGBA baseColor, SignalType signalType) {
@@ -122,6 +128,25 @@ public class SignalEmitter extends Node{
     public void setCapturePathLength(float capturePathLength)
     {
         this.capturePathLength = capturePathLength;
+    }
+
+    public void observerUpdate() {
+        emitParticles();
+    }
+
+    public void registerObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    public void notifyObservers() {
+        for (Observer observer: observers)
+        {
+            observer.observerUpdate();
+        }
     }
 }
 
