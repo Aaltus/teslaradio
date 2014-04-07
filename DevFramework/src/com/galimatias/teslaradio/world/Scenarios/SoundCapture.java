@@ -240,13 +240,15 @@ public final class SoundCapture extends Scenario {
         initDrumParticlesEmitter();
         initMicWireParticlesEmitter();
         
+        DrumSoundEmitter.registerObserver(MicWireEmitter);
+        
         this.attachChild(movableObjects);
     }
     
     public void drumTouchEffect()
     {        
         DrumSoundEmitter.emitParticles();
-        MicWireEmitter.emitParticles();
+        //MicWireEmitter.emitParticles();
         
         movableObjects.attachChild(circles);
         
