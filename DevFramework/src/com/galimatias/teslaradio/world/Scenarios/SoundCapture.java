@@ -17,17 +17,10 @@ import com.galimatias.teslaradio.world.effects.SignalEmitter;
 import com.galimatias.teslaradio.world.effects.SignalTrajectories;
 import com.galimatias.teslaradio.world.effects.SignalType;
 import com.galimatias.teslaradio.world.effects.TextBoxes;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
-import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
-import com.jme3.scene.VertexBuffer;
-import com.jme3.scene.plugins.blender.curves.BezierCurve;
-import com.jme3.scene.shape.Curve;
 import com.jme3.scene.shape.Sphere;
-import java.util.List;
 import java.util.Vector;
 
 /**
@@ -81,9 +74,7 @@ public final class SoundCapture extends Scenario {
      */
     @Override
     protected void loadUnmovableObjects()
-    {
-        scene = assetManager.loadModel("Models/SoundCapture.j3o");
-           
+    {          
         scene = assetManager.loadModel("Models/SoundCapture.j3o");
         scene.setName("SoundCapture");
         scene.scale(10.0f,10.0f,10.0f);
@@ -109,11 +100,11 @@ public final class SoundCapture extends Scenario {
         Quaternion textRotation = new Quaternion();
         textRotation.fromAngleAxis(-3.14159f/2.0f, Vector3f.UNIT_Y);
         
-        Vector3f v = new Vector3f(micPosition.x, micPosition.y + 5.0f, micPosition.z);
+        Vector3f v = new Vector3f(micHandleInPosition.x, micHandleInPosition.y, micHandleInPosition.z + 15.0f);
         
         TextBoxes text = new TextBoxes(assetManager);
         text.initText("Hello World", 10.0f, v, textRotation, ColorRGBA.Magenta);
-        text.setName("text");
+        text.setName("Text");
         this.attachChild(text);
 
     }
