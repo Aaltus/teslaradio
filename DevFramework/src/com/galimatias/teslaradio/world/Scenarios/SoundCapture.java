@@ -205,7 +205,7 @@ public final class SoundCapture extends Scenario {
         SignalTrajectories directionFactory = new SignalTrajectories();
         Vector<Vector3f> curvedPath = new Vector <Vector3f>();
         
-        Node micWire_node = (Node) scene.getParent().getChild("BezierCurve");
+        Node micWire_node = (Node) scene.getParent().getChild("WirePath");
         Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
         Mesh micWire_mesh = micWire_geom.getMesh();
         
