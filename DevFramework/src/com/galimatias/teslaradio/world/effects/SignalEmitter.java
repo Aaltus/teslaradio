@@ -22,14 +22,26 @@ public class SignalEmitter extends Node{
     private Geometry particle;
     private float particlesSpeed;
     private ColorRGBA baseColor;
+    private SignalType signalType;
+    private float capturePathLength = -1;
     
     
-    public SignalEmitter(Vector<Vector3f> paths, Geometry particle, float particlesSpeed, ColorRGBA baseColor) {
+    public SignalEmitter(Vector<Vector3f> paths, Geometry particle, float particlesSpeed, ColorRGBA baseColor, SignalType signalType) {
         this.paths = paths;
         this.particle = particle;
         this.particlesSpeed = particlesSpeed;
         this.baseColor = baseColor;
+        this.signalType = signalType;
     }
+    
+    public SignalEmitter(Vector<Vector3f> paths,float capturePathLength, Geometry particle, float particlesSpeed, ColorRGBA baseColor, SignalType signalType) {
+        this.paths = paths;
+        this.particle = particle;
+        this.particlesSpeed = particlesSpeed;
+        this.baseColor = baseColor;
+        this.signalType = signalType;
+        this.capturePathLength = capturePathLength;
+    }    
     
     public void simpleUpdate(float tpf) {
         
@@ -42,6 +54,20 @@ public class SignalEmitter extends Node{
     }
 
     public void emitParticles() {
+        
+        if(signalType == SignalType.Air)
+        {
+            emitAirParticles();
+        }
+        else if(signalType == SignalType.Wire)
+        {
+            emitCurWireParticles();
+        }
+
+    }
+    
+    private void emitAirParticles()
+    {
         boolean setTransparency=false;
         
         Geometry translucentParticle = particle.clone();
@@ -63,12 +89,39 @@ public class SignalEmitter extends Node{
             int a = paths.indexOf(path);
             System.out.println(a);
             if (paths.indexOf(path)==0)
-                mySignal = new Signal(particle, path, particlesSpeed, baseColor);
+                mySignal = new Signal(particle, path, particlesSpeed, baseColor, capturePathLength);
             else {
                 mySignal = new Signal(translucentParticle, path, particlesSpeed, translucentColor);
             }
             
             this.attachChild(mySignal);
-        }
-    }    
+        }        
+    }
+    
+    private void emitCurWireParticles(){
+        
+        Signal myCurvedSignal = new Signal(particle, paths, particlesSpeed);
+        this.attachChild(myCurvedSignal);
+    }
+    
+    public SignalType getSignalType()
+    {
+        return signalType;
+    }
+    
+    public void setSignalType(SignalType signalType)
+    {
+        this.signalType = signalType;
+    }
+    
+    public float getCapturePathLength()
+    {
+        return capturePathLength;
+    }
+    
+    public void setCapturePathLength(float capturePathLength)
+    {
+        this.capturePathLength = capturePathLength;
+    }
 }
+

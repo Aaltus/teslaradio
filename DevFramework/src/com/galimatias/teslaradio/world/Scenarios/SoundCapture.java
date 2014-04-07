@@ -15,13 +15,19 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.galimatias.teslaradio.world.effects.SignalEmitter;
 import com.galimatias.teslaradio.world.effects.SignalTrajectories;
+import com.galimatias.teslaradio.world.effects.SignalType;
 import com.galimatias.teslaradio.world.effects.TextBoxes;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
+import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.plugins.blender.curves.BezierCurve;
+import com.jme3.scene.shape.Curve;
 import com.jme3.scene.shape.Sphere;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -46,6 +52,9 @@ public final class SoundCapture extends Scenario {
     private Spatial micHandleIn;
     
     private SignalEmitter DrumSoundEmitter;
+    private SignalEmitter MicWireEmitter;
+    
+    // animation encore utile?
     private Animation animation;
     private AnimControl mAnimControl = new AnimControl();
     private AnimChannel mAnimChannel;
@@ -124,6 +133,13 @@ public final class SoundCapture extends Scenario {
         //List<Vector3f> listPaths = new ArrayList<Vector3f>();
         //listPaths.add(new Vector3f(0,40,0));
         
+    }
+
+    /**
+     * Initialisation of the tambour effects
+     */
+    private void initDrumParticlesEmitter()
+    {
         // Getting all the trajectories from the position of the mic-drums and 
         // the number of directions        
         Vector3f drumMicDirection = micHandleInPosition.subtract(drumHandleOutPosition);        
@@ -140,24 +156,23 @@ public final class SoundCapture extends Scenario {
         directionFactory.setTrajectories(drumMicDirection, VecDirectionNorms);
         trajectories = directionFactory.getTrajectories();
         
+        // calculalate drum to mic path length
+        Vector3f drum2MicVector = drumPosition.add(0f, 21f, 0f);
+        drum2MicVector.subtractLocal(micHandleInPosition);
+        float drum2MicLength = drum2MicVector.length();
+        
         // instantiate 3d Sound particul model
         Sphere sphere = new Sphere(8, 8, 0.9f);
         Geometry soundParticle = new Geometry("particul",sphere);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        soundParticul_mat.setColor("Color", ColorRGBA.Blue);
-
         soundParticle.setMaterial(soundParticul_mat);
+       
                 
-        DrumSoundEmitter = new SignalEmitter(trajectories, soundParticle,SoundParticles_Speed, ColorRGBA.Blue );
-        Vector3f v = drum.getWorldTranslation();
+        DrumSoundEmitter = new SignalEmitter(trajectories, drum2MicLength, soundParticle,SoundParticles_Speed, ColorRGBA.Blue, SignalType.Air );
+        DrumSoundEmitter.setLocalTranslation(drumPosition.x, drumPosition.y+21f,drumPosition.z ); // TO DO: utiliser le object handle blender pour position        
         this.attachChild(DrumSoundEmitter);
-        DrumSoundEmitter.setLocalTranslation(v.x, v.y + 21f, v.z); // TO DO: utiliser le object handle blender pour position
-
     }
-
-    /**
-     * Initialisation of the tambour effects
-     */
+    
     private void initCircles()
     {
         circles.scale(10.0f, 10.0f, 10.0f);
@@ -184,11 +199,43 @@ public final class SoundCapture extends Scenario {
    
         mAnimChannel = mAnimControl.createChannel();
     }
+    
+    private void initMicWireParticlesEmitter()
+    {
+        SignalTrajectories directionFactory = new SignalTrajectories();
+        Vector<Vector3f> curvedPath = new Vector <Vector3f>();
+        
+        Node micWire_node = (Node) scene.getParent().getChild("BezierCurve");
+        Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
+        Mesh micWire_mesh = micWire_geom.getMesh();
+        
+        //Vector3f f = micWire_node.getWorldScale();
+        
+        curvedPath = directionFactory.getCurvedPath(micWire_mesh);
+        
+        // instantiate 3d Sound particul model
+        Sphere sphere = new Sphere(8, 8, 0.9f);
+        Geometry electricParticle = new Geometry("particul",sphere);
+        Material electricParticle_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        electricParticle_mat.setColor("Color", ColorRGBA.Green);
+        electricParticle.setMaterial(electricParticle_mat);
+                
+        
+        MicWireEmitter = new SignalEmitter(curvedPath, electricParticle, 35f /*Speed*/, ColorRGBA.Green, SignalType.Wire );
+        this.attachChild(MicWireEmitter);
+        Vector3f test = new Vector3f();
+        test.set(curvedPath.lastElement());
+        MicWireEmitter.setLocalTranslation(micPosition.x, micPosition.y,micPosition.z); // TO DO: utiliser le object handle blender pour position        
+        
+    }
+    
      
     @Override
     public void initAllMovableObjects()
     {
         initCircles();
+        initDrumParticlesEmitter();
+        initMicWireParticlesEmitter();
         
         this.attachChild(movableObjects);
     }
@@ -196,6 +243,7 @@ public final class SoundCapture extends Scenario {
     public void drumTouchEffect()
     {        
         DrumSoundEmitter.emitParticles();
+        MicWireEmitter.emitParticles();
         
         movableObjects.attachChild(circles);
         
@@ -262,6 +310,7 @@ public final class SoundCapture extends Scenario {
      public void simpleUpdate(float tpf) {
          
          DrumSoundEmitter.simpleUpdate(tpf);
+         MicWireEmitter.simpleUpdate(tpf);
      }
 
 }
