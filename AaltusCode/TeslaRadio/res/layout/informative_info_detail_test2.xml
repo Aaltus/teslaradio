@@ -18,14 +18,20 @@
     android:animateLayoutChanges="true"
     android:descendantFocusability="blocksDescendants">
 
-    <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/wavelength_sm"
 
-            />
+        <com.utils.GifWebView android:layout_width="wrap_content"
+                                         android:layout_height="wrap_content"
+                                         myapp:url="file:///android_asset/Gifs/PressionV14.gif"
+                />
+
+    <!--<ImageView-->
+            <!--android:id="@+id/imageView1"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:src="@drawable/wavelength_sm"-->
+
+            <!--/>-->
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
