@@ -19,24 +19,27 @@ import java.util.Vector;
 public class SignalEmitter extends Node{
     
     private Vector<Vector3f> paths = new Vector<Vector3f>();
-    private Geometry particle;
+    private Geometry mainParticle;
+    private Geometry secondaryParticle;
     private float particlesSpeed;
     private ColorRGBA baseColor;
     private SignalType signalType;
     private float capturePathLength = -1;
     
     
-    public SignalEmitter(Vector<Vector3f> paths, Geometry particle, float particlesSpeed, ColorRGBA baseColor, SignalType signalType) {
+    public SignalEmitter(Vector<Vector3f> paths, Geometry mainParticle, Geometry secondaryParticle, float particlesSpeed, SignalType signalType) {
         this.paths = paths;
-        this.particle = particle;
+        this.mainParticle = mainParticle;
+        this.secondaryParticle = secondaryParticle;
         this.particlesSpeed = particlesSpeed;
         this.baseColor = baseColor;
         this.signalType = signalType;
     }
     
-    public SignalEmitter(Vector<Vector3f> paths,float capturePathLength, Geometry particle, float particlesSpeed, ColorRGBA baseColor, SignalType signalType) {
+    public SignalEmitter(Vector<Vector3f> paths, float capturePathLength, Geometry mainParticle, Geometry secondaryParticle, float particlesSpeed, SignalType signalType) {
         this.paths = paths;
-        this.particle = particle;
+        this.mainParticle = mainParticle;
+        this.secondaryParticle = secondaryParticle;
         this.particlesSpeed = particlesSpeed;
         this.baseColor = baseColor;
         this.signalType = signalType;
@@ -68,20 +71,6 @@ public class SignalEmitter extends Node{
     
     private void emitAirParticles()
     {
-        boolean setTransparency=false;
-        
-        Geometry translucentParticle = particle.clone();
-        
-        
-        ColorRGBA translucentColor = new ColorRGBA();
-        translucentColor.r=baseColor.r;
-        translucentColor.g=baseColor.g;
-        translucentColor.b=baseColor.b;
-        translucentColor.a=0.15f;
-        
-        translucentParticle.getMaterial().setColor("Color", translucentColor);
-        
-        baseColor.a=1.0f;
         
         for (Vector3f path : paths) {
             
@@ -89,9 +78,9 @@ public class SignalEmitter extends Node{
             int a = paths.indexOf(path);
             System.out.println(a);
             if (paths.indexOf(path)==0)
-                mySignal = new Signal(particle, path, particlesSpeed, baseColor, capturePathLength);
+                mySignal = new Signal(mainParticle, path, particlesSpeed, capturePathLength);
             else {
-                mySignal = new Signal(translucentParticle, path, particlesSpeed, translucentColor);
+                mySignal = new Signal(secondaryParticle, path, particlesSpeed);
             }
             
             this.attachChild(mySignal);
@@ -100,7 +89,7 @@ public class SignalEmitter extends Node{
     
     private void emitCurWireParticles(){
         
-        Signal myCurvedSignal = new Signal(particle, paths, particlesSpeed);
+        Signal myCurvedSignal = new Signal(mainParticle, paths, particlesSpeed);
         this.attachChild(myCurvedSignal);
     }
     
