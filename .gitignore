@@ -66,3 +66,4 @@ proguard/
 #Ignore specific intellij idea project file
 workplace.xml
 AaltusCode/.idea/uiDesigner.xml
+/DevFramework/dist/
