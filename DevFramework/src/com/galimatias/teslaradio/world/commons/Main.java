@@ -1,6 +1,7 @@
 package com.galimatias.teslaradio.world.commons;
 
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
+import com.galimatias.teslaradio.world.effects.TextBoxes;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -44,7 +45,6 @@ public class Main extends SimpleApplication
         
         initLights();
         
-        
         // Load the custom keybindings
         initKeys();
     }
@@ -53,9 +53,7 @@ public class Main extends SimpleApplication
     public void simpleUpdate(float tpf) 
     {
         //TODO: add update code
-        //soundCapture.AnimateCircles();
         soundCapture.simpleUpdate(tpf);
-        
     }
 
     @Override

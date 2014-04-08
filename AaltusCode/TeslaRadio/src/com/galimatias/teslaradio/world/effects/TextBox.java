@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.galimatias.teslaradio.world.effects;
 
 import com.jme3.asset.AssetManager;
@@ -15,22 +11,21 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 
 /**
- *
- * @author Alexandre Hamel
+ * Created by Alexandre Hamel on 4/8/14.
  */
-public class TextBoxes extends Node{
-    
+public class TextBox extends Node {
+
     private BitmapText text;
     private BitmapFont guiFont;
-    
-    public TextBoxes(AssetManager assetManager)
+
+    public TextBox(AssetManager assetManager)
     {
         this.detachAllChildren();
         guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
-        text = new BitmapText(guiFont, false);  
+        text = new BitmapText(guiFont, false);
     }
-    
-    public void simpleUpdate(String updatedText, 
+
+    public void simpleUpdate(String updatedText,
                              float updatedSize,
                              ColorRGBA updatedColor,
                              Camera cam)
@@ -40,21 +35,21 @@ public class TextBoxes extends Node{
         text.setColor(updatedColor);
         text.lookAt(cam.getLocation(), cam.getUp());
     }
-    
-    public void initText(String textToDisplay, 
-                         float size, 
-                         Vector3f translation, 
-                         Quaternion rotation, 
+
+    public void initText(String textToDisplay,
+                         float size,
+                         Vector3f translation,
+                         Quaternion rotation,
                          ColorRGBA color)
-    {                      
+    {
         text.setSize(size);
         text.setText(textToDisplay);
-        
+
         float width = text.getLineWidth();
         float height = text.getLineHeight();
         Rectangle rect = new Rectangle(0.0f, size, width, height);
         text.setBox(rect);
-        
+
         this.move(translation);
         this.rotate(rotation);
         text.setColor(color);
