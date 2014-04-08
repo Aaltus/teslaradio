@@ -11,8 +11,7 @@ import com.jme3.font.Rectangle;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 
 /**
@@ -32,16 +31,14 @@ public class TextBoxes extends Node{
     }
     
     public void simpleUpdate(String updatedText, 
-                             float updatedSize, 
-                             Vector3f updatedTranslation, 
-                             Quaternion updatedRotation,
-                             ColorRGBA updatedColor)
+                             float updatedSize,
+                             ColorRGBA updatedColor,
+                             Camera cam)
     {
         text.setSize(updatedSize);
         text.setText(updatedText);
-        text.setLocalTranslation(updatedTranslation);
-        text.rotate(updatedRotation);
         text.setColor(updatedColor);
+        text.lookAt(cam.getLocation(), cam.getUp());
     }
     
     public void initText(String textToDisplay, 
@@ -49,17 +46,17 @@ public class TextBoxes extends Node{
                          Vector3f translation, 
                          Quaternion rotation, 
                          ColorRGBA color)
-    {
-        float width = text.getLineWidth();
-        float height = text.getLineHeight();
-                
-        Rectangle rect = new Rectangle(translation.x, translation.y, width, height);
-        
-        text.setBox(rect);
+    {                      
         text.setSize(size);
         text.setText(textToDisplay);
-        text.setLocalTranslation(translation);
-        text.rotate(rotation);
+        
+        float width = text.getLineWidth();
+        float height = text.getLineHeight();
+        Rectangle rect = new Rectangle(0.0f, size, width, height);
+        text.setBox(rect);
+        
+        this.move(translation);
+        this.rotate(rotation);
         text.setColor(color);
         text.setAlpha(0.5f);
         this.attachChild(text);
