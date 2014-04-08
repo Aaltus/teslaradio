@@ -79,8 +79,8 @@ public class Signal extends Geometry {
         if (distanceTraveled>currentPath.length()) {
 
             //calculate end of line position
-            displacement = - currentPath.length() + distanceTraveled;
-            newPos = currentPos.add(currentPath.normalize().mult(displacement));
+            float displacement_temp = - currentPath.length() + distanceTraveled;
+            newPos = currentPos.add(currentPath.normalize().mult(displacement_temp));
             this.setLocalTranslation(newPos);
             
             index ++;
