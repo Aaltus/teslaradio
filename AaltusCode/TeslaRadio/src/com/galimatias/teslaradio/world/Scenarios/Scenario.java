@@ -47,7 +47,6 @@ public abstract class Scenario extends Node implements AnimEventListener{
     public abstract void onAnimChange(AnimControl animControl, AnimChannel animChannel, String s);
 
     public abstract void onScenarioClick(CollisionResult closestCollisionResult);
-
+    
     public abstract void onAudioEvent();
-
 }
