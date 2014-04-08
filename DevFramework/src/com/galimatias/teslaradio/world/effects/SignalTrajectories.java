@@ -4,19 +4,15 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
-import com.jme3.cinematic.MotionPath;
-import com.jme3.cinematic.events.MotionTrack;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.mesh.IndexBuffer;
-import com.jme3.scene.plugins.blender.curves.BezierCurve;
 import com.jme3.util.BufferUtils;
 import java.nio.FloatBuffer;
 import java.util.Collections;
-import java.util.List;
 import java.util.Vector;
 
 /**
