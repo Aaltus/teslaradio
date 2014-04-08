@@ -1,7 +1,6 @@
 package com.galimatias.teslaradio.world.commons;
 
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
-import com.galimatias.teslaradio.world.effects.TextBoxes;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -32,7 +31,7 @@ public class Main extends SimpleApplication
     @Override
     public void simpleInitApp() 
     {
-        flyCam.setMoveSpeed(100f);
+        flyCam.setMoveSpeed(100f);      
         
         sceneModel = assetManager.loadModel("Scenes/World.j3o");
         rootNode.attachChild(sceneModel);
@@ -76,7 +75,7 @@ public class Main extends SimpleApplication
         public void onAction(String name, boolean keyPressed, float tpf) 
         {
           if (name.equals("Animate") && !keyPressed) {
-            soundCapture.drumTouchEffect();
+              soundCapture.drumTouchEffect();
           }
         }
     };
