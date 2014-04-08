@@ -4,6 +4,7 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.animation.*;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
@@ -16,7 +17,7 @@ import com.jme3.scene.Spatial;
 import com.galimatias.teslaradio.world.effects.SignalEmitter;
 import com.galimatias.teslaradio.world.effects.SignalTrajectories;
 import com.galimatias.teslaradio.world.effects.SignalType;
-import com.galimatias.teslaradio.world.effects.TextBoxes;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -35,7 +36,6 @@ public final class SoundCapture extends Scenario {
     private final static String TAG = "Capture";
 
     private AudioNode drum_sound;
-    private Node guiNode;
     private Spatial scene;
     private Spatial drum;
     private Spatial micro;
@@ -57,15 +57,28 @@ public final class SoundCapture extends Scenario {
     private Vector3f micPosition;
     private Vector3f drumHandleOutPosition;
     private Vector3f micHandleInPosition;
-           
+    
+    private String updatedText = "Hello World";
+    private float textSize = 10.0f;
+    private ColorRGBA textColor = ColorRGBA.White;
+
+    private Camera fgCam = null;
+
     private boolean firstTry = true;
        
-    public SoundCapture(AssetManager assetManager)
+    public SoundCapture(AssetManager assetManager, Camera fgCam)
     {
         super(assetManager);
         
         loadUnmovableObjects();
         loadMovableObjects();
+
+        this.fgCam = fgCam;
+    }
+
+    public SoundCapture(AssetManager assetManager)
+    {
+        this(assetManager, null);
     }
 
     /**
@@ -101,9 +114,10 @@ public final class SoundCapture extends Scenario {
         textRotation.fromAngleAxis(-3.14159f/2.0f, Vector3f.UNIT_Y);
         
         Vector3f v = new Vector3f(micHandleInPosition.x, micHandleInPosition.y, micHandleInPosition.z + 15.0f);
+        //Vector3f v = new Vector3f(0.0f,0.0f,0.0f);
         
-        TextBoxes text = new TextBoxes(assetManager);
-        text.initText("Hello World", 10.0f, v, textRotation, ColorRGBA.Magenta);
+        TextBox text = new TextBox(assetManager);
+        text.initText(updatedText, textSize, v, textRotation, textColor);
         text.setName("Text");
         this.attachChild(text);
 
@@ -123,7 +137,7 @@ public final class SoundCapture extends Scenario {
         circles.setName("Circles");  
         //List<Vector3f> listPaths = new ArrayList<Vector3f>();
         //listPaths.add(new Vector3f(0,40,0));
-        
+        /* A colored lit cube. Needs light source! */ 
     }
 
     /**
@@ -303,11 +317,20 @@ public final class SoundCapture extends Scenario {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-     public void simpleUpdate(float tpf) {
+    public void simpleUpdate(float tpf) {
          
-         DrumSoundEmitter.simpleUpdate(tpf);
-         MicWireEmitter.simpleUpdate(tpf);
-     }
+        DrumSoundEmitter.simpleUpdate(tpf);
+        MicWireEmitter.simpleUpdate(tpf);
+
+        if(fgCam != null) {
+            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, textSize, textColor, this.fgCam);
+            //Log.d(TAG,"Camera position :" + fgCam.getLocation());
+        }
+        else {
+            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, textSize, textColor, new Camera(100,100));
+            //Log.d(TAG,"Camera position :");
+        }
+    }
 
     @Override
     public void onAudioEvent() {

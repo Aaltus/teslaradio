@@ -112,11 +112,10 @@ public class VuforiaJME extends SimpleApplication  {
 		initTracking(settings.getWidth(), settings.getHeight());
 		initVideoBackground(settings.getWidth(), settings.getHeight());
 		initBackgroundCamera();
-		
-		initForegroundScene();	
-		
-		initForegroundCamera(mForegroundCamFOVY);
 
+        initForegroundCamera(mForegroundCamFOVY);
+
+		initForegroundScene();	
 
 	}
 
@@ -172,7 +171,6 @@ public class VuforiaJME extends SimpleApplication  {
 
 	}
 
-
     public void initForegroundScene() {
 
         Log.d(TAG,"initForegroundScene" );
@@ -180,7 +178,7 @@ public class VuforiaJME extends SimpleApplication  {
         initLights();
 
         //Init SoundCapture scenario
-        soundCapture = new SoundCapture(assetManager);
+        soundCapture = new SoundCapture(assetManager, fgCam);
         soundCapture.scale(20.0f);
         soundCapture.setName("SoundCapture");
         Quaternion rot = new Quaternion();
