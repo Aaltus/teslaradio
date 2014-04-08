@@ -4,14 +4,14 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
-import com.galimatias.teslaradio.observer.Observable;
-import com.galimatias.teslaradio.observer.Observer;
-import com.jme3.material.Material;
+import com.galimatias.teslaradio.world.observer.Observable;
+import com.galimatias.teslaradio.world.observer.Observer;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
