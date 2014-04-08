@@ -148,8 +148,7 @@ public final class SoundCapture extends Scenario {
         trajectories = directionFactory.getTrajectories();
         
         // calculalate drum to mic path length
-        Vector3f drum2MicVector = drumPosition.add(0f, 21f, 0f);
-        drum2MicVector.subtractLocal(micHandleInPosition);
+        Vector3f drum2MicVector = drumHandleOutPosition.subtract(micHandleInPosition);
         float drum2MicLength = drum2MicVector.length();
         
         // instantiate 3d Sound particul model
@@ -160,11 +159,11 @@ public final class SoundCapture extends Scenario {
         soundParticle.setMaterial(soundParticul_mat);
         Geometry soundParticleTranslucent = soundParticle.clone();
         soundParticleTranslucent.getMaterial().setColor("Color", new ColorRGBA(0f, 0f, 1f, 0.3f));
-
                 
         DrumSoundEmitter = new SignalEmitter(trajectories, drum2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
-        DrumSoundEmitter.setLocalTranslation(drumPosition.x, drumPosition.y+21f,drumPosition.z ); // TO DO: utiliser le object handle blender pour position        
         this.attachChild(DrumSoundEmitter);
+        DrumSoundEmitter.setLocalTranslation(drumHandleOutPosition); // TO DO: utiliser le object handle blender pour position
+
     }
     
     private void initCircles()
