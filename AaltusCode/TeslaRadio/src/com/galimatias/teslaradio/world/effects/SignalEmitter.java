@@ -6,7 +6,6 @@ package com.galimatias.teslaradio.world.effects;
 
 import com.galimatias.teslaradio.world.observer.Observable;
 import com.galimatias.teslaradio.world.observer.Observer;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -27,7 +26,6 @@ public class SignalEmitter extends Node implements Observer, Observable
     private Geometry mainParticle;
     private Geometry secondaryParticle;
     private float particlesSpeed;
-    private ColorRGBA baseColor;
     private SignalType signalType;
     private float capturePathLength = -1;
     private List<Observer> observers = new ArrayList<Observer>();
@@ -38,7 +36,6 @@ public class SignalEmitter extends Node implements Observer, Observable
         this.mainParticle = mainParticle;
         this.secondaryParticle = secondaryParticle;
         this.particlesSpeed = particlesSpeed;
-        this.baseColor = baseColor;
         this.signalType = signalType;
     }
     
@@ -47,7 +44,6 @@ public class SignalEmitter extends Node implements Observer, Observable
         this.mainParticle = mainParticle;
         this.secondaryParticle = secondaryParticle;
         this.particlesSpeed = particlesSpeed;
-        this.baseColor = baseColor;
         this.signalType = signalType;
         this.capturePathLength = capturePathLength;
     }    
