@@ -36,15 +36,20 @@ public final class SoundCapture extends Scenario {
     private final static String TAG = "Capture";
 
     private AudioNode drum_sound;
+    private AudioNode guitar_sound;
+    
     private Spatial scene;
     private Spatial drum;
+    private Spatial guitar;
     private Spatial micro;
     private Spatial circles;
     
     private Spatial drumHandleOut;
+    private Spatial guitarHandleOut;
     private Spatial micHandleIn;
     
     private SignalEmitter DrumSoundEmitter;
+    private SignalEmitter GuitarSoundEmitter;
     private SignalEmitter MicWireEmitter;
     
     // animation encore utile?
@@ -52,10 +57,13 @@ public final class SoundCapture extends Scenario {
     private AnimControl mAnimControl = new AnimControl();
     private AnimChannel mAnimChannel;
 
-    private Vector<Vector3f> trajectories = new Vector<Vector3f>();
+    private Vector<Vector3f> drum_trajectories = new Vector<Vector3f>();
+    private Vector<Vector3f> guitar_trajectories = new Vector<Vector3f>();
     private Vector3f drumPosition;
+    private Vector3f guitarPosition;
     private Vector3f micPosition;
     private Vector3f drumHandleOutPosition;
+    private Vector3f guitarHandleOutPosition;
     private Vector3f micHandleInPosition;
     
     private String updatedText = "Hello World";
@@ -94,21 +102,32 @@ public final class SoundCapture extends Scenario {
         this.attachChild(scene);
 
         drum = scene.getParent().getChild("Tambour");
+        guitar = scene.getParent().getChild("Guitar");
         micro = scene.getParent().getChild("Boule_micro");
+        guitarHandleOut = scene.getParent().getChild("Guitar_Output_Handle");
         drumHandleOut = scene.getParent().getChild("Drum_Output_Handle");
         micHandleIn = scene.getParent().getChild("Mic_Input_Handle");
         
         drumPosition = drum.getWorldTranslation();
+        guitarPosition = guitar.getWorldTranslation();
         micPosition = micro.getWorldTranslation();
         drumHandleOutPosition = drumHandleOut.getWorldTranslation();
+        guitarHandleOutPosition = guitarHandleOut.getWorldTranslation();
         micHandleInPosition = micHandleIn.getWorldTranslation();
-
+        
+        
         drum_sound = new AudioNode(assetManager, "Sounds/drum_taiko.wav", false);
         drum_sound.setPositional(false);
         drum_sound.setLooping(false);
         drum_sound.setVolume(2);
-        //rootNode.attachChild(audio_gun);
         this.attachChild(drum_sound);
+        
+        //Add guitar sound
+        guitar_sound = new AudioNode(assetManager, "Sounds/guitar.wav", false);
+        guitar_sound.setPositional(false);
+        guitar_sound.setLooping(false);
+        guitar_sound.setVolume(2);
+        this.attachChild(guitar_sound);
         
         Quaternion textRotation = new Quaternion();
         textRotation.fromAngleAxis(-3.14159f/2.0f, Vector3f.UNIT_Y);
@@ -159,7 +178,7 @@ public final class SoundCapture extends Scenario {
         // Creating the trajectories
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
         directionFactory.setTrajectories(drumMicDirection, VecDirectionNorms);
-        trajectories = directionFactory.getTrajectories();
+        drum_trajectories = directionFactory.getTrajectories();
         
         // calculalate drum to mic path length
         Vector3f drum2MicVector = drumHandleOutPosition.subtract(micHandleInPosition);
@@ -174,11 +193,52 @@ public final class SoundCapture extends Scenario {
         Geometry soundParticleTranslucent = soundParticle.clone();
         soundParticleTranslucent.getMaterial().setColor("Color", new ColorRGBA(0f, 0f, 1f, 0.3f));
                 
-        DrumSoundEmitter = new SignalEmitter(trajectories, drum2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
+        DrumSoundEmitter = new SignalEmitter(drum_trajectories, drum2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
         this.attachChild(DrumSoundEmitter);
         DrumSoundEmitter.setLocalTranslation(drumHandleOutPosition); // TO DO: utiliser le object handle blender pour position
 
     }
+    
+    /**
+     * Initialisation of the tambour effects
+     */
+    private void initGuitarParticlesEmitter()
+    {
+        // Getting all the trajectories from the position of the mic-drums and 
+        // the number of directions        
+        Vector3f guitarMicDirection = micHandleInPosition.subtract(guitarHandleOutPosition);        
+                        
+        int totalNbDirections = 50;
+        int nbXYDirections = 5;
+        
+        // Setting the direction norms and the speed displacement to the trajectories
+        float VecDirectionNorms = 80f;
+        float SoundParticles_Speed = 35f;
+                
+        // Creating the trajectories
+        SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
+        directionFactory.setTrajectories(guitarMicDirection, VecDirectionNorms);
+        guitar_trajectories = directionFactory.getTrajectories();
+        
+        // calculalate drum to mic path length
+        Vector3f guitar2MicVector = guitarHandleOutPosition.subtract(micHandleInPosition);
+        float guitar2MicLength = guitar2MicVector.length();
+        
+        // instantiate 3d Sound particul model
+        Sphere sphere = new Sphere(8, 8, 0.9f);
+        Geometry soundParticle = new Geometry("particul",sphere);
+        Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        soundParticul_mat.setColor("Color", ColorRGBA.Red);
+        soundParticle.setMaterial(soundParticul_mat);
+        Geometry soundParticleTranslucent = soundParticle.clone();
+        soundParticleTranslucent.getMaterial().setColor("Color", new ColorRGBA(1f, 0f, 0f, 0.3f));
+                
+        GuitarSoundEmitter = new SignalEmitter(guitar_trajectories, guitar2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
+        this.attachChild(GuitarSoundEmitter);
+        GuitarSoundEmitter.setLocalTranslation(guitarHandleOutPosition); // TO DO: utiliser le object handle blender pour position
+
+    }
+    
     
     private void initCircles()
     {
@@ -242,9 +302,11 @@ public final class SoundCapture extends Scenario {
     {
         initCircles();
         initDrumParticlesEmitter();
+        initGuitarParticlesEmitter();
         initMicWireParticlesEmitter();
         
         DrumSoundEmitter.registerObserver(MicWireEmitter);
+        GuitarSoundEmitter.registerObserver(MicWireEmitter);
         
         this.attachChild(movableObjects);
     }
@@ -274,6 +336,32 @@ public final class SoundCapture extends Scenario {
                 
     }
     
+    public void guitarTouchEffect()
+    {        
+        GuitarSoundEmitter.emitParticles();
+        //MicWireEmitter.emitParticles();
+        
+        //movableObjects.attachChild(circles);
+        
+        //if(firstTry == true)
+        //    mAnimControl.addListener(this);
+
+        /**
+         * Animation for a better touch feeling
+         */
+        //mAnimChannel.reset(true);
+        //mAnimChannel.setAnim("DrumEffect");
+        //mAnimChannel.setLoopMode(LoopMode.DontLoop);
+        //mAnimChannel.setSpeed(20.0f);
+              
+        // Not the first time the object is touched
+        //firstTry = false;
+
+        guitar_sound.playInstance();
+                
+    }
+    
+    
     @Override
     public void onAnimCycleDone(AnimControl animControl, AnimChannel animChannel, String s) 
     {
@@ -300,7 +388,13 @@ public final class SoundCapture extends Scenario {
                     this.drumTouchEffect();
                     break;
                 }
-                else{
+                else if (touchedGeometry.getParent().getName() == guitar.getName())
+                {
+                    this.guitarTouchEffect();
+                    break;
+                }
+                else
+                {
                     touchedGeometry = touchedGeometry.getParent();
                 }
 //            }
@@ -319,6 +413,7 @@ public final class SoundCapture extends Scenario {
     public void simpleUpdate(float tpf) {
          
         DrumSoundEmitter.simpleUpdate(tpf);
+        GuitarSoundEmitter.simpleUpdate(tpf);
         MicWireEmitter.simpleUpdate(tpf);
 
         if(fgCam != null) {
