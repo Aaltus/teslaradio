@@ -67,10 +67,12 @@ public class Main extends SimpleApplication
         // You can map one or several inputs to one named action
         inputManager.addMapping("Drum", new KeyTrigger(KeyInput.KEY_T));
         inputManager.addMapping("Guitar", new KeyTrigger(KeyInput.KEY_G));
+        inputManager.addMapping("Text", new KeyTrigger(KeyInput.KEY_H));
         
         // Add the names to the action listener.
         inputManager.addListener(actionListener,"Drum");
         inputManager.addListener(actionListener,"Guitar");
+        inputManager.addListener(actionListener,"Text");
   }
     
     private ActionListener actionListener = new ActionListener() {
@@ -84,11 +86,13 @@ public class Main extends SimpleApplication
               //soundCapture.drumTouchEffect();
               soundCapture.drumTouchEffect();
           }
+          else if (name.equals("Text") && !keyPressed) {
+              soundCapture.textTouchEffect();
+          }
         }
     };
     
     private void initLights(){
-    
     
         // You must add a light to make the model visible
         DirectionalLight back = new DirectionalLight();
