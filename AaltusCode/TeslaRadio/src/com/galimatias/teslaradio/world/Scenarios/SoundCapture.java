@@ -22,6 +22,9 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -71,11 +74,12 @@ public final class SoundCapture extends Scenario {
     private float defaultTextSize = 10.0f;
     private ColorRGBA defaultTextColor = ColorRGBA.White;
     
-    // Updated values of the textbox
+    // Updated values of the textbox, the list contains the messages when updated
+    private LinkedList<String> lstUpdatedText = new LinkedList<String>();
     private String updatedText = null;
     private float updatedTextSize = 0.0f;
     private ColorRGBA updatedTextColor = null;
-
+        
     private Camera fgCam = null;
 
     private boolean firstTry = true;
@@ -144,6 +148,12 @@ public final class SoundCapture extends Scenario {
         TextBox text = new TextBox(assetManager);
         text.initDefaultText(defaultText, defaultTextSize, v, textRotation, defaultTextColor);
         text.setName("Text");
+
+        // Messages to display if textBox is touched
+        lstUpdatedText.add("Aliquam erat volutpat. Vestibulum tempor ");
+        lstUpdatedText.add(" amet quam eu consectetur. Duis dapibus,");
+        lstUpdatedText.add("Aliquam euismod diam eget pharetra imperdiet.");
+        
         this.attachChild(text);
 
     }
@@ -206,7 +216,7 @@ public final class SoundCapture extends Scenario {
     }
     
     /**
-     * Initialisation of the tambour effects
+     * Initialisation of the drum effects
      */
     private void initGuitarParticlesEmitter()
     {
@@ -367,6 +377,14 @@ public final class SoundCapture extends Scenario {
                 
     }
     
+    public void textTouchEffect()
+    {
+        updatedText = lstUpdatedText.pop();
+        lstUpdatedText.add(updatedText);
+        updatedTextSize = 0.0f;
+        updatedTextColor = null;
+    }
+    
     
     @Override
     public void onAnimCycleDone(AnimControl animControl, AnimChannel animChannel, String s) 
@@ -397,6 +415,11 @@ public final class SoundCapture extends Scenario {
                 else if (touchedGeometry.getParent().getName() == guitar.getName())
                 {
                     this.guitarTouchEffect();
+                    break;
+                }
+                else if (touchedGeometry.getParent().getName() == this.getChild("Text").getName()) 
+                {
+                    this.textTouchEffect();
                     break;
                 }
                 else
