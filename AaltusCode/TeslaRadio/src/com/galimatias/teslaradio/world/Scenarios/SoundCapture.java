@@ -420,6 +420,7 @@ public final class SoundCapture extends Scenario {
                 else if (touchedGeometry.getParent().getName() == this.getChild("Text").getName()) 
                 {
                     this.textTouchEffect();
+                    showInformativeMenu = true;
                     break;
                 }
                 else
@@ -439,7 +440,7 @@ public final class SoundCapture extends Scenario {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void simpleUpdate(float tpf) {
+    public boolean simpleUpdate(float tpf) {
          
         DrumSoundEmitter.simpleUpdate(tpf);
         GuitarSoundEmitter.simpleUpdate(tpf);
@@ -455,7 +456,9 @@ public final class SoundCapture extends Scenario {
             //Log.d(TAG,"Camera position :" + fgCam.getLocation());
         }
         else {
-            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, updatedTextSize, updatedTextColor, new Camera(100,100));
+            Camera cam = new Camera(100,100);
+            cam.setLocation(new Vector3f(0.0f,50.0f,0.0f));
+            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, updatedTextSize, updatedTextColor, cam);
             
             // Resetting the values so that it is noob proof
             updatedText = null;
@@ -463,6 +466,14 @@ public final class SoundCapture extends Scenario {
             updatedTextColor = null;
             //Log.d(TAG,"Camera position :");
         }
+
+        if (!showInformativeMenu)
+        {
+            showInformativeMenu = false;
+            return true;
+        }
+        else
+            return false;
     }
 
     @Override
