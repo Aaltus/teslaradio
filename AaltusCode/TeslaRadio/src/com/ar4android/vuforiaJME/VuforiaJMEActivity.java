@@ -887,11 +887,11 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     /** Action when a listfragment item is selected*/
     @Override
-    public void onItemSelected(String id) {
+    public void onItemSelected(int id) {
 
         //Create the details fragment with the specified Id
         Bundle arguments = new Bundle();
-        arguments.putString(ItemDetailFragment.ARG_ITEM_ID, id);
+        arguments.putString(ItemDetailFragment.ARG_ITEM_ID, Integer.toString(id));
         ItemDetailFragment fragment = new ItemDetailFragment();
         fragment.setArguments(arguments);
 
@@ -902,6 +902,12 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         fm.executePendingTransactions();
 
 
+    }
+
+    private void showSelectedFragmentDetail(int id)
+    {
+        toggleFragmentsVisibility();
+        onItemSelected(id);
     }
 
 
@@ -947,13 +953,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         //Empty the SubjectContent list and readd items with correct language title
         SubjectContent.removeAllItems();
-        SubjectContent.addItem(new SubjectContent.SubjectItem("1", getString(R.string.sound_capture_title), new int[]{R.layout.sound_capture_page1,R.layout.informative_info_detail_test2}));
-        SubjectContent.addItem(new SubjectContent.SubjectItem("2", getString(R.string.modulation_am_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
-        SubjectContent.addItem(new SubjectContent.SubjectItem("3", getString(R.string.modulation_fm_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
-        SubjectContent.addItem(new SubjectContent.SubjectItem("4", getString(R.string.transmit_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
-        SubjectContent.addItem(new SubjectContent.SubjectItem("5", getString(R.string.reception_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
-        SubjectContent.addItem(new SubjectContent.SubjectItem("6", getString(R.string.reference_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
-        SubjectContent.addItem(new SubjectContent.SubjectItem("7", getString(R.string.about_us_title), new int[]{R.layout.informative_info_detail_test2}));
+        SubjectContent.addAllItems(this);
 
 
     }
