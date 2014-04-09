@@ -65,16 +65,23 @@ public class Main extends SimpleApplication
     private void initKeys() 
     {
         // You can map one or several inputs to one named action
-        inputManager.addMapping("Animate", new KeyTrigger(KeyInput.KEY_SPACE));
+        inputManager.addMapping("Drum", new KeyTrigger(KeyInput.KEY_T));
+        inputManager.addMapping("Guitar", new KeyTrigger(KeyInput.KEY_G));
         
         // Add the names to the action listener.
-        inputManager.addListener(actionListener,"Animate");
+        inputManager.addListener(actionListener,"Drum");
+        inputManager.addListener(actionListener,"Guitar");
   }
     
     private ActionListener actionListener = new ActionListener() {
         public void onAction(String name, boolean keyPressed, float tpf) 
         {
-          if (name.equals("Animate") && !keyPressed) {
+          if (name.equals("Guitar") && !keyPressed) {
+              //soundCapture.drumTouchEffect();
+              soundCapture.guitarTouchEffect();
+          }
+          else if (name.equals("Drum") && !keyPressed) {
+              //soundCapture.drumTouchEffect();
               soundCapture.drumTouchEffect();
           }
         }
