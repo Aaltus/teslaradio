@@ -58,9 +58,15 @@ public final class SoundCapture extends Scenario {
     private Vector3f drumHandleOutPosition;
     private Vector3f micHandleInPosition;
     
-    private String updatedText = "Hello World";
-    private float textSize = 10.0f;
-    private ColorRGBA textColor = ColorRGBA.White;
+    // Default text to be seen when scenario starts
+    private String defaultText = "Sed sit amet mi fringilla leo molestie luctus";
+    private float defaultTextSize = 10.0f;
+    private ColorRGBA defaultTextColor = ColorRGBA.White;
+    
+    // Updated values of the textbox
+    private String updatedText = null;
+    private float updatedTextSize = 0.0f;
+    private ColorRGBA updatedTextColor = null;
 
     private Camera fgCam = null;
 
@@ -117,7 +123,7 @@ public final class SoundCapture extends Scenario {
         //Vector3f v = new Vector3f(0.0f,0.0f,0.0f);
         
         TextBox text = new TextBox(assetManager);
-        text.initText(updatedText, textSize, v, textRotation, textColor);
+        text.initDefaultText(defaultText, defaultTextSize, v, textRotation, defaultTextColor);
         text.setName("Text");
         this.attachChild(text);
 
@@ -320,13 +326,23 @@ public final class SoundCapture extends Scenario {
          
         DrumSoundEmitter.simpleUpdate(tpf);
         MicWireEmitter.simpleUpdate(tpf);
-
+        
         if(fgCam != null) {
-            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, textSize, textColor, this.fgCam);
+            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, updatedTextSize, updatedTextColor, this.fgCam);
+            
+            // Resetting the values so that it is noob proof
+            updatedText = null;
+            updatedTextSize = 0.0f;
+            updatedTextColor = null;
             //Log.d(TAG,"Camera position :" + fgCam.getLocation());
         }
         else {
-            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, textSize, textColor, new Camera(100,100));
+            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, updatedTextSize, updatedTextColor, new Camera(100,100));
+            
+            // Resetting the values so that it is noob proof
+            updatedText = null;
+            updatedTextSize = 0.0f;
+            updatedTextColor = null;
             //Log.d(TAG,"Camera position :");
         }
     }

@@ -3,6 +3,8 @@ package com.galimatias.teslaradio.world.effects;
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
+import com.jme3.font.LineWrapMode;
+import com.jme3.font.Rectangle;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
@@ -36,28 +38,40 @@ public class TextBox extends Node {
                              ColorRGBA updatedColor,
                              Camera cam)
     {
-        text.setSize(updatedSize);
-        text.setText(updatedText);
-        text.setColor(updatedColor);
+        if(updatedText != null)
+            text.setText(updatedText);
+        if(updatedSize != 0.0f)
+            text.setSize(updatedSize);
+        if(updatedColor != null)
+            text.setColor(updatedColor);
+        
         this.lookAt(cam.getLocation(), cam.getUp());
     }
 
-    public void initText(String textToDisplay,
+    public void initDefaultText(String textToDisplay,
                          float size,
                          Vector3f translation,
                          Quaternion rotation,
                          ColorRGBA color)
     {
-        text.setSize(size);
         text.setText(textToDisplay);
+        text.setLineWrapMode(LineWrapMode.Word);
+        text.setSize(size);
+        text.setColor(color);
         
-        float width = text.getLineWidth();
-        float height = text.getLineHeight();
-                
+        float width = 100.0f;
+        float height = text.getHeight();
+
+        Rectangle fontRect = new Rectangle(0.0f,0.0f,width,height);
+        text.setBox(fontRect);
+        
+        height = text.getHeight();
+        width = text.getLineWidth();
+
         float boxDepth = 0.5f;
-        Box rect = new Box(width-10.0f, height-5.0f, boxDepth);
+        Box rect = new Box((width+20.0f)/2.0f, (height+20.0f)/2.0f, boxDepth);
         Geometry geomRect = new Geometry("textBox", rect);
-        geomRect.move(width / 2 + 5.0f, -height / 2, -2 * boxDepth - 20.0f);
+        geomRect.move(width / 2.0f, -height / 2.0f, -2.0f * boxDepth - 20.0f);
 
         Material boxMat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         boxMat.setColor("Color", new ColorRGBA((float)0x21/0xFF,(float)0x21/0xFF,(float)0x21/0xFF,(float)0xCC/0xFF));
@@ -69,7 +83,6 @@ public class TextBox extends Node {
         
         this.move(translation);
         this.rotate(rotation);
-        text.setColor(color);
 
         this.attachChild(geomRect);
         this.attachChild(text);
