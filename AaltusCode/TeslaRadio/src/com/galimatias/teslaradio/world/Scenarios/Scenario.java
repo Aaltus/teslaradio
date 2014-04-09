@@ -20,6 +20,8 @@ public abstract class Scenario extends Node implements AnimEventListener{
 
     private final static String TAG = "Scenario";
 
+    protected boolean showInformativeMenu = false;
+
     protected ViewState mViewState;
 
     protected Node movableObjects = new Node("movable");
@@ -47,6 +49,8 @@ public abstract class Scenario extends Node implements AnimEventListener{
     public abstract void onAnimChange(AnimControl animControl, AnimChannel animChannel, String s);
 
     public abstract void onScenarioClick(CollisionResult closestCollisionResult);
+
+    public abstract boolean simpleUpdate(float tpf);
     
     public abstract void onAudioEvent();
 }
