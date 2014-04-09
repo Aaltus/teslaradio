@@ -71,7 +71,7 @@ public class TextBox extends Node {
         float boxDepth = 0.5f;
         Box rect = new Box((width+20.0f)/2.0f, (height+20.0f)/2.0f, boxDepth);
         Geometry geomRect = new Geometry("textBox", rect);
-        geomRect.move(width / 2.0f, -height / 2.0f, -2.0f * boxDepth - 20.0f);
+        geomRect.move(width / 2.0f + 5.0f, -height / 2.0f, -2.0f * boxDepth - 20.0f);
 
         Material boxMat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         boxMat.setColor("Color", new ColorRGBA((float)0x21/0xFF,(float)0x21/0xFF,(float)0x21/0xFF,(float)0xCC/0xFF));
