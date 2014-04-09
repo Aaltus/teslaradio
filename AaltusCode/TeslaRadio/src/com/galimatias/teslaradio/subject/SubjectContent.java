@@ -1,5 +1,8 @@
 package com.galimatias.teslaradio.subject;
 
+import android.app.Activity;
+import com.galimatias.teslaradio.R;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,13 +16,16 @@ import java.util.Map;
  */
 public class SubjectContent {
 
+
+
+
     /**
      * An array of sample (dummy) items.
      */
     public static List<SubjectItem> ITEMS = new ArrayList<SubjectItem>();
 
 
-    public static Map<String, SubjectItem> ITEM_MAP = new HashMap<String, SubjectItem>();
+    public static Map<Integer, SubjectItem> ITEM_MAP = new HashMap<Integer, SubjectItem>();
 
     static {
         //Jonathan Desmarais: Add 7 static sample items.
@@ -33,6 +39,17 @@ public class SubjectContent {
 //        addItem(new SubjectItem("7", "Qui sommes nous ?", new int[]{R.layout.informative_info_detail_test2}));
     }
 
+    public static void addAllItems(Activity activity){
+
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.SOUNDCAPTURE.ordinal(), activity.getString(R.string.sound_capture_title), new int[]{R.layout.informative_info_detail_test2}));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.AMMODULATION.ordinal(), activity.getString(R.string.modulation_am_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.FMMODULATION.ordinal(), activity.getString(R.string.modulation_fm_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.TRANSMIT.ordinal(), activity.getString(R.string.transmit_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.RECEPTION.ordinal(), activity.getString(R.string.reception_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.REFERENCE.ordinal(), activity.getString(R.string.reference_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.ABOUTUS.ordinal(), activity.getString(R.string.about_us_title), new int[]{R.layout.informative_info_detail_test2}));
+
+    }
 
 
     public static void addItem(SubjectItem item) {
@@ -52,11 +69,11 @@ public class SubjectContent {
      * of XML layout (as R.Layout.name int).
      */
     public static class SubjectItem {
-        public String id;
+        public int id;
         public String title;
         public int[] listXml;
 
-        public SubjectItem(String id, String title, int[] listXml) {
+        public SubjectItem(int id, String title, int[] listXml) {
             this.id = id;
             this.listXml = listXml;
             this.title = title;
