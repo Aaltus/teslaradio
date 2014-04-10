@@ -19,12 +19,14 @@
 package com.ar4android.vuforiaJME;
 
 import android.util.Log;
+import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.jme3.app.SimpleApplication;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.input.controls.TouchListener;
+import com.jme3.input.controls.TouchTrigger;
+import com.jme3.input.event.TouchEvent;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
@@ -41,7 +43,7 @@ import com.jme3.texture.Texture2D;
 
 import java.util.concurrent.Callable;
 
-public class VuforiaJME extends SimpleApplication  {
+public class VuforiaJME extends SimpleApplication  implements TouchListener{
 
 	private static final String TAG = "VuforiaJME";
 	// The geometry which will represent the video background
@@ -90,8 +92,95 @@ public class VuforiaJME extends SimpleApplication  {
     
 	public static void main(String[] args) {
 		VuforiaJME app = new VuforiaJME();
+
 		app.start();
 	}
+
+    //A Applistener that we will be using for callback
+    public AppListener appListener;
+
+
+    //See https://github.com/latestpost/JMonkey3-Android-Examples/blob/master/src/jmeproject/innovationtech/co/uk/Game7.java
+    //For example
+    @Override
+    public void onTouch(String name, TouchEvent touchEvent, float v)
+    {
+        Log.d(TAG,"Action on screen");
+        switch(touchEvent.getType()){
+            case TAP:
+                if (name.equals("Touch"))
+                {
+
+                    // 1. Reset results list.
+                    CollisionResults results = new CollisionResults();
+
+                    // 2. Mode 1: user touch location.
+                    //Vector2f click2d = inputManager.getCursorPosition();
+
+                    Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
+                    Vector3f click3d = fgCam.getWorldCoordinates(
+                            new Vector2f(click2d.x, click2d.y), 0f).clone();
+                    Vector3f dir = fgCam.getWorldCoordinates(
+                            new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+                    Ray ray = new Ray(click3d, dir);
+
+                    // 3. Collect intersections between Ray and Shootables in results list.
+                    //focusableObjects.collideWith(ray, results);
+                    rootNode.collideWith(ray, results);
+
+                    // 4. Print the results
+                    Log.d(TAG,"----- Collisions? " + results.size() + "-----");
+                    for (int i = 0; i < results.size(); i++) {
+                        // For each hit, we know distance, impact point, name of geometry.
+                        float dist = results.getCollision(i).getDistance();
+                        Vector3f pt = results.getCollision(i).getContactPoint();
+                        String hit = results.getCollision(i).getGeometry().getName();
+
+                        Log.d(TAG,"* Collision #" + i + hit);
+                        //         Log.d(TAG,"  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+                    }
+
+                    // 5. Use the results (we mark the hit object)
+                    if (results.size() > 0) {
+
+                        // The closest collision point is what was truly hit:
+                        CollisionResult closest = results.getClosestCollision();
+
+                        Spatial touchedGeometry = closest.getGeometry();
+                        while(touchedGeometry.getParent() != null)
+                        {
+
+                            if (touchedGeometry.getParent().getName() == soundCapture.getName())
+                            {
+                                soundCapture.onScenarioClick(closest);
+                                break;
+                            }
+                            else{
+                                touchedGeometry = touchedGeometry.getParent();
+                            }
+                        }
+                    }
+                }
+
+            case LONGPRESSED:
+                break;
+
+            case MOVE:
+                break;
+        }
+    }
+
+    interface AppListener
+    {
+        //Callaback for showing a informative menu with the provided menu
+        public void showInformativeMenuCallback(ScenarioEnum scenarioEnum);
+    }
+
+    //A way to register to the appListener
+    public void setAppListener(AppListener appListener)
+    {
+        this.appListener = appListener;
+    }
 
 	// The default method used to initialize your JME application.
 	@Override
@@ -153,11 +242,11 @@ public class VuforiaJME extends SimpleApplication  {
 
         int settingsWidth = settings.getWidth();
         int settingsHeight = settings.getHeight();
-        Log.d(TAG,"* initBackgroundCamera with width : " + Integer.toString(settingsWidth) + " height: " + Integer.toString(settingsHeight) );
+        Log.d(TAG, "* initBackgroundCamera with width : " + Integer.toString(settingsWidth) + " height: " + Integer.toString(settingsHeight));
 		videoBGCam = new Camera(settingsWidth, settingsHeight);
 		videoBGCam.setViewPort(0.0f, 1.0f, 0.f, 1.0f);
 		videoBGCam.setLocation(new Vector3f(0f, 0f, 1.f));
-		videoBGCam.setAxes(new Vector3f(-1f,0f,0f), new Vector3f(0f,1f,0f), new Vector3f(0f,0f,-1f));
+		videoBGCam.setAxes(new Vector3f(-1f, 0f, 0f), new Vector3f(0f, 1f, 0f), new Vector3f(0f, 0f, -1f));
 		videoBGCam.setParallelProjection(true);
 		
 		// Also create a custom viewport.
@@ -182,14 +271,14 @@ public class VuforiaJME extends SimpleApplication  {
         soundCapture.scale(20.0f);
         soundCapture.setName("SoundCapture");
         Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(3.14f/2, new Vector3f(1.0f,0.0f,0.0f));
+        rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
         soundCapture.rotate(rot);
         soundCapture.initAllMovableObjects();
         rootNode.attachChild(soundCapture);
 
-        inputManager.addMapping("Touch", // Declare...
-                new MouseButtonTrigger(0)); // trigger 1: left-button click
-        inputManager.addListener(actionListener, "Touch");
+        inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click
+        inputManager.addListener(this, new String[]{"Touch"});
+
 
         //focusableObjects.attachChild(soundCapture);
 
@@ -239,7 +328,6 @@ public class VuforiaJME extends SimpleApplication  {
         rootNode.addLight(ambient);
 
     }
-
 
 	public void setCameraPerspectiveNative(float fovY,float aspectRatio) {
         // Log.d(TAG,"Update Camera Perspective..");
@@ -333,76 +421,17 @@ public class VuforiaJME extends SimpleApplication  {
 			mVideoBGGeom.updateLogicalState(tpf);
 			mVideoBGGeom.updateGeometricState();
 
-            soundCapture.simpleUpdate(tpf);
+
+            if (soundCapture.simpleUpdate(tpf))
+            {
+                appListener.showInformativeMenuCallback(ScenarioEnum.SOUNDCAPTURE);
+            }
+
 
             // Update the world depending on what is in focus
             //virtualWorld.UpdateFocus(fgCam,focusableObjects);
 			//virtualWorld.UpdateViewables(rootNode,focusableObjects);
 		}
-
-
-
-    /** Defining the "Touch" action: Determine what was hit and how to respond. */
-    private ActionListener actionListener = new ActionListener(){
-
-        public void onAction(String name, boolean keyPressed, float tpf) {
-            Log.d(TAG,"Action on screen");
-
-            if (name.equals("Touch") && !keyPressed) {
-
-                // 1. Reset results list.
-                CollisionResults results = new CollisionResults();
-
-                // 2. Mode 1: user touch location.
-                Vector2f click2d = inputManager.getCursorPosition();
-                Vector3f click3d = fgCam.getWorldCoordinates(
-                        new Vector2f(click2d.x, click2d.y), 0f).clone();
-                Vector3f dir = fgCam.getWorldCoordinates(
-                        new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
-                Ray ray = new Ray(click3d, dir);
-
-                // 3. Collect intersections between Ray and Shootables in results list.
-                //focusableObjects.collideWith(ray, results);
-                rootNode.collideWith(ray, results);
-
-                // 4. Print the results
-                Log.d(TAG,"----- Collisions? " + results.size() + "-----");
-                for (int i = 0; i < results.size(); i++) {
-                    // For each hit, we know distance, impact point, name of geometry.
-                    float dist = results.getCollision(i).getDistance();
-                    Vector3f pt = results.getCollision(i).getContactPoint();
-                    String hit = results.getCollision(i).getGeometry().getName();
-
-                    Log.d(TAG,"* Collision #" + i + hit);
-                    //         Log.d(TAG,"  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
-                }
-
-                // 5. Use the results (we mark the hit object)
-                if (results.size() > 0) {
-
-                    // The closest collision point is what was truly hit:
-                    CollisionResult closest = results.getClosestCollision();
-
-                    Spatial touchedGeometry = closest.getGeometry();
-                    while(touchedGeometry.getParent() != null)
-                    {
-
-                        if (touchedGeometry.getParent().getName() == soundCapture.getName())
-                        {
-                            soundCapture.onScenarioClick(closest);
-                            break;
-                        }
-                        else{
-                            touchedGeometry = touchedGeometry.getParent();
-                        }
-                    }
-                }
-
-                else{
-                }
-            }
-        }
-    };
 
 		@Override
 		public void simpleRender(RenderManager rm) {
@@ -419,109 +448,4 @@ public class VuforiaJME extends SimpleApplication  {
             return null;
         }
     }
-
-
-//    //Here is a model coming from the web
-//    protected void initScotty(){
-//
-//        // Load a model from j3o data
-//        scotty = (Node) assetManager.loadModel("Models/male/male.j3o");
-//        //scotty = assetManager.loadModel("Models/male/Body.mesh.xml");
-//        scotty.setName("scotty");
-//        scotty.scale(100.0f, 100.0f, 100.0f);
-//        Quaternion rotateNinjaX=new Quaternion();
-//        rotateNinjaX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
-//        Quaternion rotateNinjaZ=new Quaternion();
-//        rotateNinjaZ.fromAngleAxis(3.14f, new Vector3f(0.0f,0.0f,1.0f));
-//        Quaternion rotateNinjaY=new Quaternion();
-//        rotateNinjaY.fromAngleAxis(3.14f,new Vector3f(0.0f,1.0f,0.0f));
-//
-//        rotateNinjaX.mult(rotateNinjaZ);
-//        Quaternion rotateNinjaXZ=rotateNinjaZ.mult(rotateNinjaX);
-//        Quaternion rotateNinjaXYZ = rotateNinjaXZ.mult(rotateNinjaY);
-//
-//        scotty.rotate(rotateNinjaXYZ);
-//
-//        //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
-//        scotty.rotate(0.0f, -3.0f, 0.0f);
-//        scotty.setLocalTranslation(1000.0f, 0.0f, 0.0f);
-//        shootables.attachChild(scotty);
-//
-//        //We need to get the AnimControl from the child man of the rootnode
-//        AnimControl control = scotty.getChild("Man").getControl(AnimControl.class);
-//        control.addListener(this);
-//        AnimChannel mAniChannel = control.createChannel();
-//
-//        mAniChannel.setAnim("ArmatureAction.001");
-//        mAniChannel.setLoopMode(LoopMode.Loop);
-//        mAniChannel.setSpeed(2f);
-//    }
-//
-//    protected void initNinja(){
-//
-//        // Load a model from test_data (OgreXML + material + texture)
-//        ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
-//        ninja.setName("ninja");
-//        ninja.scale(5.0f, 5.0f, 5.0f);
-//        Quaternion rotateNinjaX=new Quaternion();
-//        rotateNinjaX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
-//        Quaternion rotateNinjaZ=new Quaternion();
-//        rotateNinjaZ.fromAngleAxis(3.14f, new Vector3f(0.0f,0.0f,1.0f));
-//        Quaternion rotateNinjaY=new Quaternion();
-//        rotateNinjaY.fromAngleAxis(3.14f,new Vector3f(0.0f,1.0f,0.0f));
-//
-//        rotateNinjaX.mult(rotateNinjaZ);
-//        Quaternion rotateNinjaXZ=rotateNinjaZ.mult(rotateNinjaX);
-//        Quaternion rotateNinjaXYZ = rotateNinjaXZ.mult(rotateNinjaY);
-//
-//        ninja.rotate(rotateNinjaXYZ);
-//
-//        //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
-//        ninja.rotate(0.0f, -3.0f, 0.0f);
-//        ninja.setLocalTranslation(0.0f, 0.0f, 0.0f);
-//
-//
-//        //attachShootables();
-//        shootables.attachChild(ninja);
-//
-//        mAniControl = ninja.getControl(AnimControl.class);
-//        mAniControl.addListener(this);
-//        mAniChannel = mAniControl.createChannel();
-//        // show animation from beginning
-//        mAniChannel.setAnim("Walk");
-//        mAniChannel.setLoopMode(LoopMode.Loop);
-//        mAniChannel.setSpeed(1f);
-//    }
-//
-//    public void attachShootables(){
-//
-//        if (!isShootablesInRootNode()){
-//
-//            rootNode.attachChild(shootables);
-//            //shootables.attachChild(ninja);
-//        }
-//    }
-//
-//    public void detachShootables(){
-//
-//        if (isShootablesInRootNode()){
-//
-//            rootNode.detachChild(shootables);
-//            //shootables.detachChild(ninja);
-//        }
-//    }
-//
-//    public boolean isShootablesInRootNode(){
-//
-//        //Node ninjaNode = (Node) rootNode.getChild(ninja.getName());
-//        Node shootableNode = (Node) rootNode.getChild(shootables.getName());
-//
-//        if (shootableNode == null){
-//            return false;
-//        }
-//        else {
-//            return true;
-//        }
-//    }
-
 }
