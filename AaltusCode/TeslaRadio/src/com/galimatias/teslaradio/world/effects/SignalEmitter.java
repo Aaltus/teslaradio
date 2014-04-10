@@ -6,6 +6,7 @@ package com.galimatias.teslaradio.world.effects;
 
 import com.galimatias.teslaradio.world.observer.Observable;
 import com.galimatias.teslaradio.world.observer.Observer;
+import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -30,6 +31,8 @@ public class SignalEmitter extends Node implements Observer, Observable
     private float capturePathLength = -1;
     private List<Observer> observers = new ArrayList<Observer>();
     
+    private Spline curveSpline;
+    
     
     public SignalEmitter(Vector<Vector3f> paths, Geometry mainParticle, Geometry secondaryParticle, float particlesSpeed, SignalType signalType) {
         this.paths = paths;
@@ -46,7 +49,16 @@ public class SignalEmitter extends Node implements Observer, Observable
         this.particlesSpeed = particlesSpeed;
         this.signalType = signalType;
         this.capturePathLength = capturePathLength;
-    }    
+    }
+    
+    public SignalEmitter(Spline paths, Geometry mainParticle, Geometry secondaryParticle, float particlesSpeed, SignalType signalType) {
+        this.curveSpline = paths;
+        this.mainParticle = mainParticle;
+        this.secondaryParticle = secondaryParticle;
+        this.particlesSpeed = particlesSpeed;
+        this.signalType = signalType;
+    }
+    
     
     public void simpleUpdate(float tpf) {
         
@@ -91,7 +103,7 @@ public class SignalEmitter extends Node implements Observer, Observable
     
     private void emitCurWireParticles(){
         
-        Signal myCurvedSignal = new Signal(mainParticle, paths, particlesSpeed);
+        Signal myCurvedSignal = new Signal(mainParticle, curveSpline, particlesSpeed);
         this.attachChild(myCurvedSignal);
     }
     
