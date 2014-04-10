@@ -38,6 +38,7 @@ import com.galimatias.teslaradio.ItemDetailFragment;
 import com.galimatias.teslaradio.ItemListFragment;
 import com.galimatias.teslaradio.LanguageDialogFragment;
 import com.galimatias.teslaradio.R;
+import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
@@ -51,7 +52,7 @@ import java.util.logging.Level;
 //Old code
 //public class VuforiaJMEActivity extends AndroidHarness {
 public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements ItemListFragment.Callbacks, View.OnClickListener,
-        ItemDetailFragment.OnClickDetailFragmentListener, SeekBar.OnSeekBarChangeListener {
+        ItemDetailFragment.OnClickDetailFragmentListener, SeekBar.OnSeekBarChangeListener, VuforiaJME.AppListener {
 
 	private static final String TAG = "VuforiaJMEActivity";
 	
@@ -73,7 +74,11 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     // Name of the native dynamic libraries to load:
     private static final String NATIVE_LIB_SAMPLE = "VuforiaNative";
     private static final String NATIVE_LIB_QCAR = "Vuforia";
-    
+
+    //name of the fragment TAG
+    private final String ITEM_LIST_FRAGMENT_TAG = "ITEM_LIST_FRAGMENT_TAG";
+    private final String ITEM_DETAIL_FRAGMENT_TAG = "ITEM_DETAIL_FRAGMENT_TAG";
+
     // Display size of the device:
     private int mScreenWidth = 0;
     private int mScreenHeight = 0;
@@ -199,6 +204,25 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 break;
         }
     }
+
+    /*
+    Show the informative menu with the provided scenario to show
+     */
+    @Override
+    public void showInformativeMenuCallback(final ScenarioEnum scenarioEnum)
+    {
+        Log.d(TAG,"showInformativeMenuCallback");
+
+        //Run on UI thread
+        runOnUiThread(new Runnable()
+        {
+            public void run()
+            {
+                showSelectedFragmentDetail(scenarioEnum);
+            }
+        });
+    }
+
 
 
     /** An async task to initialize QCAR asynchronously. */
@@ -679,6 +703,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         //eglConfigType=ConfigType.BEST_TRANSLUCENT;
         super.onCreate(savedInstanceState);
 
+        //Set an AppListener to receive callbacks from VuforiaJME
+        ((VuforiaJME) app).setAppListener(this);
+
         // Update the application status to start initializing application:
         updateApplicationStatus(APPSTATUS_INIT_APP);
 
@@ -838,11 +865,11 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         FragmentTransaction ft = fm.beginTransaction();
         Fragment fragment = new ItemListFragment();
         ft.hide(fragment);
-        ft.replace(R.id.item_list_fragment_vuforia, fragment, "item_list_fragment_vuforia");
+        ft.replace(R.id.item_list_fragment_vuforia, fragment, ITEM_LIST_FRAGMENT_TAG);
         ft.commit();
         fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
         //Make the listfragment activable
-        ((ItemListFragment) fm.findFragmentByTag("item_list_fragment_vuforia")).setActivateOnItemClick(true);
+        ((ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG)).setActivateOnItemClick(true);
 
         //Set onClickListener for all buttons
         Button languageButton = (Button)findViewById(R.id.camera_toggle_language_button);
@@ -887,20 +914,31 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     /** Action when a listfragment item is selected*/
     @Override
-    public void onItemSelected(String id) {
+    public void onItemSelected(int id) {
 
         //Create the details fragment with the specified Id
         Bundle arguments = new Bundle();
-        arguments.putString(ItemDetailFragment.ARG_ITEM_ID, id);
+        arguments.putString(ItemDetailFragment.ARG_ITEM_ID, Integer.toString(id));
         ItemDetailFragment fragment = new ItemDetailFragment();
         fragment.setArguments(arguments);
 
         FragmentManager fm     = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
-        ft.replace(R.id.item_detail_fragment_vuforia, fragment,"item_detail_fragment_vuforia").commit();
+        ft.replace(R.id.item_detail_fragment_vuforia, fragment, ITEM_DETAIL_FRAGMENT_TAG).commit();
         fm.executePendingTransactions();
 
+
+    }
+
+    //This function show the informative menu and selected a specific page in informative menu
+    private void showSelectedFragmentDetail(ScenarioEnum scenarioEnum)
+    {
+        toggleFragmentsVisibility();
+        FragmentManager fm =     getSupportFragmentManager();
+        ItemListFragment fragment = (ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
+        fragment.setActivatedPosition(scenarioEnum.ordinal());
+        onItemSelected(scenarioEnum.ordinal());
 
     }
 
@@ -947,13 +985,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         //Empty the SubjectContent list and readd items with correct language title
         SubjectContent.removeAllItems();
-        SubjectContent.addItem(new SubjectContent.SubjectItem("1", getString(R.string.sound_capture_title), new int[]{R.layout.informative_info_detail_test2}));
-        SubjectContent.addItem(new SubjectContent.SubjectItem("2", getString(R.string.modulation_am_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
-        SubjectContent.addItem(new SubjectContent.SubjectItem("3", getString(R.string.modulation_fm_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
-        SubjectContent.addItem(new SubjectContent.SubjectItem("4", getString(R.string.transmit_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
-        SubjectContent.addItem(new SubjectContent.SubjectItem("5", getString(R.string.reception_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
-        SubjectContent.addItem(new SubjectContent.SubjectItem("6", getString(R.string.reference_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
-        SubjectContent.addItem(new SubjectContent.SubjectItem("7", getString(R.string.about_us_title), new int[]{R.layout.informative_info_detail_test2}));
+        SubjectContent.addAllItems(this);
 
 
     }
@@ -965,7 +997,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
 
         //Hide list_fragment
-        Fragment fragment = fm.findFragmentByTag("item_list_fragment_vuforia");
+        Fragment fragment = fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
 
 
         if (fragment != null){
@@ -985,7 +1017,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         }
 
 
-        Fragment fragmentDetail = (Fragment) fm.findFragmentByTag("item_detail_fragment_vuforia");
+        Fragment fragmentDetail = (Fragment) fm.findFragmentByTag(ITEM_DETAIL_FRAGMENT_TAG);
         if (fragmentDetail != null){
             FragmentTransaction ft = fm.beginTransaction();
             ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);

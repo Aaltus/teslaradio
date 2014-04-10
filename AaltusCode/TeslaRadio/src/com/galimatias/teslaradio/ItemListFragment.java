@@ -51,7 +51,7 @@ public class ItemListFragment extends ListFragment {
         /**
          * Callback for when an item has been selected.
          */
-        public void onItemSelected(String id);
+        public void onItemSelected(int id);
     }
 
     /**
@@ -60,7 +60,7 @@ public class ItemListFragment extends ListFragment {
      */
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onItemSelected(String id) {
+        public void onItemSelected(int id) {
         }
     };
 
@@ -162,7 +162,7 @@ public class ItemListFragment extends ListFragment {
                 : ListView.CHOICE_MODE_NONE);
     }
 
-    private void setActivatedPosition(int position) {
+    public void setActivatedPosition(int position) {
         if (position == ListView.INVALID_POSITION) {
             getListView().setItemChecked(mActivatedPosition, false);
         } else {

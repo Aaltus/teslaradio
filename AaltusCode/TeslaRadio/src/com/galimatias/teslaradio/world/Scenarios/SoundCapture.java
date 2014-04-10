@@ -4,6 +4,9 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.SignalEmitter;
+import com.galimatias.teslaradio.world.effects.SignalTrajectories;
+import com.galimatias.teslaradio.world.effects.SignalType;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.animation.*;
 import com.jme3.asset.AssetManager;
@@ -13,18 +16,14 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Spatial;
-import com.galimatias.teslaradio.world.effects.SignalEmitter;
-import com.galimatias.teslaradio.world.effects.SignalTrajectories;
-import com.galimatias.teslaradio.world.effects.SignalType;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
-import java.util.ArrayList;
+
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Vector;
 
 /**
@@ -435,6 +434,7 @@ public final class SoundCapture extends Scenario {
                 else if (touchedGeometry.getParent().getName() == this.getChild("Text").getName()) 
                 {
                     this.textTouchEffect();
+                    showInformativeMenu = true;
                     break;
                 }
                 else
@@ -454,7 +454,7 @@ public final class SoundCapture extends Scenario {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void simpleUpdate(float tpf) {
+    public boolean simpleUpdate(float tpf) {
          
         DrumSoundEmitter.simpleUpdate(tpf);
         GuitarSoundEmitter.simpleUpdate(tpf);
@@ -470,7 +470,9 @@ public final class SoundCapture extends Scenario {
             //Log.d(TAG,"Camera position :" + fgCam.getLocation());
         }
         else {
-            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, updatedTextSize, updatedTextColor, new Camera(100,100));
+            Camera cam = new Camera(100,100);
+            cam.setLocation(new Vector3f(0.0f,50.0f,0.0f));
+            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, updatedTextSize, updatedTextColor, cam);
             
             // Resetting the values so that it is noob proof
             updatedText = null;
@@ -478,6 +480,14 @@ public final class SoundCapture extends Scenario {
             updatedTextColor = null;
             //Log.d(TAG,"Camera position :");
         }
+
+        if (showInformativeMenu)
+        {
+            showInformativeMenu = false;
+            return true;
+        }
+        else
+            return false;
     }
 
     @Override
