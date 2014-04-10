@@ -74,7 +74,11 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     // Name of the native dynamic libraries to load:
     private static final String NATIVE_LIB_SAMPLE = "VuforiaNative";
     private static final String NATIVE_LIB_QCAR = "Vuforia";
-    
+
+    //name of the fragment TAG
+    private final String ITEM_LIST_FRAGMENT_TAG = "ITEM_LIST_FRAGMENT_TAG";
+    private final String ITEM_DETAIL_FRAGMENT_TAG = "ITEM_DETAIL_FRAGMENT_TAG";
+
     // Display size of the device:
     private int mScreenWidth = 0;
     private int mScreenHeight = 0;
@@ -201,16 +205,20 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         }
     }
 
+    /*
+    Show the informative menu with the provided scenario to show
+     */
     @Override
-    public void setShowingApp(final ScenarioEnum scenarioEnum)
+    public void showInformativeMenuCallback(final ScenarioEnum scenarioEnum)
     {
-         Log.e(TAG,"Sdl;askd;as");
-        runOnUiThread(new Runnable() //run on ui thread
+        Log.d(TAG,"showInformativeMenuCallback");
+
+        //Run on UI thread
+        runOnUiThread(new Runnable()
         {
             public void run()
             {
                 showSelectedFragmentDetail(scenarioEnum);
-
             }
         });
     }
@@ -695,7 +703,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         //eglConfigType=ConfigType.BEST_TRANSLUCENT;
         super.onCreate(savedInstanceState);
 
-        ((VuforiaJME) app).appListener = this;
+        //Set an AppListener to receive callbacks from VuforiaJME
+        ((VuforiaJME) app).setAppListener(this);
 
         // Update the application status to start initializing application:
         updateApplicationStatus(APPSTATUS_INIT_APP);
@@ -856,11 +865,11 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         FragmentTransaction ft = fm.beginTransaction();
         Fragment fragment = new ItemListFragment();
         ft.hide(fragment);
-        ft.replace(R.id.item_list_fragment_vuforia, fragment, "item_list_fragment_vuforia");
+        ft.replace(R.id.item_list_fragment_vuforia, fragment, ITEM_LIST_FRAGMENT_TAG);
         ft.commit();
         fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
         //Make the listfragment activable
-        ((ItemListFragment) fm.findFragmentByTag("item_list_fragment_vuforia")).setActivateOnItemClick(true);
+        ((ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG)).setActivateOnItemClick(true);
 
         //Set onClickListener for all buttons
         Button languageButton = (Button)findViewById(R.id.camera_toggle_language_button);
@@ -916,17 +925,18 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         FragmentManager fm     = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
-        ft.replace(R.id.item_detail_fragment_vuforia, fragment,"item_detail_fragment_vuforia").commit();
+        ft.replace(R.id.item_detail_fragment_vuforia, fragment, ITEM_DETAIL_FRAGMENT_TAG).commit();
         fm.executePendingTransactions();
 
 
     }
 
+    //This function show the informative menu and selected a specific page in informative menu
     private void showSelectedFragmentDetail(ScenarioEnum scenarioEnum)
     {
         toggleFragmentsVisibility();
         FragmentManager fm =     getSupportFragmentManager();
-        ItemListFragment fragment = (ItemListFragment) fm.findFragmentByTag("item_list_fragment_vuforia");
+        ItemListFragment fragment = (ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
         fragment.setActivatedPosition(scenarioEnum.ordinal());
         onItemSelected(scenarioEnum.ordinal());
 
@@ -987,7 +997,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
 
         //Hide list_fragment
-        Fragment fragment = fm.findFragmentByTag("item_list_fragment_vuforia");
+        Fragment fragment = fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
 
 
         if (fragment != null){
@@ -1007,7 +1017,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         }
 
 
-        Fragment fragmentDetail = (Fragment) fm.findFragmentByTag("item_detail_fragment_vuforia");
+        Fragment fragmentDetail = (Fragment) fm.findFragmentByTag(ITEM_DETAIL_FRAGMENT_TAG);
         if (fragmentDetail != null){
             FragmentTransaction ft = fm.beginTransaction();
             ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
