@@ -95,13 +95,19 @@ public class VuforiaJME extends SimpleApplication  {
 		app.start();
 	}
 
-
+    //A Applistener that we will be using for callback
     public AppListener appListener;
 
-    interface AppListener{
+    interface AppListener
+    {
+        //Callaback for showing a informative menu with the provided menu
+        public void showInformativeMenuCallback(ScenarioEnum scenarioEnum);
+    }
 
-        public void setShowingApp(ScenarioEnum scenarioEnum);
-
+    //A way to register to the appListener
+    public void setAppListener(AppListener appListener)
+    {
+        this.appListener = appListener;
     }
 
 	// The default method used to initialize your JME application.
@@ -164,11 +170,11 @@ public class VuforiaJME extends SimpleApplication  {
 
         int settingsWidth = settings.getWidth();
         int settingsHeight = settings.getHeight();
-        Log.d(TAG,"* initBackgroundCamera with width : " + Integer.toString(settingsWidth) + " height: " + Integer.toString(settingsHeight) );
+        Log.d(TAG, "* initBackgroundCamera with width : " + Integer.toString(settingsWidth) + " height: " + Integer.toString(settingsHeight));
 		videoBGCam = new Camera(settingsWidth, settingsHeight);
 		videoBGCam.setViewPort(0.0f, 1.0f, 0.f, 1.0f);
 		videoBGCam.setLocation(new Vector3f(0f, 0f, 1.f));
-		videoBGCam.setAxes(new Vector3f(-1f,0f,0f), new Vector3f(0f,1f,0f), new Vector3f(0f,0f,-1f));
+		videoBGCam.setAxes(new Vector3f(-1f, 0f, 0f), new Vector3f(0f, 1f, 0f), new Vector3f(0f, 0f, -1f));
 		videoBGCam.setParallelProjection(true);
 		
 		// Also create a custom viewport.
@@ -193,7 +199,7 @@ public class VuforiaJME extends SimpleApplication  {
         soundCapture.scale(20.0f);
         soundCapture.setName("SoundCapture");
         Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(3.14f/2, new Vector3f(1.0f,0.0f,0.0f));
+        rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
         soundCapture.rotate(rot);
         soundCapture.initAllMovableObjects();
         rootNode.attachChild(soundCapture);
@@ -347,7 +353,7 @@ public class VuforiaJME extends SimpleApplication  {
 
             if (soundCapture.simpleUpdate(tpf))
             {
-                appListener.setShowingApp(ScenarioEnum.SOUNDCAPTURE);
+                appListener.showInformativeMenuCallback(ScenarioEnum.SOUNDCAPTURE);
             }
 
 
