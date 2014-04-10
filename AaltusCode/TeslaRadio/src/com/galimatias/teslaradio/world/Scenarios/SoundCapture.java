@@ -4,6 +4,9 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.SignalEmitter;
+import com.galimatias.teslaradio.world.effects.SignalTrajectories;
+import com.galimatias.teslaradio.world.effects.SignalType;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.animation.*;
 import com.jme3.asset.AssetManager;
@@ -13,18 +16,14 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Spatial;
-import com.galimatias.teslaradio.world.effects.SignalEmitter;
-import com.galimatias.teslaradio.world.effects.SignalTrajectories;
-import com.galimatias.teslaradio.world.effects.SignalType;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
-import java.util.ArrayList;
+
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Vector;
 
 /**
@@ -467,7 +466,7 @@ public final class SoundCapture extends Scenario {
             //Log.d(TAG,"Camera position :");
         }
 
-        if (!showInformativeMenu)
+        if (showInformativeMenu)
         {
             showInformativeMenu = false;
             return true;
