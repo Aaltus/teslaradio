@@ -27,18 +27,6 @@ public class SubjectContent {
 
     public static Map<Integer, SubjectItem> ITEM_MAP = new HashMap<Integer, SubjectItem>();
 
-    static {
-        //Jonathan Desmarais: Add 7 static sample items.
-        // THIS HERE YOU WILL ADD CATEGORY OF INFORMATIVE MENU AND SUBPAGES
-//        addItem(new SubjectItem("1", "Capture du Son", new int[]{R.layout.informative_info_detail_test2}));
-//        addItem(new SubjectItem("2", "Modulation AM", new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
-//        addItem(new SubjectItem("3", "Modulation FM", new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
-//        addItem(new SubjectItem("4", "Transmission d'information", new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
-//        addItem(new SubjectItem("5", "Radio Réceptrice", new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test,R.layout.informative_info_detail_test}));
-//        addItem(new SubjectItem("6", "Reference", new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
-//        addItem(new SubjectItem("7", "Qui sommes nous ?", new int[]{R.layout.informative_info_detail_test2}));
-    }
-
     public static void addAllItems(Activity activity){
 
         SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.SOUNDCAPTURE.ordinal(), activity.getString(R.string.sound_capture_title), new int[]{R.layout.sound_capture_page1,R.layout.sound_capture_page2}));
