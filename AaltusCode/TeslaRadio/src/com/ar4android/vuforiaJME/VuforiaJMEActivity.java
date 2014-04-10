@@ -38,6 +38,7 @@ import com.galimatias.teslaradio.ItemDetailFragment;
 import com.galimatias.teslaradio.ItemListFragment;
 import com.galimatias.teslaradio.LanguageDialogFragment;
 import com.galimatias.teslaradio.R;
+import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
@@ -51,7 +52,7 @@ import java.util.logging.Level;
 //Old code
 //public class VuforiaJMEActivity extends AndroidHarness {
 public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements ItemListFragment.Callbacks, View.OnClickListener,
-        ItemDetailFragment.OnClickDetailFragmentListener, SeekBar.OnSeekBarChangeListener {
+        ItemDetailFragment.OnClickDetailFragmentListener, SeekBar.OnSeekBarChangeListener, VuforiaJME.AppListener {
 
 	private static final String TAG = "VuforiaJMEActivity";
 	
@@ -199,6 +200,21 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 break;
         }
     }
+
+    @Override
+    public void setShowingApp(final ScenarioEnum scenarioEnum)
+    {
+         Log.e(TAG,"Sdl;askd;as");
+        runOnUiThread(new Runnable() //run on ui thread
+        {
+            public void run()
+            {
+                showSelectedFragmentDetail(scenarioEnum);
+
+            }
+        });
+    }
+
 
 
     /** An async task to initialize QCAR asynchronously. */
@@ -679,6 +695,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         //eglConfigType=ConfigType.BEST_TRANSLUCENT;
         super.onCreate(savedInstanceState);
 
+        ((VuforiaJME) app).appListener = this;
+
         // Update the application status to start initializing application:
         updateApplicationStatus(APPSTATUS_INIT_APP);
 
@@ -904,10 +922,14 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     }
 
-    private void showSelectedFragmentDetail(int id)
+    private void showSelectedFragmentDetail(ScenarioEnum scenarioEnum)
     {
         toggleFragmentsVisibility();
-        onItemSelected(id);
+        FragmentManager fm =     getSupportFragmentManager();
+        ItemListFragment fragment = (ItemListFragment) fm.findFragmentByTag("item_list_fragment_vuforia");
+        fragment.setActivatedPosition(scenarioEnum.ordinal());
+        onItemSelected(scenarioEnum.ordinal());
+
     }
 
 
