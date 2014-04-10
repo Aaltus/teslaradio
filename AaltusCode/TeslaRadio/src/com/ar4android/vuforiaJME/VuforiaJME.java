@@ -19,6 +19,7 @@
 package com.ar4android.vuforiaJME;
 
 import android.util.Log;
+import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.jme3.app.SimpleApplication;
 import com.jme3.collision.CollisionResult;
@@ -90,8 +91,18 @@ public class VuforiaJME extends SimpleApplication  {
     
 	public static void main(String[] args) {
 		VuforiaJME app = new VuforiaJME();
+
 		app.start();
 	}
+
+
+    public AppListener appListener;
+
+    interface AppListener{
+
+        public void setShowingApp(ScenarioEnum scenarioEnum);
+
+    }
 
 	// The default method used to initialize your JME application.
 	@Override
@@ -333,7 +344,12 @@ public class VuforiaJME extends SimpleApplication  {
 			mVideoBGGeom.updateLogicalState(tpf);
 			mVideoBGGeom.updateGeometricState();
 
-            soundCapture.simpleUpdate(tpf);
+
+            if (soundCapture.simpleUpdate(tpf))
+            {
+                appListener.setShowingApp(ScenarioEnum.SOUNDCAPTURE);
+            }
+
 
             // Update the world depending on what is in focus
             //virtualWorld.UpdateFocus(fgCam,focusableObjects);
