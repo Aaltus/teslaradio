@@ -4,9 +4,6 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.galimatias.teslaradio.world.effects.SignalEmitter;
-import com.galimatias.teslaradio.world.effects.SignalTrajectories;
-import com.galimatias.teslaradio.world.effects.SignalType;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.animation.*;
 import com.jme3.asset.AssetManager;
@@ -16,15 +13,19 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
+import com.galimatias.teslaradio.world.effects.SignalEmitter;
+import com.galimatias.teslaradio.world.effects.SignalTrajectories;
+import com.galimatias.teslaradio.world.effects.SignalType;
+import com.jme3.math.Spline;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 import java.util.ArrayList;
-
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -184,12 +185,12 @@ public final class SoundCapture extends Scenario {
         // the number of directions        
         Vector3f drumMicDirection = micHandleInPosition.subtract(drumHandleOutPosition);        
                         
-        int totalNbDirections = 21;
-        int nbXYDirections = 3;
+        int totalNbDirections = 50;
+        int nbXYDirections = 5;
         
         // Setting the direction norms and the speed displacement to the trajectories
         float VecDirectionNorms = 80f;
-        float SoundParticles_Speed = 90f;
+        float SoundParticles_Speed = 35f;
                 
         // Creating the trajectories
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
@@ -213,14 +214,6 @@ public final class SoundCapture extends Scenario {
         this.attachChild(DrumSoundEmitter);
         DrumSoundEmitter.setLocalTranslation(drumHandleOutPosition); // TO DO: utiliser le object handle blender pour position
 
-        //Set the impulsional response of the emitter
-        ArrayList<Float> waveMagnitudes = new ArrayList(3);
-        
-        waveMagnitudes.add(5f);  
-        waveMagnitudes.add(3f);
-        waveMagnitudes.add(1f);
-        
-        DrumSoundEmitter.setWaves(waveMagnitudes, 0.25f);
     }
     
     /**
@@ -232,12 +225,12 @@ public final class SoundCapture extends Scenario {
         // the number of directions        
         Vector3f guitarMicDirection = micHandleInPosition.subtract(guitarHandleOutPosition);        
                         
-        int totalNbDirections = 21;
-        int nbXYDirections = 3;
+        int totalNbDirections = 50;
+        int nbXYDirections = 5;
         
         // Setting the direction norms and the speed displacement to the trajectories
         float VecDirectionNorms = 80f;
-        float SoundParticles_Speed = 90f;
+        float SoundParticles_Speed = 35f;
                 
         // Creating the trajectories
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
@@ -260,19 +253,6 @@ public final class SoundCapture extends Scenario {
         GuitarSoundEmitter = new SignalEmitter(guitar_trajectories, guitar2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
         this.attachChild(GuitarSoundEmitter);
         GuitarSoundEmitter.setLocalTranslation(guitarHandleOutPosition); // TO DO: utiliser le object handle blender pour position
-        
-        //Set the impulsional response of the emitter
-        ArrayList<Float> waveMagnitudes = new ArrayList(7);
-        
-        waveMagnitudes.add(5f);  
-        waveMagnitudes.add(2f);
-        waveMagnitudes.add(3f);
-        waveMagnitudes.add(1.5f);
-        waveMagnitudes.add(1.2f);
-        waveMagnitudes.add(1.0f);
-        waveMagnitudes.add(0.8f);
-        
-        GuitarSoundEmitter.setWaves(waveMagnitudes, 0.25f);
 
     }
     
@@ -307,7 +287,7 @@ public final class SoundCapture extends Scenario {
     private void initMicWireParticlesEmitter()
     {
         SignalTrajectories directionFactory = new SignalTrajectories();
-        Vector<Vector3f> curvedPath = new Vector <Vector3f>();
+        Spline curvedPath = new Spline();
         
         Node micWire_node = (Node) scene.getParent().getChild("WirePath");
         Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
@@ -327,8 +307,6 @@ public final class SoundCapture extends Scenario {
         
         MicWireEmitter = new SignalEmitter(curvedPath, electricParticle, electricParticle, 35f /*Speed*/, SignalType.Wire );
         this.attachChild(MicWireEmitter);
-        Vector3f test = new Vector3f();
-        test.set(curvedPath.lastElement());
         MicWireEmitter.setLocalTranslation(micPosition.x, micPosition.y,micPosition.z); // TO DO: utiliser le object handle blender pour position        
         
     }
@@ -350,8 +328,7 @@ public final class SoundCapture extends Scenario {
     
     public void drumTouchEffect()
     {        
-        //DrumSoundEmitter.emitParticles(1.0f);
-        DrumSoundEmitter.emitWaves();
+        DrumSoundEmitter.emitParticles();
         //MicWireEmitter.emitParticles();
         
         movableObjects.attachChild(circles);
@@ -376,9 +353,7 @@ public final class SoundCapture extends Scenario {
     
     public void guitarTouchEffect()
     {        
-        //GuitarSoundEmitter.emitParticles(1.0f);
-        GuitarSoundEmitter.emitWaves();
-        
+        GuitarSoundEmitter.emitParticles();
         //MicWireEmitter.emitParticles();
         
         //movableObjects.attachChild(circles);
@@ -491,7 +466,7 @@ public final class SoundCapture extends Scenario {
             //Log.d(TAG,"Camera position :");
         }
 
-        if (showInformativeMenu)
+        if (!showInformativeMenu)
         {
             showInformativeMenu = false;
             return true;
