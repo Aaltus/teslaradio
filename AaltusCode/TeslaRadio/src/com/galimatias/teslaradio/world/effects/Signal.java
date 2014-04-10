@@ -6,15 +6,10 @@ package com.galimatias.teslaradio.world.effects;
 
 import com.jme3.material.RenderState;
 import com.jme3.math.Spline;
-import com.jme3.math.Spline.SplineType;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Curve;
 import java.util.List;
-
-import java.util.Vector;
-
 
 
 /**
@@ -64,24 +59,20 @@ public class Signal extends Geometry {
     }
     
     // Curved path Particle
-<<<<<<< HEAD
-    public Signal(Geometry particle, Spline curvedPath, float speed)
-=======
-    public Signal(Geometry particle, Vector<Vector3f> curvedPath, float speed, float startScale)
->>>>>>> 894cb06e06eccd45ca32fbeee60854ae22975ed9
+    public Signal(Geometry particle, Spline curvedPath, float speed, float startScale)
     {
         this.setMesh(particle.getMesh());
         this.setMaterial(particle.getMaterial());
         this.curvedPath = curvedPath;
         this.speed = speed;
         this.isCurved = true;
-<<<<<<< HEAD
+
         
         this.curvePath_segmentLength = this.curvedPath.getSegmentsLength();
-=======
+
         this.setLocalScale(startScale);
         this.startScale = startScale;
->>>>>>> 894cb06e06eccd45ca32fbeee60854ae22975ed9
+
     }
     
       
