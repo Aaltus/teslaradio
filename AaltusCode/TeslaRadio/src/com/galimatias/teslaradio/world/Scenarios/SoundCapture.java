@@ -184,12 +184,12 @@ public final class SoundCapture extends Scenario {
         // the number of directions        
         Vector3f drumMicDirection = micHandleInPosition.subtract(drumHandleOutPosition);        
                         
-        int totalNbDirections = 50;
-        int nbXYDirections = 5;
+        int totalNbDirections = 21;
+        int nbXYDirections = 3;
         
         // Setting the direction norms and the speed displacement to the trajectories
         float VecDirectionNorms = 80f;
-        float SoundParticles_Speed = 35f;
+        float SoundParticles_Speed = 90f;
                 
         // Creating the trajectories
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
@@ -213,6 +213,14 @@ public final class SoundCapture extends Scenario {
         this.attachChild(DrumSoundEmitter);
         DrumSoundEmitter.setLocalTranslation(drumHandleOutPosition); // TO DO: utiliser le object handle blender pour position
 
+        //Set the impulsional response of the emitter
+        ArrayList<Float> waveMagnitudes = new ArrayList(3);
+        
+        waveMagnitudes.add(5f);  
+        waveMagnitudes.add(3f);
+        waveMagnitudes.add(1f);
+        
+        DrumSoundEmitter.setWaves(waveMagnitudes, 0.25f);
     }
     
     /**
@@ -224,7 +232,7 @@ public final class SoundCapture extends Scenario {
         // the number of directions        
         Vector3f guitarMicDirection = micHandleInPosition.subtract(guitarHandleOutPosition);        
                         
-        int totalNbDirections = 30;
+        int totalNbDirections = 21;
         int nbXYDirections = 3;
         
         // Setting the direction norms and the speed displacement to the trajectories
@@ -254,7 +262,7 @@ public final class SoundCapture extends Scenario {
         GuitarSoundEmitter.setLocalTranslation(guitarHandleOutPosition); // TO DO: utiliser le object handle blender pour position
         
         //Set the impulsional response of the emitter
-        ArrayList<Float> waveMagnitudes = new ArrayList(4);
+        ArrayList<Float> waveMagnitudes = new ArrayList(7);
         
         waveMagnitudes.add(5f);  
         waveMagnitudes.add(2f);
@@ -342,7 +350,8 @@ public final class SoundCapture extends Scenario {
     
     public void drumTouchEffect()
     {        
-        DrumSoundEmitter.emitParticles(1.0f);
+        //DrumSoundEmitter.emitParticles(1.0f);
+        DrumSoundEmitter.emitWaves();
         //MicWireEmitter.emitParticles();
         
         movableObjects.attachChild(circles);

@@ -56,7 +56,16 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
         this.capturePathLength = capturePathLength;
     }    
     
-    public void simpleUpdate(float tpf) {
+    public void simpleUpdate(float tpf) {    
+        
+        Signal liveSignal;
+        
+        for (Spatial waveNode : (this.getChildren())) {
+            for (Spatial signal : ((Node)waveNode).getChildren()) {
+                liveSignal = (Signal)signal;
+                liveSignal.updatePosition(tpf);
+            }
+        } 
         
         if (areWavesEnabled) {
             if (readyForEmission) {
@@ -71,24 +80,19 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
             cumulatedPeriod %= wavePeriod;
             
         }
-        
-        Signal liveSignal;
-        
-        for (Spatial signal : (this.getChildren())) {
-            liveSignal = (Signal)signal;
-            liveSignal.updatePosition(tpf);
-        } 
     }
 
     public void emitParticles(float magnitude) {
         
+        Node waveNode = new Node();
+        
         if(signalType == SignalType.Air)
         {
-            emitAirParticles(magnitude);
+            emitAirParticles(waveNode, magnitude);
         }
         else if(signalType == SignalType.Wire)
         {
-            emitCurWireParticles(magnitude);
+            emitCurWireParticles(waveNode, magnitude);
         }
 
     }
@@ -108,7 +112,7 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
         this.areWavesEnabled = false;
     }
     
-    private void emitAirParticles(float magnitude)
+    private void emitAirParticles(Node waveNode, float magnitude)
     {
         
         System.out.println("Wave magnitude is: "+magnitude);
@@ -121,17 +125,18 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
                 mySignal = new Signal(mainParticle, path, particlesSpeed, magnitude, capturePathLength);
             else {
                 mySignal = new Signal(secondaryParticle, path, particlesSpeed, magnitude);
-            }
+            }       
             
-            
-            this.attachChild(mySignal);
+            waveNode.attachChild(mySignal);
+            this.attachChild(waveNode);
         }        
     }
     
-    private void emitCurWireParticles(float magnitude){
+    private void emitCurWireParticles(Node waveNode, float magnitude){
         
         Signal myCurvedSignal = new Signal(mainParticle, paths, particlesSpeed, magnitude);
-        this.attachChild(myCurvedSignal);
+        waveNode.attachChild(myCurvedSignal);
+        this.attachChild(waveNode);
     }
     
     public SignalType getSignalType()
