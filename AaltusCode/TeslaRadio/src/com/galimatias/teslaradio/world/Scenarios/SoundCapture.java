@@ -223,12 +223,12 @@ public final class SoundCapture extends Scenario {
         // the number of directions        
         Vector3f guitarMicDirection = micHandleInPosition.subtract(guitarHandleOutPosition);        
                         
-        int totalNbDirections = 50;
-        int nbXYDirections = 5;
+        int totalNbDirections = 30;
+        int nbXYDirections = 3;
         
         // Setting the direction norms and the speed displacement to the trajectories
         float VecDirectionNorms = 80f;
-        float SoundParticles_Speed = 35f;
+        float SoundParticles_Speed = 90f;
                 
         // Creating the trajectories
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
@@ -251,6 +251,19 @@ public final class SoundCapture extends Scenario {
         GuitarSoundEmitter = new SignalEmitter(guitar_trajectories, guitar2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
         this.attachChild(GuitarSoundEmitter);
         GuitarSoundEmitter.setLocalTranslation(guitarHandleOutPosition); // TO DO: utiliser le object handle blender pour position
+        
+        //Set the impulsional response of the emitter
+        ArrayList<Float> waveMagnitudes = new ArrayList(4);
+        
+        waveMagnitudes.add(5f);  
+        waveMagnitudes.add(2f);
+        waveMagnitudes.add(3f);
+        waveMagnitudes.add(1.5f);
+        waveMagnitudes.add(1.2f);
+        waveMagnitudes.add(1.0f);
+        waveMagnitudes.add(0.8f);
+        
+        GuitarSoundEmitter.setWaves(waveMagnitudes, 0.25f);
 
     }
     
@@ -328,7 +341,7 @@ public final class SoundCapture extends Scenario {
     
     public void drumTouchEffect()
     {        
-        DrumSoundEmitter.emitParticles();
+        DrumSoundEmitter.emitParticles(1.0f);
         //MicWireEmitter.emitParticles();
         
         movableObjects.attachChild(circles);
@@ -353,7 +366,9 @@ public final class SoundCapture extends Scenario {
     
     public void guitarTouchEffect()
     {        
-        GuitarSoundEmitter.emitParticles();
+        //GuitarSoundEmitter.emitParticles(1.0f);
+        GuitarSoundEmitter.emitWaves();
+        
         //MicWireEmitter.emitParticles();
         
         //movableObjects.attachChild(circles);
