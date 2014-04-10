@@ -5,9 +5,13 @@
 package com.galimatias.teslaradio.world.effects;
 
 import com.jme3.material.RenderState;
+import com.jme3.math.Spline;
+import com.jme3.math.Spline.SplineType;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.shape.Curve;
+import java.util.List;
 
 import java.util.Vector;
 
@@ -21,18 +25,17 @@ public class Signal extends Geometry {
     
     private Vector3f path;
     
-    private Vector<Vector3f> curvedPath;
-    private boolean isCurved;
-    private int index = 0;
+    private Spline curvedPath;
+    private List<Float> curvePath_segmentLength;
     
-    private Vector3f startPoint;
+    private boolean isCurved;
+    
     private float speed;
-    private float startScale;
     private float distanceTraveled;
     private float capturePathLength = -1;
     
     // Linear path Particle
-    public Signal(Geometry particle, Vector3f path, float speed, float startScale) {
+    public Signal(Geometry particle, Vector3f path, float speed) {
             this.setMesh(particle.getMesh());
             this.setMaterial(particle.getMaterial());
             this.speed = speed;
@@ -41,12 +44,10 @@ public class Signal extends Geometry {
             this.getMaterial().getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
             this.setQueueBucket(Bucket.Translucent);
             this.capturePathLength = -1;
-            this.startScale = startScale;
-            this.setLocalScale(startScale);
     }
  
     // Linear path Particle with capture
-    public Signal(Geometry particle, Vector3f path, float speed, float startScale, float capturePathLength) {
+    public Signal(Geometry particle, Vector3f path, float speed, float capturePathLength) {
             this.setMesh(particle.getMesh());
             this.setMaterial(particle.getMaterial());
             this.speed = speed;
@@ -55,52 +56,52 @@ public class Signal extends Geometry {
             this.getMaterial().getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
             this.setQueueBucket(Bucket.Translucent);
             this.capturePathLength = capturePathLength;
-            this.startScale = startScale;
-            this.setLocalScale(startScale);
     }
     
     // Curved path Particle
-    public Signal(Geometry particle, Vector<Vector3f> curvedPath, float speed, float startScale)
+    public Signal(Geometry particle, Spline curvedPath, float speed)
     {
         this.setMesh(particle.getMesh());
         this.setMaterial(particle.getMaterial());
         this.curvedPath = curvedPath;
         this.speed = speed;
         this.isCurved = true;
-        this.setLocalScale(startScale);
-        this.startScale = startScale;
+        
+        this.curvePath_segmentLength = this.curvedPath.getSegmentsLength();
     }
     
       
     private void updateCurvedPosition(float tpf)
-    {
-        Vector3f currentPath = curvedPath.get(index);
-              
-        Vector3f currentPos = this.getLocalTranslation();
+    {         
         float displacement = tpf*speed;
-        Vector3f newPos = currentPos.add(currentPath.normalize().mult(displacement));
         distanceTraveled += displacement;
         
         //Deletion of the object if its at the end of its path.
-        if (distanceTraveled>currentPath.length()) {
-
-            //calculate end of line position
-            float displacement_temp = - currentPath.length() + distanceTraveled;
-            newPos = currentPos.add(currentPath.normalize().mult(displacement_temp));
-            this.setLocalTranslation(newPos);
-            
-            index ++;
-            distanceTraveled = 0;
-            int listSize = curvedPath.size();
-             
-            if(index >= listSize)
-            {
-                //((SignalEmitter) this.getParent()).notifyObservers();
-                this.removeFromParent();
-            }
-
+        if (distanceTraveled> curvedPath.getTotalLength()) 
+        {
+            //((SignalEmitter) this.getParent()).notifyObservers();
+            this.removeFromParent();
         }
-        else {
+        else 
+        {
+            
+            // calculate position
+            int lineIndex = 0;
+            float currentLength = curvePath_segmentLength.get(lineIndex);
+            while(distanceTraveled > currentLength)
+            {
+                lineIndex++;            
+                currentLength = currentLength + curvePath_segmentLength.get(lineIndex);
+
+            }
+            currentLength = currentLength - curvePath_segmentLength.get(lineIndex);
+
+            float lengthToInterpolate = distanceTraveled - currentLength;
+            float percentToInterpolate = lengthToInterpolate/curvePath_segmentLength.get(lineIndex);
+
+            Vector3f newPos = new Vector3f();
+            curvedPath.interpolate(percentToInterpolate, lineIndex, newPos);
+            
             // set position
             this.setLocalTranslation(newPos);
         } 
@@ -117,7 +118,7 @@ public class Signal extends Geometry {
         //Deletion of the object if its at the end of its path.
         if(distanceTraveled>capturePathLength && capturePathLength!= -1)
         {
-            ((SignalEmitter) this.getParent().getParent()).notifyObservers(this);
+            ((SignalEmitter) this.getParent()).notifyObservers();
             this.removeFromParent();
             
         }
@@ -127,7 +128,7 @@ public class Signal extends Geometry {
         }
         else {
             // set scaling
-            this.setLocalScale(startScale*(1-0.5f*(distanceTraveled/path.length())));
+            this.setLocalScale(1-(distanceTraveled/path.length()));
             // set position
             this.setLocalTranslation(newPos);
         }    

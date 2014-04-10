@@ -4,9 +4,9 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
-import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.galimatias.teslaradio.world.observer.Observable;
 import com.galimatias.teslaradio.world.observer.Observer;
+import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -15,13 +15,12 @@ import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import java.util.LinkedList;
 
 /**
  *
  * @author David
  */
-public class SignalEmitter extends Node implements EmitterObserver, Observable
+public class SignalEmitter extends Node implements Observer, Observable
 {
     
     private Vector<Vector3f> paths = new Vector<Vector3f>();
@@ -30,14 +29,10 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
     private float particlesSpeed;
     private SignalType signalType;
     private float capturePathLength = -1;
-    private List<EmitterObserver> observers = new ArrayList<EmitterObserver>();
+    private List<Observer> observers = new ArrayList<Observer>();
     
-    private ArrayList<Float> waveMagnitudes;
-    private float wavePeriod;
-    private float cumulatedPeriod = 0;
-    private int waveIndex;
-    private boolean readyForEmission = false;
-    private boolean areWavesEnabled = false;
+    private Spline curveSpline;
+    
     
     public SignalEmitter(Vector<Vector3f> paths, Geometry mainParticle, Geometry secondaryParticle, float particlesSpeed, SignalType signalType) {
         this.paths = paths;
@@ -54,89 +49,62 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
         this.particlesSpeed = particlesSpeed;
         this.signalType = signalType;
         this.capturePathLength = capturePathLength;
-    }    
+    }
     
-    public void simpleUpdate(float tpf) {    
+    public SignalEmitter(Spline paths, Geometry mainParticle, Geometry secondaryParticle, float particlesSpeed, SignalType signalType) {
+        this.curveSpline = paths;
+        this.mainParticle = mainParticle;
+        this.secondaryParticle = secondaryParticle;
+        this.particlesSpeed = particlesSpeed;
+        this.signalType = signalType;
+    }
+    
+    
+    public void simpleUpdate(float tpf) {
         
         Signal liveSignal;
         
-        for (Spatial waveNode : (this.getChildren())) {
-            for (Spatial signal : ((Node)waveNode).getChildren()) {
-                liveSignal = (Signal)signal;
-                liveSignal.updatePosition(tpf);
-            }
+        for (Spatial signal : (this.getChildren())) {
+            liveSignal = (Signal)signal;
+            liveSignal.updatePosition(tpf);
         } 
-        
-        if (areWavesEnabled) {
-            if (readyForEmission) {
-                float magnitude = waveMagnitudes.get((waveIndex++)%waveMagnitudes.size());
-                System.out.println(magnitude);
-                emitParticles( magnitude );
-                readyForEmission=false;
-            }
-                
-            cumulatedPeriod += tpf;
-            readyForEmission = (cumulatedPeriod>wavePeriod && waveIndex<waveMagnitudes.size()) ? true:false;
-            cumulatedPeriod %= wavePeriod;
-            
-        }
     }
 
-    public void emitParticles(float magnitude) {
-        
-        Node waveNode = new Node();
+    public void emitParticles() {
         
         if(signalType == SignalType.Air)
         {
-            emitAirParticles(waveNode, magnitude);
+            emitAirParticles();
         }
         else if(signalType == SignalType.Wire)
         {
-            emitCurWireParticles(waveNode, magnitude);
+            emitCurWireParticles();
         }
 
     }
     
-    public void emitWaves() {
-    
-        this.waveIndex = 0;
-        this.areWavesEnabled = true;
-        this.simpleUpdate(0f);
-
-    }
-    
-    public void setWaves(ArrayList<Float> magnitudes, float period) {
-        this.waveMagnitudes = magnitudes;
-        this.wavePeriod = period;
-        this.waveIndex = 0;
-        this.areWavesEnabled = false;
-    }
-    
-    private void emitAirParticles(Node waveNode, float magnitude)
+    private void emitAirParticles()
     {
-        
-        System.out.println("Wave magnitude is: "+magnitude);
         
         for (Vector3f path : paths) {
             
             Signal mySignal;
             int a = paths.indexOf(path);
+            System.out.println(a);
             if (paths.indexOf(path)==0)
-                mySignal = new Signal(mainParticle, path, particlesSpeed, magnitude, capturePathLength);
+                mySignal = new Signal(mainParticle, path, particlesSpeed, capturePathLength);
             else {
-                mySignal = new Signal(secondaryParticle, path, particlesSpeed, magnitude);
-            }       
+                mySignal = new Signal(secondaryParticle, path, particlesSpeed);
+            }
             
-            waveNode.attachChild(mySignal);
-            this.attachChild(waveNode);
+            this.attachChild(mySignal);
         }        
     }
     
-    private void emitCurWireParticles(Node waveNode, float magnitude){
+    private void emitCurWireParticles(){
         
-        Signal myCurvedSignal = new Signal(mainParticle, paths, particlesSpeed, magnitude);
-        waveNode.attachChild(myCurvedSignal);
-        this.attachChild(waveNode);
+        Signal myCurvedSignal = new Signal(mainParticle, curveSpline, particlesSpeed);
+        this.attachChild(myCurvedSignal);
     }
     
     public SignalType getSignalType()
@@ -160,10 +128,10 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
     }
 
     public void observerUpdate() {
-        emitParticles(1.0f); //TODO: PASS THE CORRECT MAGNITUDE
+        emitParticles();
     }
 
-    public void registerObserver(EmitterObserver observer) {
+    public void registerObserver(Observer observer) {
         observers.add(observer);
     }
 
@@ -171,21 +139,11 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
         observers.remove(observer);
     }
 
-    public void notifyObservers(Object caller) {
-        for (EmitterObserver observer: observers)
+    public void notifyObservers() {
+        for (Observer observer: observers)
         {
-            if (caller.getClass()==Signal.class)
-                observer.observerUpdate(((Signal)caller).getLocalScale().x);
+            observer.observerUpdate();
         }
     }
-
-    public void observerUpdate(float magnitude) {
-        emitParticles(magnitude); //TODO: PASS THE CORRECT MAGNITUDE
-    }
-
-    public void registerObserver(Observer observer) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
 }
 
