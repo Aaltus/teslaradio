@@ -24,7 +24,9 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
+import com.jme3.texture.Texture;
 import java.util.ArrayList;
 
 import java.util.LinkedList;
@@ -252,9 +254,15 @@ public final class SoundCapture extends Scenario {
         float guitar2MicLength = guitar2MicVector.length();
         
         // instantiate 3d Sound particul model
-        Sphere sphere = new Sphere(8, 8, 0.9f);
-        Geometry soundParticle = new Geometry("particul",sphere);
+        //Sphere sphere = new Sphere(8, 8, 0.9f);
+        //Geometry soundParticle = new Geometry("particul",sphere);
+        //Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        
+        Box rect = new Box(1.0f, 1.0f, 0.01f);
+        Geometry soundParticle = new Geometry("particul",rect);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        soundParticul_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
+        
         soundParticul_mat.setColor("Color", ColorRGBA.Red);
         soundParticle.setMaterial(soundParticul_mat);
         Geometry soundParticleTranslucent = soundParticle.clone();
