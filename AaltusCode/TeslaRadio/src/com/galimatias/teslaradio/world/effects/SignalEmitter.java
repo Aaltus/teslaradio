@@ -7,6 +7,7 @@ package com.galimatias.teslaradio.world.effects;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.galimatias.teslaradio.world.observer.Observable;
 import com.galimatias.teslaradio.world.observer.Observer;
+import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -39,6 +40,8 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
     private boolean readyForEmission = false;
     private boolean areWavesEnabled = false;
     
+	private Spline curveSpline;
+
     public SignalEmitter(Vector<Vector3f> paths, Geometry mainParticle, Geometry secondaryParticle, float particlesSpeed, SignalType signalType) {
         this.paths = paths;
         this.mainParticle = mainParticle;
@@ -54,9 +57,18 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
         this.particlesSpeed = particlesSpeed;
         this.signalType = signalType;
         this.capturePathLength = capturePathLength;
-    }    
+    }
     
-    public void simpleUpdate(float tpf) {    
+    public SignalEmitter(Spline paths, Geometry mainParticle, Geometry secondaryParticle, float particlesSpeed, SignalType signalType) {
+        this.curveSpline = paths;
+        this.mainParticle = mainParticle;
+        this.secondaryParticle = secondaryParticle;
+        this.particlesSpeed = particlesSpeed;
+        this.signalType = signalType;
+    }
+    
+    
+    public void simpleUpdate(float tpf) {
         
         Signal liveSignal;
         
@@ -121,6 +133,7 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
             
             Signal mySignal;
             int a = paths.indexOf(path);
+            System.out.println(a);
             if (paths.indexOf(path)==0)
                 mySignal = new Signal(mainParticle, path, particlesSpeed, magnitude, capturePathLength);
             else {
@@ -134,7 +147,7 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
     
     private void emitCurWireParticles(Node waveNode, float magnitude){
         
-        Signal myCurvedSignal = new Signal(mainParticle, paths, particlesSpeed, magnitude);
+        Signal myCurvedSignal = new Signal(mainParticle, curveSpline, particlesSpeed, magnitude);
         waveNode.attachChild(myCurvedSignal);
         this.attachChild(waveNode);
     }

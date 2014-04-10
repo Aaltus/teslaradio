@@ -5,12 +5,11 @@
 package com.galimatias.teslaradio.world.effects;
 
 import com.jme3.material.RenderState;
+import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
-
-import java.util.Vector;
-
+import java.util.List;
 
 
 /**
@@ -21,11 +20,11 @@ public class Signal extends Geometry {
     
     private Vector3f path;
     
-    private Vector<Vector3f> curvedPath;
-    private boolean isCurved;
-    private int index = 0;
+    private Spline curvedPath;
+    private List<Float> curvePath_segmentLength;
     
-    private Vector3f startPoint;
+    private boolean isCurved;
+    
     private float speed;
     private float startScale;
     private float distanceTraveled;
@@ -60,47 +59,54 @@ public class Signal extends Geometry {
     }
     
     // Curved path Particle
-    public Signal(Geometry particle, Vector<Vector3f> curvedPath, float speed, float startScale)
+    public Signal(Geometry particle, Spline curvedPath, float speed, float startScale)
     {
         this.setMesh(particle.getMesh());
         this.setMaterial(particle.getMaterial());
         this.curvedPath = curvedPath;
         this.speed = speed;
         this.isCurved = true;
+
+        
+        this.curvePath_segmentLength = this.curvedPath.getSegmentsLength();
+
         this.setLocalScale(startScale);
         this.startScale = startScale;
+
     }
     
       
     private void updateCurvedPosition(float tpf)
-    {
-        Vector3f currentPath = curvedPath.get(index);
-              
-        Vector3f currentPos = this.getLocalTranslation();
+    {         
         float displacement = tpf*speed;
-        Vector3f newPos = currentPos.add(currentPath.normalize().mult(displacement));
         distanceTraveled += displacement;
         
         //Deletion of the object if its at the end of its path.
-        if (distanceTraveled>currentPath.length()) {
-
-            //calculate end of line position
-            float displacement_temp = - currentPath.length() + distanceTraveled;
-            newPos = currentPos.add(currentPath.normalize().mult(displacement_temp));
-            this.setLocalTranslation(newPos);
-            
-            index ++;
-            distanceTraveled = 0;
-            int listSize = curvedPath.size();
-             
-            if(index >= listSize)
-            {
-                //((SignalEmitter) this.getParent()).notifyObservers();
-                this.removeFromParent();
-            }
-
+        if (distanceTraveled> curvedPath.getTotalLength()) 
+        {
+            //((SignalEmitter) this.getParent()).notifyObservers();
+            this.removeFromParent();
         }
-        else {
+        else 
+        {
+            
+            // calculate position
+            int lineIndex = 0;
+            float currentLength = curvePath_segmentLength.get(lineIndex);
+            while(distanceTraveled > currentLength)
+            {
+                lineIndex++;            
+                currentLength = currentLength + curvePath_segmentLength.get(lineIndex);
+
+            }
+            currentLength = currentLength - curvePath_segmentLength.get(lineIndex);
+
+            float lengthToInterpolate = distanceTraveled - currentLength;
+            float percentToInterpolate = lengthToInterpolate/curvePath_segmentLength.get(lineIndex);
+
+            Vector3f newPos = new Vector3f();
+            curvedPath.interpolate(percentToInterpolate, lineIndex, newPos);
+            
             // set position
             this.setLocalTranslation(newPos);
         } 

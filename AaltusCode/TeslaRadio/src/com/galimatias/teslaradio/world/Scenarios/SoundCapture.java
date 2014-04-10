@@ -4,9 +4,6 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.galimatias.teslaradio.world.effects.SignalEmitter;
-import com.galimatias.teslaradio.world.effects.SignalTrajectories;
-import com.galimatias.teslaradio.world.effects.SignalType;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.animation.*;
 import com.jme3.asset.AssetManager;
@@ -16,6 +13,12 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+
+import com.galimatias.teslaradio.world.effects.SignalEmitter;
+import com.galimatias.teslaradio.world.effects.SignalTrajectories;
+import com.galimatias.teslaradio.world.effects.SignalType;
+import com.jme3.math.Spline;
+
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
@@ -315,7 +318,7 @@ public final class SoundCapture extends Scenario {
     private void initMicWireParticlesEmitter()
     {
         SignalTrajectories directionFactory = new SignalTrajectories();
-        Vector<Vector3f> curvedPath = new Vector <Vector3f>();
+        Spline curvedPath = new Spline();
         
         Node micWire_node = (Node) scene.getParent().getChild("WirePath");
         Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
@@ -335,8 +338,6 @@ public final class SoundCapture extends Scenario {
         
         MicWireEmitter = new SignalEmitter(curvedPath, electricParticle, electricParticle, 35f /*Speed*/, SignalType.Wire );
         this.attachChild(MicWireEmitter);
-        Vector3f test = new Vector3f();
-        test.set(curvedPath.lastElement());
         MicWireEmitter.setLocalTranslation(micPosition.x, micPosition.y,micPosition.z); // TO DO: utiliser le object handle blender pour position        
         
     }
