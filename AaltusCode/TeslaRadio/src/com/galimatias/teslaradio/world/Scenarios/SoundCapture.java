@@ -263,10 +263,10 @@ public final class SoundCapture extends Scenario {
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         soundParticul_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
         
-        soundParticul_mat.setColor("Color", ColorRGBA.Red);
+        //soundParticul_mat.setColor("Color", ColorRGBA.Red);
         soundParticle.setMaterial(soundParticul_mat);
         Geometry soundParticleTranslucent = soundParticle.clone();
-        soundParticleTranslucent.getMaterial().setColor("Color", new ColorRGBA(1f, 0f, 0f, 0.3f));
+        soundParticleTranslucent.getMaterial().setTexture("ColorMap", assetManager.loadTexture("Textures/Sound_wAlpha.png"));
                 
         GuitarSoundEmitter = new SignalEmitter(guitar_trajectories, guitar2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
         this.attachChild(GuitarSoundEmitter);
