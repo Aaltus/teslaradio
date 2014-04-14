@@ -9,8 +9,9 @@ import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.asset.AssetManager;
-import com.jme3.collision.CollisionResult;
+import com.jme3.input.event.TouchEvent;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 /**
  *
@@ -29,6 +30,10 @@ public abstract class Scenario extends Node implements AnimEventListener{
     protected AssetManager assetManager;
     
     protected Node touchable;
+
+    protected com.jme3.renderer.Camera Camera = null;
+
+    protected Spatial scene;
     
     public Scenario(AssetManager assetManager)
     {
@@ -50,7 +55,7 @@ public abstract class Scenario extends Node implements AnimEventListener{
 
     public abstract void onAnimChange(AnimControl animControl, AnimChannel animChannel, String s);
 
-    public abstract void onScenarioClick(CollisionResult closestCollisionResult);
+    public abstract void onScenarioTouch(String name, TouchEvent touchEvent, float v);
 
     public abstract boolean simpleUpdate(float tpf);
     
