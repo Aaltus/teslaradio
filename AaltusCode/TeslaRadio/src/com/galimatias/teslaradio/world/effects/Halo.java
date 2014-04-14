@@ -17,17 +17,19 @@ import com.jme3.scene.shape.Box;
 public class Halo extends Geometry {
     
     private float cumulatedTime;
+    private float baseScale;
     
-    public Halo(String name, Box rect, Material halo_mat) {
+    public Halo(String name, Box rect, Material halo_mat, float baseScale) {
         super("halo",rect);
         
+        this.baseScale = baseScale;
         this.setMaterial(halo_mat);
         this.setQueueBucket(RenderQueue.Bucket.Translucent);
     }
     
     public void simpleUpdate(float tpf) {
     cumulatedTime+=tpf;
-        this.setLocalScale((float) (0.9+0.1f*Math.sin(cumulatedTime*3)));
+        this.setLocalScale((float) (baseScale+0.1f*Math.sin(cumulatedTime*3)));
     }
     
 }
