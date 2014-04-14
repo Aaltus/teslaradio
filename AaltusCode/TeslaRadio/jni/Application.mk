@@ -33,3 +33,4 @@ APP_PLATFORM := android-17
 #C:/Users/jimbojd72/Documents/teslaradio/AaltusCode/TeslaRadio//jni/VuforiaNative.cpp: In function 'void Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv*, jobject)':
 #C:/Users/jimbojd72/Documents/teslaradio/AaltusCode/TeslaRadio//jni/VuforiaNative.cpp:319:13: warning: format not a string literal and no format arguments [-Wformat-security]
 APP_CFLAGS += -Wno-error=format-security
+APP_STL := stlport_static

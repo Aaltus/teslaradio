@@ -19,14 +19,7 @@
  */
 
 #include <jni.h>
-#include <android/log.h>
-
-//#define LOG_TAG "VuforiaNative"
-#define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG,__VA_ARGS__)
-#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG  , LOG_TAG,__VA_ARGS__)
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO   , LOG_TAG,__VA_ARGS__)
-#define LOGW(...) __android_log_print(ANDROID_LOG_WARN   , LOG_TAG,__VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR  , LOG_TAG,__VA_ARGS__)
+#include "AaltusCommon.h"
 
 
 #include <stdio.h>
@@ -53,14 +46,12 @@
 #include <QCAR/Image.h>
 
 #include "SampleMath.h"
-
-
 #include "MathUtils.h"
+#include "World.h"
+#include "AaltusTrackable.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+//World
+aaltus::World* world;
 
 // Screen dimensions:
 unsigned int screenWidth        = 0;
@@ -74,10 +65,6 @@ QCAR::Matrix44F projectionMatrix;
 
 // Constants:
 static const float kObjectScale = 3.f;
-
-QCAR::DataSet* dataSetStonesAndChips    = 0;
-QCAR::DataSet* dataSetLena              = 0;
-const int      numberOfDataSet          = 2;
 
 bool switchDataSetAsap          = false;
 
@@ -147,7 +134,7 @@ JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setActivityPortraitMode(JNIEnv *, jobject, jboolean isPortrait)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setActivityPortraitMode");
-    isActivityInPortraitMode = isPortrait;
+    //isActivityInPortraitMode = isPortrait;
 }
 
 
@@ -162,30 +149,15 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_switchDatasetAsap(JNIEnv *, jo
 JNIEXPORT int JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initTracker(JNIEnv *, jobject)
 {
-    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initTracker");
-    
-    // Initialize the image tracker:
-    QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
-    QCAR::Tracker* tracker = trackerManager.initTracker(QCAR::ImageTracker::getClassType());
-    if (tracker == NULL)
-    {
-        LOGE("Failed to initialize ImageTracker.");
-        return 0;
-    }
-
-    LOGI("Successfully initialized ImageTracker.");
-    return 1;
+   world = new aaltus::World();
+   return world->initializeTracker();
 }
 
 
 JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitTracker(JNIEnv *, jobject)
 {
-    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitTracker");
-
-    // Deinit the image tracker:
-    QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
-    trackerManager.deinitTracker(QCAR::ImageTracker::getClassType());
+    world->deInitTracker();
 }
 
 
@@ -193,47 +165,7 @@ JNIEXPORT int JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData(JNIEnv *, jobject)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData");
-    
-    // Get the image tracker:
-    QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
-    QCAR::ImageTracker* imageTracker = static_cast<QCAR::ImageTracker*>(
-                    trackerManager.getTracker(QCAR::ImageTracker::getClassType()));
-    if (imageTracker == NULL)
-    {
-        LOGE("Failed to load tracking data set because the ImageTracker has not"
-            " been initialized.");
-        return 0;
-    }
-
-    //TODO Fix this to be generic
-    // Create the data sets:
-    dataSetStonesAndChips = imageTracker->createDataSet();
-    dataSetLena           = imageTracker->createDataSet();
-
-    if (dataSetStonesAndChips == 0 || dataSetLena == 0)
-    {
-        LOGE("Failed to create a new tracking data.");
-        return 0;
-    }
-
-    // Load the data sets:
-    if (!dataSetStonesAndChips->load("VuforiaJME.xml", QCAR::DataSet::STORAGE_APPRESOURCE) ||
-            !dataSetLena->load("JME2.xml", QCAR::DataSet::STORAGE_APPRESOURCE) )
-    {
-        LOGE("Failed to load data set.");
-        return 0;
-    }
-
-    // Activate the data set:
-    if (!imageTracker->activateDataSet(dataSetStonesAndChips) ||
-            !imageTracker->activateDataSet(dataSetLena))
-    {
-        LOGE("Failed to activate data set.");
-        return 0;
-    }
-
-    LOGI("Successfully loaded and activated data set.");
-    return 1;
+    world->loadTrackers();
 }
 
 
@@ -241,59 +173,7 @@ JNIEXPORT int JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData(JNIEnv *, jobject)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData");
-
-    // Get the image tracker:
-    QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
-    QCAR::ImageTracker* imageTracker = static_cast<QCAR::ImageTracker*>(
-        trackerManager.getTracker(QCAR::ImageTracker::getClassType()));
-    if (imageTracker == NULL)
-    {
-        LOGE("Failed to destroy the tracking data set because the ImageTracker has not"
-            " been initialized.");
-        return 0;
-    }
-    //TODO: Fix this to be generic
-    if (dataSetStonesAndChips != 0)
-    {
-        if (imageTracker->getActiveDataSet() == dataSetStonesAndChips &&
-            !imageTracker->deactivateDataSet(dataSetStonesAndChips))
-        {
-            LOGE("Failed to destroy the tracking data set StonesAndChips because the data set "
-                "could not be deactivated.");
-            return 0;
-        }
-
-        if (!imageTracker->destroyDataSet(dataSetStonesAndChips))
-        {
-            LOGE("Failed to destroy the tracking data set StonesAndChips.");
-            return 0;
-        }
-
-        LOGI("Successfully destroyed the data set StonesAndChips.");
-        dataSetStonesAndChips = 0;
-    }
-
-    if (dataSetLena != 0)
-        {
-            if (imageTracker->getActiveDataSet() == dataSetLena &&
-                !imageTracker->deactivateDataSet(dataSetLena))
-            {
-                LOG("Failed to destroy the tracking data set Lena because the data set "
-                    "could not be deactivated.");
-                return 0;
-            }
-
-            if (!imageTracker->destroyDataSet(dataSetLena))
-            {
-                LOG("Failed to destroy the tracking data set Lena.");
-                return 0;
-            }
-
-            LOG("Successfully destroyed the data set Lena.");
-            dataSetLena = 0;
-        }
-
-    return 1;
+    world->destroyTrackerData();
 }
 
 
@@ -306,10 +186,11 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative(JNIEnv
 
     // Comment in to enable tracking of up to 2 targets simultaneously and
     // split the work over multiple frames:
-     QCAR::setHint(QCAR::HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, numberOfDataSet);
+     QCAR::setHint(QCAR::HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, AALTUS_NBR_TARGET);
 }
 
 // RENDERING CALL
+
 
 JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject obj)
@@ -317,27 +198,11 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
     //LOG("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_GLRenderer_renderFrame");
 
     // Get the state from QCAR and mark the beginning of a rendering section
-    QCAR::State state = QCAR::Renderer::getInstance().begin();
-    static QCAR::Matrix44F centerInv;
-     //get rotation
-    static float cam_right_x =0;
-    static float cam_right_y =0;
-    static float cam_right_z =0;
-    static float cam_up_x = 0;
-    static float cam_up_y= 0;
-    static float cam_up_z =0;
-    static float cam_dir_x =0;
-    static float cam_dir_y =0;
-    static float cam_dir_z =0;
+  QCAR::State state = QCAR::Renderer::getInstance().begin();
 
-    // Explicitly render the Video Background
-  //  QCAR::Renderer::getInstance().drawVideoBackground();
+  jclass activityClass = env->GetObjectClass(obj);
 
-  //  if(QCAR::Renderer::getInstance().getVideoBackgroundConfig().mReflection == QCAR::VIDEO_BACKGROUND_REFLECTION_ON)
-
-   jclass activityClass = env->GetObjectClass(obj);
-
-// Code pasted here to fix TR-141
+  // Code pasted here to fix TR-141
   //get perspective transformation
   float nearPlane = 1.0f;
   float farPlane  = 1000.0f;
@@ -379,160 +244,48 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
     jmethodID setCameraViewportMethod = env->GetMethodID(activityClass,"setCameraViewportNative", "(FFFF)V");
     env->CallVoidMethod(obj,setCameraViewportMethod,viewportWidth,viewportHeight,cameraCalibration.getSize().data[0],cameraCalibration.getSize().data[1]);
 
-
-// might not be useful since the loop will not execute if there are no trackables
-    //Jonathan Desmarais: Check if we have a trackable result
-//    if (state.getNumTrackableResults() > 0){
-
-
         // Did we find any trackables this frame?
         for(int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++)
         {
-
-
-            // Get the trackable:
             const QCAR::TrackableResult* result = state.getTrackableResult(tIdx);
 
-            //Stuplid code to simply log to trackable name
+            //Get Trackable name
             const QCAR::Trackable& trackable         = result->getTrackable();
             const char*            trackableNameChar = trackable.getName();
             const char*            loggingPrefix     = "UpdateTracking: Find trackable: ";
             char                   logTrackableName[75];
-
             strcpy(logTrackableName,loggingPrefix);
             strcat(logTrackableName,trackableNameChar);
             const char * trackableToPrint    = (const char *)logTrackableName;
-            LOGE(trackableToPrint);
 
+            //register position
+            aaltus::AaltusTrackable* at = world->getTrackable(trackableToPrint);
+            at->setCameraPosition( QCAR::Tool::convertPose2GLMatrix(result->getPose()) );
 
-            QCAR::Matrix44F modelViewMatrix = QCAR::Tool::convertPose2GLMatrix(result->getPose());
-
-            //get the camera transformation
-            QCAR::Matrix44F inverseMV   = MathUtil::Matrix44FInverse(modelViewMatrix);
-            //QCAR::Matrix44F invTranspMV = modelViewMatrix;
-            QCAR::Matrix44F invTranspMV = MathUtil::Matrix44FTranspose(inverseMV);
+            //Update origin status
             if(tIdx == 0)
             {
-                LOGE("VuforiaJME parsing matrix");
-                centerInv = inverseMV;
-                 //get rotation
-                cam_right_x = invTranspMV.data[0];
-                cam_right_y = invTranspMV.data[1];
-                cam_right_z = invTranspMV.data[2];
-                cam_up_x = invTranspMV.data[4];
-                cam_up_y = invTranspMV.data[5];
-                cam_up_z = invTranspMV.data[6];
-                cam_dir_x = invTranspMV.data[8];
-                cam_dir_y = invTranspMV.data[9];
-                cam_dir_z = invTranspMV.data[10];
-            }
-            else
-            {
-                QCAR::Matrix44F offset = QCAR::Tool::multiply(centerInv,MathUtil::Matrix44FTranspose(modelViewMatrix));
-                QCAR::Vec4F position(0.0f,0.0f,0.0f,1.0f);
-                position = SampleMath::Vec4FTransform(position,offset);
-                invTranspMV.data[12] = position.data[0];
-                invTranspMV.data[13] = position.data[1];
-                invTranspMV.data[14] = position.data[2];
-            }
-
-            //get position
-            float cam_x = invTranspMV.data[12];
-            float cam_y = invTranspMV.data[13];
-            float cam_z = invTranspMV.data[14];
-
-//get rotation
-//TR-116 commnting
-            //float cam_right_x = invTranspMV.data[0];
-            //float cam_right_y = invTranspMV.data[1];
-            //float cam_right_z = invTranspMV.data[2];
-            //float cam_up_x    = invTranspMV.data[4];
-            //float cam_up_y    = invTranspMV.data[5];
-            //float cam_up_z    = invTranspMV.data[6];
-            //float cam_dir_x   = invTranspMV.data[8];
-            //float cam_dir_y   = invTranspMV.data[9];
-            //float cam_dir_z   = invTranspMV.data[10];
-
-//            //get perspective transformation
-//            float nearPlane = 1.0f;
-//            float farPlane  = 1000.0f;
-//            const QCAR::CameraCalibration& cameraCalibration = QCAR::CameraDevice::getInstance().getCameraCalibration();
-//
-//            QCAR::VideoBackgroundConfig config = QCAR::Renderer::getInstance().getVideoBackgroundConfig();
-//
-//            float viewportWidth  = config.mSize.data[0];
-//            float viewportHeight = config.mSize.data[1];
-//
-//            QCAR::Vec2F size        = cameraCalibration.getSize();
-//            QCAR::Vec2F focalLength = cameraCalibration.getFocalLength();
-//            float fovRadians        = 2 * atan(0.5f * (size.data[1] / focalLength.data[1]));
-//            float fovDegrees        = fovRadians * 180.0f / M_PI;
-//            float aspectRatio       = size.data[0] / size.data[1];
-//
-//            //adjust for screen vs camera size distorsion
-//            float viewportDistort = 1.0;
-//
-//            if (viewportWidth != screenWidth)
-//            {
-//                LOGW("updateTracking viewportWidth != screenWidth");
-//                viewportDistort = viewportWidth / (float) screenWidth;
-//                fovDegrees      = fovDegrees*viewportDistort;
-//                aspectRatio     = aspectRatio/viewportDistort;
-//
-//            }
-//
-//            if (viewportHeight != screenHeight)
-//            {
-//                LOGW("updateTracking viewportHeight != screenHeight");
-//                viewportDistort = viewportHeight / (float) screenHeight;
-//                fovDegrees      = fovDegrees/viewportDistort;
-//                aspectRatio     = aspectRatio*viewportDistort;
-//            }
-
-            //JNIEnv *env;
-            //jvm->AttachCurrentThread((void **)&env, NULL);
-
-//            jmethodID attachShootables = env->GetMethodID(activityClass,"attachShootables", "()V");
-//            env->CallVoidMethod(obj,attachShootables);
-
-            if(tIdx == 0)
-            {
-
+                world->setOrigin(trackableToPrint);
+                //Update origin camera
+                QCAR::Matrix44F cam = at->getInvTranspMV();
                 jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
                 env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
-            }
-            //JNIEnv *env;
-            //jvm->AttachCurrentThread((void **)&env, NULL);
-
-           // jclass activityClass = env->GetObjectClass(obj);
-
-            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFFI)V");
-            env->CallVoidMethod(obj,setCameraPoseMethod,cam_x,cam_y,cam_z,tIdx);
-            LOGE("X=%f Y=%f Z=%f",cam_x,cam_y,cam_z);
-            if(tIdx == 0)
-            {
-                //jclass activityClass = env->GetObjectClass(obj);
                 jmethodID setCameraOrientationMethod = env->GetMethodID(activityClass,"setCameraOrientationNative", "(FFFFFFFFF)V");
-                env->CallVoidMethod(obj,setCameraOrientationMethod,cam_right_x,cam_right_y,cam_right_z,
-                        cam_up_x,cam_up_y,cam_up_z,cam_dir_x,cam_dir_y,cam_dir_z);
+                env->CallVoidMethod(obj,setCameraOrientationMethod,
+                    cam.data[0],cam.data[1],cam.data[2],
+                    cam.data[4],cam.data[5],cam.data[6],cam.data[8],cam.data[9],cam.data[10]);
+
             }
-           // jvm->DetachCurrentThread();
 
-           // LOG("Got tracking...");
-
-
+            //Update camera
+            QCAR::Vec4F vector = at->getPositionFromOrigin();
+            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFFI)V");
+            env->CallVoidMethod(obj,setCameraPoseMethod,vector.data[0],vector.data[1],
+                vector.data[2],at->getId());
         }
-//    }
-
-//    else{
-//
-//        jmethodID detachShootables = env->GetMethodID(activityClass,"detachShootables", "()V");
-//        env->CallVoidMethod(obj,detachShootables);
-//    }
 
     QCAR::Renderer::getInstance().end();
 }
-
 
 void configureVideoBackground()
 {
@@ -568,7 +321,7 @@ void configureVideoBackground()
     }
     else
     {
-        //LOG("configureVideoBackground LANDSCAPE");
+        LOGE("configureVideoBackground LANDSCAPE");
         config.mSize.data[0] = screenWidth;
         config.mSize.data[1] = videoMode.mHeight
                             * (screenWidth / (float)videoMode.mWidth);
@@ -754,6 +507,6 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_initTracking(
 }
 
 
-#ifdef __cplusplus
-}
-#endif
+//#ifdef __cplusplus
+//}
+//#endif
