@@ -59,5 +59,7 @@ public abstract class Scenario extends Node implements AnimEventListener{
 
     public abstract boolean simpleUpdate(float tpf);
     
+    public abstract void setGlobalSpeed(float speed);
+    
     public abstract void onAudioEvent();
 }

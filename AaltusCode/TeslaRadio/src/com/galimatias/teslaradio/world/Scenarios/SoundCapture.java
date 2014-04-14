@@ -69,6 +69,11 @@ public final class SoundCapture extends Scenario {
     private Vector3f guitarHandleOutPosition;
     private Vector3f micHandleInPosition;
     
+    //CHANGE THIS VALUE CHANGE THE PARTICULE BEHAVIOUR 
+    //Setting the direction norms and the speed displacement to the trajectories
+    private float VecDirectionNorms = 80f;
+    private float SoundParticles_Speed = 90f;
+    
     // Default text to be seen when scenario starts
     private String defaultText = "Sed sit amet mi fringilla leo molestie luctus";
     private float defaultTextSize = 10.0f;
@@ -206,10 +211,6 @@ public final class SoundCapture extends Scenario {
         int totalNbDirections = 21;
         int nbXYDirections = 3;
         
-        // Setting the direction norms and the speed displacement to the trajectories
-        float VecDirectionNorms = 80f;
-        float SoundParticles_Speed = 90f;
-                
         // Creating the trajectories
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
         directionFactory.setTrajectories(drumMicDirection, VecDirectionNorms);
@@ -555,6 +556,11 @@ public final class SoundCapture extends Scenario {
     @Override
     public void onAudioEvent() {
         drumTouchEffect();
+    }
+
+    @Override
+    public void setGlobalSpeed(float speed) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
