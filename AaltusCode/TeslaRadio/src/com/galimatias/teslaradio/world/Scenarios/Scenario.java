@@ -33,7 +33,7 @@ public abstract class Scenario extends Node implements AnimEventListener{
 
     protected com.jme3.renderer.Camera Camera = null;
 
-    protected Spatial scene;
+    protected Node scene;
     
     public Scenario(AssetManager assetManager)
     {
