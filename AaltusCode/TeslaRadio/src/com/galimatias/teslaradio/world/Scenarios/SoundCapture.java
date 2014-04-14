@@ -156,7 +156,7 @@ public final class SoundCapture extends Scenario {
         this.attachChild(text);
         
         //Add the halo effects under the interactive objects
-        Box rect = new Box(20f, Float.MAX_VALUE, 20f);
+        Box rect = new Box(20f, Float.MIN_VALUE, 20f);
         
         Material halo_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         halo_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
