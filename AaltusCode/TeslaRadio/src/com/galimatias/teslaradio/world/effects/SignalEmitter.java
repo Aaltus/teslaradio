@@ -9,6 +9,7 @@ import com.galimatias.teslaradio.world.observer.Observable;
 import com.galimatias.teslaradio.world.observer.Observer;
 import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -68,14 +69,14 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
     }
     
     
-    public void simpleUpdate(float tpf) {
+    public void simpleUpdate(float tpf, Camera cam) {
         
         Signal liveSignal;
         
         for (Spatial waveNode : (this.getChildren())) {
             for (Spatial signal : ((Node)waveNode).getChildren()) {
                 liveSignal = (Signal)signal;
-                liveSignal.updatePosition(tpf);
+                liveSignal.updatePosition(tpf, cam);
             }
         } 
         
@@ -113,7 +114,6 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
     
         this.waveIndex = 0;
         this.areWavesEnabled = true;
-        this.simpleUpdate(0f);
 
     }
     

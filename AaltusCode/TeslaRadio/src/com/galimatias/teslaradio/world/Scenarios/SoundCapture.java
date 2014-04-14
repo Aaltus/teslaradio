@@ -496,9 +496,9 @@ public final class SoundCapture extends Scenario {
 
     public boolean simpleUpdate(float tpf) {
          
-        DrumSoundEmitter.simpleUpdate(tpf);
-        GuitarSoundEmitter.simpleUpdate(tpf);
-        MicWireEmitter.simpleUpdate(tpf);
+        DrumSoundEmitter.simpleUpdate(tpf, this.fgCam);
+        GuitarSoundEmitter.simpleUpdate(tpf, this.fgCam);
+        MicWireEmitter.simpleUpdate(tpf, this.fgCam);
         halo_drum.simpleUpdate(tpf);
         halo_guitar.simpleUpdate(tpf);
         

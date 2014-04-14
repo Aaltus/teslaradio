@@ -7,6 +7,7 @@ package com.galimatias.teslaradio.world.effects;
 import com.jme3.material.RenderState;
 import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import java.util.List;
@@ -112,7 +113,7 @@ public class Signal extends Geometry {
         } 
   
     }
-    private void updateLinearPosition(float tpf)
+    private void updateLinearPosition(float tpf, Camera cam)
     {
             
         Vector3f currentPos = this.getLocalTranslation();
@@ -136,11 +137,15 @@ public class Signal extends Geometry {
             this.setLocalScale(startScale*(1-0.5f*(distanceTraveled/path.length())));
             // set position
             this.setLocalTranslation(newPos);
+            
+            //Adjust orientation
+            if (cam!=null)
+                this.lookAt(cam.getLocation(), cam.getUp());
         }    
         
     }
     
-    public void updatePosition(float tpf) {
+    public void updatePosition(float tpf, Camera cam) {
 
         if(isCurved)
         {
@@ -148,7 +153,7 @@ public class Signal extends Geometry {
         }
         else
         {
-            updateLinearPosition(tpf);
+            updateLinearPosition(tpf, cam);
         }
     }
     
