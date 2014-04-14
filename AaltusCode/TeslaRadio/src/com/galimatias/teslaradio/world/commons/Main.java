@@ -31,12 +31,12 @@ public class Main extends SimpleApplication
     @Override
     public void simpleInitApp() 
     {
-        flyCam.setMoveSpeed(100f);      
+        flyCam.setMoveSpeed(100f);    
         
         sceneModel = assetManager.loadModel("Scenes/World.j3o");
         rootNode.attachChild(sceneModel);
         
-        soundCapture = new SoundCapture(assetManager);
+        soundCapture = new SoundCapture(assetManager, this.getCamera());
         soundCapture.initAllMovableObjects();
                 
         // Attaching the modules to the scene
