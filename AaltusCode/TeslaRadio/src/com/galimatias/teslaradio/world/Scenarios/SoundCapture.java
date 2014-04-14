@@ -4,27 +4,34 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.galimatias.teslaradio.world.effects.SignalEmitter;
-import com.galimatias.teslaradio.world.effects.SignalTrajectories;
-import com.galimatias.teslaradio.world.effects.SignalType;
+import com.galimatias.teslaradio.world.effects.Halo;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.animation.*;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
-import com.jme3.input.event.TouchEvent;
 import com.jme3.material.Material;
-import com.jme3.math.*;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
+
+import com.galimatias.teslaradio.world.effects.SignalEmitter;
+import com.galimatias.teslaradio.world.effects.SignalTrajectories;
+import com.galimatias.teslaradio.world.effects.SignalType;
+import com.jme3.material.RenderState;
+import com.jme3.math.Spline;
+
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
-
+import com.jme3.texture.Texture;
 import java.util.ArrayList;
+
 import java.util.LinkedList;
 import java.util.Vector;
 
@@ -41,7 +48,8 @@ public final class SoundCapture extends Scenario {
 
     private AudioNode drum_sound;
     private AudioNode guitar_sound;
-
+    
+    private Spatial scene;
     private Spatial drum;
     private Spatial guitar;
     private Spatial micro;
@@ -50,6 +58,8 @@ public final class SoundCapture extends Scenario {
     private Spatial drumHandleOut;
     private Spatial guitarHandleOut;
     private Spatial micHandleIn;
+    
+    private Halo halo_drum, halo_guitar;
     
     private SignalEmitter DrumSoundEmitter;
     private SignalEmitter GuitarSoundEmitter;
@@ -79,17 +89,19 @@ public final class SoundCapture extends Scenario {
     private String updatedText = null;
     private float updatedTextSize = 0.0f;
     private ColorRGBA updatedTextColor = null;
+        
+    private Camera fgCam = null;
 
     private boolean firstTry = true;
        
-    public SoundCapture(AssetManager assetManager, Camera Camera)
+    public SoundCapture(AssetManager assetManager, Camera fgCam)
     {
         super(assetManager);
         
         loadUnmovableObjects();
         loadMovableObjects();
 
-        this.Camera = Camera;
+        this.fgCam = fgCam;
     }
 
     public SoundCapture(AssetManager assetManager)
@@ -109,9 +121,8 @@ public final class SoundCapture extends Scenario {
         scene.scale(10.0f,10.0f,10.0f);
         this.attachChild(scene);
 
-        touchable = (Node) scene.getParent().getChild("Touchable");
-        drum = touchable.getParent().getChild("Tambour");
-        guitar = touchable.getParent().getChild("Guitar");
+        drum = scene.getParent().getChild("Tambour");
+        guitar = scene.getParent().getChild("Guitar");
         micro = scene.getParent().getChild("Boule_micro");
         guitarHandleOut = scene.getParent().getChild("Guitar_Output_Handle");
         drumHandleOut = scene.getParent().getChild("Drum_Output_Handle");
@@ -154,6 +165,22 @@ public final class SoundCapture extends Scenario {
         lstUpdatedText.add("Aliquam euismod diam eget pharetra imperdiet.");
         
         this.attachChild(text);
+        
+        //Add the halo effects under the interactive objects
+        Box rect = new Box(20f, 0.1f, 20f);
+        
+        Material halo_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        halo_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
+        halo_mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        
+        halo_drum = new Halo("halo",rect,halo_mat);
+        halo_guitar = new Halo("halo",rect,halo_mat);
+
+        halo_drum.setLocalTranslation(drumPosition);
+        halo_guitar.setLocalTranslation(guitarPosition);
+        
+        this.attachChild(halo_drum);
+        this.attachChild(halo_guitar);
 
     }
 
@@ -428,76 +455,38 @@ public final class SoundCapture extends Scenario {
     }
 
     @Override
-    public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
+    public void onScenarioClick(CollisionResult closestCollisionResult) {
 
-        switch(touchEvent.getType()){
-            case TAP:
-                if (name.equals("Touch"))
+        Spatial touchedGeometry = closestCollisionResult.getGeometry();
+        while(touchedGeometry.getParent() != null)
+        {
+            //if(touchedGeometry.getParent() != null){
+                if (touchedGeometry.getParent().getName() == drum.getName())
                 {
-
-                    // 1. Reset results list.
-                    CollisionResults results = new CollisionResults();
-
-                    // 2. Mode 1: user touch location.
-                    //Vector2f click2d = inputManager.getCursorPosition();
-
-                    Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
-                    Vector3f click3d = Camera.getWorldCoordinates(
-                            new Vector2f(click2d.x, click2d.y), 0f).clone();
-                    Vector3f dir = Camera.getWorldCoordinates(
-                            new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
-                    Ray ray = new Ray(click3d, dir);
-
-                    // 3. Collect intersections between Ray and Shootables in results list.
-                    //focusableObjects.collideWith(ray, results);
-                    touchable.collideWith(ray, results);
-
-                    // 4. Print the results
-                    //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
-                    for (int i = 0; i < results.size(); i++) {
-                        // For each hit, we know distance, impact point, name of geometry.
-                        float dist = results.getCollision(i).getDistance();
-                        Vector3f pt = results.getCollision(i).getContactPoint();
-                        String hit = results.getCollision(i).getGeometry().getName();
-
-                        //Log.d(TAG,"* Collision #" + i + hit);
-                        //         Log.d(TAG,"  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
-                    }
-
-                    // 5. Use the results (we mark the hit object)
-                    if (results.size() > 0)
-                    {
-
-                        // The closest collision point is what was truly hit:
-                        CollisionResult closest = results.getClosestCollision();
-
-                        Spatial touchedGeometry = closest.getGeometry();
-                        while(touchedGeometry.getParent() != null)
-                        {
-                            if (touchedGeometry.getParent().getName() == drum.getName())
-                            {
-                                this.drumTouchEffect();
-                                break;
-                            }
-                            else if (touchedGeometry.getParent().getName() == guitar.getName())
-                            {
-                                this.guitarTouchEffect();
-                                break;
-                            }
-                            else if (touchedGeometry.getParent().getName() == this.getChild("Text").getName())
-                            {
-                                this.textTouchEffect();
-                                showInformativeMenu = true;
-                                break;
-                            }
-                            else
-                            {
-                                touchedGeometry = touchedGeometry.getParent();
-                            }
-                    }
+                    this.drumTouchEffect();
+                    break;
                 }
-            }
+                else if (touchedGeometry.getParent().getName() == guitar.getName())
+                {
+                    this.guitarTouchEffect();
+                    break;
+                }
+                else if (touchedGeometry.getParent().getName() == this.getChild("Text").getName()) 
+                {
+                    this.textTouchEffect();
+                    showInformativeMenu = true;
+                    break;
+                }
+                else
+                {
+                    touchedGeometry = touchedGeometry.getParent();
+                }
+//            }
+//            else{
+//                break;
+//            }
         }
+
     }
 
     @Override
@@ -507,18 +496,20 @@ public final class SoundCapture extends Scenario {
 
     public boolean simpleUpdate(float tpf) {
          
-        DrumSoundEmitter.simpleUpdate(tpf);
-        GuitarSoundEmitter.simpleUpdate(tpf);
-        MicWireEmitter.simpleUpdate(tpf);
+        DrumSoundEmitter.simpleUpdate(tpf, this.fgCam);
+        GuitarSoundEmitter.simpleUpdate(tpf, this.fgCam);
+        MicWireEmitter.simpleUpdate(tpf, this.fgCam);
+        halo_drum.simpleUpdate(tpf);
+        halo_guitar.simpleUpdate(tpf);
         
-        if(Camera != null) {
-            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, updatedTextSize, updatedTextColor, this.Camera);
+        if(fgCam != null) {
+            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, updatedTextSize, updatedTextColor, this.fgCam);
             
             // Resetting the values so that it is noob proof
             updatedText = null;
             updatedTextSize = 0.0f;
             updatedTextColor = null;
-            //Log.d(TAG,"Camera position :" + Camera.getLocation());
+            //Log.d(TAG,"Camera position :" + fgCam.getLocation());
         }
         else {
             Camera cam = new Camera(100,100);
