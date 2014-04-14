@@ -128,8 +128,8 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 
 
 		// Do not display statistics or frames per second	
-		setDisplayStatView(false);
-		setDisplayFps(false);
+		setDisplayStatView(true);
+		setDisplayFps(true);
 		
 		//Logger.getLogger("").setLevel(Level.SEVERE);
 		 
