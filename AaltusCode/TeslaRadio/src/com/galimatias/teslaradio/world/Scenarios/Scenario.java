@@ -27,7 +27,9 @@ public abstract class Scenario extends Node implements AnimEventListener{
     protected Node movableObjects = new Node("movable");
 
     protected AssetManager assetManager;
-
+    
+    protected Node touchable;
+    
     public Scenario(AssetManager assetManager)
     {
         this.assetManager = assetManager;
