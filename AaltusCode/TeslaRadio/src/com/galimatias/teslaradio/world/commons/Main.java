@@ -7,10 +7,14 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Quad;
 
 /**
  * test
@@ -31,14 +35,21 @@ public class Main extends SimpleApplication
     @Override
     public void simpleInitApp() 
     {
-        flyCam.setMoveSpeed(100f);    
         
-        sceneModel = assetManager.loadModel("Scenes/World.j3o");
-        rootNode.attachChild(sceneModel);
         
         soundCapture = new SoundCapture(assetManager, this.getCamera());
         soundCapture.initAllMovableObjects();
-                
+        flyCam.setMoveSpeed(100f);
+        cam.setLocation(new Vector3f(-60,80,80));
+        cam.lookAt(soundCapture.getWorldTranslation(), Vector3f.UNIT_Y);
+        
+        //Add a floor
+        Geometry floor = new Geometry("Floor", new Box (60,Float.MIN_VALUE,60));
+        Material floorMaterial  = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        floorMaterial.setColor("Color", ColorRGBA.Blue);
+        floor.setMaterial(floorMaterial);
+        rootNode.attachChild(floor);
+        
         // Attaching the modules to the scene
         rootNode.attachChild(soundCapture);
         
