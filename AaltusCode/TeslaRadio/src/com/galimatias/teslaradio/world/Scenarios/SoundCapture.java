@@ -104,11 +104,12 @@ public final class SoundCapture extends Scenario {
     @Override
     protected void loadUnmovableObjects()
     {          
-        scene = assetManager.loadModel("Models/SoundCapture.j3o");
+        scene = (Node) assetManager.loadModel("Models/SoundCapture.j3o");
         scene.setName("SoundCapture");
-        scene.scale(10.0f,10.0f,10.0f);
         this.attachChild(scene);
-
+        scene.scale(10.0f,10.0f,10.0f);
+        //this.scale(10.0f,10.0f,10.0f);
+        
         touchable = (Node) scene.getParent().getChild("Touchable");
         drum = touchable.getParent().getChild("Tambour");
         guitar = touchable.getParent().getChild("Guitar");
@@ -117,8 +118,8 @@ public final class SoundCapture extends Scenario {
         drumHandleOut = scene.getParent().getChild("Drum_Output_Handle");
         micHandleIn = scene.getParent().getChild("Mic_Input_Handle");
         
-        drumPosition = drum.getWorldTranslation();
-        guitarPosition = guitar.getWorldTranslation();
+        drumPosition = drum.getLocalTranslation(); //drum.getLocalTranslation();
+        guitarPosition = guitar.getLocalTranslation(); //guitar.getWorldTranslation();
         micPosition = micro.getWorldTranslation();
         drumHandleOutPosition = drumHandleOut.getWorldTranslation();
         guitarHandleOutPosition = guitarHandleOut.getWorldTranslation();
@@ -156,7 +157,7 @@ public final class SoundCapture extends Scenario {
         this.attachChild(text);
         
         //Add the halo effects under the interactive objects
-        Box rect = new Box(20f, Float.MIN_VALUE, 20f);
+        Box rect = new Box(2f, Float.MIN_VALUE, 2f);
         
         Material halo_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         halo_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
@@ -164,12 +165,15 @@ public final class SoundCapture extends Scenario {
         
         halo_drum = new Halo("halo",rect,halo_mat,0.85f);
         halo_guitar = new Halo("halo",rect,halo_mat,1.30f);
-
+            
+        scene.attachChild(halo_drum);
+        scene.attachChild(halo_guitar);
+        
+        
         halo_drum.setLocalTranslation(drumPosition);
         halo_guitar.setLocalTranslation(guitarPosition);
         
-        this.attachChild(halo_drum);
-        this.attachChild(halo_guitar);
+        
 
     }
 
