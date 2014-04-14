@@ -22,21 +22,20 @@ import android.util.Log;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.jme3.app.SimpleApplication;
-import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
 import com.jme3.input.controls.TouchListener;
 import com.jme3.input.controls.TouchTrigger;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
-import com.jme3.math.*;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
@@ -105,69 +104,9 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
     @Override
     public void onTouch(String name, TouchEvent touchEvent, float v)
     {
-        Log.d(TAG,"Action on screen");
-        switch(touchEvent.getType()){
-            case TAP:
-                if (name.equals("Touch"))
-                {
+        //Log.d(TAG,"Action on screen");
 
-                    // 1. Reset results list.
-                    CollisionResults results = new CollisionResults();
-
-                    // 2. Mode 1: user touch location.
-                    //Vector2f click2d = inputManager.getCursorPosition();
-
-                    Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
-                    Vector3f click3d = fgCam.getWorldCoordinates(
-                            new Vector2f(click2d.x, click2d.y), 0f).clone();
-                    Vector3f dir = fgCam.getWorldCoordinates(
-                            new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
-                    Ray ray = new Ray(click3d, dir);
-
-                    // 3. Collect intersections between Ray and Shootables in results list.
-                    //focusableObjects.collideWith(ray, results);
-                    rootNode.collideWith(ray, results);
-
-                    // 4. Print the results
-                    Log.d(TAG,"----- Collisions? " + results.size() + "-----");
-                    for (int i = 0; i < results.size(); i++) {
-                        // For each hit, we know distance, impact point, name of geometry.
-                        float dist = results.getCollision(i).getDistance();
-                        Vector3f pt = results.getCollision(i).getContactPoint();
-                        String hit = results.getCollision(i).getGeometry().getName();
-
-                        Log.d(TAG,"* Collision #" + i + hit);
-                        //         Log.d(TAG,"  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
-                    }
-
-                    // 5. Use the results (we mark the hit object)
-                    if (results.size() > 0) {
-
-                        // The closest collision point is what was truly hit:
-                        CollisionResult closest = results.getClosestCollision();
-
-                        Spatial touchedGeometry = closest.getGeometry();
-                        while(touchedGeometry.getParent() != null)
-                        {
-
-                            if (touchedGeometry.getParent().getName() == soundCapture.getName())
-                            {
-                                soundCapture.onScenarioClick(closest);
-                                break;
-                            }
-                            else{
-                                touchedGeometry = touchedGeometry.getParent();
-                            }
-                        }
-                    }
-                }
-
-            case LONGPRESSED:
-                break;
-
-            case MOVE:
-                break;
-        }
+        soundCapture.onScenarioTouch(name, touchEvent, v);
     }
 
     interface AppListener
