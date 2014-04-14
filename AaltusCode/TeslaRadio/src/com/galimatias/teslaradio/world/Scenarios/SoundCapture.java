@@ -4,6 +4,7 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.Halo;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.animation.*;
 import com.jme3.asset.AssetManager;
@@ -17,9 +18,11 @@ import com.jme3.math.Vector3f;
 import com.galimatias.teslaradio.world.effects.SignalEmitter;
 import com.galimatias.teslaradio.world.effects.SignalTrajectories;
 import com.galimatias.teslaradio.world.effects.SignalType;
+import com.jme3.material.RenderState;
 import com.jme3.math.Spline;
 
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -55,6 +58,8 @@ public final class SoundCapture extends Scenario {
     private Spatial drumHandleOut;
     private Spatial guitarHandleOut;
     private Spatial micHandleIn;
+    
+    private Halo halo_drum, halo_guitar;
     
     private SignalEmitter DrumSoundEmitter;
     private SignalEmitter GuitarSoundEmitter;
@@ -160,6 +165,22 @@ public final class SoundCapture extends Scenario {
         lstUpdatedText.add("Aliquam euismod diam eget pharetra imperdiet.");
         
         this.attachChild(text);
+        
+        //Add the halo effects under the interactive objects
+        Box rect = new Box(20f, 0.1f, 20f);
+        
+        Material halo_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        halo_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
+        halo_mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        
+        halo_drum = new Halo("halo",rect,halo_mat);
+        halo_guitar = new Halo("halo",rect,halo_mat);
+
+        halo_drum.setLocalTranslation(drumPosition);
+        halo_guitar.setLocalTranslation(guitarPosition);
+        
+        this.attachChild(halo_drum);
+        this.attachChild(halo_guitar);
 
     }
 
@@ -478,6 +499,8 @@ public final class SoundCapture extends Scenario {
         DrumSoundEmitter.simpleUpdate(tpf);
         GuitarSoundEmitter.simpleUpdate(tpf);
         MicWireEmitter.simpleUpdate(tpf);
+        halo_drum.simpleUpdate(tpf);
+        halo_guitar.simpleUpdate(tpf);
         
         if(fgCam != null) {
             ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, updatedTextSize, updatedTextColor, this.fgCam);
