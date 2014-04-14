@@ -173,8 +173,8 @@ public final class SoundCapture extends Scenario {
         halo_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
         halo_mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         
-        halo_drum = new Halo("halo",rect,halo_mat);
-        halo_guitar = new Halo("halo",rect,halo_mat);
+        halo_drum = new Halo("halo",rect,halo_mat,0.85f);
+        halo_guitar = new Halo("halo",rect,halo_mat,1.30f);
 
         halo_drum.setLocalTranslation(drumPosition);
         halo_guitar.setLocalTranslation(guitarPosition);
@@ -496,9 +496,9 @@ public final class SoundCapture extends Scenario {
 
     public boolean simpleUpdate(float tpf) {
          
-        DrumSoundEmitter.simpleUpdate(tpf, this.fgCam);
-        GuitarSoundEmitter.simpleUpdate(tpf, this.fgCam);
-        MicWireEmitter.simpleUpdate(tpf, this.fgCam);
+        DrumSoundEmitter.simpleUpdate(tpf, this.Camera);
+        GuitarSoundEmitter.simpleUpdate(tpf, this.Camera);
+        MicWireEmitter.simpleUpdate(tpf, this.Camera);
         halo_drum.simpleUpdate(tpf);
         halo_guitar.simpleUpdate(tpf);
         
@@ -510,17 +510,6 @@ public final class SoundCapture extends Scenario {
             updatedTextSize = 0.0f;
             updatedTextColor = null;
             //Log.d(TAG,"Camera position :" + fgCam.getLocation());
-        }
-        else {
-            Camera cam = new Camera(100,100);
-            cam.setLocation(new Vector3f(0.0f,50.0f,0.0f));
-            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, updatedTextSize, updatedTextColor, cam);
-            
-            // Resetting the values so that it is noob proof
-            updatedText = null;
-            updatedTextSize = 0.0f;
-            updatedTextColor = null;
-            //Log.d(TAG,"Camera position :");
         }
 
         if (showInformativeMenu)
