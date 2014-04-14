@@ -115,9 +115,11 @@ public final class SoundCapture extends Scenario {
         scene.setName("SoundCapture");
         scene.scale(10.0f,10.0f,10.0f);
         this.attachChild(scene);
-
-        drum = scene.getParent().getChild("Tambour");
-        guitar = scene.getParent().getChild("Guitar");
+        
+        
+        touchable = (Node) scene.getParent().getChild("Touchable");
+        drum = touchable.getParent().getChild("Tambour");
+        guitar = touchable.getParent().getChild("Guitar");
         micro = scene.getParent().getChild("Boule_micro");
         guitarHandleOut = scene.getParent().getChild("Guitar_Output_Handle");
         drumHandleOut = scene.getParent().getChild("Drum_Output_Handle");
