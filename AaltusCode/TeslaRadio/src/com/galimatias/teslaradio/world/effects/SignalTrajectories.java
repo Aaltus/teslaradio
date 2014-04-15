@@ -143,10 +143,10 @@ public class SignalTrajectories {
     public Spline getCurvedPath(Mesh bezier_mesh)
     { 
         int nbVertex = bezier_mesh.getTriangleCount();
-        Vector3f[] controlPoints = new Vector3f[nbVertex*2-2];
+        Vector3f[] controlPoints = new Vector3f[nbVertex*2];
         
 
-        for(int index =0; index < (nbVertex*2-2); index++)
+        for(int index =0; index < (nbVertex*2); index++)
         {
             controlPoints[index] = getControlPoint(index,bezier_mesh).mult(10f);
         }

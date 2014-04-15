@@ -4,11 +4,7 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.galimatias.teslaradio.world.effects.SignalEmitter;
-import com.galimatias.teslaradio.world.effects.SignalTrajectories;
-import com.galimatias.teslaradio.world.effects.SignalType;
-import com.galimatias.teslaradio.world.effects.Halo;
-import com.galimatias.teslaradio.world.effects.TextBox;
+import com.galimatias.teslaradio.world.effects.*;
 import com.jme3.animation.*;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
@@ -16,19 +12,9 @@ import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.material.Material;
-import com.jme3.math.*;
-
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
-
-import com.galimatias.teslaradio.world.effects.SignalEmitter;
-import com.galimatias.teslaradio.world.effects.SignalTrajectories;
-import com.galimatias.teslaradio.world.effects.SignalType;
 import com.jme3.material.RenderState;
-import com.jme3.math.Spline;
+import com.jme3.math.*;
 import com.jme3.renderer.Camera;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -83,6 +69,11 @@ public final class SoundCapture extends Scenario {
     private Vector3f guitarHandleOutPosition;
     private Vector3f micHandleInPosition;
     
+    //CHANGE THIS VALUE CHANGE THE PARTICULE BEHAVIOUR 
+    //Setting the direction norms and the speed displacement to the trajectories
+    private float VecDirectionNorms = 80f;
+    private float SoundParticles_Speed = 90f;
+    
     // Default text to be seen when scenario starts
     private String defaultText = "This is the first module: \n Sound Capture";
     private float defaultTextSize = 7.0f;
@@ -118,11 +109,12 @@ public final class SoundCapture extends Scenario {
     @Override
     protected void loadUnmovableObjects()
     {          
-        scene = assetManager.loadModel("Models/SoundCapture.j3o");
+        scene = (Node) assetManager.loadModel("Models/SoundCapture.j3o");
         scene.setName("SoundCapture");
-        scene.scale(10.0f,10.0f,10.0f);
         this.attachChild(scene);
-
+        scene.scale(10.0f,10.0f,10.0f);
+        //this.scale(10.0f,10.0f,10.0f);
+        
         touchable = (Node) scene.getParent().getChild("Touchable");
         drum = touchable.getParent().getChild("Tambour");
         guitar = touchable.getParent().getChild("Guitar");
@@ -131,8 +123,8 @@ public final class SoundCapture extends Scenario {
         drumHandleOut = scene.getParent().getChild("Drum_Output_Handle");
         micHandleIn = scene.getParent().getChild("Mic_Input_Handle");
         
-        drumPosition = drum.getWorldTranslation();
-        guitarPosition = guitar.getWorldTranslation();
+        drumPosition = drum.getLocalTranslation(); //drum.getLocalTranslation();
+        guitarPosition = guitar.getLocalTranslation(); //guitar.getWorldTranslation();
         micPosition = micro.getWorldTranslation();
         drumHandleOutPosition = drumHandleOut.getWorldTranslation();
         guitarHandleOutPosition = guitarHandleOut.getWorldTranslation();
@@ -165,7 +157,7 @@ public final class SoundCapture extends Scenario {
         this.attachChild(text);
         
         //Add the halo effects under the interactive objects
-        Box rect = new Box(20f, 0.1f, 20f);
+        Box rect = new Box(2f, Float.MIN_VALUE, 2f);
         
         Material halo_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         halo_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
@@ -173,12 +165,15 @@ public final class SoundCapture extends Scenario {
         
         halo_drum = new Halo("halo",rect,halo_mat,0.85f);
         halo_guitar = new Halo("halo",rect,halo_mat,1.30f);
-
+            
+        scene.attachChild(halo_drum);
+        scene.attachChild(halo_guitar);
+        
+        
         halo_drum.setLocalTranslation(drumPosition);
         halo_guitar.setLocalTranslation(guitarPosition);
         
-        this.attachChild(halo_drum);
-        this.attachChild(halo_guitar);
+        
 
     }
 
@@ -211,10 +206,6 @@ public final class SoundCapture extends Scenario {
         int totalNbDirections = 21;
         int nbXYDirections = 3;
         
-        // Setting the direction norms and the speed displacement to the trajectories
-        float VecDirectionNorms = 80f;
-        float SoundParticles_Speed = 90f;
-                
         // Creating the trajectories
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
         directionFactory.setTrajectories(drumMicDirection, VecDirectionNorms);
@@ -562,6 +553,11 @@ public final class SoundCapture extends Scenario {
     @Override
     public void onAudioEvent() {
         drumTouchEffect();
+    }
+
+    @Override
+    public void setGlobalSpeed(float speed) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

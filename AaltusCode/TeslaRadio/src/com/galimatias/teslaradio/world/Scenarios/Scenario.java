@@ -33,7 +33,7 @@ public abstract class Scenario extends Node implements AnimEventListener{
 
     protected com.jme3.renderer.Camera Camera = null;
 
-    protected Spatial scene;
+    protected Node scene;
     
     public Scenario(AssetManager assetManager)
     {
@@ -58,6 +58,8 @@ public abstract class Scenario extends Node implements AnimEventListener{
     public abstract void onScenarioTouch(String name, TouchEvent touchEvent, float v);
 
     public abstract boolean simpleUpdate(float tpf);
+    
+    public abstract void setGlobalSpeed(float speed);
     
     public abstract void onAudioEvent();
 }
