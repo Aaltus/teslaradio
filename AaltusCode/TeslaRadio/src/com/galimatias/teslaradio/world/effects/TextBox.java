@@ -29,14 +29,15 @@ public class TextBox extends Node {
     {
         this.assetManager = assetManager;
         this.detachAllChildren();
-        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        guiFont = assetManager.loadFont("Interface/Fonts/Helvetica.fnt");
         text = new BitmapText(guiFont, false);
     }
 
     public void simpleUpdate(String updatedText,
                              float updatedSize,
                              ColorRGBA updatedColor,
-                             Camera cam)
+                             Camera cam,
+                             Vector3f scenarioUpVector)
     {
         if(updatedText != null)
             text.setText(updatedText);
@@ -45,13 +46,12 @@ public class TextBox extends Node {
         if(updatedColor != null)
             text.setColor(updatedColor);
         
-        this.lookAt(cam.getLocation(), cam.getUp());
+        this.lookAt(cam.getLocation(), scenarioUpVector);
     }
 
     public void initDefaultText(String textToDisplay,
                          float size,
                          Vector3f translation,
-                         Quaternion rotation,
                          ColorRGBA color)
     {
         text.setText(textToDisplay);
@@ -64,27 +64,12 @@ public class TextBox extends Node {
 
         Rectangle fontRect = new Rectangle(0.0f,0.0f,width,height);
         text.setBox(fontRect);
-        
-        height = text.getHeight();
-        width = text.getLineWidth();
-
-        float boxDepth = 0.5f;
-        Box rect = new Box((width+20.0f)/2.0f, (height+20.0f)/2.0f, boxDepth);
-        Geometry geomRect = new Geometry("textBox", rect);
-        geomRect.move(width / 2.0f + 5.0f, -height / 2.0f, -2.0f * boxDepth - 20.0f);
-
-        Material boxMat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        boxMat.setColor("Color", new ColorRGBA((float)0x21/0xFF,(float)0x21/0xFF,(float)0x21/0xFF,(float)0xCC/0xFF));
-        boxMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        geomRect.setMaterial(boxMat);
-
+        text.setLocalTranslation(-(width/2.0f),0.0f,0.0f);
+        text.setAlignment(BitmapFont.Align.Center);
         text.setQueueBucket(Bucket.Transparent);
-        geomRect.setQueueBucket(Bucket.Transparent);
         
         this.move(translation);
-        this.rotate(rotation);
 
-        this.attachChild(geomRect);
         this.attachChild(text);
     }
 }
