@@ -86,8 +86,8 @@
 
     </style>
     <style name="ListFragmentPadding">
-        <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">0dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
     </style>
     <style name="SeekBarLinearLayoutStyle">
         <item name="android:layout_height">wrap_content</item>
