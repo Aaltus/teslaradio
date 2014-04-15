@@ -151,7 +151,7 @@ public final class SoundCapture extends Scenario {
         //Vector3f v = new Vector3f(0.0f,0.0f,0.0f);
         
         textBox = new TextBox(assetManager);
-        textBox.initDefaultText(defaultText, defaultTextSize, v, defaultTextColor);
+        textBox.initDefaultText(defaultText, defaultTextSize, v, defaultTextColor,6,3);
         textBox.setName("Text");
 
         // Messages to display if textBox is touched
@@ -482,8 +482,7 @@ public final class SoundCapture extends Scenario {
                         Vector3f pt = results.getCollision(i).getContactPoint();
                         String hit = results.getCollision(i).getGeometry().getName();
 
-                        //Log.d(TAG,"* Collision #" + i + hit);
-                        //         Log.d(TAG,"  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+                        //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
                     }
 
                     // 5. Use the results (we mark the hit object)
