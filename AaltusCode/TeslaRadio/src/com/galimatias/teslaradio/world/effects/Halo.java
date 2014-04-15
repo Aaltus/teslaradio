@@ -24,7 +24,7 @@ public class Halo extends Geometry {
         
         this.baseScale = baseScale;
         this.setMaterial(halo_mat);
-        this.setQueueBucket(RenderQueue.Bucket.Translucent);
+        this.setQueueBucket(RenderQueue.Bucket.Transparent);
     }
     
     public void simpleUpdate(float tpf) {
