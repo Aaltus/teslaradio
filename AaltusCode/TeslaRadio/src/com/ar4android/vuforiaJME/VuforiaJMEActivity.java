@@ -193,7 +193,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         Log.d(TAG, "OnClick Callback from detail fragment");
 
 
-        switch (id){
+        switch (id)
+        {
 
             case R.id.item_detail_fragment_close_button:
                 //Log.d(TAG, "OnClick Callback from detail fragment");
