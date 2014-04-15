@@ -75,8 +75,8 @@ public final class SoundCapture extends Scenario {
     private float SoundParticles_Speed = 90f;
     
     // Default text to be seen when scenario starts
-    private String defaultText = "Sed sit amet mi fringilla leo molestie luctus";
-    private float defaultTextSize = 10.0f;
+    private String defaultText = "This is the first module: \n Sound Capture";
+    private float defaultTextSize = 7.0f;
     private ColorRGBA defaultTextColor = ColorRGBA.White;
     
     // Updated values of the textbox, the list contains the messages when updated
@@ -144,14 +144,9 @@ public final class SoundCapture extends Scenario {
         guitar_sound.setVolume(2);
         this.attachChild(guitar_sound);
         
-        Quaternion textRotation = new Quaternion();
-        textRotation.fromAngleAxis(-3.14159f/2.0f, Vector3f.UNIT_Y);
-        
-        Vector3f v = new Vector3f(micHandleInPosition.x, micHandleInPosition.y, micHandleInPosition.z + 15.0f);
-        //Vector3f v = new Vector3f(0.0f,0.0f,0.0f);
-        
+        Vector3f v = new Vector3f(0, 75, 0);
         TextBox text = new TextBox(assetManager);
-        text.initDefaultText(defaultText, defaultTextSize, v, textRotation, defaultTextColor);
+        text.initDefaultText(defaultText, defaultTextSize, v, defaultTextColor);
         text.setName("Text");
 
         // Messages to display if textBox is touched
