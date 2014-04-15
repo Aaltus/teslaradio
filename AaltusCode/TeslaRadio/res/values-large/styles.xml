@@ -11,8 +11,8 @@
         <item name="android:padding">10dp</item>
     </style>
     <style name="ListFragmentPadding">
-        <item name="android:paddingTop">50dp</item>
-        <item name="android:paddingBottom">50dp</item>
+        <item name="android:layout_marginTop">50dp</item>
+        <item name="android:layout_marginBottom">50dp</item>
     </style>
 
     <style name="SeekBarLinearLayoutStyle">
