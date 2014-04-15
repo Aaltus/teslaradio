@@ -54,6 +54,8 @@ public final class SoundCapture extends Scenario {
     private SignalEmitter DrumSoundEmitter;
     private SignalEmitter GuitarSoundEmitter;
     private SignalEmitter MicWireEmitter;
+
+    private TextBox textBox;
     
     // animation encore utile?
     private Animation animation;
@@ -150,16 +152,16 @@ public final class SoundCapture extends Scenario {
         Vector3f v = new Vector3f(micHandleInPosition.x, micHandleInPosition.y, micHandleInPosition.z + 15.0f);
         //Vector3f v = new Vector3f(0.0f,0.0f,0.0f);
         
-        TextBox text = new TextBox(assetManager);
-        text.initDefaultText(defaultText, defaultTextSize, v, textRotation, defaultTextColor);
-        text.setName("Text");
+        textBox = new TextBox(assetManager);
+        textBox.initDefaultText(defaultText, defaultTextSize, v, textRotation, defaultTextColor);
+        textBox.setName("Text");
 
         // Messages to display if textBox is touched
         lstUpdatedText.add("Aliquam erat volutpat. Vestibulum tempor ");
         lstUpdatedText.add(" amet quam eu consectetur. Duis dapibus,");
         lstUpdatedText.add("Aliquam euismod diam eget pharetra imperdiet.");
         
-        this.attachChild(text);
+        touchable.attachChild(textBox);
         
         //Add the halo effects under the interactive objects
         Box rect = new Box(2f, Float.MIN_VALUE, 2f);
@@ -493,29 +495,24 @@ public final class SoundCapture extends Scenario {
                         CollisionResult closest = results.getClosestCollision();
 
                         Spatial touchedGeometry = closest.getGeometry();
-                        while(touchedGeometry.getParent() != null)
+                        String nameToCompare = touchedGeometry.getParent().getName();
+
+                        if (nameToCompare == drum.getName())
                         {
-                            if (touchedGeometry.getParent().getName() == drum.getName())
-                            {
-                                this.drumTouchEffect();
-                                break;
-                            }
-                            else if (touchedGeometry.getParent().getName() == guitar.getName())
-                            {
-                                this.guitarTouchEffect();
-                                break;
-                            }
-                            else if (touchedGeometry.getParent().getName() == this.getChild("Text").getName())
-                            {
-                                this.textTouchEffect();
-                                showInformativeMenu = true;
-                                break;
-                            }
-                            else
-                            {
-                                touchedGeometry = touchedGeometry.getParent();
-                            }
-                    }
+                            this.drumTouchEffect();
+                            break;
+                        }
+                        else if (nameToCompare == guitar.getName())
+                        {
+                            this.guitarTouchEffect();
+                            break;
+                        }
+                        else if (nameToCompare == textBox.getName())
+                        {
+                            //this.textTouchEffect();
+                            showInformativeMenu = true;
+                            break;
+                        }
                 }
             }
         }
