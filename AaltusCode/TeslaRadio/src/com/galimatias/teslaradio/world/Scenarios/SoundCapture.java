@@ -144,7 +144,7 @@ public final class SoundCapture extends Scenario {
         guitar_sound.setVolume(2);
         this.attachChild(guitar_sound);
         
-        Vector3f v = new Vector3f(0, 75, 0);
+        Vector3f v = new Vector3f(0, 50, 0);
         TextBox text = new TextBox(assetManager);
         text.initDefaultText(defaultText, defaultTextSize, v, defaultTextColor);
         text.setName("Text");
@@ -530,7 +530,9 @@ public final class SoundCapture extends Scenario {
         halo_guitar.simpleUpdate(tpf);
         
         if(Camera != null) {
-            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, updatedTextSize, updatedTextColor, this.Camera);
+            //Vector3f.UNIT_Y.multLocal(micPosition)
+            Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
+            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, updatedTextSize, updatedTextColor, this.Camera, upVector);
             
             // Resetting the values so that it is noob proof
             updatedText = null;
