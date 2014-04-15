@@ -30,10 +30,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
-import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.SeekBar;
-import android.widget.TextView;
+import android.widget.*;
 import com.galimatias.teslaradio.ItemDetailFragment;
 import com.galimatias.teslaradio.ItemListFragment;
 import com.galimatias.teslaradio.LanguageDialogFragment;
@@ -998,19 +995,23 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         //Hide list_fragment
         Fragment fragment = fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.activity_item_twopane_2_rootview);
 
 
         if (fragment != null){
             FragmentTransaction ft = fm.beginTransaction();
             ft.setCustomAnimations(R.anim.enter_left, R.anim.exit_left);
-            if (fragment.isHidden()){
+            if (fragment.isHidden())
+            {
                 Log.d(TAG,"Showing list fragment");
                 ft.show(fragment);
+                //frameLayout.setClickable(true);
             }
             else
             {
                 Log.d(TAG,"Hiding list fragment");
                 ft.hide(fragment);
+                //frameLayout.setClickable(false);
             }
 
             ft.commit();
@@ -1021,14 +1022,17 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         if (fragmentDetail != null){
             FragmentTransaction ft = fm.beginTransaction();
             ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
-            if (fragmentDetail.isHidden()){
+            if (fragmentDetail.isHidden())
+            {
                 Log.d(TAG,"Showing detail fragment");
                 ft.show(fragmentDetail);
+                frameLayout.setClickable(true);
             }
             else
             {
                 Log.d(TAG,"Hiding detail fragment");
                 ft.hide(fragmentDetail);
+                frameLayout.setClickable(false);
             }
             ft.commit();
         }
