@@ -36,7 +36,8 @@ public class TextBox extends Node {
     public void simpleUpdate(String updatedText,
                              float updatedSize,
                              ColorRGBA updatedColor,
-                             Camera cam)
+                             Camera cam,
+                             Vector3f scenarioUpVector)
     {
         if(updatedText != null)
             text.setText(updatedText);
@@ -45,7 +46,7 @@ public class TextBox extends Node {
         if(updatedColor != null)
             text.setColor(updatedColor);
         
-        this.lookAt(cam.getLocation(), Vector3f.UNIT_Y);
+        this.lookAt(cam.getLocation(), scenarioUpVector);
     }
 
     public void initDefaultText(String textToDisplay,
@@ -68,7 +69,6 @@ public class TextBox extends Node {
         text.setQueueBucket(Bucket.Transparent);
         
         this.move(translation);
-        this.rotate(-45, 45, -45);
 
         this.attachChild(text);
     }
