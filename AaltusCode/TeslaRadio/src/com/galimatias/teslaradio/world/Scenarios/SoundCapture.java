@@ -54,6 +54,8 @@ public final class SoundCapture extends Scenario {
     private SignalEmitter DrumSoundEmitter;
     private SignalEmitter GuitarSoundEmitter;
     private SignalEmitter MicWireEmitter;
+
+    private TextBox textBox;
     
     // animation encore utile?
     private Animation animation;
@@ -75,8 +77,8 @@ public final class SoundCapture extends Scenario {
     private float SoundParticles_Speed = 90f;
     
     // Default text to be seen when scenario starts
-    private String defaultText = "This is the first module: \n Sound Capture";
-    private float defaultTextSize = 7.0f;
+    private String defaultText = "Sed sit amet mi fringilla leo molestie luctus";
+    private float defaultTextSize = 10.0f;
     private ColorRGBA defaultTextColor = ColorRGBA.White;
     
     // Updated values of the textbox, the list contains the messages when updated
@@ -144,17 +146,22 @@ public final class SoundCapture extends Scenario {
         guitar_sound.setVolume(2);
         this.attachChild(guitar_sound);
         
-        Vector3f v = new Vector3f(0, 50, 0);
-        TextBox text = new TextBox(assetManager);
-        text.initDefaultText(defaultText, defaultTextSize, v, defaultTextColor);
-        text.setName("Text");
+        Quaternion textRotation = new Quaternion();
+        textRotation.fromAngleAxis(-3.14159f/2.0f, Vector3f.UNIT_Y);
+        
+        Vector3f v = new Vector3f(micHandleInPosition.x, micHandleInPosition.y, micHandleInPosition.z + 15.0f);
+        //Vector3f v = new Vector3f(0.0f,0.0f,0.0f);
+        
+        textBox = new TextBox(assetManager);
+        textBox.initDefaultText(defaultText, defaultTextSize, v, textRotation, defaultTextColor);
+        textBox.setName("Text");
 
         // Messages to display if textBox is touched
         lstUpdatedText.add("Aliquam erat volutpat. Vestibulum tempor ");
         lstUpdatedText.add(" amet quam eu consectetur. Duis dapibus,");
         lstUpdatedText.add("Aliquam euismod diam eget pharetra imperdiet.");
         
-        this.attachChild(text);
+        touchable.attachChild(textBox);
         
         //Add the halo effects under the interactive objects
         Box rect = new Box(2f, Float.MIN_VALUE, 2f);
@@ -488,29 +495,24 @@ public final class SoundCapture extends Scenario {
                         CollisionResult closest = results.getClosestCollision();
 
                         Spatial touchedGeometry = closest.getGeometry();
-                        while(touchedGeometry.getParent() != null)
+                        String nameToCompare = touchedGeometry.getParent().getName();
+
+                        if (nameToCompare == drum.getName())
                         {
-                            if (touchedGeometry.getParent().getName() == drum.getName())
-                            {
-                                this.drumTouchEffect();
-                                break;
-                            }
-                            else if (touchedGeometry.getParent().getName() == guitar.getName())
-                            {
-                                this.guitarTouchEffect();
-                                break;
-                            }
-                            else if (touchedGeometry.getParent().getName() == this.getChild("Text").getName())
-                            {
-                                this.textTouchEffect();
-                                showInformativeMenu = true;
-                                break;
-                            }
-                            else
-                            {
-                                touchedGeometry = touchedGeometry.getParent();
-                            }
-                    }
+                            this.drumTouchEffect();
+                            break;
+                        }
+                        else if (nameToCompare == guitar.getName())
+                        {
+                            this.guitarTouchEffect();
+                            break;
+                        }
+                        else if (nameToCompare == textBox.getName())
+                        {
+                            //this.textTouchEffect();
+                            showInformativeMenu = true;
+                            break;
+                        }
                 }
             }
         }
@@ -530,9 +532,7 @@ public final class SoundCapture extends Scenario {
         halo_guitar.simpleUpdate(tpf);
         
         if(Camera != null) {
-            //Vector3f.UNIT_Y.multLocal(micPosition)
-            Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
-            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, updatedTextSize, updatedTextColor, this.Camera, upVector);
+            ((TextBox)this.getChild("Text")).simpleUpdate(updatedText, updatedTextSize, updatedTextColor, this.Camera);
             
             // Resetting the values so that it is noob proof
             updatedText = null;
