@@ -583,21 +583,21 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 	{
         Log.d(TAG,"initializeImageBuffer");
 
-		int bufferSizeRGB565 = width * height * 2 + 4096;
+		int bufferSizeRGB565 = width * height * 2; //+ 4096 Not sure if necessary...;
 
 		mPreviewBufferRGB656 = null;
 		
 		mPreviewBufferRGB656 = new byte[bufferSizeRGB565];
 		
-		mPreviewByteBufferRGB565 = ByteBuffer.allocateDirect(mPreviewBufferRGB656.length);
+		mPreviewByteBufferRGB565 = ByteBuffer.allocateDirect(mPreviewBufferRGB656.length); // Direct allocation???
 		cameraJMEImageRGB565 = new Image(Image.Format.RGB565, width,
 				height, mPreviewByteBufferRGB565);
 		mPreviewByteBufferRGB565.clear();
 	
 	}
 	
-	 public void setRGB565CameraImage(byte[] buffer, int width, int height)  {
-		 
+	 public void setRGB565CameraImage(byte[] buffer, int width, int height)
+     {
 		    Log.d(TAG,"setRGB565CameraImage Update Camera Image..");
 		 	if (firstTimeGetImage) 
 		 	{
@@ -617,9 +617,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 			}	
 		}
 
-
-
-
 	// We override AndroidHarness.onCreate() to be able to add the SurfaceView
 	// needed for camera preview
 	@Override
@@ -637,9 +634,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         // Update the application status to start initializing application:
         updateApplicationStatus(APPSTATUS_INIT_APP);
-
-
-
 	}
 	
 	@Override

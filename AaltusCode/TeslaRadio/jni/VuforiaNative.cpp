@@ -99,7 +99,6 @@ class VuforiaJME_UpdateCallback : public QCAR::UpdateCallback
 {   
     virtual void QCAR_onUpdate(QCAR::State& state)
     {
-
     	//from
         //https://developer.vuforia.com/forum/faq/android-how-can-i-access-camera-image
         QCAR::Image *imageRGB565 = NULL;
@@ -131,7 +130,11 @@ class VuforiaJME_UpdateCallback : public QCAR::UpdateCallback
                 jmethodID method = env-> GetMethodID(javaClass, "setRGB565CameraImage", "([BII)V");
                 env->CallVoidMethod(activityObj, method, pixelArray, width, height);
 
-                env->DeleteLocalRef(pixelArray);
+                /**
+                    Could cause some problems since env probably makes a call to the gc and maybe calling the same
+                    method from two different threads from the same object.
+                    */
+                // env->DeleteLocalRef(pixelArray);
 
             }
         }
@@ -140,8 +143,6 @@ class VuforiaJME_UpdateCallback : public QCAR::UpdateCallback
 };
 
 VuforiaJME_UpdateCallback updateCallback;
-
-
 
 JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setActivityPortraitMode(JNIEnv *, jobject, jboolean isPortrait)
@@ -402,7 +403,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
             strcpy(logTrackableName,loggingPrefix);
             strcat(logTrackableName,trackableNameChar);
             const char * trackableToPrint    = (const char *)logTrackableName;
-            LOGE(trackableToPrint);
+            //LOGE(trackableToPrint);
 
 
             QCAR::Matrix44F modelViewMatrix = QCAR::Tool::convertPose2GLMatrix(result->getPose());
