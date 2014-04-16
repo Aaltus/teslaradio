@@ -2,11 +2,17 @@
 
 using namespace QCAR;
 
-namespace aaltus{
+
 
 AaltusTrackable::~AaltusTrackable()
 {
 
+}
+
+Vec4F AaltusTrackable::getPositionFromOrigin()
+{
+    LOGE("Trackable is %s and position is %f %f %f", _name.c_str(), _poseFromOrigin.data[0],_poseFromOrigin.data[1],_poseFromOrigin.data[2]);
+    return  _poseFromOrigin;
 }
 Vec3F AaltusTrackable::getPositionFromCamera()
 {
@@ -16,17 +22,23 @@ Vec3F AaltusTrackable::getPositionFromCamera()
 
 int AaltusTrackable::initializeDataSet(QCAR::ImageTracker* imageTracker)
 {
+
     _dataSet = imageTracker->createDataSet();
     if( !_dataSet )
     {
+        LOGE("Failed to create %s dataset",_name.c_str());
         return 0;
     }
-    if ( !_dataSet->load(_name.append(".xml").c_str(), QCAR::DataSet::STORAGE_APPRESOURCE) )
+    std::string ds = _name;
+    ds.append(".xml");
+    if ( !_dataSet->load(ds.c_str(), QCAR::DataSet::STORAGE_APPRESOURCE) )
     {
+        LOGE("Failed to load %s dataset",_name.c_str());
         return 0;
     }
     if( !imageTracker->activateDataSet(_dataSet) )
     {
+         LOGE("Failed to activate %s dataset",_name.c_str());
         return 0;
     }
     return 1;
@@ -46,7 +58,7 @@ void AaltusTrackable::setCameraPosition(Matrix44F modelViewMatrix)
 {
 	_poseMVMatrix = modelViewMatrix;
 	_inverseMV = SampleMath::Matrix44FInverse(_poseMVMatrix);
-	calculatePosition();
+	_invTranspMV = MathUtil::Matrix44FTranspose(_inverseMV);
 }
 void AaltusTrackable::setOrigin(AaltusTrackable* origin)
 {
@@ -56,9 +68,19 @@ void AaltusTrackable::setOrigin(AaltusTrackable* origin)
 
 void AaltusTrackable::calculatePosition()
 {
-	Matrix44F offset = Tool::multiply(_origin->getInverseMV(), 
+    if(_origin == this)
+    {
+        _poseFromOrigin.data[0] = _invTranspMV.data[12];
+        _poseFromOrigin.data[1] = _invTranspMV.data[13];
+        _poseFromOrigin.data[2] = _invTranspMV.data[14];
+        _poseFromOrigin.data[4] = _invTranspMV.data[15];
+
+    }
+    else
+    {
+	    Matrix44F offset = Tool::multiply(_origin->getInverseMV(),
 						SampleMath::Matrix44FTranspose(_poseMVMatrix));
-	Vec4F position(0.0f,0.0f,0.0f,1.0f);
-	_poseFromOrigin = SampleMath::Vec4FTransform(position,offset);
+	    Vec4F position(0.0f,0.0f,0.0f,1.0f);
+	    _poseFromOrigin = SampleMath::Vec4FTransform(position,offset);
+    }
 }
-}//namespace aaltus
