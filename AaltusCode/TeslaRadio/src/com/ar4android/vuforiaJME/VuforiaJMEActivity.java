@@ -198,7 +198,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
             case R.id.item_detail_fragment_close_button:
                 //Log.d(TAG, "OnClick Callback from detail fragment");
-                toggleFragmentsVisibility();
+                toggleFragmentsVisibility(null);
                 break;
         }
     }
@@ -216,7 +216,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         {
             public void run()
             {
-                showSelectedFragmentDetail(scenarioEnum);
+                toggleFragmentsVisibility(scenarioEnum);
             }
         });
     }
@@ -929,16 +929,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     }
 
-    //This function show the informative menu and selected a specific page in informative menu
-    private void showSelectedFragmentDetail(ScenarioEnum scenarioEnum)
-    {
-        toggleFragmentsVisibility();
-        FragmentManager fm =     getSupportFragmentManager();
-        ItemListFragment fragment = (ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
-        fragment.setActivatedPosition(scenarioEnum.ordinal());
-        onItemSelected(scenarioEnum.ordinal());
 
-    }
 
 
 
@@ -954,7 +945,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 break;
 
             case R.id.camera_toggle_info_button:
-                toggleFragmentsVisibility();
+                toggleFragmentsVisibility(null);
                 break;
 
             default:
@@ -988,52 +979,60 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     }
 
-    private void toggleFragmentsVisibility(){
+
+
+    private void toggleFragmentsVisibility(ScenarioEnum scenarioEnum){
 
 
         FragmentManager fm =     getSupportFragmentManager();
+        ItemListFragment fragment         = (ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
+        ItemDetailFragment fragmentDetail = (ItemDetailFragment) fm.findFragmentByTag(ITEM_DETAIL_FRAGMENT_TAG);
 
-
-        //Hide list_fragment
-        Fragment fragment = fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
-        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.activity_item_twopane_2_rootview);
-
-
-        if (fragment != null){
+        if (fragment != null)
+        {
             FragmentTransaction ft = fm.beginTransaction();
             ft.setCustomAnimations(R.anim.enter_left, R.anim.exit_left);
             if (fragment.isHidden())
             {
-                Log.d(TAG,"Showing list fragment");
+                Log.d(TAG, "Showing list fragment");
                 ft.show(fragment);
-                //frameLayout.setClickable(true);
+                if (scenarioEnum != null)
+                {
+                    //FragmentManager fm        =     getSupportFragmentManager();
+                    //ItemListFragment fragment = (ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
+                    fragment.setActivatedPosition(scenarioEnum.ordinal());
+                    onItemSelected(scenarioEnum.ordinal());
+
+                }
             }
             else
             {
-                Log.d(TAG,"Hiding list fragment");
-                ft.hide(fragment);
-                //frameLayout.setClickable(false);
+                Log.d(TAG, "Hiding list fragment");
+                if (scenarioEnum == null)
+                {
+                    ft.hide(fragment);
+                }
             }
 
             ft.commit();
         }
 
-
-        Fragment fragmentDetail = (Fragment) fm.findFragmentByTag(ITEM_DETAIL_FRAGMENT_TAG);
-        if (fragmentDetail != null){
+        if (fragmentDetail != null)
+        {
             FragmentTransaction ft = fm.beginTransaction();
             ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
             if (fragmentDetail.isHidden())
             {
                 Log.d(TAG,"Showing detail fragment");
                 ft.show(fragmentDetail);
-                frameLayout.setClickable(true);
             }
             else
             {
                 Log.d(TAG,"Hiding detail fragment");
-                ft.hide(fragmentDetail);
-                frameLayout.setClickable(false);
+                if (scenarioEnum == null)
+                {
+                    ft.hide(fragmentDetail);
+                }
             }
             ft.commit();
         }
