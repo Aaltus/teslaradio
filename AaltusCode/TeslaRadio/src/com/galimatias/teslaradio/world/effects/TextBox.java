@@ -64,7 +64,7 @@ public class TextBox extends Node {
 
         Rectangle fontRect = new Rectangle(0.0f,0.0f,width,height);
         text.setBox(fontRect);
-        text.setLocalTranslation(-(width/2.0f),0.0f,0.0f);
+        text.setLocalTranslation(-(width/2.0f),-height/2.0f,0.0f);
         text.setAlignment(BitmapFont.Align.Center);
         text.setQueueBucket(Bucket.Transparent);
         
