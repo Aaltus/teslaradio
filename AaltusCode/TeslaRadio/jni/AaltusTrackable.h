@@ -11,18 +11,18 @@
 #include <QCAR/Tool.h>
 #include <QCAR/ImageTracker.h>
 #include <string>
-namespace aaltus{
+
 class AaltusTrackable {
 
 public:
-	AaltusTrackable(int id, const char* name){_id = id;_origin=this;}
+	AaltusTrackable(int id, const char* name){_id = id;_origin=this; _name=name;}
 	virtual ~AaltusTrackable();
 	
 	/**
 	*Method used to get the position from the relative origin
 	*@return SampleMath::Vec3F position vector
 	*/
-	QCAR::Vec4F getPositionFromOrigin(){return _poseFromOrigin;}
+	QCAR::Vec4F getPositionFromOrigin();
 	/**
 	*Method used to get the position from the device camera.
 	*@see getInvTranspMV to get the full matrix with rotation
@@ -53,5 +53,5 @@ private:
 	std::string			_name;
 	int 				_id;
 };
-}//namespace aaltus
+
 	

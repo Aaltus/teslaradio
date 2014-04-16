@@ -19,7 +19,14 @@
  */
 
 #include <jni.h>
-#include "AaltusCommon.h"
+#include <android/log.h>
+
+//#define LOG_TAG "VuforiaNative"
+#define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG,__VA_ARGS__)
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG  , LOG_TAG,__VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO   , LOG_TAG,__VA_ARGS__)
+#define LOGW(...) __android_log_print(ANDROID_LOG_WARN   , LOG_TAG,__VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR  , LOG_TAG,__VA_ARGS__)
 
 
 #include <stdio.h>
@@ -44,15 +51,17 @@
 #include <QCAR/UpdateCallback.h>
 #include <QCAR/DataSet.h>
 #include <QCAR/Image.h>
-
-#include "SampleMath.h"
-#include "MathUtils.h"
 #include "World.h"
-#include "AaltusTrackable.h"
+#include "SampleMath.h"
 
-//World
-aaltus::World* world;
 
+#include "MathUtils.h"
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+CWorld* world;
 // Screen dimensions:
 unsigned int screenWidth        = 0;
 unsigned int screenHeight       = 0;
@@ -65,6 +74,10 @@ QCAR::Matrix44F projectionMatrix;
 
 // Constants:
 static const float kObjectScale = 3.f;
+
+QCAR::DataSet* dataSetStonesAndChips    = 0;
+QCAR::DataSet* dataSetLena              = 0;
+const int      numberOfDataSet          = 2;
 
 bool switchDataSetAsap          = false;
 
@@ -111,7 +124,7 @@ class VuforiaJME_UpdateCallback : public QCAR::UpdateCallback
                 int height = imageRGB565->getHeight();
                 int numPixels = width * height;
 
-                LOGD("Update video image... !OnUpdate!");
+                LOGV("Update video image... !OnUpdate!");
                 jbyteArray pixelArray = env->NewByteArray(numPixels * 2);
                 env->SetByteArrayRegion(pixelArray, 0, numPixels * 2, (const jbyte*) pixels);
                 jclass javaClass = env->GetObjectClass(activityObj);
@@ -134,7 +147,7 @@ JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setActivityPortraitMode(JNIEnv *, jobject, jboolean isPortrait)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setActivityPortraitMode");
-    //isActivityInPortraitMode = isPortrait;
+    isActivityInPortraitMode = isPortrait;
 }
 
 
@@ -149,23 +162,28 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_switchDatasetAsap(JNIEnv *, jo
 JNIEXPORT int JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initTracker(JNIEnv *, jobject)
 {
-   world = new aaltus::World();
-   return world->initializeTracker();
+    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initTracker");
+    world = CinitWorld();
+    return CinitTracker(world);
+
 }
 
 
 JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitTracker(JNIEnv *, jobject)
 {
-    world->deInitTracker();
+    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitTracker");
+    CdeInitTracker(world);
 }
 
 
 JNIEXPORT int JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData(JNIEnv *, jobject)
 {
+
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData");
-    world->loadTrackers();
+    return CloadTrackers(world);
+
 }
 
 
@@ -173,7 +191,8 @@ JNIEXPORT int JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData(JNIEnv *, jobject)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData");
-    world->destroyTrackerData();
+    return CdestroyTrackerData(world);
+
 }
 
 
@@ -186,11 +205,10 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative(JNIEnv
 
     // Comment in to enable tracking of up to 2 targets simultaneously and
     // split the work over multiple frames:
-     QCAR::setHint(QCAR::HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, AALTUS_NBR_TARGET);
+     QCAR::setHint(QCAR::HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, numberOfDataSet);
 }
 
 // RENDERING CALL
-
 
 JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject obj)
@@ -198,37 +216,37 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
     //LOG("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_GLRenderer_renderFrame");
 
     // Get the state from QCAR and mark the beginning of a rendering section
-  QCAR::State state = QCAR::Renderer::getInstance().begin();
+    QCAR::State state = QCAR::Renderer::getInstance().begin();
 
-  jclass activityClass = env->GetObjectClass(obj);
+    jclass activityClass = env->GetObjectClass(obj);
 
-  // Code pasted here to fix TR-141
-  //get perspective transformation
-  float nearPlane = 1.0f;
-  float farPlane  = 1000.0f;
-  const QCAR::CameraCalibration& cameraCalibration = QCAR::CameraDevice::getInstance().getCameraCalibration();
+    // Code pasted here to fix TR-141
+    //get perspective transformation
+    float nearPlane = 1.0f;
+    float farPlane  = 1000.0f;
+    const QCAR::CameraCalibration& cameraCalibration = QCAR::CameraDevice::getInstance().getCameraCalibration();
 
-  QCAR::VideoBackgroundConfig config = QCAR::Renderer::getInstance().getVideoBackgroundConfig();
+    QCAR::VideoBackgroundConfig config = QCAR::Renderer::getInstance().getVideoBackgroundConfig();
 
-  float viewportWidth     = config.mSize.data[0];
-  float viewportHeight    = config.mSize.data[1];
+    float viewportWidth     = config.mSize.data[0];
+    float viewportHeight    = config.mSize.data[1];
 
-  QCAR::Vec2F size        = cameraCalibration.getSize();
-  QCAR::Vec2F focalLength = cameraCalibration.getFocalLength();
-  float fovRadians        = 2 * atan(0.5f * (size.data[1] / focalLength.data[1]));
-  float fovDegrees        = fovRadians * 180.0f / M_PI;
-  float aspectRatio       = size.data[0] / size.data[1];
+    QCAR::Vec2F size        = cameraCalibration.getSize();
+    QCAR::Vec2F focalLength = cameraCalibration.getFocalLength();
+    float fovRadians        = 2 * atan(0.5f * (size.data[1] / focalLength.data[1]));
+    float fovDegrees        = fovRadians * 180.0f / M_PI;
+    float aspectRatio       = size.data[0] / size.data[1];
 
-  //adjust for screen vs camera size distortion
-  float viewportDistort = 1.0;
+    //adjust for screen vs camera size distortion
+    float viewportDistort = 1.0;
 
-  if (viewportWidth != screenWidth)
-  {
+    if (viewportWidth != screenWidth)
+    {
       viewportDistort = viewportWidth / (float) screenWidth;
       fovDegrees      = fovDegrees    * viewportDistort;
       aspectRatio     = aspectRatio   / viewportDistort;
 
-  }
+    }
 
   if (viewportHeight != screenHeight)
   {
@@ -249,43 +267,40 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
         {
             const QCAR::TrackableResult* result = state.getTrackableResult(tIdx);
 
-            //Get Trackable name
+
             const QCAR::Trackable& trackable         = result->getTrackable();
-            const char*            trackableNameChar = trackable.getName();
-            const char*            loggingPrefix     = "UpdateTracking: Find trackable: ";
-            char                   logTrackableName[75];
-            strcpy(logTrackableName,loggingPrefix);
-            strcat(logTrackableName,trackableNameChar);
-            const char * trackableToPrint    = (const char *)logTrackableName;
+
 
             //register position
-            aaltus::AaltusTrackable* at = world->getTrackable(trackableToPrint);
+            AaltusTrackable* at = ((World*) world)->getTrackable(trackable.getName());
             at->setCameraPosition( QCAR::Tool::convertPose2GLMatrix(result->getPose()) );
 
             //Update origin status
             if(tIdx == 0)
             {
-                world->setOrigin(trackableToPrint);
+
+                ((World*)world)->setOrigin(trackable.getName());
                 //Update origin camera
                 QCAR::Matrix44F cam = at->getInvTranspMV();
                 jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
                 env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
                 jmethodID setCameraOrientationMethod = env->GetMethodID(activityClass,"setCameraOrientationNative", "(FFFFFFFFF)V");
                 env->CallVoidMethod(obj,setCameraOrientationMethod,
-                    cam.data[0],cam.data[1],cam.data[2],
-                    cam.data[4],cam.data[5],cam.data[6],cam.data[8],cam.data[9],cam.data[10]);
+                cam.data[0],cam.data[1],cam.data[2],
+                cam.data[4],cam.data[5],cam.data[6],cam.data[8],cam.data[9],cam.data[10]);
 
             }
-
+            LOGE("Updating camera");
             //Update camera
             QCAR::Vec4F vector = at->getPositionFromOrigin();
-            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFFI)V");
+            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFFII)V");
             env->CallVoidMethod(obj,setCameraPoseMethod,vector.data[0],vector.data[1],
-                vector.data[2],at->getId());
+            vector.data[2],at->getId(), tIdx==0? 1:0);
         }
 
     QCAR::Renderer::getInstance().end();
 }
+
 
 void configureVideoBackground()
 {
@@ -321,7 +336,7 @@ void configureVideoBackground()
     }
     else
     {
-        LOGE("configureVideoBackground LANDSCAPE");
+        //LOG("configureVideoBackground LANDSCAPE");
         config.mSize.data[0] = screenWidth;
         config.mSize.data[1] = videoMode.mHeight
                             * (screenWidth / (float)videoMode.mWidth);
@@ -392,22 +407,14 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera(JNIEnv *env, jobje
     if (!cameraDevice.selectVideoMode(QCAR::CameraDevice::MODE_DEFAULT))
         return;
 
-  //  QCAR::VideoMode videoMode = cameraDevice.
-   //                      getVideoMode(QCAR::CameraDevice::MODE_OPTIMIZE_QUALITY);
+
 
     // Start the camera:
     if (!cameraDevice.start())
         return;
 
     QCAR::setFrameFormat(QCAR::RGB565, true);
-    // Uncomment to enable flash
-    //if(QCAR::CameraDevice::getInstance().setFlashTorchMode(true))
-    //	LOG("IMAGE TARGETS : enabled torch");
 
-    // Uncomment to enable infinity focus mode, or any other supported focus mode
-    // See CameraDevice.h for supported focus modes
-    //if(QCAR::CameraDevice::getInstance().setFocusMode(QCAR::CameraDevice::FOCUS_MODE_INFINITY))
-    //	LOG("IMAGE TARGETS : enabled infinity focus");
 
     // Start the tracker:
     QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
@@ -507,6 +514,6 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_initTracking(
 }
 
 
-//#ifdef __cplusplus
-//}
-//#endif
+#ifdef __cplusplus
+}
+#endif
