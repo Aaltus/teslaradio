@@ -50,7 +50,7 @@ public class TextBox extends Node {
         
         this.lookAt(cam.getLocation(), scenarioUpVector);
     }
-
+    
     public void initDefaultText(String textToDisplay,
                          float size,
                          Vector3f translation,
@@ -58,11 +58,7 @@ public class TextBox extends Node {
                          float width,
                          float height)
     {
-        
-        
-        
-        BitmapFont fnt = assetManager.loadFont("Interface/Fonts/Default.fnt");
-        BitmapText text = new BitmapText(fnt, false);
+        //create text with the specified parameter
         text.setBox(new Rectangle(0, 0, width, height));
         text.setQueueBucket(Bucket.Transparent);
         text.setLineWrapMode(LineWrapMode.Word);
@@ -72,13 +68,14 @@ public class TextBox extends Node {
         text.setText(textToDisplay);
         text.move(-width/2.0f,0,0);
         //text.setText("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
-       
+        
+        //Add an invisible quad in front of the textbox to make it cliackeble
         Quad q = new Quad(width, height);
         Geometry g = new Geometry("quad", q);
-        g.setLocalTranslation(0, -height, -0.0001f);
+        g.setLocalTranslation(0, -height, 0.0001f);
         Material boxMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        //Red box for debugging purpose
         //boxmat = assetManager.loadMaterial("Common/Materials/RedColor.j3m");
-        //boxMat.setTexture("ColorMap", assetManager.loadTexture("Textures/ColoredTex/Monkey.png"));
         boxMat.setColor("Color", new ColorRGBA(0,0,0,0f));
         boxMat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         g.setQueueBucket(Bucket.Transparent);
@@ -87,34 +84,7 @@ public class TextBox extends Node {
         
         this.attachChild(g);
         this.attachChild(text);
-        this.attachChild(fnt);
         this.move(translation);
         
-        /*
-        text.setText(textToDisplay);
-        text.setLineWrapMode(LineWrapMode.Word);
-        text.setSize(size);
-        text.setColor(color);
-        
-        float width = 100.0f;
-        float height = text.getHeight();
-
-        Rectangle fontRect = new Rectangle(0.0f,0.0f,width,height);
-        text.setBox(fontRect);
-        //text.setLocalTranslation(-(width/2.0f),0.0f,0.0f);
-        text.setAlignment(BitmapFont.Align.Center);
-        text.setQueueBucket(Bucket.Transparent);
-        
-        //Add a box to make the textbox clickable 
-        Quad q = new Quad(width, height);
-        Geometry g = new Geometry("quad", q);
-        g.setLocalTranslation(0, 0, -0.0001f);
-        g.setMaterial(assetManager.loadMaterial("Common/Materials/RedColor.j3m"));
-        this.attachChild(g);
-        
-        this.move(translation);
-
-        this.attachChild(text);
-        * */
     }
 }
