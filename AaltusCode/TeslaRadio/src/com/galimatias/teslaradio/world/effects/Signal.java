@@ -39,7 +39,7 @@ public class Signal extends Geometry {
             this.path = path;
             this.isCurved = false;
             this.getMaterial().getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-            this.setQueueBucket(Bucket.Translucent);
+            this.setQueueBucket(Bucket.Transparent);
             this.capturePathLength = -1;
             this.startScale = startScale;
             this.setLocalScale(startScale);
@@ -53,7 +53,7 @@ public class Signal extends Geometry {
             this.path = path;
             this.isCurved = false;
             this.getMaterial().getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-            this.setQueueBucket(Bucket.Translucent);
+            this.setQueueBucket(Bucket.Transparent);
             this.capturePathLength = capturePathLength;
             this.startScale = startScale;
             this.setLocalScale(startScale);
