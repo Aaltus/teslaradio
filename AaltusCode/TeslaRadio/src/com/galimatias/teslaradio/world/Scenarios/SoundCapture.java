@@ -78,7 +78,7 @@ public final class SoundCapture extends Scenario {
     
     // Default text to be seen when scenario starts
     private String defaultText = "This is the first module: \n Sound Capture";
-    private float defaultTextSize = 0.7f;
+    private float defaultTextSize = 0.5f;
     private ColorRGBA defaultTextColor = ColorRGBA.White;
     
     // Updated values of the textbox, the list contains the messages when updated
@@ -145,7 +145,7 @@ public final class SoundCapture extends Scenario {
         guitar_sound.setVolume(2);
         this.attachChild(guitar_sound);
         
-        Vector3f v = new Vector3f(0, 5, 0);
+        Vector3f v = new Vector3f(0, 7.5f, 0);
         //Vector3f v = new Vector3f(micHandleInPosition.x, micHandleInPosition.y, micHandleInPosition.z + 15.0f);
         //Vector3f v = new Vector3f(0.0f,0.0f,0.0f);
         
