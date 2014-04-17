@@ -74,7 +74,7 @@ public final class SoundCapture extends Scenario {
     //CHANGE THIS VALUE CHANGE THE PARTICULE BEHAVIOUR 
     //Setting the direction norms and the speed displacement to the trajectories
     private float VecDirectionNorms = 80f;
-    private float SoundParticles_Speed = 90f;
+    private float SoundParticles_Speed = 50f;
     
     // Default text to be seen when scenario starts
     private String defaultText = "This is the first module: \n Sound Capture";
@@ -221,13 +221,15 @@ public final class SoundCapture extends Scenario {
         float drum2MicLength = drum2MicVector.length();
         
         // instantiate 3d Sound particul model
-        Sphere sphere = new Sphere(8, 8, 0.9f);
-        Geometry soundParticle = new Geometry("particul",sphere);
+        Box rect = new Box(1.0f, 1.0f, 0.01f);
+        Geometry soundParticle = new Geometry("particul",rect);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        soundParticul_mat.setColor("Color", ColorRGBA.Blue);
+        soundParticul_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
+        
+        //soundParticul_mat.setColor("Color", ColorRGBA.Red);
         soundParticle.setMaterial(soundParticul_mat);
         Geometry soundParticleTranslucent = soundParticle.clone();
-        soundParticleTranslucent.getMaterial().setColor("Color", new ColorRGBA(0f, 0f, 1f, 0.3f));
+        soundParticleTranslucent.getMaterial().setTexture("ColorMap", assetManager.loadTexture("Textures/Sound_wAlpha.png"));
                 
         DrumSoundEmitter = new SignalEmitter(drum_trajectories, drum2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
         this.attachChild(DrumSoundEmitter);
@@ -254,10 +256,6 @@ public final class SoundCapture extends Scenario {
                         
         int totalNbDirections = 21;
         int nbXYDirections = 3;
-        
-        // Setting the direction norms and the speed displacement to the trajectories
-        float VecDirectionNorms = 80f;
-        float SoundParticles_Speed = 90f;
                 
         // Creating the trajectories
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
