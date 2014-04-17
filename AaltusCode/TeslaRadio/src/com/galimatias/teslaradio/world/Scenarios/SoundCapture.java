@@ -35,7 +35,7 @@ import java.util.Vector;
  */
 public final class SoundCapture extends Scenario {
 
-    private final static String TAG = "Capture";
+    private final static String TAG = "SoundCapture";
 
     private AudioNode drum_sound;
     private AudioNode guitar_sound;
@@ -520,7 +520,7 @@ public final class SoundCapture extends Scenario {
     }
 
     @Override
-    protected void restartScenario() {
+    public void restartScenario() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
