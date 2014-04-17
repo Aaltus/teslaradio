@@ -92,11 +92,10 @@ public final class SoundCapture extends Scenario {
     public SoundCapture(AssetManager assetManager, Camera Camera)
     {
         super(assetManager);
+        this.Camera = Camera;
         
         loadUnmovableObjects();
         loadMovableObjects();
-
-        this.Camera = Camera;
     }
 
     public SoundCapture(AssetManager assetManager)
@@ -137,22 +136,20 @@ public final class SoundCapture extends Scenario {
 
     }
 
-    /**
-     * Loading the models from the asset manager and attaching it to the
-     * Node containing the movable objects in the scene.
-     */
     @Override
-    protected void loadMovableObjects()
+    public void loadMovableObjects()
     {
-        /**
-         * TODO : Load the sound particules models
-         */
-        circles = assetManager.loadModel("Models/Effet_tambour.j3o");
-        circles.setName("Circles");  
-        //List<Vector3f> listPaths = new ArrayList<Vector3f>();
-        //listPaths.add(new Vector3f(0,40,0));
-        /* A colored lit cube. Needs light source! */ 
+        initCircles();
+        initDrumParticlesEmitter();
+        initGuitarParticlesEmitter();
+        initMicWireParticlesEmitter();
+
+        DrumSoundEmitter.registerObserver(MicWireEmitter);
+        GuitarSoundEmitter.registerObserver(MicWireEmitter);
+
+        this.attachChild(movableObjects);
     }
+
 
     /**
      * Initialisation of the tambour effects
@@ -258,6 +255,10 @@ public final class SoundCapture extends Scenario {
     
     private void initCircles()
     {
+
+        circles = assetManager.loadModel("Models/Effet_tambour.j3o");
+        circles.setName("Circles");
+
         circles.scale(10.0f, 10.0f, 10.0f);
         Quaternion rot = new Quaternion();
         rot.fromAngleAxis(3.14f, new Vector3f(1.0f,0.0f,0.0f));
@@ -311,19 +312,7 @@ public final class SoundCapture extends Scenario {
     }
     
      
-    @Override
-    public void initAllMovableObjects()
-    {
-        initCircles();
-        initDrumParticlesEmitter();
-        initGuitarParticlesEmitter();
-        initMicWireParticlesEmitter();
-        
-        DrumSoundEmitter.registerObserver(MicWireEmitter);
-        GuitarSoundEmitter.registerObserver(MicWireEmitter);
-        
-        this.attachChild(movableObjects);
-    }
+
 
     private void initHaloEffects()
     {
@@ -565,12 +554,14 @@ public final class SoundCapture extends Scenario {
     }
 
     @Override
-    public void onAudioEvent() {
+    public void onAudioEvent()
+    {
         drumTouchEffect();
     }
 
     @Override
-    public void setGlobalSpeed(float speed) {
+    public void setGlobalSpeed(float speed)
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
