@@ -10,6 +10,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
@@ -20,7 +21,6 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Sphere;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -131,54 +131,9 @@ public final class SoundCapture extends Scenario {
         guitarHandleOutPosition = guitarHandleOut.getWorldTranslation();
         micHandleInPosition = micHandleIn.getWorldTranslation();
         
-        
-        drum_sound = new AudioNode(assetManager, "Sounds/drum_taiko.wav", false);
-        drum_sound.setPositional(false);
-        drum_sound.setLooping(false);
-        drum_sound.setVolume(2);
-        this.attachChild(drum_sound);
-        
-        //Add guitar sound
-        guitar_sound = new AudioNode(assetManager, "Sounds/guitar.wav", false);
-        guitar_sound.setPositional(false);
-        guitar_sound.setLooping(false);
-        guitar_sound.setVolume(2);
-        this.attachChild(guitar_sound);
-        
-        Vector3f v = new Vector3f(0, 7.5f, 0);
-        //Vector3f v = new Vector3f(micHandleInPosition.x, micHandleInPosition.y, micHandleInPosition.z + 15.0f);
-        //Vector3f v = new Vector3f(0.0f,0.0f,0.0f);
-        
-        textBox = new TextBox(assetManager);
-        textBox.initDefaultText(defaultText, defaultTextSize, v, defaultTextColor,6,3);
-        textBox.setName("Text");
-
-        // Messages to display if textBox is touched
-        lstUpdatedText.add("Aliquam erat volutpat. Vestibulum tempor ");
-        lstUpdatedText.add(" amet quam eu consectetur. Duis dapibus,");
-        lstUpdatedText.add("Aliquam euismod diam eget pharetra imperdiet.");
-        
-        touchable.attachChild(textBox);
-        //this.attachChild(textBox);
-        
-        //Add the halo effects under the interactive objects
-        Box rect = new Box(2f, Float.MIN_VALUE, 2f);
-        
-        Material halo_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        halo_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
-        halo_mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        
-        halo_drum = new Halo("halo",rect,halo_mat,0.85f);
-        halo_guitar = new Halo("halo",rect,halo_mat,1.30f);
-            
-        scene.attachChild(halo_drum);
-        scene.attachChild(halo_guitar);
-        
-        
-        halo_drum.setLocalTranslation(drumPosition);
-        halo_guitar.setLocalTranslation(guitarPosition);
-        
-        
+        initAudio();
+        initTextBox();
+        initHaloEffects();
 
     }
 
@@ -369,7 +324,66 @@ public final class SoundCapture extends Scenario {
         
         this.attachChild(movableObjects);
     }
-    
+
+    private void initHaloEffects()
+    {
+        //Add the halo effects under the interactive objects
+        Box rect = new Box(2f, Float.MIN_VALUE, 2f);
+
+        Material halo_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        halo_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
+        halo_mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+
+        halo_drum = new Halo("halo",rect,halo_mat,0.85f);
+        halo_guitar = new Halo("halo",rect,halo_mat,1.30f);
+
+        scene.attachChild(halo_drum);
+        scene.attachChild(halo_guitar);
+
+
+        halo_drum.setLocalTranslation(drumPosition);
+        halo_guitar.setLocalTranslation(guitarPosition);
+
+
+    }
+
+    private void initAudio()
+    {
+
+        drum_sound = new AudioNode(assetManager, "Sounds/drum_taiko.wav", false);
+        drum_sound.setPositional(false);
+        drum_sound.setLooping(false);
+        drum_sound.setVolume(2);
+        this.attachChild(drum_sound);
+
+        //Add guitar sound
+        guitar_sound = new AudioNode(assetManager, "Sounds/guitar.wav", false);
+        guitar_sound.setPositional(false);
+        guitar_sound.setLooping(false);
+        guitar_sound.setVolume(2);
+        this.attachChild(guitar_sound);
+
+    }
+
+    public void initTextBox()
+    {
+
+
+        float textBoxWidth = 5f;
+        float textBoxHeight = 1.8f;
+        textBox = new TextBox(assetManager);
+        textBox.init(defaultText, defaultTextSize, defaultTextColor, textBoxWidth, textBoxHeight, BitmapFont.Align.Center, false);
+        textBox.move(0, 7.5f, 0);
+        textBox.setName("Text");
+
+        // Messages to display if textBox is touched
+        lstUpdatedText.add("Aliquam erat volutpat. Vestibulum tempor ");
+        lstUpdatedText.add(" amet quam eu consectetur. Duis dapibus,");
+        lstUpdatedText.add("Aliquam euismod diam eget pharetra imperdiet.");
+
+        touchable.attachChild(textBox);
+    }
+
     public void drumTouchEffect()
     {        
         //DrumSoundEmitter.emitParticles(1.0f);
