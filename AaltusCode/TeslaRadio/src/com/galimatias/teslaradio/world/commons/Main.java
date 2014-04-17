@@ -38,7 +38,6 @@ public class Main extends SimpleApplication
         
         
         soundCapture = new SoundCapture(assetManager, this.getCamera());
-        soundCapture.initAllMovableObjects();
         flyCam.setMoveSpeed(100f);
         cam.setLocation(new Vector3f(-60,80,80));
         cam.lookAt(soundCapture.getWorldTranslation(), Vector3f.UNIT_Y);
