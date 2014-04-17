@@ -450,7 +450,11 @@ public final class SoundCapture extends Scenario {
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
 
         switch(touchEvent.getType()){
-            case TAP:
+
+            //Checking for down event is very responsive
+            case DOWN:
+                
+            //case TAP:
                 if (name.equals("Touch"))
                 {
 
