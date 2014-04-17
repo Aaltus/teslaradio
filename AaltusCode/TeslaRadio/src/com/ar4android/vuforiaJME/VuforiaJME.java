@@ -212,7 +212,6 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
         Quaternion rot = new Quaternion();
         rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
         soundCapture.rotate(rot);
-        soundCapture.initAllMovableObjects();
         rootNode.attachChild(soundCapture);
 
         inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click
