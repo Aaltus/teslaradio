@@ -110,7 +110,7 @@ public final class SoundCapture extends Scenario {
     @Override
     protected void loadUnmovableObjects()
     {          
-        scene = (Node) assetManager.loadModel("Models/SoundCapture.j3o");
+        scene = (Node) assetManager.loadModel("Models/SoundCapture/SoundCapture.j3o");
         scene.setName("SoundCapture");
         this.attachChild(scene);
         scene.scale(10.0f,10.0f,10.0f);
