@@ -342,10 +342,10 @@ public final class SoundCapture extends Scenario {
         curvedPath = directionFactory.getCurvedPath(micWire_mesh);
         
         // instantiate 3d Sound particul model
-        Sphere sphere = new Sphere(8, 8, 0.9f);
-        Geometry electricParticle = new Geometry("particul",sphere);
+        Box rect = new Box(1.0f, 1.0f, 0.01f);
+        Geometry electricParticle = new Geometry("particul",rect);
         Material electricParticle_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        electricParticle_mat.setColor("Color", ColorRGBA.Green);
+        electricParticle_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Electric3.png"));
         electricParticle.setMaterial(electricParticle_mat);
                 
         
