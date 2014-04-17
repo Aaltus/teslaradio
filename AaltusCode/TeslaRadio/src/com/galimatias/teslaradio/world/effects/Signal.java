@@ -64,6 +64,8 @@ public class Signal extends Geometry {
     {
         this.setMesh(particle.getMesh());
         this.setMaterial(particle.getMaterial());
+        this.getMaterial().getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        this.setQueueBucket(Bucket.Transparent);
         this.curvedPath = curvedPath;
         this.speed = speed;
         this.isCurved = true;
@@ -77,7 +79,7 @@ public class Signal extends Geometry {
     }
     
       
-    private void updateCurvedPosition(float tpf)
+    private void updateCurvedPosition(float tpf, Camera cam)
     {         
         float displacement = tpf*speed;
         distanceTraveled += displacement;
@@ -110,6 +112,10 @@ public class Signal extends Geometry {
             
             // set position
             this.setLocalTranslation(newPos);
+            
+            //Adjust orientation
+            if (cam!=null)
+                this.lookAt(cam.getLocation(), cam.getUp());
         } 
   
     }
@@ -149,7 +155,7 @@ public class Signal extends Geometry {
 
         if(isCurved)
         {
-            updateCurvedPosition(tpf);
+            updateCurvedPosition(tpf, cam);
         }
         else
         {
