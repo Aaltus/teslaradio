@@ -89,8 +89,6 @@ public abstract class Scenario extends Node implements AnimEventListener{
      *
      */
     public abstract void restartScenario();
-    
-    protected abstract void initAllMovableObjects();
 
     /**
      * TO BE REMOVED
@@ -106,6 +104,10 @@ public abstract class Scenario extends Node implements AnimEventListener{
      * Pass down touch event from scenario manager to the scenarios.
      * The arguments are directly the touch event from JME3. The scenario can override this make
      * make ray picking for example.
+     *
+     * @param name
+     * @param touchEvent
+     * @param v
      */
     public abstract void onScenarioTouch(String name, TouchEvent touchEvent, float v);
 
