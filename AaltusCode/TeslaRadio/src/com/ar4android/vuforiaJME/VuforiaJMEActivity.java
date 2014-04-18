@@ -872,7 +872,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         //Empty the SubjectContent list and readd items with correct language title
         SubjectContent.removeAllItems();
-        SubjectContent.addItem(new SubjectContent.SubjectItem("1", getString(R.string.sound_capture_title), new int[]{R.layout.informative_info_detail_test2}));
+        SubjectContent.addItem(new SubjectContent.SubjectItem("1", getString(R.string.sound_capture_title), new int[]{R.layout.sound_capture_page1,R.layout.informative_info_detail_test2}));
         SubjectContent.addItem(new SubjectContent.SubjectItem("2", getString(R.string.modulation_am_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
         SubjectContent.addItem(new SubjectContent.SubjectItem("3", getString(R.string.modulation_fm_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
         SubjectContent.addItem(new SubjectContent.SubjectItem("4", getString(R.string.transmit_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}));
