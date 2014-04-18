@@ -38,7 +38,6 @@ public class Main extends SimpleApplication
         
         
         soundCapture = new SoundCapture(assetManager, this.getCamera());
-        soundCapture.initAllMovableObjects();
         flyCam.setMoveSpeed(100f);
         cam.setLocation(new Vector3f(-60,80,80));
         cam.lookAt(soundCapture.getWorldTranslation(), Vector3f.UNIT_Y);
@@ -106,12 +105,17 @@ public class Main extends SimpleApplication
     private void initLights(){
     
         // You must add a light to make the model visible
+        DirectionalLight sun = new DirectionalLight();
+        sun.setDirection(new Vector3f(0.f, 0.f, -1.0f));
+        rootNode.addLight(sun);
+
+        // You must add a light to make the model visible
         DirectionalLight back = new DirectionalLight();
-        back.setDirection(new Vector3f(0.f,-1.f,1.0f));
+        back.setDirection(new Vector3f(0.f, -1.f, 1.0f));
         rootNode.addLight(back);
 
         DirectionalLight front = new DirectionalLight();
-        front.setDirection(new Vector3f(0.f,1.f,1.0f));
+        front.setDirection(new Vector3f(0.f, 1.f, 1.0f));
         rootNode.addLight(front);
 
         /** A white ambient light source. */

@@ -10,6 +10,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
@@ -20,7 +21,6 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Sphere;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -92,11 +92,10 @@ public final class SoundCapture extends Scenario {
     public SoundCapture(AssetManager assetManager, Camera Camera)
     {
         super(assetManager);
+        this.Camera = Camera;
         
         loadUnmovableObjects();
         loadMovableObjects();
-
-        this.Camera = Camera;
     }
 
     public SoundCapture(AssetManager assetManager)
@@ -111,7 +110,7 @@ public final class SoundCapture extends Scenario {
     @Override
     protected void loadUnmovableObjects()
     {          
-        scene = (Node) assetManager.loadModel("Models/SoundCapture.j3o");
+        scene = (Node) assetManager.loadModel("Models/SoundCapture/SoundCapture.j3o");
         scene.setName("SoundCapture");
         this.attachChild(scene);
         scene.scale(10.0f,10.0f,10.0f);
@@ -131,73 +130,26 @@ public final class SoundCapture extends Scenario {
         guitarHandleOutPosition = guitarHandleOut.getWorldTranslation();
         micHandleInPosition = micHandleIn.getWorldTranslation();
         
-        
-        drum_sound = new AudioNode(assetManager, "Sounds/drum_taiko.wav", false);
-        drum_sound.setPositional(false);
-        drum_sound.setLooping(false);
-        drum_sound.setVolume(2);
-        this.attachChild(drum_sound);
-        
-        //Add guitar sound
-        guitar_sound = new AudioNode(assetManager, "Sounds/guitar.wav", false);
-        guitar_sound.setPositional(false);
-        guitar_sound.setLooping(false);
-        guitar_sound.setVolume(2);
-        this.attachChild(guitar_sound);
-        
-        Vector3f v = new Vector3f(0, 7.5f, 0);
-        //Vector3f v = new Vector3f(micHandleInPosition.x, micHandleInPosition.y, micHandleInPosition.z + 15.0f);
-        //Vector3f v = new Vector3f(0.0f,0.0f,0.0f);
-        
-        textBox = new TextBox(assetManager);
-        textBox.initDefaultText(defaultText, defaultTextSize, v, defaultTextColor,6,3);
-        textBox.setName("Text");
-
-        // Messages to display if textBox is touched
-        lstUpdatedText.add("Aliquam erat volutpat. Vestibulum tempor ");
-        lstUpdatedText.add(" amet quam eu consectetur. Duis dapibus,");
-        lstUpdatedText.add("Aliquam euismod diam eget pharetra imperdiet.");
-        
-        touchable.attachChild(textBox);
-        //this.attachChild(textBox);
-        
-        //Add the halo effects under the interactive objects
-        Box rect = new Box(2f, Float.MIN_VALUE, 2f);
-        
-        Material halo_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        halo_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
-        halo_mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        
-        halo_drum = new Halo("halo",rect,halo_mat,0.85f);
-        halo_guitar = new Halo("halo",rect,halo_mat,1.30f);
-            
-        scene.attachChild(halo_drum);
-        scene.attachChild(halo_guitar);
-        
-        
-        halo_drum.setLocalTranslation(drumPosition);
-        halo_guitar.setLocalTranslation(guitarPosition);
-        
-        
+        initAudio();
+        initTextBox();
+        initHaloEffects();
 
     }
 
-    /**
-     * Loading the models from the asset manager and attaching it to the
-     * Node containing the movable objects in the scene.
-     */
     @Override
-    protected void loadMovableObjects()
+    public void loadMovableObjects()
     {
-        /**
-         * TODO : Load the sound particules models
-         */
-        circles = assetManager.loadModel("Models/Effet_tambour.j3o");
-        circles.setName("Circles");  
-        //List<Vector3f> listPaths = new ArrayList<Vector3f>();
-        //listPaths.add(new Vector3f(0,40,0));
-        /* A colored lit cube. Needs light source! */ 
+        initCircles();
+        initDrumParticlesEmitter();
+        initGuitarParticlesEmitter();
+        initMicWireParticlesEmitter();
+
+        DrumSoundEmitter.registerObserver(MicWireEmitter);
+        GuitarSoundEmitter.registerObserver(MicWireEmitter);
+
+        this.attachChild(movableObjects);
     }
+
 
     /**
      * Initialisation of the tambour effects
@@ -303,6 +255,10 @@ public final class SoundCapture extends Scenario {
     
     private void initCircles()
     {
+
+        circles = assetManager.loadModel("Models/Effet_tambour.j3o");
+        circles.setName("Circles");
+
         circles.scale(10.0f, 10.0f, 10.0f);
         Quaternion rot = new Quaternion();
         rot.fromAngleAxis(3.14f, new Vector3f(1.0f,0.0f,0.0f));
@@ -356,20 +312,67 @@ public final class SoundCapture extends Scenario {
     }
     
      
-    @Override
-    public void initAllMovableObjects()
+
+
+    private void initHaloEffects()
     {
-        initCircles();
-        initDrumParticlesEmitter();
-        initGuitarParticlesEmitter();
-        initMicWireParticlesEmitter();
-        
-        DrumSoundEmitter.registerObserver(MicWireEmitter);
-        GuitarSoundEmitter.registerObserver(MicWireEmitter);
-        
-        this.attachChild(movableObjects);
+        //Add the halo effects under the interactive objects
+        Box rect = new Box(2f, Float.MIN_VALUE, 2f);
+
+        Material halo_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        halo_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
+        halo_mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+
+        halo_drum = new Halo("halo",rect,halo_mat,0.85f);
+        halo_guitar = new Halo("halo",rect,halo_mat,1.30f);
+
+        scene.attachChild(halo_drum);
+        scene.attachChild(halo_guitar);
+
+
+        halo_drum.setLocalTranslation(drumPosition);
+        halo_guitar.setLocalTranslation(guitarPosition);
+
+
     }
-    
+
+    private void initAudio()
+    {
+
+        drum_sound = new AudioNode(assetManager, "Sounds/drum_taiko.wav", false);
+        drum_sound.setPositional(false);
+        drum_sound.setLooping(false);
+        drum_sound.setVolume(2);
+        this.attachChild(drum_sound);
+
+        //Add guitar sound
+        guitar_sound = new AudioNode(assetManager, "Sounds/guitar.wav", false);
+        guitar_sound.setPositional(false);
+        guitar_sound.setLooping(false);
+        guitar_sound.setVolume(2);
+        this.attachChild(guitar_sound);
+
+    }
+
+    public void initTextBox()
+    {
+
+
+        float textBoxWidth = 5f;
+        float textBoxHeight = 1.8f;
+        textBox = new TextBox(assetManager);
+        textBox.init(defaultText, defaultTextSize, defaultTextColor, textBoxWidth, textBoxHeight, BitmapFont.Align.Center, false);
+        textBox.move(0, 7.5f, 0);
+        textBox.setName("Text");
+
+        // Messages to display if textBox is touched
+        lstUpdatedText.add("Aliquam erat volutpat. Vestibulum tempor ");
+        lstUpdatedText.add(" amet quam eu consectetur. Duis dapibus,");
+        lstUpdatedText.add("Aliquam euismod diam eget pharetra imperdiet.");
+
+        touchable.attachChild(textBox);
+    }
+
     public void drumTouchEffect()
     {        
         //DrumSoundEmitter.emitParticles(1.0f);
@@ -551,12 +554,14 @@ public final class SoundCapture extends Scenario {
     }
 
     @Override
-    public void onAudioEvent() {
+    public void onAudioEvent()
+    {
         drumTouchEffect();
     }
 
     @Override
-    public void setGlobalSpeed(float speed) {
+    public void setGlobalSpeed(float speed)
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
