@@ -45,7 +45,7 @@ public class Main extends SimpleApplication
         //Add a floor
         Geometry floor = new Geometry("Floor", new Box (60,Float.MIN_VALUE,60));
         Material floorMaterial  = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        floorMaterial.setColor("Color", ColorRGBA.White);
+        floorMaterial.setColor("Color", new ColorRGBA(0.75f,0.75f,0.75f, 1f));
         floor.setMaterial(floorMaterial);
         rootNode.attachChild(floor);
         
