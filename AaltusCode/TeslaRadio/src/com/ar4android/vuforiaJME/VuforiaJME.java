@@ -65,6 +65,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
     // The virtual world object, it is in fact the scene
     private World virtualWorld;
     private Capture soundCapture;
+    private Capture soundCapture2;
 
     private float mForegroundCamFOVY = 30;
 
@@ -228,108 +229,7 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 
 	}
 
-//    //Here is a model coming from the web
-//    protected void initScotty(){
-//
-//        // Load a model from j3o data
-//        scotty = (Node) assetManager.loadModel("Models/male/male.j3o");
-//        //scotty = assetManager.loadModel("Models/male/Body.mesh.xml");
-//        scotty.setName("scotty");
-//        scotty.scale(100.0f, 100.0f, 100.0f);
-//        Quaternion rotateNinjaX=new Quaternion();
-//        rotateNinjaX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
-//        Quaternion rotateNinjaZ=new Quaternion();
-//        rotateNinjaZ.fromAngleAxis(3.14f, new Vector3f(0.0f,0.0f,1.0f));
-//        Quaternion rotateNinjaY=new Quaternion();
-//        rotateNinjaY.fromAngleAxis(3.14f,new Vector3f(0.0f,1.0f,0.0f));
-//
-//        rotateNinjaX.mult(rotateNinjaZ);
-//        Quaternion rotateNinjaXZ=rotateNinjaZ.mult(rotateNinjaX);
-//        Quaternion rotateNinjaXYZ = rotateNinjaXZ.mult(rotateNinjaY);
-//
-//        scotty.rotate(rotateNinjaXYZ);
-//
-//        //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
-//        scotty.rotate(0.0f, -3.0f, 0.0f);
-//        scotty.setLocalTranslation(1000.0f, 0.0f, 0.0f);
-//        shootables.attachChild(scotty);
-//
-//        //We need to get the AnimControl from the child man of the rootnode
-//        AnimControl control = scotty.getChild("Man").getControl(AnimControl.class);
-//        control.addListener(this);
-//        AnimChannel mAniChannel = control.createChannel();
-//
-//        mAniChannel.setAnim("ArmatureAction.001");
-//        mAniChannel.setLoopMode(LoopMode.Loop);
-//        mAniChannel.setSpeed(2f);
-//    }
-//
-//    protected void initNinja(){
-//
-//        // Load a model from test_data (OgreXML + material + texture)
-//        ninja = assetManager.loadModel("Models/Ninja/Ninja.mesh.xml");
-//        ninja.setName("ninja");
-//        ninja.scale(5.0f, 5.0f, 5.0f);
-//        Quaternion rotateNinjaX=new Quaternion();
-//        rotateNinjaX.fromAngleAxis(3.14f/2.0f,new Vector3f(1.0f,0.0f,0.0f));
-//        Quaternion rotateNinjaZ=new Quaternion();
-//        rotateNinjaZ.fromAngleAxis(3.14f, new Vector3f(0.0f,0.0f,1.0f));
-//        Quaternion rotateNinjaY=new Quaternion();
-//        rotateNinjaY.fromAngleAxis(3.14f,new Vector3f(0.0f,1.0f,0.0f));
-//
-//        rotateNinjaX.mult(rotateNinjaZ);
-//        Quaternion rotateNinjaXZ=rotateNinjaZ.mult(rotateNinjaX);
-//        Quaternion rotateNinjaXYZ = rotateNinjaXZ.mult(rotateNinjaY);
-//
-//        ninja.rotate(rotateNinjaXYZ);
-//
-//        //3.14/2.,new Vector3f(1.0.,0.0,1.0)));
-//        ninja.rotate(0.0f, -3.0f, 0.0f);
-//        ninja.setLocalTranslation(0.0f, 0.0f, 0.0f);
-//
-//
-//        //attachShootables();
-//        shootables.attachChild(ninja);
-//
-//        mAniControl = ninja.getControl(AnimControl.class);
-//        mAniControl.addListener(this);
-//        mAniChannel = mAniControl.createChannel();
-//        // show animation from beginning
-//        mAniChannel.setAnim("Walk");
-//        mAniChannel.setLoopMode(LoopMode.Loop);
-//        mAniChannel.setSpeed(1f);
-//    }
-//
-//    public void attachShootables(){
-//
-//        if (!isShootablesInRootNode()){
-//
-//            rootNode.attachChild(shootables);
-//            //shootables.attachChild(ninja);
-//        }
-//    }
-//
-//    public void detachShootables(){
-//
-//        if (isShootablesInRootNode()){
-//
-//            rootNode.detachChild(shootables);
-//            //shootables.detachChild(ninja);
-//        }
-//    }
-//
-//    public boolean isShootablesInRootNode(){
-//
-//        //Node ninjaNode = (Node) rootNode.getChild(ninja.getName());
-//        Node shootableNode = (Node) rootNode.getChild(shootables.getName());
-//
-//        if (shootableNode == null){
-//            return false;
-//        }
-//        else {
-//            return true;
-//        }
-//    }
+
 
 
     public void initForegroundScene() {
@@ -339,17 +239,15 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 
         virtualWorld = new World(rootNode);
         soundCapture = new Capture(assetManager);
+        soundCapture2 = new Capture(assetManager);
 
         Log.d(TAG,soundCapture.getChild("ninja").getName());
 
-        //Jonathan: To make the ninja shootable we add it to a new node "shootable", the we add it to the root node
-//        shootables = new Node("Shootables");
-//        rootNode.attachChild(shootables);
-//
-//        initNinja();
-//        initScotty();
+
         focusableObjects.attachChild(soundCapture);
+        focusableObjects.attachChild(soundCapture2);
         rootNode.attachChild(soundCapture);
+        rootNode.attachChild(soundCapture2);
 	}
 
 
@@ -429,14 +327,27 @@ public class VuforiaJME extends SimpleApplication implements AnimEventListener  
 		mVideoBGGeom.setLocalScale(newWidth, newHeight, 1.f);
 	}
 	
-	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z) {
+	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z, int id, int isFocus) {
 		 Log.d(TAG,"Update Camera Pose..");
 
-//         Log.d(TAG, "Coordinates : x = " + Float.toString(cam_x) + " y = "
-//                 + Float.toString(cam_y) + " z = " + Float.toString(cam_z));
+         Log.d(TAG, "Coordinates : x = " + Float.toString(cam_x) + " y = "
+                 + Float.toString(cam_y) + " z = " + Float.toString(cam_z));
 
          // Set the new foreground camera position
-		 fgCam.setLocation(new Vector3f(cam_x, cam_y, cam_z));
+
+            //root1
+        if (isFocus == 1)
+        {
+            //rootNode.getChild(id).setLocalTranslation(0.0f,0.0f,0.0f);
+            fgCam.setLocation(new Vector3f(cam_x,cam_y,cam_z));
+            rootNode.getChild(id).setLocalTranslation(0.0f,0.0f,0.0f);
+        }
+        else
+        {
+            rootNode.getChild(id).setLocalTranslation(cam_x,cam_y,cam_z);
+        }
+
+
 
 	}
 	
