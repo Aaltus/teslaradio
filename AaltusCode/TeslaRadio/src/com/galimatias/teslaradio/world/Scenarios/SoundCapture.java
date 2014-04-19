@@ -15,7 +15,6 @@ import com.jme3.input.event.TouchEvent;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.*;
-import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -23,14 +22,14 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Vector;
 
 /**
  *
  * @author Alexandre Hamel
  * 
- * This class contains all the models and the animations related to sound capture
+ * This class contains all the models and the animations related to sound capture.
+ *
  * 
  */
 public final class SoundCapture extends Scenario {
@@ -81,27 +80,21 @@ public final class SoundCapture extends Scenario {
     private float defaultTextSize = 0.5f;
     private ColorRGBA defaultTextColor = ColorRGBA.White;
     
-    // Updated values of the textbox, the list contains the messages when updated
-    private LinkedList<String> lstUpdatedText = new LinkedList<String>();
+    // Textbox value
     private String updatedText = null;
     private float updatedTextSize = 0.0f;
     private ColorRGBA updatedTextColor = null;
 
     private boolean firstTry = true;
-       
-    public SoundCapture(AssetManager assetManager, Camera Camera)
+
+    public SoundCapture(AssetManager assetManager, com.jme3.renderer.Camera Camera)
     {
-        super(assetManager);
-        this.Camera = Camera;
+        super(assetManager, Camera);
         
         loadUnmovableObjects();
         loadMovableObjects();
     }
 
-    public SoundCapture(AssetManager assetManager)
-    {
-        this(assetManager, null);
-    }
 
     /**
      * Loading the models from the asset manager and attaching it to the
@@ -109,12 +102,14 @@ public final class SoundCapture extends Scenario {
      */
     @Override
     protected void loadUnmovableObjects()
-    {          
+    {
+        //Load .blend model and scale it to make it big enough
         scene = (Node) assetManager.loadModel("Models/SoundCapture/SoundCapture.j3o");
         scene.setName("SoundCapture");
         this.attachChild(scene);
         scene.scale(10.0f,10.0f,10.0f);
-        
+
+        //Get all the needed objects from the blender scene to have a reference to them
         touchable = (Node) scene.getParent().getChild("Touchable");
         drum = touchable.getParent().getChild("Tambour");
         guitar = touchable.getParent().getChild("Guitar");
@@ -123,13 +118,14 @@ public final class SoundCapture extends Scenario {
         drumHandleOut = scene.getParent().getChild("Drum_Output_Handle");
         micHandleIn = scene.getParent().getChild("Mic_Input_Handle");
         
-        drumPosition = drum.getLocalTranslation(); //drum.getLocalTranslation();
-        guitarPosition = guitar.getLocalTranslation(); //guitar.getWorldTranslation();
+        drumPosition = drum.getLocalTranslation();
+        guitarPosition = guitar.getLocalTranslation();
         micPosition = micro.getWorldTranslation();
         drumHandleOutPosition = drumHandleOut.getWorldTranslation();
         guitarHandleOutPosition = guitarHandleOut.getWorldTranslation();
         micHandleInPosition = micHandleIn.getWorldTranslation();
-        
+
+        //init the different effects
         initAudio();
         initTextBox();
         initHaloEffects();
@@ -152,7 +148,7 @@ public final class SoundCapture extends Scenario {
 
 
     /**
-     * Initialisation of the tambour effects
+     * Initialization of the tambour effects
      */
     private void initDrumParticlesEmitter()
     {
@@ -189,11 +185,9 @@ public final class SoundCapture extends Scenario {
 
         //Set the impulsional response of the emitter
         ArrayList<Float> waveMagnitudes = new ArrayList(3);
-        
         waveMagnitudes.add(5f);  
         waveMagnitudes.add(3f);
         waveMagnitudes.add(1f);
-        
         DrumSoundEmitter.setWaves(waveMagnitudes, 0.25f);
     }
     
@@ -251,8 +245,10 @@ public final class SoundCapture extends Scenario {
         GuitarSoundEmitter.setWaves(waveMagnitudes, 0.25f);
 
     }
-    
-    
+
+    /**
+     * TO BE REMOVED
+     */
     private void initCircles()
     {
 
@@ -283,7 +279,10 @@ public final class SoundCapture extends Scenario {
    
         mAnimChannel = mAnimControl.createChannel();
     }
-    
+
+    /**
+     * Init of the particles emmiter that follow the microphone wire
+     */
     private void initMicWireParticlesEmitter()
     {
         SignalTrajectories directionFactory = new SignalTrajectories();
@@ -310,10 +309,11 @@ public final class SoundCapture extends Scenario {
         MicWireEmitter.setLocalTranslation(micPosition.x, micPosition.y,micPosition.z); // TO DO: utiliser le object handle blender pour position        
         
     }
-    
-     
 
 
+    /**
+     * Init the halo effect under the instruments
+     */
     private void initHaloEffects()
     {
         //Add the halo effects under the interactive objects
@@ -336,9 +336,12 @@ public final class SoundCapture extends Scenario {
 
     }
 
+    /**
+     * Init the audio sound effect when touching instruments
+     */
     private void initAudio()
     {
-
+        //Add a drum sound effect
         drum_sound = new AudioNode(assetManager, "Sounds/drum_taiko.wav", false);
         drum_sound.setPositional(false);
         drum_sound.setLooping(false);
@@ -354,6 +357,9 @@ public final class SoundCapture extends Scenario {
 
     }
 
+    /**
+     * Init a text box for simple information on sound capture
+     */
     public void initTextBox()
     {
 
@@ -364,15 +370,13 @@ public final class SoundCapture extends Scenario {
         textBox.init(defaultText, defaultTextSize, defaultTextColor, textBoxWidth, textBoxHeight, BitmapFont.Align.Center, false);
         textBox.move(0, 7.5f, 0);
         textBox.setName("Text");
-
-        // Messages to display if textBox is touched
-        lstUpdatedText.add("Aliquam erat volutpat. Vestibulum tempor ");
-        lstUpdatedText.add(" amet quam eu consectetur. Duis dapibus,");
-        lstUpdatedText.add("Aliquam euismod diam eget pharetra imperdiet.");
-
         touchable.attachChild(textBox);
+        
     }
 
+    /**
+     * Call this function generate the particle/sound effect on the drum
+     */
     public void drumTouchEffect()
     {        
         //DrumSoundEmitter.emitParticles(1.0f);
@@ -398,42 +402,17 @@ public final class SoundCapture extends Scenario {
         drum_sound.playInstance();
                 
     }
-    
-    public void guitarTouchEffect()
-    {        
-        //GuitarSoundEmitter.emitParticles(1.0f);
-        GuitarSoundEmitter.emitWaves();
-        
-        //MicWireEmitter.emitParticles();
-        
-        //movableObjects.attachChild(circles);
-        
-        //if(firstTry == true)
-        //    mAnimControl.addListener(this);
 
-        /**
-         * Animation for a better touch feeling
-         */
-        //mAnimChannel.reset(true);
-        //mAnimChannel.setAnim("DrumEffect");
-        //mAnimChannel.setLoopMode(LoopMode.DontLoop);
-        //mAnimChannel.setSpeed(20.0f);
-              
-        // Not the first time the object is touched
-        //firstTry = false;
+    /**
+     * Call this function generate the particle/sound effect on the guitar
+     */
+    public void guitarTouchEffect()
+    {
+        GuitarSoundEmitter.emitWaves();
 
         guitar_sound.playInstance();
                 
     }
-    
-    public void textTouchEffect()
-    {
-        updatedText = lstUpdatedText.pop();
-        lstUpdatedText.add(updatedText);
-        updatedTextSize = 0.0f;
-        updatedTextColor = null;
-    }
-    
     
     @Override
     public void onAnimCycleDone(AnimControl animControl, AnimChannel animChannel, String s) 
@@ -511,7 +490,6 @@ public final class SoundCapture extends Scenario {
                         }
                         else if (nameToCompare == textBox.getName())
                         {
-                            //this.textTouchEffect();
                             showInformativeMenu = true;
                             break;
                         }

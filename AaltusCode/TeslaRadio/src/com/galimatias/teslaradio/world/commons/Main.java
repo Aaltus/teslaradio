@@ -96,9 +96,6 @@ public class Main extends SimpleApplication
               //soundCapture.drumTouchEffect();
               soundCapture.drumTouchEffect();
           }
-          else if (name.equals("Text") && !keyPressed) {
-              soundCapture.textTouchEffect();
-          }
         }
     };
     
