@@ -65,10 +65,22 @@ public abstract class Scenario extends Node implements AnimEventListener{
      *
      */
     protected Node scene;
-    
-    public Scenario(AssetManager assetManager)
+
+    /**
+     * We make the default constructor private to prevent its use.
+     * We always want a assetmanager and a camera
+     */
+    private Scenario()
+    {
+
+    }
+
+    public Scenario(AssetManager assetManager, com.jme3.renderer.Camera Camera)
     {
         this.assetManager = assetManager;
+        this.Camera = Camera;
+
+        
     }
 
     /**
