@@ -162,19 +162,23 @@ public class Signal extends Geometry {
             updateLinearPosition(tpf, cam);
         }
     }
-    
+
+    //TODO: Useful to removed ?!
     public void SetPropagationSpeed(){
         
     }
-    
+
+    //TODO: Useful to removed ?!
     public void SetRotationSpeed(){
         
     }
-    
+
+    //TODO: Useful to removed ?!
     public void SetAmplitude(){
         
     }
-    
+
+    //TODO: Useful to removed ?!
     public void SetAmplitudeValueQueue(int[] amplitudeArray) {
         
     }

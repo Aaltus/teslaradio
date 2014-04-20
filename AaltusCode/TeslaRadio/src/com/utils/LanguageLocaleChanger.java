@@ -23,7 +23,7 @@ public class LanguageLocaleChanger {
 
     private static final String TAG = "VuforiaJMEActivity";
 
-    /*
+    /**
     Save new language to sharedpreferences an restart the current activity
      */
     public static void reloadAppWithNewLanguage(Activity currentActivity, String languageToLoad){
@@ -34,7 +34,7 @@ public class LanguageLocaleChanger {
         reloadAppWithCurrentLanguage(currentActivity);
     }
 
-    /*
+    /**
     Restart current activity with the current language in shared preference
      */
     public static void reloadAppWithCurrentLanguage(Activity currentActivity){
@@ -46,7 +46,7 @@ public class LanguageLocaleChanger {
         reloadActivity(currentActivity);
     }
 
-    /*
+    /**
     Change current activity app locale language
      */
     public static void loadLanguageLocaleInActivity(Activity currentActivity){
@@ -66,7 +66,7 @@ public class LanguageLocaleChanger {
 
     }
 
-    /*
+    /**
     Save to sharepreferences "language" string the specified languageToLoad value
      */
     private static void saveLanguageLocaleToSharedPreferences(Activity currentActivity, String languageToLoad){
@@ -80,7 +80,7 @@ public class LanguageLocaleChanger {
 
     }
 
-    /*
+    /**
     Return the String value from sharepreferences "language" string.
     It also create a default a the value is not existing.
      */
@@ -101,7 +101,7 @@ public class LanguageLocaleChanger {
 
     }
 
-    /*
+    /**
         Restart the activity
      */
     private static void reloadActivity(Activity currentActivity){
