@@ -19,35 +19,24 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/soundcapturep1p1"
+                android:text="@string/soundcapturep2p1"
                 android:id="@+id/textView"
                 style="@style/InformativeMenuTextStyle"
                 />
 
-        <com.utils.GifWebView android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              myapp:url="file:///android_asset/Gifs/Pression.html"
-                />
+    <ImageView
+            android:id="@+id/sound_capture_image"
+            android:layout_width="600dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            android:src="@drawable/principe_dynamic_microphone"
+
+            />
 
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/soundcapturep1p2"
-                android:id="@+id/textView"
-                style="@style/InformativeMenuTextStyle"
-                />
-        <ImageView
-                android:id="@+id/sound_capture_image"
-                android:layout_width="600dp"
-                android:layout_height="300dp"
-                android:layout_gravity="center"
-                android:src="@drawable/source_et_front_donde"
-
-                />
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/soundcapturep1p3"
+                android:text="@string/soundcapturep2p2"
                 android:id="@+id/textView"
                 style="@style/InformativeMenuTextStyle"
                 />
