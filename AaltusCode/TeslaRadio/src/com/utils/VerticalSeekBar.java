@@ -6,6 +6,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.SeekBar;
 
+//reference : https://stackoverflow.com/questions/3333658/how-to-make-a-vertical-seekbar-in-android
+/**
+ * Sample vertical seek bar find on stack overflow
+ */
 public class VerticalSeekBar extends SeekBar {
 
     public VerticalSeekBar(Context context) {
