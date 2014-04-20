@@ -124,7 +124,7 @@ public abstract class Scenario extends Node implements AnimEventListener{
     public abstract void onScenarioTouch(String name, TouchEvent touchEvent, float v);
 
     /**
-     * Called from scenario manager to make the simpleUpdate of the scenario
+     * Called periodically from scenario manager to make the simpleUpdate of the scenario
      */
     public abstract boolean simpleUpdate(float tpf);
 
