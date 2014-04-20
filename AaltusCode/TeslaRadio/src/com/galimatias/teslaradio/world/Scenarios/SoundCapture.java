@@ -36,31 +36,29 @@ public final class SoundCapture extends Scenario {
 
     private final static String TAG = "SoundCapture";
 
+    //Audio node for sound emmiter
     private AudioNode drum_sound;
     private AudioNode guitar_sound;
-
-    private Spatial drum;
-    private Spatial guitar;
-    private Spatial micro;
+    
     private Spatial circles;
+
+    //Node that we will get in the blender scene
+    private Node drum;
+    private Node guitar;
+    private Node micro;
+    private Node drumHandleOut;
+    private Node guitarHandleOut;
+    private Node micHandleIn;
     
-    private Spatial drumHandleOut;
-    private Spatial guitarHandleOut;
-    private Spatial micHandleIn;
-    
+    //Halo effect under the drum and the guitar
     private Halo halo_drum, halo_guitar;
     
+    //Signal emitter on the guitar, the drum and the wire
     private SignalEmitter DrumSoundEmitter;
     private SignalEmitter GuitarSoundEmitter;
     private SignalEmitter MicWireEmitter;
 
-    private TextBox textBox;
-    
-    // animation encore utile?
-    private Animation animation;
-    private AnimControl mAnimControl = new AnimControl();
-    private AnimChannel mAnimChannel;
-
+    //Vector for guitar/drum translation
     private Vector<Vector3f> drum_trajectories = new Vector<Vector3f>();
     private Vector<Vector3f> guitar_trajectories = new Vector<Vector3f>();
     private Vector3f drumPosition;
@@ -69,22 +67,30 @@ public final class SoundCapture extends Scenario {
     private Vector3f drumHandleOutPosition;
     private Vector3f guitarHandleOutPosition;
     private Vector3f micHandleInPosition;
-    
-    //CHANGE THIS VALUE CHANGE THE PARTICULE BEHAVIOUR 
+
+    //CHANGE THIS VALUE CHANGE THE PARTICULE BEHAVIOUR
     //Setting the direction norms and the speed displacement to the trajectories
     private float VecDirectionNorms = 80f;
     private float SoundParticles_Speed = 50f;
-    
+
+    //Simple floating Textbox
+    private TextBox textBox;
     // Default text to be seen when scenario starts
     private String defaultText = "This is the first module: \n Sound Capture";
     private float defaultTextSize = 0.5f;
     private ColorRGBA defaultTextColor = ColorRGBA.White;
-    
-    // Textbox value
+    // Textbox values. If you change this value the textbox will be updated with it.
     private String updatedText = null;
     private float updatedTextSize = 0.0f;
     private ColorRGBA updatedTextColor = null;
 
+    //TO BE RMOVED
+    // animation encore utile?
+    private Animation animation;
+    private AnimControl mAnimControl = new AnimControl();
+    private AnimChannel mAnimChannel;
+
+    //TO BE REMOVED BECAUSE THE CIRCLES WILL CHANGE
     private boolean firstTry = true;
 
     public SoundCapture(AssetManager assetManager, com.jme3.renderer.Camera Camera)
@@ -110,14 +116,15 @@ public final class SoundCapture extends Scenario {
         scene.scale(10.0f,10.0f,10.0f);
 
         //Get all the needed objects from the blender scene to have a reference to them
-        touchable = (Node) scene.getParent().getChild("Touchable");
-        drum = touchable.getParent().getChild("Tambour");
-        guitar = touchable.getParent().getChild("Guitar");
-        micro = scene.getParent().getChild("Boule_micro");
-        guitarHandleOut = scene.getParent().getChild("Guitar_Output_Handle");
-        drumHandleOut = scene.getParent().getChild("Drum_Output_Handle");
-        micHandleIn = scene.getParent().getChild("Mic_Input_Handle");
-        
+        touchable       = (Node) scene.getParent().getChild("Touchable");
+        drum            = (Node) touchable.getParent().getChild("Tambour");
+        guitar          = (Node) touchable.getParent().getChild("Guitar");
+        micro           = (Node) scene.getParent().getChild("Boule_micro");
+        guitarHandleOut = (Node) scene.getParent().getChild("Guitar_Output_Handle");
+        drumHandleOut   = (Node) scene.getParent().getChild("Drum_Output_Handle");
+        micHandleIn     = (Node) scene.getParent().getChild("Mic_Input_Handle");
+
+        //Get all reference objects
         drumPosition = drum.getLocalTranslation();
         guitarPosition = guitar.getLocalTranslation();
         micPosition = micro.getWorldTranslation();
@@ -140,6 +147,7 @@ public final class SoundCapture extends Scenario {
         initGuitarParticlesEmitter();
         initMicWireParticlesEmitter();
 
+        //Register the MicWireEmitter to be able to generate particle on the wire when there is a new particles
         DrumSoundEmitter.registerObserver(MicWireEmitter);
         GuitarSoundEmitter.registerObserver(MicWireEmitter);
 
@@ -212,16 +220,10 @@ public final class SoundCapture extends Scenario {
         Vector3f guitar2MicVector = guitarHandleOutPosition.subtract(micHandleInPosition);
         float guitar2MicLength = guitar2MicVector.length();
         
-        // instantiate 3d Sound particul model
-        //Sphere sphere = new Sphere(8, 8, 0.9f);
-        //Geometry soundParticle = new Geometry("particul",sphere);
-        //Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        
         Box rect = new Box(1.0f, 1.0f, 0.01f);
         Geometry soundParticle = new Geometry("particul",rect);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         soundParticul_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
-        
         //soundParticul_mat.setColor("Color", ColorRGBA.Red);
         soundParticle.setMaterial(soundParticul_mat);
         Geometry soundParticleTranslucent = soundParticle.clone();
@@ -229,11 +231,10 @@ public final class SoundCapture extends Scenario {
                 
         GuitarSoundEmitter = new SignalEmitter(guitar_trajectories, guitar2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
         this.attachChild(GuitarSoundEmitter);
-        GuitarSoundEmitter.setLocalTranslation(guitarHandleOutPosition); // TO DO: utiliser le object handle blender pour position
+        GuitarSoundEmitter.setLocalTranslation(guitarHandleOutPosition);
         
         //Set the impulsional response of the emitter
         ArrayList<Float> waveMagnitudes = new ArrayList(7);
-        
         waveMagnitudes.add(5f);  
         waveMagnitudes.add(2f);
         waveMagnitudes.add(3f);
@@ -241,7 +242,6 @@ public final class SoundCapture extends Scenario {
         waveMagnitudes.add(1.2f);
         waveMagnitudes.add(1.0f);
         waveMagnitudes.add(0.8f);
-        
         GuitarSoundEmitter.setWaves(waveMagnitudes, 0.25f);
 
     }
@@ -281,7 +281,7 @@ public final class SoundCapture extends Scenario {
     }
 
     /**
-     * Init of the particles emmiter that follow the microphone wire
+     * Init of the particles emitter that follow the microphone wire
      */
     private void initMicWireParticlesEmitter()
     {
@@ -291,8 +291,6 @@ public final class SoundCapture extends Scenario {
         Node micWire_node = (Node) scene.getParent().getChild("WirePath");
         Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
         Mesh micWire_mesh = micWire_geom.getMesh();
-        
-        //Vector3f f = micWire_node.getWorldScale();
         
         curvedPath = directionFactory.getCurvedPath(micWire_mesh);
         
@@ -378,10 +376,8 @@ public final class SoundCapture extends Scenario {
      * Call this function generate the particle/sound effect on the drum
      */
     public void drumTouchEffect()
-    {        
-        //DrumSoundEmitter.emitParticles(1.0f);
+    {
         DrumSoundEmitter.emitWaves();
-        //MicWireEmitter.emitParticles();
         
         movableObjects.attachChild(circles);
         
@@ -409,11 +405,17 @@ public final class SoundCapture extends Scenario {
     public void guitarTouchEffect()
     {
         GuitarSoundEmitter.emitWaves();
-
         guitar_sound.playInstance();
                 
     }
-    
+
+    /**
+     * TO BE REMOVED
+     *
+     * @param animControl
+     * @param animChannel
+     * @param s
+     */
     @Override
     public void onAnimCycleDone(AnimControl animControl, AnimChannel animChannel, String s) 
     {
@@ -422,6 +424,10 @@ public final class SoundCapture extends Scenario {
             movableObjects.detachChild(circles);
     }
 
+    /**
+     * TO BE REMOVED
+     *
+     */
     @Override
     public void onAnimChange(AnimControl animControl, AnimChannel animChannel, String s) 
     {
@@ -433,19 +439,17 @@ public final class SoundCapture extends Scenario {
 
         switch(touchEvent.getType()){
 
-            //Checking for down event is very responsive
+            //Checking for down event is very responsive instead of TAP, double press...
             case DOWN:
-                
-            //case TAP:
+
+                //We check if we are in touchable node.
                 if (name.equals("Touch"))
                 {
 
                     // 1. Reset results list.
                     CollisionResults results = new CollisionResults();
 
-                    // 2. Mode 1: user touch location.
-                    //Vector2f click2d = inputManager.getCursorPosition();
-
+                    //Generate a ray from the touch event position
                     Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
                     Vector3f click3d = Camera.getWorldCoordinates(
                             new Vector2f(click2d.x, click2d.y), 0f).clone();
@@ -453,20 +457,19 @@ public final class SoundCapture extends Scenario {
                             new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
                     Ray ray = new Ray(click3d, dir);
 
-                    // 3. Collect intersections between Ray and Shootables in results list.
-                    //focusableObjects.collideWith(ray, results);
+                    // 3. Collect intersections between Ray and touchables in results list.
                     touchable.collideWith(ray, results);
 
+                    //For debbuging purpose
                     // 4. Print the results
-                    //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
-                    for (int i = 0; i < results.size(); i++) {
-                        // For each hit, we know distance, impact point, name of geometry.
-                        float dist = results.getCollision(i).getDistance();
-                        Vector3f pt = results.getCollision(i).getContactPoint();
-                        String hit = results.getCollision(i).getGeometry().getName();
-
-                        //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
-                    }
+//                    for (int i = 0; i < results.size(); i++) {
+//                        // For each hit, we know distance, impact point, name of geometry.
+//                        float dist = results.getCollision(i).getDistance();
+//                        Vector3f pt = results.getCollision(i).getContactPoint();
+//                        String hit = results.getCollision(i).getGeometry().getName();
+//
+//                        //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+//                    }
 
                     // 5. Use the results (we mark the hit object)
                     if (results.size() > 0)
@@ -478,16 +481,20 @@ public final class SoundCapture extends Scenario {
                         Spatial touchedGeometry = closest.getGeometry();
                         String nameToCompare = touchedGeometry.getParent().getName();
 
+                        //We touch if find the drum we make a drum touch effect
                         if (nameToCompare == drum.getName())
                         {
                             this.drumTouchEffect();
                             break;
                         }
+                        //We touch if find the guitar we make a guitar touch effect
                         else if (nameToCompare == guitar.getName())
                         {
                             this.guitarTouchEffect();
                             break;
                         }
+                        //We touch if find the textbox, we put the showInformativeMenu to true to
+                        //Notify the scenario maanger that an informative menu must be shown
                         else if (nameToCompare == textBox.getName())
                         {
                             showInformativeMenu = true;
@@ -503,8 +510,10 @@ public final class SoundCapture extends Scenario {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
     public boolean simpleUpdate(float tpf) {
-         
+
+        //Update all the moving part of the scenario here
         DrumSoundEmitter.simpleUpdate(tpf, this.Camera);
         GuitarSoundEmitter.simpleUpdate(tpf, this.Camera);
         MicWireEmitter.simpleUpdate(tpf, this.Camera);
@@ -519,7 +528,6 @@ public final class SoundCapture extends Scenario {
             updatedText = null;
             updatedTextSize = 0.0f;
             updatedTextColor = null;
-            //Log.d(TAG,"Camera position :" + Camera.getLocation());
         }
 
         if (showInformativeMenu)
@@ -534,7 +542,7 @@ public final class SoundCapture extends Scenario {
     @Override
     public void onAudioEvent()
     {
-        drumTouchEffect();
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
