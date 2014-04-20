@@ -20,7 +20,7 @@ import static com.utils.ViewGroupUtils.replaceView;
  * Taking a viewgroup as parameter, the function is recursive
  * and will convert every sub-textview in the view group.
  *
- * This function is slow because Html is loaded sequentially.
+ * NOTE:This function is slow because Html is loaded sequentially.
  * That's make the UI unresponsive and look buggy
  */
 public class TextViewJustifiedUtils {

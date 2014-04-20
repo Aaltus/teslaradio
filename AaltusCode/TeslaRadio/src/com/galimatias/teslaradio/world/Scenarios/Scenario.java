@@ -12,6 +12,9 @@ import com.jme3.asset.AssetManager;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.scene.Node;
 
+
+
+
 /**
  * Abstract class that regroup a scenario.
  * @author Alexandre Hamel
