@@ -11,7 +11,7 @@ import com.utils.LanguageLocaleChanger;
 // ...
 
 
-/*
+/**
     Simple custom dialog fragment to show language options
  */
 public class LanguageDialogFragment extends DialogFragment {
@@ -83,6 +83,10 @@ public class LanguageDialogFragment extends DialogFragment {
         return view;
     }
 
+    /**
+     * Reload the activity with the new language when clicked
+     * @param v
+     */
     private void onClick(View v){
 
         int id = v.getId();
