@@ -48,6 +48,11 @@ import java.util.logging.Level;
 
 //Old code
 //public class VuforiaJMEActivity extends AndroidHarness {
+
+/**
+ * Center of the Android side of the application. All Android view and specific thing are here.
+ * It also initialize vuforia library and jme app.
+ */
 public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements ItemListFragment.Callbacks, View.OnClickListener,
         ItemDetailFragment.OnClickDetailFragmentListener, SeekBar.OnSeekBarChangeListener, VuforiaJME.AppListener {
 
@@ -112,6 +117,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     
     private RelativeLayout mUILayout;
 
+    //TO BE REMOVED
 //    //SoundAlert specific info
 //    private int mThreshold = 10;
 //    private boolean mAudioRunning = false;
@@ -186,6 +192,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         loadLibrary(NATIVE_LIB_SAMPLE);
     }
 
+    /**
+     * Callback to receive click event of the DetailFragment
+     * @param view : View that have been clicked
+     */
     @Override
     public void onClickDetailFragment(View view) {
 
@@ -195,7 +205,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         switch (id)
         {
-
+            //When fragment x button is clicked, close the fragment
             case R.id.item_detail_fragment_close_button:
                 //Log.d(TAG, "OnClick Callback from detail fragment");
                 toggleFragmentsVisibility(null);
@@ -203,7 +213,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         }
     }
 
-    /*
+    /**
     Show the informative menu with the provided scenario to show
      */
     @Override
@@ -616,15 +626,14 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
 	private boolean mCreatedBefore = false;
 
-	public VuforiaJMEActivity() {
+	public VuforiaJMEActivity()
+    {
 		// Set the application class to runs
 		appClass = "com.ar4android.vuforiaJME.VuforiaJME";
 		// Try ConfigType.FASTEST; or ConfigType.LEGACY if you have problems
 		eglConfigType = ConfigType.BEST;
+
 		// Exit Dialog title & messages
-
-
-
         exitDialogTitle   = "Exit?";
 		exitDialogMessage = "Press Yes";
 		// Enable verbose logging
@@ -644,7 +653,13 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 	private byte[] mPreviewBufferRGB656;
 	java.nio.ByteBuffer mPreviewByteBufferRGB565;
 	static boolean firstTimeGetImage=true;
-	
+
+    //TODO: Alex add things here.
+    /**
+     * Initialize an image buffer for vuforia video feed
+     * @param width
+     * @param height
+     */
 	public void initializeImageBuffer(int width,int height)
 	{
         Log.d(TAG,"initializeImageBuffer");
@@ -661,7 +676,14 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 		mPreviewByteBufferRGB565.clear();
 	
 	}
-	
+
+    //TODO: Alex add things here.
+    /**
+     * Add an image to the buffer image video
+     * @param buffer
+     * @param width
+     * @param height
+     */
 	 public void setRGB565CameraImage(byte[] buffer, int width, int height)  {
 		 
 		    Log.d(TAG,"setRGB565CameraImage Update Camera Image..");
@@ -677,7 +699,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 			cameraJMEImageRGB565.setData(mPreviewByteBufferRGB565);
 
             // Set our camera image as the JME background
-			if ((com.ar4android.vuforiaJME.VuforiaJME) app != null) {
+			if (app != null) {
 				((com.ar4android.vuforiaJME.VuforiaJME) app)
 						.setVideoBGTexture(cameraJMEImageRGB565);
 			}	
@@ -698,10 +720,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         initLanguageSpecificStrings();
 
-        //eglConfigType=ConfigType.BEST_TRANSLUCENT;
         super.onCreate(savedInstanceState);
 
-        //Set an AppListener to receive callbacks from VuforiaJME
+        //Set an AppListener to receive callbacks from VuforiaJME e.g. to show informative menu
         ((VuforiaJME) app).setAppListener(this);
 
         // Update the application status to start initializing application:
@@ -787,7 +808,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         // Ensure that all asynchronous operations to initialize QCAR
         // and loading the tracker datasets do not overlap:
-        synchronized (mShutdownLock) {
+        synchronized (mShutdownLock)
+        {
 
             // Do application deinitialization in native code:
             deinitApplicationNative();
@@ -806,7 +828,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         
     }
 
-
+    /**
+     * Called when screen orientation change for example
+     * @param config
+     */
 	@Override
     public void onConfigurationChanged(Configuration config)
     {
@@ -820,10 +845,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         mLastScreenRotation = INVALID_SCREEN_ROTATION;
     }
 
-   /* Initialize the top layout that contains button
-    * and fragments
-    *
-   */
+    /**
+     * Initialize the top layout that contains button
+     * and fragments
+     */
     public void initTopLayout(){
 
         Log.d(TAG,"Initialize Top Layout");
@@ -831,22 +856,25 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         //Replace the current language button to show the current choosed locale language
         int drawableToGet = 0;
         LayerDrawable languageButtonLayerDrawable = (LayerDrawable) getResources().getDrawable(R.drawable.layer_list_language);
-
         String currentLanguage = LanguageLocaleChanger.loadLanguageLocaleFromSharedPreferences(this);
-        if (currentLanguage.equals("fr")){
+        if (currentLanguage.equals("fr"))
+        {
             drawableToGet = R.drawable.ic_action_language_fr;
         }
-        else if (currentLanguage.equals("es")) {
+        else if (currentLanguage.equals("es"))
+        {
             drawableToGet = R.drawable.ic_action_language_es;
         }
-        else if (currentLanguage.equals("en")) {
+        else if (currentLanguage.equals("en"))
+        {
             drawableToGet = R.drawable.ic_action_language_en;
         }
-        else if (currentLanguage.equals("de")){
+        else if (currentLanguage.equals("de"))
+        {
             drawableToGet = R.drawable.ic_action_language_de;
         }
-        Drawable imageReplacing = (Drawable) getResources().getDrawable(drawableToGet);
-        boolean testfactor = languageButtonLayerDrawable.setDrawableByLayerId(R.id.language_item_layer_list, imageReplacing);
+        Drawable imageReplacing = getResources().getDrawable(drawableToGet);
+        languageButtonLayerDrawable.setDrawableByLayerId(R.id.language_item_layer_list, imageReplacing);
 
         //Get the rootView of the activity. This view is on the direct parent
         //to the android jme opengl view
@@ -858,7 +886,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         rootView.addView(myView);
 
         //Setup the ListFragment
-
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         Fragment fragment = new ItemListFragment();
@@ -866,45 +893,47 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         ft.replace(R.id.item_list_fragment_vuforia, fragment, ITEM_LIST_FRAGMENT_TAG);
         ft.commit();
         fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
+
         //Make the listfragment activable
         ((ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG)).setActivateOnItemClick(true);
 
         //Set onClickListener for all buttons
         Button languageButton = (Button)findViewById(R.id.camera_toggle_language_button);
         Button infoButton = (Button)findViewById(R.id.camera_toggle_info_button);
-
         languageButton.setOnClickListener(this);
         infoButton.setOnClickListener(this);
 
-
+        //Get the vertical side bar and set its propriety
         VerticalSeekBar sb = (VerticalSeekBar)findViewById(R.id.seekBar1);
-        if (sb != null){
+        if (sb != null)
+        {
             sb.setMax(100);
             sb.setProgress(50);
             sb.setOnSeekBarChangeListener(this);
         }
     }
 
-
-    @Override public void onProgressChanged(SeekBar v, int progress, boolean isUser) {
+    /**
+     * Update the vertical side bar progress and text
+     * @param v
+     * @param progress
+     * @param isUser
+     */
+    @Override public void onProgressChanged(SeekBar v, int progress, boolean isUser)
+    {
         TextView tv = (TextView)findViewById(R.id.seekbar_value_text);
         tv.setText(Integer.toString(progress)+"%");
-
     }
 
-    @Override public void onStop(){
-        super.onStop();
-        //audioStop();
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar)
+    {
 
     }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
+    public void onStopTrackingTouch(SeekBar seekBar)
+    {
 
     }
 
@@ -920,6 +949,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         ItemDetailFragment fragment = new ItemDetailFragment();
         fragment.setArguments(arguments);
 
+        //Create the fragment with fragment transaction
         FragmentManager fm     = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
@@ -929,10 +959,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     }
 
-
-
-
-
+    /**
+     * Event called when a onClick event happen.
+     * @param view
+     */
     @Override
     public void onClick(View view) {
 
@@ -954,6 +984,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     }
 
+    /**
+     * Show the language dialog
+     */
     private void showLanguageDialog()
     {
 
@@ -964,8 +997,11 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     }
 
-
-    private void initLanguageSpecificStrings(){
+    /**
+     * Init the subject content and language specific strings
+     */
+    private void initLanguageSpecificStrings()
+    {
 
 
 
@@ -980,29 +1016,30 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     }
 
 
-
+    /**
+     * Toggle the detailfragment and listfragment visibility.
+     * @param scenarioEnum : the scenario to show
+     */
     private void toggleFragmentsVisibility(ScenarioEnum scenarioEnum){
 
 
         FragmentManager fm =     getSupportFragmentManager();
-        ItemListFragment fragment         = (ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
+        ItemListFragment listFragment         = (ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
         ItemDetailFragment fragmentDetail = (ItemDetailFragment) fm.findFragmentByTag(ITEM_DETAIL_FRAGMENT_TAG);
 
-        if (fragment != null)
+        if (listFragment != null)
         {
             FragmentTransaction ft = fm.beginTransaction();
             ft.setCustomAnimations(R.anim.enter_left, R.anim.exit_left);
-            if (fragment.isHidden())
+            if (listFragment.isHidden())
             {
                 Log.d(TAG, "Showing list fragment");
-                ft.show(fragment);
+                ft.show(listFragment);
                 if (scenarioEnum != null)
                 {
-                    //FragmentManager fm        =     getSupportFragmentManager();
-                    //ItemListFragment fragment = (ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
-                    fragment.setActivatedPosition(scenarioEnum.ordinal());
+                    //Choose a detail fragment based on the provided enum
+                    listFragment.setActivatedPosition(scenarioEnum.ordinal());
                     onItemSelected(scenarioEnum.ordinal());
-
                 }
             }
             else
@@ -1010,7 +1047,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 Log.d(TAG, "Hiding list fragment");
                 if (scenarioEnum == null)
                 {
-                    ft.hide(fragment);
+                    ft.hide(listFragment);
                 }
             }
 
