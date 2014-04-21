@@ -43,7 +43,7 @@ public final class SoundCapture extends Scenario {
     private Spatial drum;
     private Spatial guitar;
     private Spatial micro;
-    private Spatial circles;
+    private TouchEffectEmitter touchEffectEmitter;
     
     private Spatial drumHandleOut;
     private Spatial guitarHandleOut;
@@ -56,11 +56,6 @@ public final class SoundCapture extends Scenario {
     private SignalEmitter MicWireEmitter;
 
     private TextBox textBox;
-    
-    // animation encore utile?
-    private Animation animation;
-    private AnimControl mAnimControl = new AnimControl();
-    private AnimChannel mAnimChannel;
 
     private Vector<Vector3f> drum_trajectories = new Vector<Vector3f>();
     private Vector<Vector3f> guitar_trajectories = new Vector<Vector3f>();
@@ -76,6 +71,11 @@ public final class SoundCapture extends Scenario {
     private float VecDirectionNorms = 80f;
     private float SoundParticles_Speed = 50f;
     
+    // CHANGE THESE VALUES TO SET THE TOUCH EFFECT BEHAVIOUR
+    private float scaleGradient = 50.0f;
+    private float maxScale = 100.0f;
+    private float minScale = 0.0f;
+    
     // Default text to be seen when scenario starts
     private String defaultText = "This is the first module: \n Sound Capture";
     private float defaultTextSize = 0.5f;
@@ -86,8 +86,6 @@ public final class SoundCapture extends Scenario {
     private String updatedText = null;
     private float updatedTextSize = 0.0f;
     private ColorRGBA updatedTextColor = null;
-
-    private boolean firstTry = true;
        
     public SoundCapture(AssetManager assetManager, Camera Camera)
     {
@@ -139,10 +137,10 @@ public final class SoundCapture extends Scenario {
     @Override
     public void loadMovableObjects()
     {
-        initCircles();
         initDrumParticlesEmitter();
         initGuitarParticlesEmitter();
         initMicWireParticlesEmitter();
+        initOnTouchEffect();
 
         DrumSoundEmitter.registerObserver(MicWireEmitter);
         GuitarSoundEmitter.registerObserver(MicWireEmitter);
@@ -251,39 +249,7 @@ public final class SoundCapture extends Scenario {
         GuitarSoundEmitter.setWaves(waveMagnitudes, 0.25f);
 
     }
-    
-    
-    private void initCircles()
-    {
-
-        circles = assetManager.loadModel("Models/Effet_tambour.j3o");
-        circles.setName("Circles");
-
-        circles.scale(10.0f, 10.0f, 10.0f);
-        Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(3.14f, new Vector3f(1.0f,0.0f,0.0f));
-        
-        Material circleMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        circleMat.setColor("Color", ColorRGBA.Gray);
-        circles.setMaterial(circleMat);
-
-        float duration = 5.0f; 
-        AnimationFactory animationFactory = new AnimationFactory(duration,"DrumEffect");
-        
-        Vector3f v = drum.getWorldTranslation();
-        animationFactory.addTimeTranslation(0.0f, new Vector3f(v.x, v.y + 20.0f, v.z));
-        animationFactory.addTimeRotation(0.0f, rot);
-        animationFactory.addTimeScale(0.0f, new Vector3f(0.2f, 0.0f, 0.2f));
-        animationFactory.addTimeScale(5.0f, new Vector3f(10.0f, 0.0f, 10.0f));
-        
-        animation = animationFactory.buildAnimation();
-        
-        mAnimControl.addAnim(animation);
-        circles.addControl(mAnimControl);
-   
-        mAnimChannel = mAnimControl.createChannel();
-    }
-    
+       
     private void initMicWireParticlesEmitter()
     {
         SignalTrajectories directionFactory = new SignalTrajectories();
@@ -311,7 +277,18 @@ public final class SoundCapture extends Scenario {
         
     }
     
-     
+    private void initOnTouchEffect() {
+    
+        Material effect_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        effect_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
+        Box rect = new Box(10.0f, 0.01f, 10.0f);
+        Geometry drumTouchEffect = new Geometry("DrumTouchEffect",rect);
+        drumTouchEffect.setMaterial(effect_mat);
+        
+        touchEffectEmitter = new TouchEffectEmitter("DrumEffect", minScale, maxScale, scaleGradient, drumTouchEffect, Vector3f.UNIT_X);
+        this.attachChild(touchEffectEmitter);
+        touchEffectEmitter.setLocalTranslation(drumHandleOutPosition);
+    }
 
 
     private void initHaloEffects()
@@ -329,16 +306,12 @@ public final class SoundCapture extends Scenario {
         scene.attachChild(halo_drum);
         scene.attachChild(halo_guitar);
 
-
         halo_drum.setLocalTranslation(drumPosition);
         halo_guitar.setLocalTranslation(guitarPosition);
-
-
     }
 
     private void initAudio()
     {
-
         drum_sound = new AudioNode(assetManager, "Sounds/drum_taiko.wav", false);
         drum_sound.setPositional(false);
         drum_sound.setLooping(false);
@@ -356,8 +329,6 @@ public final class SoundCapture extends Scenario {
 
     public void initTextBox()
     {
-
-
         float textBoxWidth = 5f;
         float textBoxHeight = 1.8f;
         textBox = new TextBox(assetManager);
@@ -379,51 +350,16 @@ public final class SoundCapture extends Scenario {
         DrumSoundEmitter.emitWaves();
         //MicWireEmitter.emitParticles();
         
-        movableObjects.attachChild(circles);
+        touchEffectEmitter.isTouched();
         
-        if(firstTry == true)
-            mAnimControl.addListener(this);
-
-        /**
-         * Animation for a better touch feeling
-         */
-        mAnimChannel.reset(true);
-        mAnimChannel.setAnim("DrumEffect");
-        mAnimChannel.setLoopMode(LoopMode.DontLoop);
-        mAnimChannel.setSpeed(20.0f);
-              
-        // Not the first time the object is touched
-        firstTry = false;
-
         drum_sound.playInstance();
                 
     }
     
     public void guitarTouchEffect()
     {        
-        //GuitarSoundEmitter.emitParticles(1.0f);
         GuitarSoundEmitter.emitWaves();
-        
-        //MicWireEmitter.emitParticles();
-        
-        //movableObjects.attachChild(circles);
-        
-        //if(firstTry == true)
-        //    mAnimControl.addListener(this);
-
-        /**
-         * Animation for a better touch feeling
-         */
-        //mAnimChannel.reset(true);
-        //mAnimChannel.setAnim("DrumEffect");
-        //mAnimChannel.setLoopMode(LoopMode.DontLoop);
-        //mAnimChannel.setSpeed(20.0f);
-              
-        // Not the first time the object is touched
-        //firstTry = false;
-
-        guitar_sound.playInstance();
-                
+        guitar_sound.playInstance();           
     }
     
     public void textTouchEffect()
@@ -434,21 +370,6 @@ public final class SoundCapture extends Scenario {
         updatedTextColor = null;
     }
     
-    
-    @Override
-    public void onAnimCycleDone(AnimControl animControl, AnimChannel animChannel, String s) 
-    {
-        // ...do nothing
-        if(mAnimChannel.getAnimationName().equals("DrumEffect"))
-            movableObjects.detachChild(circles);
-    }
-
-    @Override
-    public void onAnimChange(AnimControl animControl, AnimChannel animChannel, String s) 
-    {
-        // ...do nothing
-    }
-
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
 
@@ -530,6 +451,7 @@ public final class SoundCapture extends Scenario {
         DrumSoundEmitter.simpleUpdate(tpf, this.Camera);
         GuitarSoundEmitter.simpleUpdate(tpf, this.Camera);
         MicWireEmitter.simpleUpdate(tpf, this.Camera);
+        touchEffectEmitter.simpleUpdate(tpf);
         halo_drum.simpleUpdate(tpf);
         halo_guitar.simpleUpdate(tpf);
         

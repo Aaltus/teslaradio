@@ -16,7 +16,7 @@ import com.jme3.scene.Node;
  * Abstract class that regroup a scenario.
  * @author Alexandre Hamel
  */
-public abstract class Scenario extends Node implements AnimEventListener{
+public abstract class Scenario extends Node {
 
     private final static String TAG = "Scenario";
 
@@ -89,16 +89,6 @@ public abstract class Scenario extends Node implements AnimEventListener{
      *
      */
     public abstract void restartScenario();
-
-    /**
-     * TO BE REMOVED
-     */
-    public abstract void onAnimCycleDone(AnimControl animControl, AnimChannel animChannel, String s);
-
-    /**
-     * TO BE REMOVED
-     */
-    public abstract void onAnimChange(AnimControl animControl, AnimChannel animChannel, String s);
 
     /**
      * Pass down touch event from scenario manager to the scenarios.
