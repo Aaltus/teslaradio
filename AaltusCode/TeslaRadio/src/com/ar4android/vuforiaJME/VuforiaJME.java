@@ -214,6 +214,12 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
         soundCapture.rotate(rot);
         rootNode.attachChild(soundCapture);
 
+        //Correction for BUG TR-176
+        //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
+        //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
+        renderManager.preloadScene(soundCapture);
+
+
         inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click
         inputManager.addListener(this, new String[]{"Touch"});
 

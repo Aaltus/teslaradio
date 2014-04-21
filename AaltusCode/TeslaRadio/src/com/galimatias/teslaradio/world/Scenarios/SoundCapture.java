@@ -171,8 +171,8 @@ public final class SoundCapture extends Scenario {
         // the number of directions        
         Vector3f drumMicDirection = micHandleInPosition.subtract(drumHandleOutPosition);        
                         
-        int totalNbDirections = 21;
-        int nbXYDirections = 3;
+        int totalNbDirections = 10;
+        int nbXYDirections = 2;
         
         // Creating the trajectories
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
@@ -217,8 +217,8 @@ public final class SoundCapture extends Scenario {
         // the number of directions        
         Vector3f guitarMicDirection = micHandleInPosition.subtract(guitarHandleOutPosition);        
                         
-        int totalNbDirections = 21;
-        int nbXYDirections = 3;
+        int totalNbDirections = 10;
+        int nbXYDirections = 2;
                 
         // Creating the trajectories
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
