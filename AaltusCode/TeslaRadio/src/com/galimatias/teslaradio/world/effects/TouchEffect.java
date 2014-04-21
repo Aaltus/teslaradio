@@ -5,7 +5,9 @@
 package com.galimatias.teslaradio.world.effects;
 
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -31,6 +33,7 @@ public class TouchEffect extends Geometry {
         this.path = path;
         this.setMesh(effectToScale.getMesh());
         this.setMaterial(effectToScale.getMaterial());
+        this.setQueueBucket(RenderQueue.Bucket.Transparent);
         this.setLocalScale(baseScale);
     }
     
@@ -39,6 +42,7 @@ public class TouchEffect extends Geometry {
         float scalingFactor = tpf*scaleGradient;
         scaling += scalingFactor;
         newPath = path.mult(scaling);
+        System.out.println("Scaling : " + ((Float)scaling).toString());
         
         if(this.getLocalScale().length() > maxScale) {
             this.removeFromParent();
