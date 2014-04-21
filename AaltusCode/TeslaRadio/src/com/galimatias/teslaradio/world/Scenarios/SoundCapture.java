@@ -347,11 +347,9 @@ public final class SoundCapture extends Scenario {
         titleTextBox = new TextBox(assetManager, titleTextPosition, titleText, titleTextSize, defaultTextColor, textBoxWidth, textBoxHeight, "titletext", BitmapFont.Align.Center, false);
         titleTextBox.move(titleTextPosition);
         
+        // Add other text boxes here
         
-        //Vector3f instrumentTextPosition = drumHandleOut.getLocalTranslation().subtract()
         
-        
-
         // Messages to display if textBox is touched
         //lstUpdatedText.add("Aliquam erat volutpat. Vestibulum tempor ");
         //lstUpdatedText.add(" amet quam eu consectetur. Duis dapibus,");
