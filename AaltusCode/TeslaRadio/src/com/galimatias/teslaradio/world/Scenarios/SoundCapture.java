@@ -350,14 +350,12 @@ public final class SoundCapture extends Scenario {
     
     public void initImageBoxes()
     {
-        Vector3f imageHintDrumPosition = drum.getLocalTranslation().add(new Vector3f(0, 5f, 0f));
-        imageHintDrum = new ImageBox(1.0f, 1.0f, imageHintDrumPosition, assetManager, "Drum Touch Hint", "Textures/Electric3.png");
-        //imageHintDrum.move(drum.getLocalTranslation().add(new Vector3f(0, 5f, 0f)));
+        Vector3f imageHintDrumPosition = drumHandleOut.getLocalTranslation().add(new Vector3f(0, 0.5f, 0f));
+        imageHintDrum = new ImageBox(0.4f, 0.75f, imageHintDrumPosition, assetManager, "Drum Touch Hint", "Textures/Selection_Hand.png");
         this.scene.attachChild(imageHintDrum);
         
-        Vector3f imageHintGuitarPosition = guitar.getLocalTranslation().add(new Vector3f(0, 5f, 0f));
-        imageHintGuitar = new ImageBox(1.0f, 1.0f, imageHintGuitarPosition, assetManager, "Guitar Touch Hint", "Textures/Electric3.png");
-        //imageHintGuitar.move(guitar.getLocalTranslation().add(new Vector3f(0, 5f, 0f)));
+        Vector3f imageHintGuitarPosition = guitarHandleOut.getLocalTranslation().add(new Vector3f(0, 0.5f, 0f));
+        imageHintGuitar = new ImageBox(0.4f, 0.75f, imageHintGuitarPosition, assetManager, "Guitar Touch Hint", "Textures/Selection_Hand.png");
         this.scene.attachChild(imageHintGuitar);
         
         
@@ -484,8 +482,8 @@ public final class SoundCapture extends Scenario {
             updatedTextColor = null;
             //Log.d(TAG,"Camera position :" + Camera.getLocation());
             
-            imageHintDrum.simpleUpdate(this.Camera, upVector, 2f);
-            imageHintGuitar.simpleUpdate(this.Camera, upVector, 2f);
+            imageHintDrum.simpleUpdate(this.Camera, upVector);
+            imageHintGuitar.simpleUpdate(this.Camera, upVector);
         }
 
         if (showInformativeMenu)
