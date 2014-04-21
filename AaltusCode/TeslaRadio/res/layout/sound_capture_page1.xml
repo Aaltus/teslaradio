@@ -27,8 +27,9 @@
         <com.utils.GifWebView android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
                               myapp:url="file:///android_asset/Gifs/Pression.html"
-                />
 
+                />
+        <!--android:background="@drawable/button_bg"-->
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
