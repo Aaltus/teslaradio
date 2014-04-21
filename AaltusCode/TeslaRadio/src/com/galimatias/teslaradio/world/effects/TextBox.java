@@ -33,21 +33,20 @@ public class TextBox extends Node {
      */
     private BitmapFont guiFont;
     /**
-     * Jme3 AssetManager use to load font
-     */
-    private AssetManager assetManager;
-    /**
      * An invisible box goemetry that is on top of the text to
      * make it clickable/touchable.
      */
     private Geometry overTouchBox;
+    private Vector3f initPosition;
 
-    public TextBox(AssetManager assetManager)
+    public TextBox(AssetManager assetManager, Vector3f initPosition, String textToDisplay, float size, ColorRGBA color, float textBoxWidth, float textBoxHeight, String textBoxName, BitmapFont.Align alignment, boolean showBoxDebug)
     {
-        this.assetManager = assetManager;
         this.detachAllChildren();
         guiFont = assetManager.loadFont("Interface/Fonts/Helvetica.fnt");
         text = new BitmapText(guiFont, false);
+        this.setName(textBoxName);
+        this.initPosition = initPosition;
+        init(assetManager, textToDisplay, size, color, textBoxWidth, textBoxHeight, alignment, showBoxDebug);
     }
 
     /**
@@ -79,6 +78,7 @@ public class TextBox extends Node {
     /**
      * Initialize the textbox with the provided parameters
      *
+     * @param assetManager  : asset manager used for textures and fonts
      * @param textToDisplay : (String) that represent the text shown
      * @param size          : (float): Size of the text
      * @param color         : (ColorRGBA) Color of the text
@@ -87,7 +87,8 @@ public class TextBox extends Node {
      * @param alignment     : (BitmapFont.Align) : Alignment of the text in the textbox
      * @param showBoxDebug  : (Boolean) : Show a box in back of the text for debugging the box width and height
      */
-    public void init(String textToDisplay,
+    public void init(AssetManager assetManager,
+                         String textToDisplay,
                          float size,
                          ColorRGBA color,
                          float textBoxWidth,
@@ -138,6 +139,5 @@ public class TextBox extends Node {
         //Attach both element to the textBox node
         this.attachChild(overTouchBox);
         this.attachChild(text);
-        
     }
 }
