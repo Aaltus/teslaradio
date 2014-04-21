@@ -83,7 +83,6 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
         if (areWavesEnabled) {
             if (readyForEmission) {
                 float magnitude = waveMagnitudes.get((waveIndex++)%waveMagnitudes.size());
-                System.out.println(magnitude);
                 emitParticles( magnitude );
                 readyForEmission=false;
             }
@@ -125,15 +124,11 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
     }
     
     private void emitAirParticles(Node waveNode, float magnitude)
-    {
-        
-        System.out.println("Wave magnitude is: "+magnitude);
-        
+    {        
         for (Vector3f path : paths) {
             
             Signal mySignal;
             int a = paths.indexOf(path);
-            System.out.println(a);
             if (paths.indexOf(path)==0)
                 mySignal = new Signal(mainParticle, path, particlesSpeed, magnitude, capturePathLength);
             else {

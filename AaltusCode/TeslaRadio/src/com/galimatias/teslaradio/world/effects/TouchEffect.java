@@ -42,7 +42,6 @@ public class TouchEffect extends Geometry {
         float scalingFactor = tpf*scaleGradient;
         scaling += scalingFactor;
         newPath = path.mult(scaling);
-        System.out.println("Scaling : " + ((Float)scaling).toString());
         
         if(this.getLocalScale().length() > maxScale) {
             this.removeFromParent();
