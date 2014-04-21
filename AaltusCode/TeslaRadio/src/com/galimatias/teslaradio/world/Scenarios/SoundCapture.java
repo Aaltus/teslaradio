@@ -75,9 +75,9 @@ public final class SoundCapture extends Scenario {
     private float SoundParticles_Speed = 50f;
     
     // CHANGE THESE VALUES TO SET THE TOUCH EFFECT BEHAVIOUR
-    private float scaleGradient = 50.0f;
-    private float maxScale = 100.0f;
-    private float minScale = 0.0f;
+    private float drumScaleGradient = 50.0f;
+    private float drumMaxScale = 20.0f;
+    private float drumMinScale = 0.0f;
     
     // Default text to be seen when scenario starts
     private String defaultText = "This is the first module: \n Sound Capture";
@@ -284,13 +284,14 @@ public final class SoundCapture extends Scenario {
     
         Material effect_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         effect_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
-        Box rect = new Box(10.0f, 0.01f, 10.0f);
+        effect_mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        Box rect = new Box(1.0f, Float.MIN_VALUE, 1.0f);
         Geometry drumTouchEffect = new Geometry("DrumTouchEffect",rect);
         drumTouchEffect.setMaterial(effect_mat);
         
-        touchEffectEmitter = new TouchEffectEmitter("DrumEffect", minScale, maxScale, scaleGradient, drumTouchEffect, Vector3f.UNIT_X);
+        touchEffectEmitter = new TouchEffectEmitter("DrumEffect", drumMinScale, drumMaxScale, drumScaleGradient, drumTouchEffect, new Vector3f(1.0f,0.0f,1.0f));
         this.attachChild(touchEffectEmitter);
-        touchEffectEmitter.setLocalTranslation(drumHandleOutPosition);
+        touchEffectEmitter.setLocalTranslation(drumHandleOutPosition.add(new Vector3f(0.0f,1.0f,0.0f)));
     }
 
 
