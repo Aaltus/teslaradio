@@ -459,8 +459,10 @@ void configureVideoBackground()
 
     // Get the default video mode:
     QCAR::CameraDevice& cameraDevice = QCAR::CameraDevice::getInstance();
-    QCAR::VideoMode videoMode = cameraDevice.
-                                getVideoMode(QCAR::CameraDevice::MODE_DEFAULT);
+    QCAR::VideoMode videoMode = cameraDevice.getVideoMode(QCAR::CameraDevice::MODE_DEFAULT);
+
+    //Jonathan Desmarais I try to use the optimize speed video config but it was successful
+    //QCAR::VideoMode videoMode = cameraDevice.getVideoMode(QCAR::CameraDevice::MODE_OPTIMIZE_SPEED);
 
 
     // Configure the video background
@@ -468,7 +470,11 @@ void configureVideoBackground()
 
     config.mEnabled = false;
 
-    config.mSynchronous = true;
+    //Jonathan Desmarais: I change this to optimize the FPS of the App the rendering frame
+    // and the camera frame are not synchronized making the code must effective.
+    //config.mSynchronous = true;
+    config.mSynchronous = false;
+
     config.mPosition.data[0] = 0.0f;
     config.mPosition.data[1] = 0.0f;
     
