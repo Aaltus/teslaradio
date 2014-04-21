@@ -73,7 +73,7 @@ public final class SoundCapture extends Scenario {
     
     // CHANGE THESE VALUES TO SET THE TOUCH EFFECT BEHAVIOUR
     private float drumScaleGradient = 50.0f;
-    private float drumMaxScale = 23.0f;
+    private float drumMaxScale = 20.0f;
     private float drumMinScale = 0.0f;
     
     // Default text to be seen when scenario starts
