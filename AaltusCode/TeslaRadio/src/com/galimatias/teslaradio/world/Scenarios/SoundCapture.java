@@ -84,9 +84,10 @@ public final class SoundCapture extends Scenario {
     
     // Default text to be seen when scenario starts
     private String titleText = "La Capture du Son";
-    private String instrumentText = "Les instruments modifient la pression autour d’eux. Ces zones de pressions se propagent à la vitesse du son.";
-    private String microphoneText = "L’énergie acoustique contenue dans le son se transforme en énergie électrique grâce au microphone.";
+    private String instrumentText = "Les instruments modifient la pression d'air autour d’eux avec leur vibration. Ces zones de pressions se propagent à la vitesse du son.";
+    private String microphoneText = "L’énergie acoustique contenue dans le son se transforme en énergie électrique grâce à la vibration de la bobine magnétique dans le microphone.";
     private float titleTextSize = 0.5f;
+    private float secondaryTextSize = 0.25f;
     private float instrumentTextSize = 0.25f;
     private float microphoneTextSize = 0.25f;
     private ColorRGBA defaultTextColor = new ColorRGBA(255f/255f, 232f/255f, 0f, 1f);
@@ -345,10 +346,21 @@ public final class SoundCapture extends Scenario {
         float textBoxWidth = 5.2f;
         float textBoxHeight = 0.8f;
         Vector3f titleTextPosition = new Vector3f(0f, 6.5f, 0f);
-        titleTextBox = new TextBox(assetManager, titleTextPosition, titleText, titleTextSize, defaultTextColor, textBoxWidth, textBoxHeight, "titletext", BitmapFont.Align.Center, false);
+        titleTextBox = new TextBox(assetManager, titleTextPosition, titleText, titleTextSize, defaultTextColor, textBoxWidth, textBoxHeight, "titleText", BitmapFont.Align.Center, false);
         titleTextBox.move(titleTextPosition);
         
         // Add other text boxes here
+        float instrumentTextBoxWidth = 4f;
+        float instrumentTextBoxHeight = 2f;
+        Vector3f instrumentTextPosition = ((drumHandleOut.getLocalTranslation().subtract(guitarHandleOut.getLocalTranslation())).divide(2f)).add(new Vector3f(-4f, 2f, 0f));
+        instrumentTextBox = new TextBox(assetManager, instrumentTextPosition, instrumentText, secondaryTextSize, defaultTextColor, instrumentTextBoxWidth, instrumentTextBoxHeight, "instrumentText", BitmapFont.Align.Center, false);
+        instrumentTextBox.move(instrumentTextPosition);
+        
+        float micTextBoxWidth = 4f;
+        float micTextBoxHeight = 1.8f;
+        Vector3f microphoneTextPosition = micHandleIn.getLocalTranslation().add(new Vector3f(2f, 2f, 0f));
+        microphoneTextBox = new TextBox(assetManager, microphoneTextPosition, instrumentText, secondaryTextSize, defaultTextColor, micTextBoxWidth, micTextBoxHeight, "instrumentText", BitmapFont.Align.Center, false);
+        microphoneTextBox.move(microphoneTextPosition);
         
         
         // Messages to display if textBox is touched
@@ -357,6 +369,8 @@ public final class SoundCapture extends Scenario {
         //lstUpdatedText.add("Aliquam euismod diam eget pharetra imperdiet.");
 
         touchable.attachChild(titleTextBox);
+        touchable.attachChild(instrumentTextBox);
+        touchable.attachChild(microphoneTextBox);
     }
     
     public void initImageBoxes()
@@ -523,8 +537,9 @@ public final class SoundCapture extends Scenario {
         
         if(Camera != null) {
             Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
-            titleTextBox.simpleUpdate(updatedText, updatedTextSize, updatedTextColor, this.Camera, upVector);
-            
+            titleTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
+            instrumentTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
+            microphoneTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
             // Resetting the values so that it is noob proof
             updatedText = null;
             updatedTextSize = 0.0f;
