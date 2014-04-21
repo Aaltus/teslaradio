@@ -37,16 +37,16 @@ public class TextBox extends Node {
      * make it clickable/touchable.
      */
     private Geometry overTouchBox;
-    private Vector3f initPosition;
+    private Geometry backgroundBox;
+    
 
-    public TextBox(AssetManager assetManager, Vector3f initPosition, String textToDisplay, float size, ColorRGBA color, float textBoxWidth, float textBoxHeight, String textBoxName, BitmapFont.Align alignment, boolean showBoxDebug)
+    public TextBox(AssetManager assetManager, String textToDisplay, float size, ColorRGBA color,  ColorRGBA backgroundColor, float textBoxWidth, float textBoxHeight, String textBoxName, BitmapFont.Align alignment, boolean showBoxDebug)
     {
         this.detachAllChildren();
         guiFont = assetManager.loadFont("Interface/Fonts/Helvetica.fnt");
         text = new BitmapText(guiFont, false);
         this.setName(textBoxName);
-        this.initPosition = initPosition;
-        init(assetManager, textToDisplay, size, color, textBoxWidth, textBoxHeight, alignment, showBoxDebug);
+        init(assetManager, textToDisplay, size, color, backgroundColor, textBoxWidth, textBoxHeight, alignment, showBoxDebug);
     }
 
     /**
@@ -91,6 +91,7 @@ public class TextBox extends Node {
                          String textToDisplay,
                          float size,
                          ColorRGBA color,
+                         ColorRGBA backgroundColor,
                          float textBoxWidth,
                          float textBoxHeight,
                          BitmapFont.Align alignment,
@@ -111,6 +112,9 @@ public class TextBox extends Node {
         //Add an invisible geometry in front of the textbox to make it clickable/touchable
         Quad quad = new Quad(textBoxWidth, textBoxHeight);
         overTouchBox = new Geometry("quad", quad);
+        
+        Quad backgroundQuad = new Quad(textBoxWidth, textBoxHeight);
+        backgroundBox = new Geometry("backgoundBox", backgroundQuad);
 
 
 
@@ -135,8 +139,17 @@ public class TextBox extends Node {
         overTouchBox.setMaterial(boxMat);
         //move the box to the center of the box to make it rotate around its center instead of its left side
         overTouchBox.move(-textBoxWidth / 2.0f, 0, 0);
+        
+        Material backgroundBoxMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        backgroundBoxMat.setColor("Color", backgroundColor);
+        backgroundBoxMat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+        backgroundBox.setQueueBucket(Bucket.Transparent);
+        backgroundBox.setMaterial(backgroundBoxMat);
+        backgroundBox.setLocalTranslation(0, -textBoxHeight, -0.2f);
+        backgroundBox.move(-textBoxWidth / 2.0f, 0, 0);
 
         //Attach both element to the textBox node
+        this.attachChild(backgroundBox);
         this.attachChild(overTouchBox);
         this.attachChild(text);
     }
