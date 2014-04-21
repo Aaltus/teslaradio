@@ -21,6 +21,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Quad;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -184,7 +185,7 @@ public final class SoundCapture extends Scenario {
         float drum2MicLength = drum2MicVector.length();
         
         // instantiate 3d Sound particul model
-        Box rect = new Box(1.0f, 1.0f, Float.MIN_VALUE);
+        Quad rect = new Quad(1.0f, 1.0f);
         Geometry soundParticle = new Geometry("particul",rect);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         soundParticul_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
@@ -234,7 +235,7 @@ public final class SoundCapture extends Scenario {
         //Geometry soundParticle = new Geometry("particul",sphere);
         //Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         
-        Box rect = new Box(1.0f, 1.0f, 0.01f);
+        Quad rect = new Quad(1.0f, 1.0f);
         Geometry soundParticle = new Geometry("particul",rect);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         soundParticul_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
