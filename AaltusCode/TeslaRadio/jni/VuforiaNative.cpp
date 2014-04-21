@@ -325,10 +325,13 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
 
    jclass activityClass = env->GetObjectClass(obj);
+   jmethodID attachScenarios = env->GetMethodID(activityClass,"attachScenarios", "(Z)V");
+   bool seeTrackables = false;
 
     //Jonathan Desmarais: Check if we have a trackable result
     if (state.getNumTrackableResults() > 0){
 
+        seeTrackables = true;
 
         // Did we find any trackables this frame?
         for(int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++)
@@ -413,8 +416,8 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
             //JNIEnv *env;
             //jvm->AttachCurrentThread((void **)&env, NULL);
 
-//            jmethodID attachShootables = env->GetMethodID(activityClass,"attachShootables", "()V");
-//            env->CallVoidMethod(obj,attachShootables);
+
+
 
 
             jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
@@ -443,11 +446,11 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
         }
     }
 
-//    else{
-//
-//        jmethodID detachShootables = env->GetMethodID(activityClass,"detachShootables", "()V");
-//        env->CallVoidMethod(obj,detachShootables);
-//    }
+    else
+    {
+        seeTrackables = false;
+    }
+    env->CallVoidMethod(obj,attachScenarios,seeTrackables);
 
     QCAR::Renderer::getInstance().end();
 }

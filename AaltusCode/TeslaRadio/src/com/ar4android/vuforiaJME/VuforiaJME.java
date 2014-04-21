@@ -273,6 +273,26 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 
     }
 
+    //TODO: TEMPORARY NEED REFACTORING TO SUPPORT MULTI SCENARIO
+    /**
+     * Simple function to detach or attach children scenario to the
+     * rootNode. Called from native code.
+     * @param attachScenarios
+     */
+    public void attachScenarios(boolean attachScenarios)
+    {
+        boolean hasScenarioChild = rootNode.hasChild(soundCapture);
+
+        if (!hasScenarioChild && attachScenarios)
+        {
+            rootNode.attachChild(soundCapture);
+        }
+        else if (hasScenarioChild && !attachScenarios)
+        {
+            rootNode.detachChild(soundCapture);
+        }
+    }
+
 	public void setCameraPerspectiveNative(float fovY,float aspectRatio) {
         // Log.d(TAG,"Update Camera Perspective..");
 
