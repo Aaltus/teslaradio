@@ -14,33 +14,47 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Quad;
 
 /**
- *
- * @author Greenwood0
+ * This class provides a floating 2D image for the 3D world. 
+ * @author Emilien Boisvert
  */
 public class ImageBox extends Node{
     
     private Box imageRect;
     private Geometry imageGeom;
     private Vector3f initPosition;
+    private float fadingTime = 3f;
+    private float currentFadingTime = 0f;
+    private boolean showImage = true;
     
     /**
-     * 
+     * Constructor with all variables
      * @param width
      * @param height
      * @param assetManager
      * @param imageBoxName
      * @param imagePath 
      */
-    public ImageBox(float width, float height, Vector3f initPosition, AssetManager assetManager, String imageBoxName, String imagePath)
+    public ImageBox(float width, float height, Vector3f initPosition, AssetManager assetManager, String imageBoxName, String imagePath, float fadingTime)
     {
         this.initPosition = initPosition;
+        this.fadingTime = fadingTime;
         init(width, height, assetManager, imageBoxName, imagePath);
         
     }
+    
     /**
-     * 
+     * Set the show image bool that will create a fade in/ fade out.
+     * @param showImage the showImage to set
+     */
+    public void setShowImage(boolean showImage) {
+        this.showImage = showImage;
+    }
+    
+    /**
+     * Initialize the 3D box and textures
      * @param width
      * @param height
      * @param assetManager
@@ -52,28 +66,40 @@ public class ImageBox extends Node{
         imageRect = new Box(width, height, Float.MIN_VALUE);
         imageGeom = new Geometry(imageBoxName ,imageRect);
         Material imageBoxMat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        //Texture imageTexture = assetManager.loadTexture(imagePath);
+        //imageTexture.set
         imageBoxMat.setTexture("ColorMap", assetManager.loadTexture(imagePath));
         imageBoxMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         imageGeom.setQueueBucket(RenderQueue.Bucket.Transparent);
         imageGeom.setMaterial(imageBoxMat);
         this.attachChild(imageGeom);
         this.move(initPosition);
+        
     }
-    
-    
-        /**
+ 
+    /**
+     * This function rotates the image to face the camera. It's also managign the texture fading
      * 
-     * This function rotates the image to face the camera
-     *
      * @param updatedText
      * @param updatedSize
      * @param updatedColor
      * @param cam
      * @param scenarioUpVector
      */
-    public void simpleUpdate(Camera cam, Vector3f scenarioUpVector)
+    public void simpleUpdate(float tpf, Camera cam, Vector3f scenarioUpVector)
     {
         this.lookAt(cam.getLocation(), scenarioUpVector);
+        
+        if (showImage && currentFadingTime < fadingTime)
+        {
+            currentFadingTime += tpf;
+            imageGeom.getMaterial().setColor("Color", new ColorRGBA(1f ,1f ,1f,currentFadingTime / fadingTime));
+        }
+        else if(!showImage && currentFadingTime > 0)
+        {
+            currentFadingTime -= tpf;
+            imageGeom.getMaterial().setColor("Color", new ColorRGBA(1f ,1f ,1f,currentFadingTime / fadingTime));
+        }
     }
     
 }
