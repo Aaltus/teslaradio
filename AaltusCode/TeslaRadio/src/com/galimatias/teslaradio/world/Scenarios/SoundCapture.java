@@ -447,6 +447,13 @@ public final class SoundCapture extends Scenario {
         imageHintGuitar.simpleUpdate(tpf, this.Camera, upVector);   
     }
     
+    public void textBoxesUpdate(Vector3f upVector)
+    {
+        titleTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
+        instrumentTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
+        microphoneTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);  
+    }
+    
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
 
@@ -507,7 +514,7 @@ public final class SoundCapture extends Scenario {
                             this.guitarTouchEffect();
                             break;
                         }
-                        else if (nameToCompare == titleTextBox.getName())
+                        else if (nameToCompare == titleTextBox.getName() || nameToCompare == instrumentTextBox.getName() || nameToCompare == microphoneTextBox.getName())
                         {
                             //this.textTouchEffect();
                             showInformativeMenu = true;
@@ -541,15 +548,14 @@ public final class SoundCapture extends Scenario {
         
         if(Camera != null) {
             Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
-            titleTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
-            instrumentTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
-            microphoneTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
+
             // Resetting the values so that it is noob proof
-            updatedText = null;
-            updatedTextSize = 0.0f;
-            updatedTextColor = null;
+            //updatedText = null;
+            //updatedTextSize = 0.0f;
+            //updatedTextColor = null;
             //Log.d(TAG,"Camera position :" + Camera.getLocation());
             
+            textBoxesUpdate(upVector);
             hintsUpdate(tpf, upVector);
         }
 
