@@ -31,6 +31,9 @@ public class Signal extends Geometry {
     private float distanceTraveled;
     private float capturePathLength = -1;
     
+    private int lineIndex = 0;
+    private float currentLength = 0;
+    
     // Linear path Particle
     public Signal(Geometry particle, Vector3f path, float speed, float startScale) {
             this.setMesh(particle.getMesh());
@@ -88,14 +91,16 @@ public class Signal extends Geometry {
         if (distanceTraveled> curvedPath.getTotalLength()) 
         {
             //((SignalEmitter) this.getParent()).notifyObservers();
+            lineIndex = 0;
             this.removeFromParent();
         }
         else 
         {
             
             // calculate position
-            int lineIndex = 0;
-            float currentLength = curvePath_segmentLength.get(lineIndex);
+            lineIndex = lineIndex;
+            currentLength = currentLength + curvePath_segmentLength.get(lineIndex);
+            
             while(distanceTraveled > currentLength)
             {
                 lineIndex++;            
