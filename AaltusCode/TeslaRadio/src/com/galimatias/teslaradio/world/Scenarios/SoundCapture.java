@@ -55,7 +55,9 @@ public final class SoundCapture extends Scenario {
     private SignalEmitter GuitarSoundEmitter;
     private SignalEmitter MicWireEmitter;
 
-    private TextBox textBox;
+    private TextBox titleTextBox;
+    private TextBox instrumentTextBox;
+    private TextBox microphoneTextBox;
     
     private ImageBox imageHintDrum;
     private ImageBox imageHintGuitar;
@@ -80,9 +82,13 @@ public final class SoundCapture extends Scenario {
     private float drumMinScale = 0.0f;
     
     // Default text to be seen when scenario starts
-    private String defaultText = "This is the first module: \n Sound Capture";
-    private float defaultTextSize = 0.5f;
-    private ColorRGBA defaultTextColor = ColorRGBA.White;
+    private String titleText = "La Capture du Son";
+    private String instrumentText = "Les instruments modifient la pression autour d’eux. Ces zones de pressions se propagent à la vitesse du son.";
+    private String microphoneText = "L’énergie acoustique contenue dans le son se transforme en énergie électrique grâce au microphone.";
+    private float titleTextSize = 0.5f;
+    private float instrumentTextSize = 0.25f;
+    private float microphoneTextSize = 0.25f;
+    private ColorRGBA defaultTextColor = new ColorRGBA(255f/255f, 232f/255f, 0f, 1f);
     
     // Updated values of the textbox, the list contains the messages when updated
     private LinkedList<String> lstUpdatedText = new LinkedList<String>();
@@ -335,32 +341,36 @@ public final class SoundCapture extends Scenario {
 
     public void initTextBox()
     {
-        float textBoxWidth = 5f;
-        float textBoxHeight = 1.8f;
-        textBox = new TextBox(assetManager);
-        textBox.init(defaultText, defaultTextSize, defaultTextColor, textBoxWidth, textBoxHeight, BitmapFont.Align.Center, false);
-        textBox.move(0, 7.5f, 0);
-        textBox.setName("Text");
+        float textBoxWidth = 5.2f;
+        float textBoxHeight = 0.8f;
+        Vector3f titleTextPosition = new Vector3f(0f, 6.5f, 0f);
+        titleTextBox = new TextBox(assetManager, titleTextPosition, titleText, titleTextSize, defaultTextColor, textBoxWidth, textBoxHeight, "titletext", BitmapFont.Align.Center, false);
+        titleTextBox.move(titleTextPosition);
+        
+        
+        //Vector3f instrumentTextPosition = drumHandleOut.getLocalTranslation().subtract()
+        
+        
 
         // Messages to display if textBox is touched
-        lstUpdatedText.add("Aliquam erat volutpat. Vestibulum tempor ");
-        lstUpdatedText.add(" amet quam eu consectetur. Duis dapibus,");
-        lstUpdatedText.add("Aliquam euismod diam eget pharetra imperdiet.");
+        //lstUpdatedText.add("Aliquam erat volutpat. Vestibulum tempor ");
+        //lstUpdatedText.add(" amet quam eu consectetur. Duis dapibus,");
+        //lstUpdatedText.add("Aliquam euismod diam eget pharetra imperdiet.");
 
-        touchable.attachChild(textBox);
+        touchable.attachChild(titleTextBox);
     }
     
     public void initImageBoxes()
     {
         Vector3f imageHintDrumPosition = drumHandleOut.getLocalTranslation().add(new Vector3f(0, 0.65f, 0f));
-        imageHintDrum = new ImageBox(0.4f, 0.75f, imageHintDrumPosition, assetManager, "Drum Touch Hint", "Textures/Selection_Hand.png", 1f);
+        imageHintDrum = new ImageBox(0.4f, 0.75f, assetManager, "Drum Touch Hint", "Textures/Selection_Hand.png", 1f);
+        imageHintDrum.move(imageHintDrumPosition);
         this.scene.attachChild(imageHintDrum);
         
         Vector3f imageHintGuitarPosition = guitarHandleOut.getLocalTranslation().add(new Vector3f(0, 0.6f, 0f));
-        imageHintGuitar = new ImageBox(0.4f, 0.75f, imageHintGuitarPosition, assetManager, "Guitar Touch Hint", "Textures/Selection_Hand.png", 1f);
+        imageHintGuitar = new ImageBox(0.4f, 0.75f, assetManager, "Guitar Touch Hint", "Textures/Selection_Hand.png", 1f);
+        imageHintGuitar.move(imageHintGuitarPosition);
         this.scene.attachChild(imageHintGuitar);
-        
-        
     }
 
     public void drumTouchEffect()
@@ -480,7 +490,7 @@ public final class SoundCapture extends Scenario {
                             this.guitarTouchEffect();
                             break;
                         }
-                        else if (nameToCompare == textBox.getName())
+                        else if (nameToCompare == titleTextBox.getName())
                         {
                             //this.textTouchEffect();
                             showInformativeMenu = true;
@@ -514,7 +524,7 @@ public final class SoundCapture extends Scenario {
         
         if(Camera != null) {
             Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
-            textBox.simpleUpdate(updatedText, updatedTextSize, updatedTextColor, this.Camera, upVector);
+            titleTextBox.simpleUpdate(updatedText, updatedTextSize, updatedTextColor, this.Camera, upVector);
             
             // Resetting the values so that it is noob proof
             updatedText = null;
