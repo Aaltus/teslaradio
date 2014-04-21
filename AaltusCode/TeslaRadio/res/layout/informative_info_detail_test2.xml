@@ -21,7 +21,7 @@
 
         <com.utils.GifWebView android:layout_width="wrap_content"
                                          android:layout_height="wrap_content"
-                                         myapp:url="file:///android_asset/Gifs/PressionV14.gif"
+                                         myapp:url="file:///android_asset/Gifs/Pression.html"
                 />
 
     <!--<ImageView-->
