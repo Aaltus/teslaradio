@@ -470,7 +470,11 @@ void configureVideoBackground()
 
     config.mEnabled = false;
 
-    config.mSynchronous = true;
+    //Jonathan Desmarais: I change this to optimize the FPS of the App the rendering frame
+    // and the camera frame are not synchronized making the code must effective.
+    //config.mSynchronous = true;
+    config.mSynchronous = false;
+
     config.mPosition.data[0] = 0.0f;
     config.mPosition.data[1] = 0.0f;
     
