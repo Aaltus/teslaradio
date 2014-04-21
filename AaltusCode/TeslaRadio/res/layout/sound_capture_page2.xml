@@ -26,8 +26,8 @@
 
     <ImageView
             android:id="@+id/sound_capture_image"
-            android:layout_width="600dp"
-            android:layout_height="300dp"
+            android:layout_width="800dp"
+            android:layout_height="320dp"
             android:layout_gravity="center"
             android:src="@drawable/principe_dynamic_microphone"
 
