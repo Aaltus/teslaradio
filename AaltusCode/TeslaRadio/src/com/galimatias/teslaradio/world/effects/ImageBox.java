@@ -24,7 +24,6 @@ public class ImageBox extends Node{
     
     private Box imageRect;
     private Geometry imageGeom;
-    private Vector3f initPosition;
     private float fadingTime = 3f;
     private float currentFadingTime = 0f;
     private boolean showImage = true;
@@ -37,9 +36,8 @@ public class ImageBox extends Node{
      * @param imageBoxName
      * @param imagePath 
      */
-    public ImageBox(float width, float height, Vector3f initPosition, AssetManager assetManager, String imageBoxName, String imagePath, float fadingTime)
+    public ImageBox(float width, float height, AssetManager assetManager, String imageBoxName, String imagePath, float fadingTime)
     {
-        this.initPosition = initPosition;
         this.fadingTime = fadingTime;
         init(width, height, assetManager, imageBoxName, imagePath);
         
@@ -73,7 +71,6 @@ public class ImageBox extends Node{
         imageGeom.setQueueBucket(RenderQueue.Bucket.Transparent);
         imageGeom.setMaterial(imageBoxMat);
         this.attachChild(imageGeom);
-        this.move(initPosition);
         
     }
  
