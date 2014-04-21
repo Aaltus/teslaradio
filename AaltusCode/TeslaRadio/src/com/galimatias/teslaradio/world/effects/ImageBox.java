@@ -24,7 +24,7 @@ public class ImageBox extends Node{
     
     private Box imageRect;
     private Geometry imageGeom;
-    private float fadingTime = 3f;
+    private float fadingTime = 0f;
     private float currentFadingTime = 0f;
     private boolean showImage = true;
     
@@ -39,6 +39,7 @@ public class ImageBox extends Node{
     public ImageBox(float width, float height, AssetManager assetManager, String imageBoxName, String imagePath, float fadingTime)
     {
         this.fadingTime = fadingTime;
+        currentFadingTime = fadingTime;
         init(width, height, assetManager, imageBoxName, imagePath);
         
     }
@@ -86,17 +87,20 @@ public class ImageBox extends Node{
     public void simpleUpdate(float tpf, Camera cam, Vector3f scenarioUpVector)
     {
         this.lookAt(cam.getLocation(), scenarioUpVector);
-        
+
         if (showImage && currentFadingTime < fadingTime)
         {
             currentFadingTime += tpf;
             imageGeom.getMaterial().setColor("Color", new ColorRGBA(1f ,1f ,1f,currentFadingTime / fadingTime));
+            System.out.println("Fade In Time " + currentFadingTime);
         }
         else if(!showImage && currentFadingTime > 0)
         {
             currentFadingTime -= tpf;
             imageGeom.getMaterial().setColor("Color", new ColorRGBA(1f ,1f ,1f,currentFadingTime / fadingTime));
+            System.out.println("Fade Out Time " + currentFadingTime);
         }
+        
     }
     
 }
