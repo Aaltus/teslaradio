@@ -56,6 +56,9 @@ public final class SoundCapture extends Scenario {
     private SignalEmitter MicWireEmitter;
 
     private TextBox textBox;
+    
+    private ImageBox imageHintDrum;
+    private ImageBox imageHintGuitar;
 
     private Vector<Vector3f> drum_trajectories = new Vector<Vector3f>();
     private Vector<Vector3f> guitar_trajectories = new Vector<Vector3f>();
@@ -120,7 +123,6 @@ public final class SoundCapture extends Scenario {
         guitarHandleOut = scene.getParent().getChild("Guitar_Output_Handle");
         drumHandleOut = scene.getParent().getChild("Drum_Output_Handle");
         micHandleIn = scene.getParent().getChild("Mic_Input_Handle");
-        
         drumPosition = drum.getLocalTranslation(); //drum.getLocalTranslation();
         guitarPosition = guitar.getLocalTranslation(); //guitar.getWorldTranslation();
         micPosition = micro.getWorldTranslation();
@@ -130,6 +132,7 @@ public final class SoundCapture extends Scenario {
         
         initAudio();
         initTextBox();
+        initImageBoxes();
         initHaloEffects();
 
     }
@@ -171,7 +174,7 @@ public final class SoundCapture extends Scenario {
         float drum2MicLength = drum2MicVector.length();
         
         // instantiate 3d Sound particul model
-        Box rect = new Box(1.0f, 1.0f, 0.01f);
+        Box rect = new Box(1.0f, 1.0f, Float.MIN_VALUE);
         Geometry soundParticle = new Geometry("particul",rect);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         soundParticul_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
@@ -343,6 +346,21 @@ public final class SoundCapture extends Scenario {
 
         touchable.attachChild(textBox);
     }
+    
+    public void initImageBoxes()
+    {
+        Vector3f imageHintDrumPosition = drum.getLocalTranslation().add(new Vector3f(0, 5f, 0f));
+        imageHintDrum = new ImageBox(1.0f, 1.0f, imageHintDrumPosition, assetManager, "Drum Touch Hint", "Textures/Electric3.png");
+        //imageHintDrum.move(drum.getLocalTranslation().add(new Vector3f(0, 5f, 0f)));
+        this.scene.attachChild(imageHintDrum);
+        
+        Vector3f imageHintGuitarPosition = guitar.getLocalTranslation().add(new Vector3f(0, 5f, 0f));
+        imageHintGuitar = new ImageBox(1.0f, 1.0f, imageHintGuitarPosition, assetManager, "Guitar Touch Hint", "Textures/Electric3.png");
+        //imageHintGuitar.move(guitar.getLocalTranslation().add(new Vector3f(0, 5f, 0f)));
+        this.scene.attachChild(imageHintGuitar);
+        
+        
+    }
 
     public void drumTouchEffect()
     {        
@@ -464,6 +482,9 @@ public final class SoundCapture extends Scenario {
             updatedTextSize = 0.0f;
             updatedTextColor = null;
             //Log.d(TAG,"Camera position :" + Camera.getLocation());
+            
+            imageHintDrum.simpleUpdate(this.Camera, upVector, 2f);
+            imageHintGuitar.simpleUpdate(this.Camera, upVector, 2f);
         }
 
         if (showInformativeMenu)
