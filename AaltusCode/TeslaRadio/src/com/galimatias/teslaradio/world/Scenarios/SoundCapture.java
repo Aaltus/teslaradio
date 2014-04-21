@@ -89,6 +89,10 @@ public final class SoundCapture extends Scenario {
     private String updatedText = null;
     private float updatedTextSize = 0.0f;
     private ColorRGBA updatedTextColor = null;
+    
+    // Refresh hint values
+    private float maxTimeRefreshHint = 30f;
+    private float timeLastTouch = maxTimeRefreshHint;
        
     public SoundCapture(AssetManager assetManager, Camera Camera)
     {
@@ -261,9 +265,7 @@ public final class SoundCapture extends Scenario {
         Node micWire_node = (Node) scene.getParent().getChild("WirePath");
         Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
         Mesh micWire_mesh = micWire_geom.getMesh();
-        
-        //Vector3f f = micWire_node.getWorldScale();
-        
+
         curvedPath = directionFactory.getCurvedPath(micWire_mesh);
         
         // instantiate 3d Sound particul model
@@ -350,12 +352,12 @@ public final class SoundCapture extends Scenario {
     
     public void initImageBoxes()
     {
-        Vector3f imageHintDrumPosition = drumHandleOut.getLocalTranslation().add(new Vector3f(0, 0.5f, 0f));
-        imageHintDrum = new ImageBox(0.4f, 0.75f, imageHintDrumPosition, assetManager, "Drum Touch Hint", "Textures/Selection_Hand.png");
+        Vector3f imageHintDrumPosition = drumHandleOut.getLocalTranslation().add(new Vector3f(0, 0.65f, 0f));
+        imageHintDrum = new ImageBox(0.4f, 0.75f, imageHintDrumPosition, assetManager, "Drum Touch Hint", "Textures/Selection_Hand.png", 1f);
         this.scene.attachChild(imageHintDrum);
         
-        Vector3f imageHintGuitarPosition = guitarHandleOut.getLocalTranslation().add(new Vector3f(0, 0.5f, 0f));
-        imageHintGuitar = new ImageBox(0.4f, 0.75f, imageHintGuitarPosition, assetManager, "Guitar Touch Hint", "Textures/Selection_Hand.png");
+        Vector3f imageHintGuitarPosition = guitarHandleOut.getLocalTranslation().add(new Vector3f(0, 0.6f, 0f));
+        imageHintGuitar = new ImageBox(0.4f, 0.75f, imageHintGuitarPosition, assetManager, "Guitar Touch Hint", "Textures/Selection_Hand.png", 1f);
         this.scene.attachChild(imageHintGuitar);
         
         
@@ -363,6 +365,7 @@ public final class SoundCapture extends Scenario {
 
     public void drumTouchEffect()
     {        
+        this.removeHintImages();
         //DrumSoundEmitter.emitParticles(1.0f);
         DrumSoundEmitter.emitWaves();
         //MicWireEmitter.emitParticles();
@@ -374,9 +377,10 @@ public final class SoundCapture extends Scenario {
     }
     
     public void guitarTouchEffect()
-    {        
+    {       
+        this.removeHintImages();
         GuitarSoundEmitter.emitWaves();
-        guitar_sound.playInstance();           
+        guitar_sound.playInstance();  
     }
     
     public void textTouchEffect()
@@ -385,6 +389,35 @@ public final class SoundCapture extends Scenario {
         lstUpdatedText.add(updatedText);
         updatedTextSize = 0.0f;
         updatedTextColor = null;
+    }
+    
+    /**
+     * Remove hints, is called after touch occurs
+     */
+    public void removeHintImages()
+    {
+        timeLastTouch = 0f;
+        imageHintDrum.setShowImage(false);
+        imageHintGuitar.setShowImage(false);
+    }
+    
+    /**
+     * Show Hints, is called when no touch has occured for a while
+     */
+    public void ShowHintImages()
+    {
+        imageHintDrum.setShowImage(true);
+        imageHintGuitar.setShowImage(true);
+    }
+    /**
+     * regrouping Hints update
+     * @param tpf
+     * @param upVector 
+     */
+    public void hintsUpdate(float tpf, Vector3f upVector)
+    {
+        imageHintDrum.simpleUpdate(tpf, this.Camera, upVector);
+        imageHintGuitar.simpleUpdate(tpf, this.Camera, upVector);   
     }
     
     @Override
@@ -465,6 +498,13 @@ public final class SoundCapture extends Scenario {
 
     public boolean simpleUpdate(float tpf) {
          
+        timeLastTouch += tpf;
+     
+        if ((int)timeLastTouch == maxTimeRefreshHint)
+        {
+            ShowHintImages();
+        }
+        
         DrumSoundEmitter.simpleUpdate(tpf, this.Camera);
         GuitarSoundEmitter.simpleUpdate(tpf, this.Camera);
         MicWireEmitter.simpleUpdate(tpf, this.Camera);
@@ -482,8 +522,7 @@ public final class SoundCapture extends Scenario {
             updatedTextColor = null;
             //Log.d(TAG,"Camera position :" + Camera.getLocation());
             
-            imageHintDrum.simpleUpdate(this.Camera, upVector);
-            imageHintGuitar.simpleUpdate(this.Camera, upVector);
+            hintsUpdate(tpf, upVector);
         }
 
         if (showInformativeMenu)
