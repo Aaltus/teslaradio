@@ -71,11 +71,18 @@ public class ImageBox extends Node{
      * @param cam
      * @param scenarioUpVector
      */
+    public void simpleUpdate(Camera cam, Vector3f scenarioUpVector)
+    {
+        this.lookAt(cam.getLocation(), scenarioUpVector);
+    }
+    
+}
+
+/* Will be useful later
     public void simpleUpdate(Camera cam, Vector3f scenarioUpVector, float backDistance)
     {
         this.lookAt(cam.getLocation(), scenarioUpVector);
         Vector3f moveVector = ((this.getLocalTranslation().subtract(cam.getLocation())).normalize()).mult(new Vector3f(backDistance ,0f, backDistance));
         this.setLocalTranslation(initPosition.add(moveVector));
     }
-    
-}
+    */
