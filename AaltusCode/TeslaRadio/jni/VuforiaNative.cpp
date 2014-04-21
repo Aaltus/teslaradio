@@ -52,8 +52,6 @@
 #include <QCAR/DataSet.h>
 #include <QCAR/Image.h>
 
-#include "SampleMath.h"
-
 
 #include "MathUtils.h"
 
@@ -318,71 +316,18 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
     // Get the state from QCAR and mark the beginning of a rendering section
     QCAR::State state = QCAR::Renderer::getInstance().begin();
-    static QCAR::Matrix44F centerInv;
-     //get rotation
-    static float cam_right_x =0;
-    static float cam_right_y =0;
-    static float cam_right_z =0;
-    static float cam_up_x = 0;
-    static float cam_up_y= 0;
-    static float cam_up_z =0;
-    static float cam_dir_x =0;
-    static float cam_dir_y =0;
-    static float cam_dir_z =0;
+    
 
     // Explicitly render the Video Background
   //  QCAR::Renderer::getInstance().drawVideoBackground();
 
   //  if(QCAR::Renderer::getInstance().getVideoBackgroundConfig().mReflection == QCAR::VIDEO_BACKGROUND_REFLECTION_ON)
 
+
    jclass activityClass = env->GetObjectClass(obj);
 
-// Code pasted here to fix TR-141
-  //get perspective transformation
-  float nearPlane = 1.0f;
-  float farPlane  = 1000.0f;
-  const QCAR::CameraCalibration& cameraCalibration = QCAR::CameraDevice::getInstance().getCameraCalibration();
-
-  QCAR::VideoBackgroundConfig config = QCAR::Renderer::getInstance().getVideoBackgroundConfig();
-
-  float viewportWidth     = config.mSize.data[0];
-  float viewportHeight    = config.mSize.data[1];
-
-  QCAR::Vec2F size        = cameraCalibration.getSize();
-  QCAR::Vec2F focalLength = cameraCalibration.getFocalLength();
-  float fovRadians        = 2 * atan(0.5f * (size.data[1] / focalLength.data[1]));
-  float fovDegrees        = fovRadians * 180.0f / M_PI;
-  float aspectRatio       = size.data[0] / size.data[1];
-
-  //adjust for screen vs camera size distortion
-  float viewportDistort = 1.0;
-
-  if (viewportWidth != screenWidth)
-  {
-      viewportDistort = viewportWidth / (float) screenWidth;
-      fovDegrees      = fovDegrees    * viewportDistort;
-      aspectRatio     = aspectRatio   / viewportDistort;
-
-  }
-
-  if (viewportHeight != screenHeight)
-  {
-      viewportDistort = viewportHeight / (float) screenHeight;
-      fovDegrees      = fovDegrees     / viewportDistort;
-      aspectRatio     = aspectRatio    * viewportDistort;
-  }
-
-    jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
-    env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
-
-    // jclass activityClass = env->GetObjectClass(obj);
-    jmethodID setCameraViewportMethod = env->GetMethodID(activityClass,"setCameraViewportNative", "(FFFF)V");
-    env->CallVoidMethod(obj,setCameraViewportMethod,viewportWidth,viewportHeight,cameraCalibration.getSize().data[0],cameraCalibration.getSize().data[1]);
-
-
-// might not be useful since the loop will not execute if there are no trackables
     //Jonathan Desmarais: Check if we have a trackable result
-//    if (state.getNumTrackableResults() > 0){
+    if (state.getNumTrackableResults() > 0){
 
 
         // Did we find any trackables this frame?
@@ -394,100 +339,76 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
             const QCAR::TrackableResult* result = state.getTrackableResult(tIdx);
 
             //Stuplid code to simply log to trackable name
-            const QCAR::Trackable& trackable         = result->getTrackable();
-            const char*            trackableNameChar = trackable.getName();
-            const char*            loggingPrefix     = "UpdateTracking: Find trackable: ";
-            char                   logTrackableName[75];
-
+            const QCAR::Trackable& trackable = result->getTrackable();
+            const char* trackableNameChar = trackable.getName();
+            const char* loggingPrefix = "UpdateTracking: Find trackable: ";
+            char logTrackableName[75];
             strcpy(logTrackableName,loggingPrefix);
             strcat(logTrackableName,trackableNameChar);
-            const char * trackableToPrint    = (const char *)logTrackableName;
-            LOGE(trackableToPrint);
+            const char * trackableToPrint = (const char *)logTrackableName;
+            LOGD(trackableToPrint);
 
 
-            QCAR::Matrix44F modelViewMatrix = QCAR::Tool::convertPose2GLMatrix(result->getPose());
+            QCAR::Matrix44F modelViewMatrix =
+                QCAR::Tool::convertPose2GLMatrix(result->getPose());
 
             //get the camera transformation
-            QCAR::Matrix44F inverseMV   = MathUtil::Matrix44FInverse(modelViewMatrix);
+            QCAR::Matrix44F inverseMV = MathUtil::Matrix44FInverse(modelViewMatrix);
             //QCAR::Matrix44F invTranspMV = modelViewMatrix;
             QCAR::Matrix44F invTranspMV = MathUtil::Matrix44FTranspose(inverseMV);
-            if(tIdx == 0)
-            {
-                LOGE("VuforiaJME parsing matrix");
-                centerInv = inverseMV;
-                 //get rotation
-                cam_right_x = invTranspMV.data[0];
-                cam_right_y = invTranspMV.data[1];
-                cam_right_z = invTranspMV.data[2];
-                cam_up_x = invTranspMV.data[4];
-                cam_up_y = invTranspMV.data[5];
-                cam_up_z = invTranspMV.data[6];
-                cam_dir_x = invTranspMV.data[8];
-                cam_dir_y = invTranspMV.data[9];
-                cam_dir_z = invTranspMV.data[10];
-            }
-            else
-            {
-                QCAR::Matrix44F offset = QCAR::Tool::multiply(centerInv,MathUtil::Matrix44FTranspose(modelViewMatrix));
-                QCAR::Vec4F position(0.0f,0.0f,0.0f,1.0f);
-                position = SampleMath::Vec4FTransform(position,offset);
-                invTranspMV.data[12] = position.data[0];
-                invTranspMV.data[13] = position.data[1];
-                invTranspMV.data[14] = position.data[2];
-            }
 
             //get position
             float cam_x = invTranspMV.data[12];
             float cam_y = invTranspMV.data[13];
             float cam_z = invTranspMV.data[14];
 
-//get rotation
-//TR-116 commnting
-            //float cam_right_x = invTranspMV.data[0];
-            //float cam_right_y = invTranspMV.data[1];
-            //float cam_right_z = invTranspMV.data[2];
-            //float cam_up_x    = invTranspMV.data[4];
-            //float cam_up_y    = invTranspMV.data[5];
-            //float cam_up_z    = invTranspMV.data[6];
-            //float cam_dir_x   = invTranspMV.data[8];
-            //float cam_dir_y   = invTranspMV.data[9];
-            //float cam_dir_z   = invTranspMV.data[10];
+            //get rotation
+            float cam_right_x = invTranspMV.data[0];
+            float cam_right_y = invTranspMV.data[1];
+            float cam_right_z = invTranspMV.data[2];
+            float cam_up_x = invTranspMV.data[4];
+            float cam_up_y = invTranspMV.data[5];
+            float cam_up_z = invTranspMV.data[6];
+            float cam_dir_x = invTranspMV.data[8];
+            float cam_dir_y = invTranspMV.data[9];
+            float cam_dir_z = invTranspMV.data[10];
 
-//            //get perspective transformation
-//            float nearPlane = 1.0f;
-//            float farPlane  = 1000.0f;
-//            const QCAR::CameraCalibration& cameraCalibration = QCAR::CameraDevice::getInstance().getCameraCalibration();
-//
-//            QCAR::VideoBackgroundConfig config = QCAR::Renderer::getInstance().getVideoBackgroundConfig();
-//
-//            float viewportWidth  = config.mSize.data[0];
-//            float viewportHeight = config.mSize.data[1];
-//
-//            QCAR::Vec2F size        = cameraCalibration.getSize();
-//            QCAR::Vec2F focalLength = cameraCalibration.getFocalLength();
-//            float fovRadians        = 2 * atan(0.5f * (size.data[1] / focalLength.data[1]));
-//            float fovDegrees        = fovRadians * 180.0f / M_PI;
-//            float aspectRatio       = size.data[0] / size.data[1];
-//
-//            //adjust for screen vs camera size distorsion
-//            float viewportDistort = 1.0;
-//
-//            if (viewportWidth != screenWidth)
-//            {
-//                LOGW("updateTracking viewportWidth != screenWidth");
-//                viewportDistort = viewportWidth / (float) screenWidth;
-//                fovDegrees      = fovDegrees*viewportDistort;
-//                aspectRatio     = aspectRatio/viewportDistort;
-//
-//            }
-//
-//            if (viewportHeight != screenHeight)
-//            {
-//                LOGW("updateTracking viewportHeight != screenHeight");
-//                viewportDistort = viewportHeight / (float) screenHeight;
-//                fovDegrees      = fovDegrees/viewportDistort;
-//                aspectRatio     = aspectRatio*viewportDistort;
-//            }
+            //get perspective transformation
+            float nearPlane = 1.0f;
+            float farPlane = 1000.0f;
+            const QCAR::CameraCalibration& cameraCalibration =
+                                        QCAR::CameraDevice::getInstance().getCameraCalibration();
+
+            QCAR::VideoBackgroundConfig config = QCAR::Renderer::getInstance().getVideoBackgroundConfig();
+
+            float viewportWidth = config.mSize.data[0];
+            float viewportHeight = config.mSize.data[1];
+
+            QCAR::Vec2F size = cameraCalibration.getSize();
+            QCAR::Vec2F focalLength = cameraCalibration.getFocalLength();
+            float fovRadians = 2 * atan(0.5f * (size.data[1] / focalLength.data[1]));
+            float fovDegrees = fovRadians * 180.0f / M_PI;
+            float aspectRatio=(size.data[0]/size.data[1]);
+
+            //adjust for screen vs camera size distorsion
+            float viewportDistort=1.0;
+
+            if (viewportWidth != screenWidth)
+            {
+                LOGW("updateTracking viewportWidth != screenWidth");
+                viewportDistort = viewportWidth / (float) screenWidth;
+                fovDegrees=fovDegrees*viewportDistort;
+                aspectRatio=aspectRatio/viewportDistort;
+
+            }
+
+            if (viewportHeight != screenHeight)
+            {
+                LOGW("updateTracking viewportHeight != screenHeight");
+                viewportDistort = viewportHeight / (float) screenHeight;
+                fovDegrees=fovDegrees/viewportDistort;
+                aspectRatio=aspectRatio*viewportDistort;
+            }
 
             //JNIEnv *env;
             //jvm->AttachCurrentThread((void **)&env, NULL);
@@ -495,34 +416,32 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 //            jmethodID attachShootables = env->GetMethodID(activityClass,"attachShootables", "()V");
 //            env->CallVoidMethod(obj,attachShootables);
 
-            if(tIdx == 0)
-            {
 
-                jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
-                env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
-            }
+            jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
+            env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
+
+            // jclass activityClass = env->GetObjectClass(obj);
+            jmethodID setCameraViewportMethod = env->GetMethodID(activityClass,"setCameraViewportNative", "(FFFF)V");
+            env->CallVoidMethod(obj,setCameraViewportMethod,viewportWidth,viewportHeight,cameraCalibration.getSize().data[0],cameraCalibration.getSize().data[1]);
+
             //JNIEnv *env;
             //jvm->AttachCurrentThread((void **)&env, NULL);
 
            // jclass activityClass = env->GetObjectClass(obj);
+            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFF)V");
+            env->CallVoidMethod(obj,setCameraPoseMethod,cam_x,cam_y,cam_z);
 
-            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFFI)V");
-            env->CallVoidMethod(obj,setCameraPoseMethod,cam_x,cam_y,cam_z,tIdx);
-            LOGE("X=%f Y=%f Z=%f",cam_x,cam_y,cam_z);
-            if(tIdx == 0)
-            {
-                //jclass activityClass = env->GetObjectClass(obj);
-                jmethodID setCameraOrientationMethod = env->GetMethodID(activityClass,"setCameraOrientationNative", "(FFFFFFFFF)V");
-                env->CallVoidMethod(obj,setCameraOrientationMethod,cam_right_x,cam_right_y,cam_right_z,
-                        cam_up_x,cam_up_y,cam_up_z,cam_dir_x,cam_dir_y,cam_dir_z);
-            }
+            //jclass activityClass = env->GetObjectClass(obj);
+            jmethodID setCameraOrientationMethod = env->GetMethodID(activityClass,"setCameraOrientationNative", "(FFFFFFFFF)V");
+            env->CallVoidMethod(obj,setCameraOrientationMethod,cam_right_x,cam_right_y,cam_right_z,
+                    cam_up_x,cam_up_y,cam_up_z,cam_dir_x,cam_dir_y,cam_dir_z);
+
            // jvm->DetachCurrentThread();
 
            // LOG("Got tracking...");
 
-
         }
-//    }
+    }
 
 //    else{
 //
@@ -540,14 +459,18 @@ void configureVideoBackground()
 
     // Get the default video mode:
     QCAR::CameraDevice& cameraDevice = QCAR::CameraDevice::getInstance();
-    QCAR::VideoMode videoMode        = cameraDevice.getVideoMode(QCAR::CameraDevice::MODE_DEFAULT);
+    QCAR::VideoMode videoMode = cameraDevice.getVideoMode(QCAR::CameraDevice::MODE_DEFAULT);
+
+    //Jonathan Desmarais I try to use the optimize speed video config but it was successful
+    //QCAR::VideoMode videoMode = cameraDevice.getVideoMode(QCAR::CameraDevice::MODE_OPTIMIZE_SPEED);
+
 
     // Configure the video background
     QCAR::VideoBackgroundConfig config;
 
     config.mEnabled = false;
 
-    config.mSynchronous      = true;
+    config.mSynchronous = true;
     config.mPosition.data[0] = 0.0f;
     config.mPosition.data[1] = 0.0f;
     
@@ -582,11 +505,10 @@ void configureVideoBackground()
         }
     }
 
-    // Set the config:
-    QCAR::Renderer::getInstance().setVideoBackgroundConfig(config);
-
     LOGI("Configure Video Background : Video (%d,%d), Screen (%d,%d), mSize (%d,%d)", videoMode.mWidth, videoMode.mHeight, screenWidth, screenHeight, config.mSize.data[0], config.mSize.data[1]);
 
+    // Set the config:
+    QCAR::Renderer::getInstance().setVideoBackgroundConfig(config);
 }
 
 
@@ -619,31 +541,32 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitApplicationNative(
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera(JNIEnv *env, jobject obj)
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera(JNIEnv *,
+                                                                         jobject)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera");
     
     // Select the camera to open, set this to QCAR::CameraDevice::CAMERA_FRONT 
     // to activate the front camera instead.
-    QCAR::CameraDevice::CAMERA camera = QCAR::CameraDevice::CAMERA_BACK;
-    QCAR::CameraDevice& cameraDevice = QCAR::CameraDevice::getInstance();
+    QCAR::CameraDevice::CAMERA camera = QCAR::CameraDevice::CAMERA_DEFAULT;
 
     // Initialize the camera:
-    if (!cameraDevice.init(camera))
+    if (!QCAR::CameraDevice::getInstance().init(camera))
         return;
 
     // Configure the video background
     configureVideoBackground();
 
     // Select the default mode:
-    if (!cameraDevice.selectVideoMode(QCAR::CameraDevice::MODE_DEFAULT))
+    if (!QCAR::CameraDevice::getInstance().selectVideoMode(
+                                QCAR::CameraDevice::MODE_DEFAULT))
         return;
 
   //  QCAR::VideoMode videoMode = cameraDevice.
    //                      getVideoMode(QCAR::CameraDevice::MODE_OPTIMIZE_QUALITY);
 
     // Start the camera:
-    if (!cameraDevice.start())
+    if (!QCAR::CameraDevice::getInstance().start())
         return;
 
     QCAR::setFrameFormat(QCAR::RGB565, true);
@@ -686,7 +609,8 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setProjectionMatrix(JNIEnv *, 
     LOGD("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setProjectionMatrix");
 
     // Cache the projection matrix:
-    const QCAR::CameraCalibration& cameraCalibration = QCAR::CameraDevice::getInstance().getCameraCalibration();
+    const QCAR::CameraCalibration& cameraCalibration =
+                                QCAR::CameraDevice::getInstance().getCameraCalibration();
     projectionMatrix = QCAR::Tool::getProjectionGL(cameraCalibration, 2.0f, 2500.0f);
 }
 
