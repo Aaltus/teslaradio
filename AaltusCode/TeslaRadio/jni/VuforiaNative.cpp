@@ -129,17 +129,16 @@ class VuforiaJME_UpdateCallback : public QCAR::UpdateCallback
                 jmethodID method = env-> GetMethodID(javaClass, "setRGB565CameraImage", "([BII)V");
                 env->CallVoidMethod(activityObj, method, pixelArray, width, height);
 
+                // Added the release of the byte array buffer before deleting the reference. Seen this on a website...
                 env->ReleaseByteArrayElements(pixelArray, (jbyte*)pixels, JNI_ABORT);
                 env->DeleteLocalRef(pixelArray);
 
             }
         }
-
     }
 };
 
 VuforiaJME_UpdateCallback updateCallback;
-
 
 
 JNIEXPORT void JNICALL
