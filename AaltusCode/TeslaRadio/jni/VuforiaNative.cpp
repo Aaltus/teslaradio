@@ -317,6 +317,57 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
     // Get the state from QCAR and mark the beginning of a rendering section
     QCAR::State state = QCAR::Renderer::getInstance().begin();
+
+
+   jclass activityClass = env->GetObjectClass(obj);
+
+    // fix for TR-141
+    //get perspective transformation
+    float nearPlane = 1.0f;
+    float farPlane = 1000.0f;
+    const QCAR::CameraCalibration& cameraCalibration =
+                                QCAR::CameraDevice::getInstance().getCameraCalibration();
+
+    QCAR::VideoBackgroundConfig config = QCAR::Renderer::getInstance().getVideoBackgroundConfig();
+
+    float viewportWidth = config.mSize.data[0];
+    float viewportHeight = config.mSize.data[1];
+
+    QCAR::Vec2F size = cameraCalibration.getSize();
+    QCAR::Vec2F focalLength = cameraCalibration.getFocalLength();
+    float fovRadians = 2 * atan(0.5f * (size.data[1] / focalLength.data[1]));
+    float fovDegrees = fovRadians * 180.0f / M_PI;
+    float aspectRatio=(size.data[0]/size.data[1]);
+
+    //adjust for screen vs camera size distorsion
+    float viewportDistort=1.0;
+
+    if (viewportWidth != screenWidth)
+    {
+        LOGW("updateTracking viewportWidth != screenWidth");
+        viewportDistort = viewportWidth / (float) screenWidth;
+        fovDegrees      = fovDegrees * viewportDistort;
+        aspectRatio     = aspectRatio / viewportDistort;
+
+    }
+
+    if (viewportHeight != screenHeight)
+    {
+        LOGW("updateTracking viewportHeight != screenHeight");
+        viewportDistort = viewportHeight / (float) screenHeight;
+        fovDegrees      = fovDegrees / viewportDistort;
+        aspectRatio     = aspectRatio * viewportDistort;
+    }
+
+    //JNIEnv *env;
+    //jvm->AttachCurrentThread((void **)&env, NULL);
+
+    jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
+    env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
+
+    // jclass activityClass = env->GetObjectClass(obj);
+    jmethodID setCameraViewportMethod = env->GetMethodID(activityClass,"setCameraViewportNative", "(FFFF)V");
+    env->CallVoidMethod(obj,setCameraViewportMethod,viewportWidth,viewportHeight,cameraCalibration.getSize().data[0],cameraCalibration.getSize().data[1]);
     
 
     // Explicitly render the Video Background
@@ -325,7 +376,6 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
   //  if(QCAR::Renderer::getInstance().getVideoBackgroundConfig().mReflection == QCAR::VIDEO_BACKGROUND_REFLECTION_ON)
 
 
-   jclass activityClass = env->GetObjectClass(obj);
    jmethodID attachScenarios = env->GetMethodID(activityClass,"attachScenarios", "(Z)V");
    bool seeTrackables = false;
 
@@ -377,56 +427,57 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
             float cam_dir_y = invTranspMV.data[9];
             float cam_dir_z = invTranspMV.data[10];
 
-            //get perspective transformation
-            float nearPlane = 1.0f;
-            float farPlane = 1000.0f;
-            const QCAR::CameraCalibration& cameraCalibration =
-                                        QCAR::CameraDevice::getInstance().getCameraCalibration();
-
-            QCAR::VideoBackgroundConfig config = QCAR::Renderer::getInstance().getVideoBackgroundConfig();
-
-            float viewportWidth = config.mSize.data[0];
-            float viewportHeight = config.mSize.data[1];
-
-            QCAR::Vec2F size = cameraCalibration.getSize();
-            QCAR::Vec2F focalLength = cameraCalibration.getFocalLength();
-            float fovRadians = 2 * atan(0.5f * (size.data[1] / focalLength.data[1]));
-            float fovDegrees = fovRadians * 180.0f / M_PI;
-            float aspectRatio=(size.data[0]/size.data[1]);
-
-            //adjust for screen vs camera size distorsion
-            float viewportDistort=1.0;
-
-            if (viewportWidth != screenWidth)
-            {
-                LOGW("updateTracking viewportWidth != screenWidth");
-                viewportDistort = viewportWidth / (float) screenWidth;
-                fovDegrees=fovDegrees*viewportDistort;
-                aspectRatio=aspectRatio/viewportDistort;
-
-            }
-
-            if (viewportHeight != screenHeight)
-            {
-                LOGW("updateTracking viewportHeight != screenHeight");
-                viewportDistort = viewportHeight / (float) screenHeight;
-                fovDegrees=fovDegrees/viewportDistort;
-                aspectRatio=aspectRatio*viewportDistort;
-            }
-
-            //JNIEnv *env;
-            //jvm->AttachCurrentThread((void **)&env, NULL);
-
-
-
-
-
-            jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
-            env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
-
-            // jclass activityClass = env->GetObjectClass(obj);
-            jmethodID setCameraViewportMethod = env->GetMethodID(activityClass,"setCameraViewportNative", "(FFFF)V");
-            env->CallVoidMethod(obj,setCameraViewportMethod,viewportWidth,viewportHeight,cameraCalibration.getSize().data[0],cameraCalibration.getSize().data[1]);
+// fix for TR-141, this code is right before the loop
+//            //get perspective transformation
+//            float nearPlane = 1.0f;
+//            float farPlane = 1000.0f;
+//            const QCAR::CameraCalibration& cameraCalibration =
+//                                        QCAR::CameraDevice::getInstance().getCameraCalibration();
+//
+//            QCAR::VideoBackgroundConfig config = QCAR::Renderer::getInstance().getVideoBackgroundConfig();
+//
+//            float viewportWidth = config.mSize.data[0];
+//            float viewportHeight = config.mSize.data[1];
+//
+//            QCAR::Vec2F size = cameraCalibration.getSize();
+//            QCAR::Vec2F focalLength = cameraCalibration.getFocalLength();
+//            float fovRadians = 2 * atan(0.5f * (size.data[1] / focalLength.data[1]));
+//            float fovDegrees = fovRadians * 180.0f / M_PI;
+//            float aspectRatio=(size.data[0]/size.data[1]);
+//
+//            //adjust for screen vs camera size distorsion
+//            float viewportDistort=1.0;
+//
+//            if (viewportWidth != screenWidth)
+//            {
+//                LOGW("updateTracking viewportWidth != screenWidth");
+//                viewportDistort = viewportWidth / (float) screenWidth;
+//                fovDegrees=fovDegrees*viewportDistort;
+//                aspectRatio=aspectRatio/viewportDistort;
+//
+//            }
+//
+//            if (viewportHeight != screenHeight)
+//            {
+//                LOGW("updateTracking viewportHeight != screenHeight");
+//                viewportDistort = viewportHeight / (float) screenHeight;
+//                fovDegrees=fovDegrees/viewportDistort;
+//                aspectRatio=aspectRatio*viewportDistort;
+//            }
+//
+//            //JNIEnv *env;
+//            //jvm->AttachCurrentThread((void **)&env, NULL);
+//
+//
+//
+//
+//
+//            jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
+//            env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
+//
+//            // jclass activityClass = env->GetObjectClass(obj);
+//            jmethodID setCameraViewportMethod = env->GetMethodID(activityClass,"setCameraViewportNative", "(FFFF)V");
+//            env->CallVoidMethod(obj,setCameraViewportMethod,viewportWidth,viewportHeight,cameraCalibration.getSize().data[0],cameraCalibration.getSize().data[1]);
 
             //JNIEnv *env;
             //jvm->AttachCurrentThread((void **)&env, NULL);
