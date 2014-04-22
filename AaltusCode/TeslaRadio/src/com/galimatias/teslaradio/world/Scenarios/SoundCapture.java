@@ -5,7 +5,6 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.*;
-import com.jme3.animation.*;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
@@ -104,8 +103,7 @@ public final class SoundCapture extends Scenario {
        
     public SoundCapture(AssetManager assetManager, Camera Camera)
     {
-        super(assetManager);
-        this.Camera = Camera;
+        super(assetManager,Camera);
         
         loadUnmovableObjects();
         loadMovableObjects();
