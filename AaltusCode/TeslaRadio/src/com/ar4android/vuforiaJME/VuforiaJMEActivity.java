@@ -31,10 +31,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
-import com.galimatias.teslaradio.ItemDetailFragment;
-import com.galimatias.teslaradio.ItemListFragment;
-import com.galimatias.teslaradio.LanguageDialogFragment;
-import com.galimatias.teslaradio.R;
+import com.galimatias.teslaradio.*;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
@@ -77,9 +74,11 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     private static final String NATIVE_LIB_SAMPLE = "VuforiaNative";
     private static final String NATIVE_LIB_QCAR = "Vuforia";
 
+
     //name of the fragment TAG
     private final String ITEM_LIST_FRAGMENT_TAG = "ITEM_LIST_FRAGMENT_TAG";
     private final String ITEM_DETAIL_FRAGMENT_TAG = "ITEM_DETAIL_FRAGMENT_TAG";
+    private static final String ITEM_SPLASHSCREEN_FRAGMENT_TAG ="SPLASHSCREEN_FRAGMENT_TAG" ;
 
     // Display size of the device:
     private int mScreenWidth = 0;
@@ -231,6 +230,18 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         });
     }
 
+    @Override
+    public void onFinishSimpleInit()
+    {
+        runOnUiThread(new Runnable()
+        {
+            public void run()
+            {
+                dismissSplashscreenDialog();
+            }
+        });
+
+    }
 
 
     /** An async task to initialize QCAR asynchronously. */
@@ -725,6 +736,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         //Set an AppListener to receive callbacks from VuforiaJME e.g. to show informative menu
         ((VuforiaJME) app).setAppListener(this);
 
+        showSplashscreenDialog();
+
         // Update the application status to start initializing application:
         updateApplicationStatus(APPSTATUS_INIT_APP);
 
@@ -994,6 +1007,30 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         FragmentManager fm = getSupportFragmentManager();
         LanguageDialogFragment languageDialogFragment = new LanguageDialogFragment();
         languageDialogFragment.show(fm, "language_dialog_fragment");
+
+    }
+
+    /**
+     * Show the language dialog
+     */
+    private void showSplashscreenDialog()
+    {
+
+        Log.d(TAG,"Show splashscreen dialog");
+        FragmentManager fm = getSupportFragmentManager();
+        SplashscreenDialogFragment  SplashscreenDialogFragment = new  SplashscreenDialogFragment();
+        SplashscreenDialogFragment.show(fm, ITEM_SPLASHSCREEN_FRAGMENT_TAG);
+
+    }
+
+    private void dismissSplashscreenDialog()
+    {
+
+        Log.d(TAG,"Dismiss splashscreen dialog");
+        FragmentManager fm = getSupportFragmentManager();
+        SplashscreenDialogFragment splashscreenDialogFragment = (SplashscreenDialogFragment) fm.findFragmentByTag(ITEM_SPLASHSCREEN_FRAGMENT_TAG);
+        splashscreenDialogFragment.dismiss();
+
 
     }
 
