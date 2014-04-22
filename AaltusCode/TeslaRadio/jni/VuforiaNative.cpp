@@ -129,7 +129,7 @@ class VuforiaJME_UpdateCallback : public QCAR::UpdateCallback
                 jmethodID method = env-> GetMethodID(javaClass, "setRGB565CameraImage", "([BII)V");
                 env->CallVoidMethod(activityObj, method, pixelArray, width, height);
 
-                env->ReleaseArrayByteElements(env, pixelArray, (jbyte*)pixels, JNI_ABORT);
+                env->ReleaseByteArrayElements(pixelArray, (jbyte*)pixels, JNI_ABORT);
                 env->DeleteLocalRef(pixelArray);
 
             }
