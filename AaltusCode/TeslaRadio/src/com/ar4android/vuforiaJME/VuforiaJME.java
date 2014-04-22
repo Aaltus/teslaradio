@@ -113,6 +113,9 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
     {
         //Callaback for showing a informative menu with the provided menu
         public void showInformativeMenuCallback(ScenarioEnum scenarioEnum);
+
+        //Callaback for telling the upper layer that VuforiaJME is done loading
+        public void onFinishSimpleInit();
     }
 
     //A way to register to the appListener
@@ -123,7 +126,8 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 
 	// The default method used to initialize your JME application.
 	@Override
-	public void simpleInitApp() {
+	public void simpleInitApp()
+    {
 		Log.i(TAG, "simpleInitApp");
 
 
@@ -143,7 +147,9 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 
         initForegroundCamera(mForegroundCamFOVY);
 
-		initForegroundScene();	
+		initForegroundScene();
+
+        appListener.onFinishSimpleInit();
 
 	}
 
