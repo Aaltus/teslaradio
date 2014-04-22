@@ -24,7 +24,7 @@
                 style="@style/InformativeMenuTextStyle"
                 />
 
-        <com.utils.GifWebView android:layout_width="wrap_content"
+        <com.utils.GifWebView android:layout_width="fill_parent"
                               android:layout_height="wrap_content"
                               myapp:url="file:///android_asset/Gifs/Pression.html"
 
@@ -39,8 +39,8 @@
                 />
         <ImageView
                 android:id="@+id/sound_capture_image"
-                android:layout_width="600dp"
-                android:layout_height="300dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/source_et_front_donde"
 
