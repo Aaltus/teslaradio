@@ -84,12 +84,12 @@ public final class SoundCapture extends Scenario {
     // Default text to be seen when scenario starts
     private String titleText = "La Capture du Son";
     private String instrumentText = "Les instruments modifient la pression d'air autour d’eux avec leur vibration. Ces zones de pressions se propagent à la vitesse du son.";
-    private String microphoneText = "L’énergie acoustique contenue dans le son se transforme en énergie électrique grâce à la vibration de la bobine magnétique dans le microphone.";
+    private String microphoneText = "L'énergie acoustique contenue dans le son se transforme en énergie électrique grâce à la vibration de la bobine magnétique dans le microphone.";
     private float titleTextSize = 0.5f;
     private float secondaryTextSize = 0.25f;
     private float instrumentTextSize = 0.25f;
     private float microphoneTextSize = 0.25f;
-    private ColorRGBA defaultTextColor = new ColorRGBA(255f/255f, 232f/255f, 0f, 1f);
+    private ColorRGBA defaultTextColor = new ColorRGBA(1f, 0f, 1f, 1f);
     
     // Updated values of the textbox, the list contains the messages when updated
     private LinkedList<String> lstUpdatedText = new LinkedList<String>();
@@ -357,11 +357,11 @@ public final class SoundCapture extends Scenario {
         instrumentTextBox = new TextBox(assetManager, instrumentText, secondaryTextSize, defaultTextColor, instrumentTextBackColor, instrumentTextBoxWidth, instrumentTextBoxHeight, "instrumentText", BitmapFont.Align.Center, false);
         instrumentTextBox.move(instrumentTextPosition);
         
-        float micTextBoxWidth = 4f;
-        float micTextBoxHeight = 1.8f;
+        float micTextBoxWidth = 6f;
+        float micTextBoxHeight = 1.2f;
         ColorRGBA micTextBackColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f);
         Vector3f microphoneTextPosition = micHandleIn.getLocalTranslation().add(new Vector3f(2.2f, 2f, 0f));
-        microphoneTextBox = new TextBox(assetManager, instrumentText, secondaryTextSize, defaultTextColor, micTextBackColor, micTextBoxWidth, micTextBoxHeight, "instrumentText", BitmapFont.Align.Center, false);
+        microphoneTextBox = new TextBox(assetManager, microphoneText, secondaryTextSize, defaultTextColor, micTextBackColor, micTextBoxWidth, micTextBoxHeight, "instrumentText", BitmapFont.Align.Center, false);
         microphoneTextBox.move(microphoneTextPosition);
         
         
