@@ -75,6 +75,8 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
+        //We attach this fragment either to a calling activity or the parentfragment
         if (getParentFragment() == null)
         {
             if (activity instanceof OnClickDetailFragmentListener) {
