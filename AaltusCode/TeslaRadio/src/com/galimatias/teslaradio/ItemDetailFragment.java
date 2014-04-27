@@ -75,12 +75,26 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity instanceof OnClickDetailFragmentListener) {
-            listener = (OnClickDetailFragmentListener) activity;
-            Log.d(TAG,"Add calling activity as listener.");
-        } else {
-            throw new ClassCastException(activity.toString()
-                    + " must implement MyListFragment.OnClickDetailFragmentListener");
+        if (getParentFragment() == null)
+        {
+            if (activity instanceof OnClickDetailFragmentListener) {
+                listener = (OnClickDetailFragmentListener) activity;
+                Log.d(TAG,"Add calling activity as listener.");
+            } else {
+                throw new ClassCastException(activity.toString()
+                        + " must implement MyListFragment.OnClickDetailFragmentListener");
+            }
+        }
+        else
+        {
+            if (getParentFragment() instanceof OnClickDetailFragmentListener) {
+                listener = (OnClickDetailFragmentListener) getParentFragment();
+                Log.d(TAG,"Add calling parent fragment as listener.");
+            } else {
+                throw new ClassCastException(getParentFragment().toString()
+                        + " must implement MyListFragment.OnClickDetailFragmentListener");
+            }
+
         }
     }
 
