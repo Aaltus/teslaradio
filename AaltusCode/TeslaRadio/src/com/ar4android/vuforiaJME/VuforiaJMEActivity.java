@@ -20,8 +20,6 @@ package com.ar4android.vuforiaJME;
 
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -29,16 +27,21 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.*;
-import android.widget.*;
-import com.galimatias.teslaradio.*;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import com.galimatias.teslaradio.InformativeMenuFragment;
+import com.galimatias.teslaradio.R;
+import com.galimatias.teslaradio.SplashscreenDialogFragment;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
 import com.qualcomm.QCAR.QCAR;
 import com.utils.LanguageLocaleChanger;
-import com.utils.VerticalSeekBar;
 
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
@@ -50,10 +53,12 @@ import java.util.logging.Level;
  * Center of the Android side of the application. All Android view and specific thing are here.
  * It also initialize vuforia library and jme app.
  */
-public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements ItemListFragment.Callbacks, View.OnClickListener,
-        ItemDetailFragment.OnClickDetailFragmentListener, SeekBar.OnSeekBarChangeListener, VuforiaJME.AppListener {
+public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements VuforiaJME.AppListener {
 
 	private static final String TAG = "VuforiaJMEActivity";
+
+    private final String INFORMATIVE_MENU_FRAGMENT_TAG = "INFORMATIVE_MENU_FRAGMENT_TAG";
+    private final String ITEM_SPLASHSCREEN_FRAGMENT_TAG ="SPLASHSCREEN_FRAGMENT_TAG" ;
 	
     // Focus mode constants:
     private static final int FOCUS_MODE_NORMAL = 0;
@@ -75,10 +80,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     private static final String NATIVE_LIB_QCAR = "Vuforia";
 
 
-    //name of the fragment TAG
-    private final String ITEM_LIST_FRAGMENT_TAG = "ITEM_LIST_FRAGMENT_TAG";
-    private final String ITEM_DETAIL_FRAGMENT_TAG = "ITEM_DETAIL_FRAGMENT_TAG";
-    private static final String ITEM_SPLASHSCREEN_FRAGMENT_TAG ="SPLASHSCREEN_FRAGMENT_TAG" ;
 
     // Display size of the device:
     private int mScreenWidth = 0;
@@ -191,26 +192,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         loadLibrary(NATIVE_LIB_SAMPLE);
     }
 
-    /**
-     * Callback to receive click event of the DetailFragment
-     * @param view : View that have been clicked
-     */
-    @Override
-    public void onClickDetailFragment(View view) {
 
-        int id = view.getId();
-        Log.d(TAG, "OnClick Callback from detail fragment");
-
-
-        switch (id)
-        {
-            //When fragment x button is clicked, close the fragment
-            case R.id.item_detail_fragment_close_button:
-                //Log.d(TAG, "OnClick Callback from detail fragment");
-                toggleFragmentsVisibility(null);
-                break;
-        }
-    }
 
     /**
     Show the informative menu with the provided scenario to show
@@ -225,7 +207,11 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         {
             public void run()
             {
-                toggleFragmentsVisibility(scenarioEnum);
+                FragmentManager fm = getSupportFragmentManager();//getSupportFragmentManager();
+                InformativeMenuFragment informativeMenuFragment =
+                        (InformativeMenuFragment) fm.findFragmentByTag(INFORMATIVE_MENU_FRAGMENT_TAG);
+                informativeMenuFragment.toggleFragmentsVisibility(scenarioEnum);
+
             }
         });
     }
@@ -496,7 +482,26 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
                 //create the layout on top of the jmonkey view to add button and fragments
                 //TODO Change this call to a case APPSTATUS...
-                initTopLayout();
+
+
+                //initTopLayout();
+                ViewGroup rootView        = (ViewGroup) findViewById(android.R.id.content);
+                LayoutInflater factory    = LayoutInflater.from(this);
+                FrameLayout frameLayout1  = new FrameLayout(this);
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                frameLayout1.setLayoutParams(layoutParams);
+
+                frameLayout1.setId(4);
+                rootView.addView(frameLayout1);
+
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                Fragment fragment = new InformativeMenuFragment();
+                ft.replace(frameLayout1.getId(), fragment, INFORMATIVE_MENU_FRAGMENT_TAG);
+                ft.commit();
+                fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
+
+                //Add the fragment with frangment transaction with framwlayoyt
 
                 // Start the camera:
                 updateApplicationStatus(APPSTATUS_CAMERA_RUNNING);
@@ -859,154 +864,17 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     }
 
     /**
-     * Initialize the top layout that contains button
-     * and fragments
+     * Init the subject content and language specific strings
      */
-    public void initTopLayout(){
-
-        Log.d(TAG,"Initialize Top Layout");
-
-        //Replace the current language button to show the current choosed locale language
-        int drawableToGet = 0;
-        LayerDrawable languageButtonLayerDrawable = (LayerDrawable) getResources().getDrawable(R.drawable.layer_list_language);
-        String currentLanguage = LanguageLocaleChanger.loadLanguageLocaleFromSharedPreferences(this);
-        if (currentLanguage.equals("fr"))
-        {
-            drawableToGet = R.drawable.ic_action_language_fr;
-        }
-        else if (currentLanguage.equals("es"))
-        {
-            drawableToGet = R.drawable.ic_action_language_es;
-        }
-        else if (currentLanguage.equals("en"))
-        {
-            drawableToGet = R.drawable.ic_action_language_en;
-        }
-        else if (currentLanguage.equals("de"))
-        {
-            drawableToGet = R.drawable.ic_action_language_de;
-        }
-        Drawable imageReplacing = getResources().getDrawable(drawableToGet);
-        languageButtonLayerDrawable.setDrawableByLayerId(R.id.language_item_layer_list, imageReplacing);
-
-        //Get the rootView of the activity. This view is on the direct parent
-        //to the android jme opengl view
-        ViewGroup rootView = (ViewGroup) findViewById(android.R.id.content);
-
-        //Inflate and add the top level layout to the rootview
-        LayoutInflater factory = LayoutInflater.from(this);
-        View myView = factory.inflate(R.layout.vuforia_jme_overlay_layout, null);
-        rootView.addView(myView);
-
-        //Setup the ListFragment
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        Fragment fragment = new ItemListFragment();
-        ft.hide(fragment);
-        ft.replace(R.id.item_list_fragment_vuforia, fragment, ITEM_LIST_FRAGMENT_TAG);
-        ft.commit();
-        fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
-
-        //Make the listfragment activable
-        ((ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG)).setActivateOnItemClick(true);
-
-        //Set onClickListener for all buttons
-        Button languageButton = (Button)findViewById(R.id.camera_toggle_language_button);
-        Button infoButton = (Button)findViewById(R.id.camera_toggle_info_button);
-        languageButton.setOnClickListener(this);
-        infoButton.setOnClickListener(this);
-
-        //Get the vertical side bar and set its propriety
-        VerticalSeekBar sb = (VerticalSeekBar)findViewById(R.id.seekBar1);
-        if (sb != null)
-        {
-            sb.setMax(100);
-            sb.setProgress(50);
-            sb.setOnSeekBarChangeListener(this);
-        }
-    }
-
-    /**
-     * Update the vertical side bar progress and text
-     * @param v
-     * @param progress
-     * @param isUser
-     */
-    @Override public void onProgressChanged(SeekBar v, int progress, boolean isUser)
-    {
-        TextView tv = (TextView)findViewById(R.id.seekbar_value_text);
-        tv.setText(Integer.toString(progress)+"%");
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar)
+    private void initLanguageSpecificStrings()
     {
 
-    }
+        exitDialogTitle = getString(R.string.exit_dialog_title);
+        exitDialogMessage = getString(R.string.exit_dialog_message);
 
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar)
-    {
-
-    }
-
-
-
-    /** Action when a listfragment item is selected*/
-    @Override
-    public void onItemSelected(int id) {
-
-        //Create the details fragment with the specified Id
-        Bundle arguments = new Bundle();
-        arguments.putString(ItemDetailFragment.ARG_ITEM_ID, Integer.toString(id));
-        ItemDetailFragment fragment = new ItemDetailFragment();
-        fragment.setArguments(arguments);
-
-        //Create the fragment with fragment transaction
-        FragmentManager fm     = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
-        ft.replace(R.id.item_detail_fragment_vuforia, fragment, ITEM_DETAIL_FRAGMENT_TAG).commit();
-        fm.executePendingTransactions();
-
-
-    }
-
-    /**
-     * Event called when a onClick event happen.
-     * @param view
-     */
-    @Override
-    public void onClick(View view) {
-
-        int id = view.getId();
-
-        switch (id){
-
-            case R.id.camera_toggle_language_button:
-                showLanguageDialog();
-                break;
-
-            case R.id.camera_toggle_info_button:
-                toggleFragmentsVisibility(null);
-                break;
-
-            default:
-                break;
-        }
-
-    }
-
-    /**
-     * Show the language dialog
-     */
-    private void showLanguageDialog()
-    {
-
-        Log.d(TAG,"Show language dialog");
-        FragmentManager fm = getSupportFragmentManager();
-        LanguageDialogFragment languageDialogFragment = new LanguageDialogFragment();
-        languageDialogFragment.show(fm, "language_dialog_fragment");
+        //Empty the SubjectContent list and readd items with correct language title
+        SubjectContent.removeAllItems();
+        SubjectContent.addAllItems(this);
 
     }
 
@@ -1017,7 +885,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     {
 
         Log.d(TAG,"Show splashscreen dialog");
-        FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();//getSupportFragmentManager();
         SplashscreenDialogFragment  SplashscreenDialogFragment = new  SplashscreenDialogFragment();
         SplashscreenDialogFragment.show(fm, ITEM_SPLASHSCREEN_FRAGMENT_TAG);
 
@@ -1027,90 +895,12 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     {
 
         Log.d(TAG,"Dismiss splashscreen dialog");
-        FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();//getSupportFragmentManager();
         SplashscreenDialogFragment splashscreenDialogFragment = (SplashscreenDialogFragment) fm.findFragmentByTag(ITEM_SPLASHSCREEN_FRAGMENT_TAG);
         splashscreenDialogFragment.dismiss();
 
 
     }
 
-    /**
-     * Init the subject content and language specific strings
-     */
-    private void initLanguageSpecificStrings()
-    {
-
-
-
-        exitDialogTitle = getString(R.string.exit_dialog_title);
-        exitDialogMessage = getString(R.string.exit_dialog_message);
-
-        //Empty the SubjectContent list and readd items with correct language title
-        SubjectContent.removeAllItems();
-        SubjectContent.addAllItems(this);
-
-
-    }
-
-
-    /**
-     * Toggle the detailfragment and listfragment visibility.
-     * @param scenarioEnum : the scenario to show
-     */
-    private void toggleFragmentsVisibility(ScenarioEnum scenarioEnum){
-
-
-        FragmentManager fm =     getSupportFragmentManager();
-        ItemListFragment listFragment         = (ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
-        ItemDetailFragment fragmentDetail = (ItemDetailFragment) fm.findFragmentByTag(ITEM_DETAIL_FRAGMENT_TAG);
-
-        if (listFragment != null)
-        {
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.setCustomAnimations(R.anim.enter_left, R.anim.exit_left);
-            if (listFragment.isHidden())
-            {
-                Log.d(TAG, "Showing list fragment");
-                ft.show(listFragment);
-                if (scenarioEnum != null)
-                {
-                    //Choose a detail fragment based on the provided enum
-                    listFragment.setActivatedPosition(scenarioEnum.ordinal());
-                    onItemSelected(scenarioEnum.ordinal());
-                }
-            }
-            else
-            {
-                Log.d(TAG, "Hiding list fragment");
-                if (scenarioEnum == null)
-                {
-                    ft.hide(listFragment);
-                }
-            }
-
-            ft.commit();
-        }
-
-        if (fragmentDetail != null)
-        {
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
-            if (fragmentDetail.isHidden())
-            {
-                Log.d(TAG,"Showing detail fragment");
-                ft.show(fragmentDetail);
-            }
-            else
-            {
-                Log.d(TAG,"Hiding detail fragment");
-                if (scenarioEnum == null)
-                {
-                    ft.hide(fragmentDetail);
-                }
-            }
-            ft.commit();
-        }
-
-    }
 
 }
