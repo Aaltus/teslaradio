@@ -114,12 +114,24 @@ public class ItemListFragment extends ListFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        // Activities containing this fragment must implement its callbacks.
-        if (!(activity instanceof Callbacks)) {
-            throw new IllegalStateException("Activity must implement fragment's callbacks.");
-        }
+        //Check if th
 
-        mCallbacks = (Callbacks) activity;
+        // Activities containing this fragment must implement its callbacks.
+        if (getParentFragment()==null)
+        {
+            if (!(activity instanceof Callbacks)) {
+                throw new IllegalStateException("Activity must implement fragment's callbacks.");
+            }
+
+            mCallbacks = (Callbacks) activity;
+        }
+        else
+        {
+            if (!(getParentFragment() instanceof Callbacks)) {
+                throw new IllegalStateException("ParentFragment must implement fragment's callbacks.");
+            }
+            mCallbacks = (Callbacks) getParentFragment();
+        }
     }
 
     @Override
