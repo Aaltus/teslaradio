@@ -1,8 +1,6 @@
 package com.galimatias.teslaradio;
 
 
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -65,11 +63,14 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     {
         super.onActivityCreated(savedInstanceState);
 
-        FragmentManager fm = getChildFragmentManager();//sgetSupportFragmentManager();
+        FragmentManager fm = getChildFragmentManager();//getSupportFragmentManager();
+
+        Button languageButton = (Button) getView().findViewById(R.id.camera_toggle_language_button);
+        Button infoButton     = (Button) getView().findViewById(R.id.camera_toggle_info_button);
 
         //Replace the current language button to show the current choosed locale language
         int drawableToGet = 0;
-        LayerDrawable languageButtonLayerDrawable = (LayerDrawable) getResources().getDrawable(R.drawable.layer_list_language);
+        //LayerDrawable languageButtonLayerDrawable = (LayerDrawable) getResources().getDrawable(R.drawable.layer_list_language);
         String currentLanguage = LanguageLocaleChanger.loadLanguageLocaleFromSharedPreferences(getActivity());
         if (currentLanguage.equals("fr"))
         {
@@ -87,15 +88,12 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         {
             drawableToGet = R.drawable.ic_action_language_de;
         }
-        Drawable imageReplacing = getResources().getDrawable(drawableToGet);
-        languageButtonLayerDrawable.setDrawableByLayerId(R.id.language_item_layer_list, imageReplacing);
+        languageButton.setBackgroundResource(drawableToGet);
 
         //Make the listfragment activable
         //((ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG)).setActivateOnItemClick(true);
 
-        //Set onClickListener for all buttons
-        Button languageButton = (Button) getView().findViewById(R.id.camera_toggle_language_button);
-        Button infoButton = (Button) getView().findViewById(R.id.camera_toggle_info_button);
+
         languageButton.setOnClickListener(this);
         infoButton.setOnClickListener(this);
 
@@ -154,7 +152,6 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
         ft.replace(R.id.item_detail_fragment_vuforia, fragment, ITEM_DETAIL_FRAGMENT_TAG).commit();
         fm.executePendingTransactions();
-
 
     }
 

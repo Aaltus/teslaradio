@@ -93,6 +93,7 @@ public class ItemListFragment extends ListFragment {
          super.onViewCreated(view, savedInstanceState);
 
         Log.i(TAG,"onViewCreated");
+        setActivateOnItemClick(true);
 
         // Restore the previously serialized activated item position.
         if (savedInstanceState != null
@@ -114,9 +115,8 @@ public class ItemListFragment extends ListFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        //Check if th
 
-        // Activities containing this fragment must implement its callbacks.
+        //We attach this fragment either to a calling activity or the parentfragment
         if (getParentFragment()==null)
         {
             if (!(activity instanceof Callbacks)) {
@@ -145,7 +145,8 @@ public class ItemListFragment extends ListFragment {
 
 
     @Override
-    public void onListItemClick(ListView listView, View view, int position, long id) {
+    public void onListItemClick(ListView listView, View view, int position, long id)
+    {
         super.onListItemClick(listView, view, position, id);
 
         // Notify the active callbacks interface (the activity, if the
