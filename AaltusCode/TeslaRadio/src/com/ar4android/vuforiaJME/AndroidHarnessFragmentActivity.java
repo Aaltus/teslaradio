@@ -34,6 +34,7 @@ import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.system.android.JmeAndroidSystem;
 import com.jme3.system.android.OGLESContext;
 import com.jme3.util.AndroidLogHandler;
+import org.acra.ACRA;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -318,6 +319,7 @@ public class AndroidHarnessFragmentActivity extends FragmentActivity implements 
             } catch (Exception ex) {
                 handleError("Class " + appClass + " init failed", ex);
                 setContentView(new TextView(this));
+
             }
         }
 
@@ -413,14 +415,18 @@ public class AndroidHarnessFragmentActivity extends FragmentActivity implements 
 
         logger.log(Level.SEVERE, finalMsg);
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AlertDialog dialog = new AlertDialog.Builder(AndroidHarnessFragmentActivity.this) // .setIcon(R.drawable.alert_dialog_icon)
-                        .setTitle(finalTitle).setPositiveButton("Kill", AndroidHarnessFragmentActivity.this).setMessage(finalMsg).create();
-                dialog.show();
-            }
-        });
+        //Jonathan: Add ACRA crash dump report instead of the alert dialog
+        //Add ACRA bug report heres
+        ACRA.getErrorReporter().handleException(t);
+
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                AlertDialog dialog = new AlertDialog.Builder(AndroidHarnessFragmentActivity.this) // .setIcon(R.drawable.alert_dialog_icon)
+//                        .setTitle(finalTitle).setPositiveButton("Kill", AndroidHarnessFragmentActivity.this).setMessage(finalMsg).create();
+//                dialog.show();
+//            }
+//        });
     }
 
     /**
