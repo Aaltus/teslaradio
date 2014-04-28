@@ -55,7 +55,7 @@ import java.util.logging.Level;
  */
 public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements VuforiaJME.AppListener {
 
-	private static final String TAG = "VuforiaJMEActivity";
+	private static final String TAG = VuforiaJMEActivity.class.getName();
 
     private final String INFORMATIVE_MENU_FRAGMENT_TAG = "INFORMATIVE_MENU_FRAGMENT_TAG";
     private final String ITEM_SPLASHSCREEN_FRAGMENT_TAG ="SPLASHSCREEN_FRAGMENT_TAG" ;
