@@ -34,6 +34,7 @@
     <string name="reception_title">Radio Réceptrice</string>
     <string name="reference_title">Reference</string>
     <string name="about_us_title">Qui sommes nous ?</string>
+    <string name="crash_toast_text">Sorry! The App has crashed and a report has been send to the developpers.</string>
 
 
 </resources>
