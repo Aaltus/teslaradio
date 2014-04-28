@@ -44,7 +44,7 @@ import java.util.concurrent.Callable;
 
 public class VuforiaJME extends SimpleApplication  implements TouchListener{
 
-	private static final String TAG = "VuforiaJME";
+	private static final String TAG = VuforiaJME.class.getName();
 	// The geometry which will represent the video background
 	private Geometry mVideoBGGeom;
 	// The material which will be applied to the video background geometry.
@@ -150,6 +150,8 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 		initForegroundScene();
 
         appListener.onFinishSimpleInit();
+
+
 
 	}
 
