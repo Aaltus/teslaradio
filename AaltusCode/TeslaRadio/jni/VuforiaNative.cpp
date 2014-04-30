@@ -130,7 +130,13 @@ class VuforiaJME_UpdateCallback : public QCAR::UpdateCallback
                 env->CallVoidMethod(activityObj, method, pixelArray, width, height);
 
                 // Added the release of the byte array buffer before deleting the reference. Seen this on a website...
-                env->ReleaseByteArrayElements(pixelArray, (jbyte*)pixels, JNI_ABORT);
+
+                //Jonathan: I have seen in: https://groups.google.com/forum/#!topic/android-ndk/JLyv3FVrSKk
+                //env->ReleaseByteArrayElements(pixelArray, (jbyte*)pixels, JNI_ABORT);
+                //You only need to call ReleaseByteArrayElements if you previously
+                //called GetByteArrayElements.  The warning message is saying that it's
+                //not finding the array in the pinned-array list, which makes sense.
+
                 env->DeleteLocalRef(pixelArray);
 
             }
@@ -343,7 +349,8 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
     if (viewportWidth != screenWidth)
     {
-        LOGW("updateTracking viewportWidth != screenWidth");
+
+        LOGD("updateTracking viewportWidth (%f) != screenWidth (%f)", viewportWidth, screenWidth);
         viewportDistort = viewportWidth / (float) screenWidth;
         fovDegrees      = fovDegrees * viewportDistort;
         aspectRatio     = aspectRatio / viewportDistort;
@@ -352,7 +359,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
     if (viewportHeight != screenHeight)
     {
-        LOGW("updateTracking viewportHeight != screenHeight");
+        LOGD("updateTracking viewportHeight (%f) != screenWeight (%f)", viewportHeight, screenHeight);
         viewportDistort = viewportHeight / (float) screenHeight;
         fovDegrees      = fovDegrees / viewportDistort;
         aspectRatio     = aspectRatio * viewportDistort;
