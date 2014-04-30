@@ -13,7 +13,6 @@ import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
 
 /**
@@ -22,7 +21,7 @@ import com.jme3.scene.shape.Quad;
  */
 public class ImageBox extends Node{
     
-    private Box imageRect;
+    private Quad imageRect;
     private Geometry imageGeom;
     private float fadingTime = 0f;
     private float currentFadingTime = 0f;
@@ -62,7 +61,7 @@ public class ImageBox extends Node{
      */
     private void init(float width, float height, AssetManager assetManager, String imageBoxName, String imagePath)
     {
-        imageRect = new Box(width, height, Float.MIN_VALUE);
+        imageRect = new Quad(width, height);
         imageGeom = new Geometry(imageBoxName ,imageRect);
         Material imageBoxMat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         //Texture imageTexture = assetManager.loadTexture(imagePath);
