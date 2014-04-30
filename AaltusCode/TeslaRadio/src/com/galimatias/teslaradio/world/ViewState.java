@@ -6,5 +6,5 @@ package com.galimatias.teslaradio.world;
 //TODO: Full this enum with the good values
 public enum ViewState
 {
-    FOCUS, NOT_FOCUS, HIDDEN;
+    FOCUS, NOT_FOCUS, HIDDEN
 }
