@@ -15,12 +15,7 @@ import android.widget.TextView;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.viewpagerindicator.CirclePageIndicator;
 
-/**
- * A fragment representing a single Item detail screen.
- * This fragment is either contained in a {@link ItemListActivity}
- * in two-pane mode (on tablets) or a {@link ItemDetailActivity}
- * on handsets.
- */
+
 public class ItemDetailFragment extends Fragment  implements View.OnClickListener{
 
 
@@ -43,20 +38,12 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
     public ItemDetailFragment() {
     }
 
-    /**
-     * ViewPager object that we use in our fragment to switch pages
-     */
-    private ViewPager mViewPager;
+
 
     /**
      * ViewPager object that we use in our fragment to switch pages
      */
     private static int[] mLayouts;
-
-    /**
-     * PageIndicator object that we use in our fragment to show which page we are in
-     */
-    private CirclePageIndicator mIndicator;
 
     private OnClickDetailFragmentListener listener;
 
@@ -140,14 +127,15 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
         if (mItem != null) {
 
             //Attach adapter to ViewPager
-            mViewPager    = (ViewPager) rootView.findViewById(R.id.pager);
+            ViewPager mViewPager    = (ViewPager) rootView.findViewById(R.id.pager);
             mViewPager.setAdapter(new SwipeAdapter(this.getActivity()));
 
             //Make the viewpager load 4 offscreen page
-            mViewPager.setOffscreenPageLimit(4);
+            mViewPager.setOffscreenPageLimit(0);
 
             //Attach page indicator to the ViewPager
-            mIndicator = (CirclePageIndicator)rootView.findViewById(R.id.indicator);
+
+            CirclePageIndicator mIndicator = (CirclePageIndicator)rootView.findViewById(R.id.indicator);
             mIndicator.setViewPager(mViewPager);
 
         }
@@ -179,8 +167,7 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
             // it to the container parameter
             int currentPageRootId = mLayouts[position];
 
-            ViewGroup pageView = (ViewGroup) mInflater.inflate(
-                    currentPageRootId, container, false);
+            ViewGroup pageView = (ViewGroup) mInflater.inflate(currentPageRootId, container, false);
 
             //Uncomment this to make all the textview in the current viewgroup justified as webview
             //TextViewJustifiedUtils.setTextViewJustified(pageView, mContext);
