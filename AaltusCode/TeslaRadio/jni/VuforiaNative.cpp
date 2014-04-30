@@ -33,6 +33,7 @@
 #include <string.h>
 #include <assert.h>
 #include <math.h>
+#include <signal.h>
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
@@ -64,6 +65,8 @@ extern "C"
 unsigned int screenWidth        = 0;
 unsigned int screenHeight       = 0;
 
+
+
 // Indicates whether screen is in portrait (true) or landscape (false) mode
 bool isActivityInPortraitMode   = false;
 
@@ -88,6 +91,24 @@ JNI_OnLoad(JavaVM* vm,  void* reserved) {
     LOGI("JNI_OnLoad");
     javaVM = vm;
     return JNI_VERSION_1_4;
+}
+
+//For catching native code error
+static struct sigaction old_sa[NSIG];
+
+void android_sigaction(int signal, siginfo_t *info, void *reserved)
+{
+    LOGE("NATIVE ERROR CRASH in C++");
+    JNIEnv *env = 0;
+
+    if ((javaVM != 0) && (activityObj != 0) && (javaVM->GetEnv((void **)&env, JNI_VERSION_1_4) == JNI_OK))
+    {
+        jclass javaClass = env->GetObjectClass(activityObj);
+        jmethodID method = env->GetMethodID(javaClass, "nativeCrashed", "()V");
+        env->CallVoidMethod(activityObj, method);
+        old_sa[signal].sa_handler(signal);
+    }
+
 }
 
 // Object to receive update callbacks from QCAR SDK
@@ -581,8 +602,24 @@ JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative(
                             JNIEnv* env, jobject obj, jint width, jint height)
 {
+
+
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative");
-    
+
+    // Try to catch crashes...
+    struct sigaction handler;
+    memset(&handler, 0, sizeof(struct sigaction));
+    handler.sa_sigaction = android_sigaction;
+    handler.sa_flags = SA_RESETHAND;
+#define CATCHSIG(X) sigaction(X, &handler, &old_sa[X])
+    CATCHSIG(SIGILL);
+    CATCHSIG(SIGABRT);
+    CATCHSIG(SIGBUS);
+    CATCHSIG(SIGFPE);
+    CATCHSIG(SIGSEGV);
+    CATCHSIG(SIGSTKFLT);
+    CATCHSIG(SIGPIPE);
+
     // Store screen dimensions
     screenWidth = width;
     screenHeight = height;
@@ -601,7 +638,15 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitApplicationNative(
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitApplicationNative");
 
-
+    // Uninstall the signal handlers.
+    #define REMOVESIG(X) sigaction(X, &old_sa[X], NULL)
+    REMOVESIG(SIGILL);
+    REMOVESIG(SIGABRT);
+    REMOVESIG(SIGBUS);
+    REMOVESIG(SIGFPE);
+    REMOVESIG(SIGSEGV);
+    REMOVESIG(SIGSTKFLT);
+    REMOVESIG(SIGPIPE);
 }
 
 

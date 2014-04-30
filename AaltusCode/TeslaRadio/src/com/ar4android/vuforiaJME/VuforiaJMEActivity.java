@@ -905,4 +905,15 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     }
 
 
+    /** A signal handler in native code has been triggered. As our last gasp,
+     * launch the crash handler (in its own process), because when we return
+     * from this function the process will soon exit. */
+    void nativeCrashed()
+    {
+        Log.e(TAG,"C++ Crash");
+        this.finish();
+        //throw new RuntimeException("crashed here (native trace should follow after the Java trace)");
+        //this.finish();
+    }
+
 }
