@@ -7,6 +7,6 @@ package com.galimatias.teslaradio.subject;
 public enum ScenarioEnum
 {
         SOUNDCAPTURE, AMMODULATION, FMMODULATION, TRANSMIT,
-        RECEPTION, REFERENCE, ABOUTUS;
+        RECEPTION, REFERENCE, ABOUTUS
 
 }
