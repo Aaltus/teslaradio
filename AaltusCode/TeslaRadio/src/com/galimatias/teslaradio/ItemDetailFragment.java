@@ -27,6 +27,7 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
+    private static final String POSITION = "subject_content_position";
 
     /**
      * The dummy content this fragment is presenting.
@@ -145,6 +146,15 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
         return rootView;
     }
 
+    public static final PageDetailFragment newInstance(int position)
+    {
+        PageDetailFragment f = new PageDetailFragment();
+        Bundle bdl = new Bundle(2);
+        bdl.putInt(POSITION, position);
+        f.setArguments(bdl);
+        return f;
+    }
+
     /**
      * A simple FragmentStatePagerAdapter to return fragment to
      * the ViewPager
@@ -163,31 +173,31 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
         @Override
         public Fragment getItem(int position)
         {
-            return new PageDetailFragment(position);
+            return newInstance(position);
         }
     }
+
+
 
     /**
      * A fragment that return a fragment based on the
      * provided position.
      */
-    public class PageDetailFragment extends Fragment {
+    public static class PageDetailFragment extends Fragment {
 
         private int position;
 
-        // Empty constructor, required as per Fragment docs
-        //We make it private to prevent the user to initialize a fragment without a position
-        private PageDetailFragment() {}
 
-        public PageDetailFragment(int position)
-        {
-            this.position = position;
-        }
+
+        // Empty constructor, required as per Fragment docs
+        //DON'T USE THIS DIRECTLY
+        public PageDetailFragment() {}
 
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            position = getArguments() != null ? getArguments().getInt(POSITION) : -1;
         }
 
         @Override
