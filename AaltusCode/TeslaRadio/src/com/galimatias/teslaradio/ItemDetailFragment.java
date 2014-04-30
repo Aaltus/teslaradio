@@ -1,10 +1,10 @@
 package com.galimatias.teslaradio;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +15,9 @@ import android.widget.TextView;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.viewpagerindicator.CirclePageIndicator;
 
-
+/**
+ * Fragment that create a ViewPager adapter
+ */
 public class ItemDetailFragment extends Fragment  implements View.OnClickListener{
 
 
@@ -128,13 +130,13 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
 
             //Attach adapter to ViewPager
             ViewPager mViewPager    = (ViewPager) rootView.findViewById(R.id.pager);
-            mViewPager.setAdapter(new SwipeAdapter(this.getActivity()));
+
+            mViewPager.setAdapter(new DetailPagerAdapter(this.getChildFragmentManager()));
 
             //Make the viewpager load 4 offscreen page
             mViewPager.setOffscreenPageLimit(0);
 
             //Attach page indicator to the ViewPager
-
             CirclePageIndicator mIndicator = (CirclePageIndicator)rootView.findViewById(R.id.indicator);
             mIndicator.setViewPager(mViewPager);
 
@@ -143,38 +145,14 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
         return rootView;
     }
 
+    /**
+     * A simple FragmentStatePagerAdapter to return fragment to
+     * the ViewPager
+     */
+    public class DetailPagerAdapter extends FragmentStatePagerAdapter {
 
-    //PagerAdapter implementation. This is the code that populate the ViewPager
-    private static class SwipeAdapter extends PagerAdapter {
-
-
-        private LayoutInflater mInflater;
-
-        SwipeAdapter(Context context) {
-            mInflater = LayoutInflater.from(context);
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            // remove the current page as it no longer needed
-            container.removeView((View) object);
-        }
-
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            // using the position parameter, inflate the proper layout, also add
-            // it to the container parameter
-            int currentPageRootId = mLayouts[position];
-
-            ViewGroup pageView = (ViewGroup) mInflater.inflate(currentPageRootId, container, false);
-
-            //Uncomment this to make all the textview in the current viewgroup justified as webview
-            //TextViewJustifiedUtils.setTextViewJustified(pageView, mContext);
-
-            container.addView(pageView);
-
-            return pageView;
+        public DetailPagerAdapter(FragmentManager fm) {
+            super(fm);
         }
 
         @Override
@@ -183,13 +161,41 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object obj) {
-            return view == obj;
+        public Fragment getItem(int position)
+        {
+            return new PageDetailFragment(position);
+        }
+    }
+
+    /**
+     * A fragment that return a fragment based on the
+     * provided position.
+     */
+    public class PageDetailFragment extends Fragment {
+
+        private int position;
+
+        // Empty constructor, required as per Fragment docs
+        //We make it private to prevent the user to initialize a fragment without a position
+        private PageDetailFragment() {}
+
+        public PageDetailFragment(int position)
+        {
+            this.position = position;
         }
 
 
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
         }
 
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
 
-
+            final View v = inflater.inflate(mLayouts[position], container, false);
+            return v;
+        }
+    }
 }
