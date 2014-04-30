@@ -20,7 +20,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/soundcapturep1p1"
-                android:id="@+id/textView"
                 style="@style/InformativeMenuTextStyle"
                 />
 
@@ -34,7 +33,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/soundcapturep1p2"
-                android:id="@+id/textView"
                 style="@style/InformativeMenuTextStyle"
                 />
         <ImageView
@@ -49,7 +47,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/soundcapturep1p3"
-                android:id="@+id/textView"
                 style="@style/InformativeMenuTextStyle"
                 />
 
