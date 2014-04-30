@@ -117,6 +117,74 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     
     private RelativeLayout mUILayout;
 
+
+    /** Native tracker initialization and deinitialization. */
+    public native int initTracker();
+    public native void deinitTracker();
+
+    /** Native functions to load and destroy tracking data. */
+    public native int loadTrackerData();
+    public native void destroyTrackerData();
+
+    /** Native sample initialization. */
+    public native void onQCARInitializedNative();
+
+    /** Native methods for starting and stopping the camera. */
+    private native void startCamera();
+    private native void stopCamera();
+
+    /** Native method for setting / updating the projection matrix
+     * for AR content rendering */
+    private native void setProjectionMatrix();
+
+    /** Native function to initialize the application. */
+    private native void initApplicationNative(int width, int height);
+
+    /** Native function to deinitialize the application.*/
+    private native void deinitApplicationNative();
+
+    /** Tells native code whether we are in portait or landscape mode */
+    private native void setActivityPortraitMode(boolean isPortrait);
+
+    /** Tells native code to switch dataset as soon as possible*/
+    private native void switchDatasetAsap();
+
+    private native boolean autofocus();
+    private native boolean setFocusMode(int mode);
+
+    /** Activates the Flash */
+    private native boolean activateFlash(boolean flash);
+
+    private boolean mCreatedBefore = false;
+
+    public VuforiaJMEActivity()
+    {
+        // Set the application class to runs
+        appClass = "com.ar4android.vuforiaJME.VuforiaJME";
+        // Try ConfigType.FASTEST; or ConfigType.LEGACY if you have problems
+        eglConfigType = ConfigType.BEST;
+
+        // Exit Dialog title & messages
+        exitDialogTitle   = "Exit?";
+        exitDialogMessage = "Press Yes";
+        // Enable verbose logging
+        eglConfigVerboseLogging = false;
+
+        // Choose screen orientation
+        screenOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+        // Invert the MouseEvents X (default = true)
+        mouseEventsInvertX = true;
+        // Invert the MouseEvents Y (default = true)
+        mouseEventsInvertY = true;
+
+        logger.setLevel(Level.SEVERE);
+    }
+
+    Image cameraJMEImageRGB565;
+    private byte[] mPreviewBufferRGB656;
+    java.nio.ByteBuffer mPreviewByteBufferRGB565;
+    static boolean firstTimeGetImage=true;
+
     //TO BE REMOVED
 //    //SoundAlert specific info
 //    private int mThreshold = 10;
@@ -603,72 +671,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     }
 
 
-    /** Native tracker initialization and deinitialization. */
-    public native int initTracker();
-    public native void deinitTracker();
-
-    /** Native functions to load and destroy tracking data. */
-    public native int loadTrackerData();
-    public native void destroyTrackerData();
-
-    /** Native sample initialization. */
-    public native void onQCARInitializedNative();
-
-    /** Native methods for starting and stopping the camera. */
-    private native void startCamera();
-    private native void stopCamera();
-
-    /** Native method for setting / updating the projection matrix
-     * for AR content rendering */
-    private native void setProjectionMatrix();
-    
-    /** Native function to initialize the application. */
-    private native void initApplicationNative(int width, int height);
-    
-    /** Native function to deinitialize the application.*/
-    private native void deinitApplicationNative();    
-    
-    /** Tells native code whether we are in portait or landscape mode */
-    private native void setActivityPortraitMode(boolean isPortrait);
-
-    /** Tells native code to switch dataset as soon as possible*/
-    private native void switchDatasetAsap();
-
-    private native boolean autofocus();
-    private native boolean setFocusMode(int mode);
-
-    /** Activates the Flash */
-    private native boolean activateFlash(boolean flash);
-
-	private boolean mCreatedBefore = false;
-
-	public VuforiaJMEActivity()
-    {
-		// Set the application class to runs
-		appClass = "com.ar4android.vuforiaJME.VuforiaJME";
-		// Try ConfigType.FASTEST; or ConfigType.LEGACY if you have problems
-		eglConfigType = ConfigType.BEST;
-
-		// Exit Dialog title & messages
-        exitDialogTitle   = "Exit?";
-		exitDialogMessage = "Press Yes";
-		// Enable verbose logging
-		eglConfigVerboseLogging = false;
-		
-		// Choose screen orientation
-		screenOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-		// Invert the MouseEvents X (default = true)
-		mouseEventsInvertX = true;
-		// Invert the MouseEvents Y (default = true)
-		mouseEventsInvertY = true;
-		
-		logger.setLevel(Level.SEVERE);
-	}
-	
-	Image cameraJMEImageRGB565;
-	private byte[] mPreviewBufferRGB656;
-	java.nio.ByteBuffer mPreviewByteBufferRGB565;
-	static boolean firstTimeGetImage=true;
 
     //TODO: Alex add things here.
     /**
