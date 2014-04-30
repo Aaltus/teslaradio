@@ -1,11 +1,11 @@
 package com.galimatias.teslaradio.subject;
 
 import android.app.Activity;
+import android.util.SparseArray;
 import com.galimatias.teslaradio.R;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Static class to provide a list of scenario and page for detail fragments
@@ -13,13 +13,11 @@ import java.util.Map;
 public class SubjectContent {
 
 
-
-
     /**
      * An array of sample (subject) items.
      */
     public static List<SubjectItem> ITEMS = new ArrayList<SubjectItem>();
-    public static Map<Integer, SubjectItem> ITEM_MAP = new HashMap<Integer, SubjectItem>();
+    public static SparseArray<SubjectItem> ITEM_MAP = new SparseArray<SubjectItem>();
 
     /**
      * Add a all the subject content to the list with the language specified
