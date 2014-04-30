@@ -502,17 +502,17 @@ public final class SoundCapture extends Scenario {
                         Spatial touchedGeometry = closest.getGeometry();
                         String nameToCompare = touchedGeometry.getParent().getName();
 
-                        if (nameToCompare == drum.getName())
+                        if (nameToCompare.equals(drum.getName()))
                         {
                             this.drumTouchEffect();
                             break;
                         }
-                        else if (nameToCompare == guitar.getName())
+                        else if (nameToCompare.equals(guitar.getName()))
                         {
                             this.guitarTouchEffect();
                             break;
                         }
-                        else if (nameToCompare == titleTextBox.getName() || nameToCompare == instrumentTextBox.getName() || nameToCompare == microphoneTextBox.getName())
+                        else if (nameToCompare.equals(titleTextBox.getName()) || nameToCompare.equals(instrumentTextBox.getName()) || nameToCompare.equals(microphoneTextBox.getName()))
                         {
                             //this.textTouchEffect();
                             showInformativeMenu = true;
