@@ -40,10 +40,7 @@ public class SplashscreenDialogFragment extends DialogFragment {
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         getDialog().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-
-        View view = inflater.inflate(R.layout.splashscreen_dialog_layout, container);
-
-        return view;
+        return inflater.inflate(R.layout.splashscreen_dialog_layout, container);
     }
 
     public void dismiss()

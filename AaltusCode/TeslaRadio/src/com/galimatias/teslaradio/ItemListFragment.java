@@ -106,9 +106,8 @@ public class ItemListFragment extends ListFragment {
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 
         Log.i(TAG,"onCreateView");
-        View v = inflater.inflate(R.layout.list_fragment_global_layout, container, false);
 
-        return v;
+        return inflater.inflate(R.layout.list_fragment_global_layout, container, false);
     }
 
     @Override

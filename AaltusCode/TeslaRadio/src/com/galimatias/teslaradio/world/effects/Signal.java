@@ -168,24 +168,24 @@ public class Signal extends Geometry {
         }
     }
 
-    //TODO: Useful to removed ?!
-    public void SetPropagationSpeed(){
-        
-    }
-
-    //TODO: Useful to removed ?!
-    public void SetRotationSpeed(){
-        
-    }
-
-    //TODO: Useful to removed ?!
-    public void SetAmplitude(){
-        
-    }
-
-    //TODO: Useful to removed ?!
-    public void SetAmplitudeValueQueue(int[] amplitudeArray) {
-        
-    }
+//    //TODO: Useful to removed ?!
+//    public void SetPropagationSpeed(){
+//
+//    }
+//
+//    //TODO: Useful to removed ?!
+//    public void SetRotationSpeed(){
+//
+//    }
+//
+//    //TODO: Useful to removed ?!
+//    public void SetAmplitude(){
+//
+//    }
+//
+//    //TODO: Useful to removed ?!
+//    public void SetAmplitudeValueQueue(int[] amplitudeArray) {
+//
+//    }
         
 }
