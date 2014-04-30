@@ -56,7 +56,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
          </activity>
-
+        <!--<activity android:name=".CrashHandler" android:process=":CrashHandler" android:stateNotNeeded="true" android:exported="false" android:configChanges="keyboard|keyboardHidden|orientation" android:screenOrientation="landscape"/>-->
+        <activity android:name="org.acra.CrashReportDialog"
+                  android:theme="@android:style/Theme.Dialog"
+                  android:launchMode="singleInstance"
+                  android:excludeFromRecents="true"
+                  android:finishOnTaskLaunch="true" />
     </application>
 
 </manifest>

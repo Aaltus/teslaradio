@@ -6,7 +6,10 @@
     <string name="tab1_fragment_string">tab1</string>
     <string name="tab2_fragment_string">tab2</string>
     <string name="app_name">Aaltus</string>
-
+    <string name="starting_email">Starting email client...</string>
+    <string name="author_email">dms.jonathan@gmail.com</string>
+    <string name="getting_log">Getting log...</string>
+    <string name="get_log_failed">Could not read the log. Perhaps you are on a T-Mobile Pulse (Huawei U8220) where logcat fails (complain to Huawei about it?) Meanwhile, send an ordinary bug report to {0}, describing what you did and what happened, and I may still be able to help you.</string>
     <string name="back_button_text">Back</string>
     <string name="string_action_language_eng">English</string>
     <string name="string_action_language_fr">Français</string>
@@ -26,6 +29,15 @@
     <string name="reception_title">Reception</string>
     <string name="reference_title">Reference</string>
     <string name="about_us_title">About us</string>
+
+
+    <!--ACRA string-->
     <string name="crash_toast_text">Sorry! The App has crashed and a report has been send to the developpers.</string>
+    <string name="crash_dialog_title">CrashTest has crashed</string>
+    <string name="crash_dialog_text">An unexpected error occurred forcing the
+        application to stop. Please help us fix this by sending us error data,
+        all you have to do is click OK.</string>
+    <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
+    <string name="crash_dialog_ok_toast">Thank you !</string>
 
 </resources>
