@@ -327,16 +327,16 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 		//when viewport_w != settings.getWidth
 		
 		//Adjusting viewport: from BackgroundTextureAccess example in Qualcomm Vuforia
-	    float viewportPosition_x =  (((int)(settings.getWidth()  - viewport_w)) / (int) 2);//+0
-	    float viewportPosition_y =  (((int)(settings.getHeight() - viewport_h)) / (int) 2);//+0
-	    float viewportSize_x = viewport_w;//2560
-	    float viewportSize_y = viewport_h;//1920
+	    float viewportPosition_x =  (((int)(settings.getWidth()  - viewport_w)) / 2);//+0
+	    float viewportPosition_y =  (((int)(settings.getHeight() - viewport_h)) / 2);//+0
+	    //float viewportSize_x = viewport_w;//2560
+	    //float viewportSize_y = viewport_h;//1920
 
 	    //transform in normalized coordinate
-	    viewportPosition_x =  (float)viewportPosition_x/(float)viewport_w;
-	    viewportPosition_y =  (float)viewportPosition_y/(float)viewport_h;
-	    viewportSize_x = viewportSize_x/viewport_w;
-	    viewportSize_y = viewportSize_y/viewport_h;
+	    viewportPosition_x =  viewportPosition_x/viewport_w;
+	    viewportPosition_y =  viewportPosition_y/viewport_h;
+	    //viewportSize_x = viewportSize_x/viewport_w;
+	    //viewportSize_y = viewportSize_y/viewport_h;
 	       
 		//adjust for viewport start (modify video quad)
 		mVideoBGGeom.setLocalTranslation(-0.5f*newWidth+viewportPosition_x,-0.5f*newHeight+viewportPosition_y,0.f);

@@ -12,7 +12,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.mesh.IndexBuffer;
-import com.jme3.scene.shape.Curve;
 import com.jme3.util.BufferUtils;
 import java.nio.FloatBuffer;
 import java.util.Collections;
@@ -63,7 +62,7 @@ public class SignalTrajectories {
         float XZAngleIncrement = ((XZmaxAngle/(nbDirections/nbYXrotations))*2.0f*3.141592654f/360);
         
         float nIncrementInVertical = (float)Math.ceil(vAngle/XYAngleIncrement);
-        float skewingFactor = (float) (vAngle/(nIncrementInVertical*XYAngleIncrement));
+        float skewingFactor = vAngle/(nIncrementInVertical*XYAngleIncrement);
         XYAngleIncrement = XYAngleIncrement*skewingFactor;
         
         //Index of the main beam
@@ -73,15 +72,15 @@ public class SignalTrajectories {
         Quaternion rotationPlanXZ = new Quaternion();
         Quaternion normalRotation = new Quaternion();
         
-        Matrix3f rotMatrixXY = new Matrix3f();
-        Matrix3f rotMatrixXZ = new Matrix3f();
-        Matrix3f rotMatrixNormal = new Matrix3f();
+        Matrix3f rotMatrixXY;
+        Matrix3f rotMatrixXZ;
+        Matrix3f rotMatrixNormal;
         
         startDirection.y = 0;
         trajectories.add(startDirection);
         
-        Vector3f normalVector = new Vector3f();
-        Vector3f XZPlanVector = new Vector3f();
+        Vector3f normalVector;
+        Vector3f XZPlanVector;
         
         for(int i=0; i < nbDirections/nbYXrotations; i++)
         {                       
@@ -111,7 +110,6 @@ public class SignalTrajectories {
     private Vector3f getControlPoint(int index, Mesh bezier_mesh)
     {
         Vector3f v1 = new Vector3f();
-        Vector3f v2 = new Vector3f();
         Vector3f pathVector = new Vector3f();
         
         VertexBuffer pb = bezier_mesh.getBuffer(VertexBuffer.Type.Position);
@@ -119,9 +117,7 @@ public class SignalTrajectories {
         if (pb != null && pb.getFormat() == VertexBuffer.Format.Float && pb.getNumComponents() == 3){
             FloatBuffer fpb = (FloatBuffer) pb.getData();
 
-            // aquire triangle's vertex indices
-            int vertIndex = index;
-            int vert1 = ib.get(vertIndex);
+            int vert1 = ib.get(index);
            // int vert2 = ib.get(vertIndex+1);
 
             BufferUtils.populateFromBuffer(v1, fpb, vert1);
@@ -150,10 +146,8 @@ public class SignalTrajectories {
         {
             controlPoints[index] = getControlPoint(index,bezier_mesh).mult(10f);
         }
-        
-        Spline curveSpline = new Spline(SplineType.Linear,controlPoints,1,false);
-        
-        return curveSpline;
+
+        return new Spline(SplineType.Linear,controlPoints,1,false);
     }
 
     /**
