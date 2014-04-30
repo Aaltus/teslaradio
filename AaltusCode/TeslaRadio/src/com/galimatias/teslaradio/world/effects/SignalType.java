@@ -9,5 +9,5 @@ package com.galimatias.teslaradio.world.effects;
  * @author David
  */
 public enum SignalType {
-    Air, Wire;
+    Air, Wire
 }

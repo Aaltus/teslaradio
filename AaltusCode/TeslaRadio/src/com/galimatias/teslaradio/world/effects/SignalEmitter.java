@@ -17,7 +17,6 @@ import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import java.util.LinkedList;
 
 /**
  *
@@ -88,7 +87,7 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
             }
                 
             cumulatedPeriod += tpf;
-            readyForEmission = (cumulatedPeriod>wavePeriod && waveIndex<waveMagnitudes.size()) ? true:false;
+            readyForEmission = (cumulatedPeriod>wavePeriod && waveIndex<waveMagnitudes.size());// ? true:false;
             cumulatedPeriod %= wavePeriod;
             
         }
