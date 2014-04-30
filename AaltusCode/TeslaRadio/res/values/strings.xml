@@ -28,12 +28,13 @@
 
 
     <!--ACRA string-->
-    <string name="crash_toast_text">Sorry! The App has crashed and a report has been send to the developpers.</string>
-    <string name="crash_dialog_title">CrashTest has crashed</string>
+    <string name="crash_toast_text">Sorry! The App has crashed.</string>
+    <string name="crash_dialog_title">Aaltus has crashed</string>
     <string name="crash_dialog_text">An unexpected error occurred forcing the
         application to stop. Please help us fix this by sending us error data,
-        all you have to do is click OK.</string>
+        all you have to do is click OK and you\'ll be able to send an email with the error.</string>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you !</string>
+    <string name="developers_email">dms.jonathan@gmail.com</string>
 
 </resources>
