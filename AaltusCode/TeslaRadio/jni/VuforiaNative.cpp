@@ -229,12 +229,34 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData(JNIEnv *, jobj
     }
 
     // Activate the data set:
-    if (!imageTracker->activateDataSet(dataSetStonesAndChips) ||
-            !imageTracker->activateDataSet(dataSetLena))
+    if (!imageTracker->activateDataSet(dataSetStonesAndChips)
+    //||!imageTracker->activateDataSet(dataSetLena) //jdesmarais: We don't need Lena anymore so I deactivate it.
+         )
     {
         LOGE("Failed to activate data set.");
         return 0;
     }
+
+
+    // Activate the extended tracking:
+    for (int i = 0; i < dataSetStonesAndChips ->getNumTrackables(); i++)
+    {
+        QCAR::Trackable* trackable = dataSetStonesAndChips->getTrackable(i);
+        // Start extended tracking on “chips” target
+        if (!trackable->startExtendedTracking())
+        {
+            LOGD ("Failed to start extended tracking on chips target");
+        }
+    }
+    /*if ((dataSetStonesAndChips->getTrackable(0)->startExtendedTracking())
+    //||!imageTracker->activateDataSet(dataSetLena))
+         )
+    {
+        LOGE("Failed to activate extended tracking.");
+        return 0;
+    }*/
+
+
 
     LOGI("Successfully loaded and activated data set.");
     return 1;
