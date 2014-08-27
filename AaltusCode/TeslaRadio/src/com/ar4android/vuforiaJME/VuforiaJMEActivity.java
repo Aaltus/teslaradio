@@ -71,9 +71,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     private static final int APPSTATUS_INIT_TRACKER     = 2;
     private static final int APPSTATUS_INIT_APP_AR      = 3;
     private static final int APPSTATUS_LOAD_TRACKER     = 4;
-    private static final int APPSTATUS_INITED           = 5;
-    private static final int APPSTATUS_CAMERA_STOPPED   = 6;
-    private static final int APPSTATUS_CAMERA_RUNNING   = 7;
+    private static final int APPSTATUS_INIT_LAYOUT      = 5;
+    private static final int APPSTATUS_INITED           = 6;
+    private static final int APPSTATUS_CAMERA_STOPPED   = 7;
+    private static final int APPSTATUS_CAMERA_RUNNING   = 8;
 
     // Name of the native dynamic libraries to load:
     private static final String NATIVE_LIB_SAMPLE = "VuforiaNative";
@@ -379,7 +380,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 mIsStonesAndChipsDataSetActive = true;
 
                 // Done loading the tracker, update application status:
-                updateApplicationStatus(APPSTATUS_INITED);
+                updateApplicationStatus(APPSTATUS_INIT_LAYOUT);
             }
             else
             {
@@ -521,6 +522,34 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 }
                 break;
 
+            case APPSTATUS_INIT_LAYOUT:
+
+                Log.i(TAG, "In APPSTATUS_INIT_LAYOUT");
+
+                //create the layout on top of the jmonkey view to add button and fragments
+                //initTopLayout();
+                ViewGroup rootView        = (ViewGroup) findViewById(android.R.id.content);
+                LayoutInflater factory    = LayoutInflater.from(this);
+                FrameLayout frameLayout1  = new FrameLayout(this);
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                frameLayout1.setLayoutParams(layoutParams);
+
+                frameLayout1.setId(4);
+                rootView.addView(frameLayout1);
+
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                Fragment fragment = new InformativeMenuFragment();
+                ft.replace(frameLayout1.getId(), fragment, INFORMATIVE_MENU_FRAGMENT_TAG);
+                ft.commit();
+                fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
+
+                //Add the fragment with frangment transaction with framwlayoyt
+
+                updateApplicationStatus(APPSTATUS_INITED);
+
+                break;
+
             case APPSTATUS_INITED:
 
                 Log.i(TAG,"In APPSTATUS_INITED");
@@ -548,34 +577,11 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 // Sets the UILayout to be drawn in front of the camera
               //  mUILayout.bringToFront();
 
-                //create the layout on top of the jmonkey view to add button and fragments
-                //TODO Change this call to a case APPSTATUS...
-
-
-                //initTopLayout();
-                ViewGroup rootView        = (ViewGroup) findViewById(android.R.id.content);
-                LayoutInflater factory    = LayoutInflater.from(this);
-                FrameLayout frameLayout1  = new FrameLayout(this);
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                frameLayout1.setLayoutParams(layoutParams);
-
-                frameLayout1.setId(4);
-                rootView.addView(frameLayout1);
-
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                Fragment fragment = new InformativeMenuFragment();
-                ft.replace(frameLayout1.getId(), fragment, INFORMATIVE_MENU_FRAGMENT_TAG);
-                ft.commit();
-                fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
-
-                //Add the fragment with frangment transaction with framwlayoyt
 
                 // Start the camera:
                 updateApplicationStatus(APPSTATUS_CAMERA_RUNNING);
 
                 break;
-
 
             case APPSTATUS_CAMERA_STOPPED:
                 Log.i(TAG,"In APPSTATUS_CAMERA_STOPPED");
