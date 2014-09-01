@@ -18,13 +18,19 @@
 
 package com.ar4android.vuforiaJME;
 
-import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
+import android.renderscript.Matrix3f;
+import android.util.Log;
+import com.galimatias.teslaradio.subject.ScenarioEnum;
+import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.jme3.app.SimpleApplication;
+import com.jme3.input.controls.TouchListener;
 import com.jme3.input.controls.TouchTrigger;
+import com.jme3.input.event.TouchEvent;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
@@ -34,17 +40,12 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
-import com.utils.AppLogger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.Callable;
 
-public class VuforiaJME extends SimpleApplication {
+public class VuforiaJME extends SimpleApplication  implements TouchListener{
 
 	private static final String TAG = VuforiaJME.class.getName();
-
-    private ScenarioManager scenarioManager;
-
 	// The geometry which will represent the video background
 	private Geometry mVideoBGGeom;
 	// The material which will be applied to the video background geometry.
@@ -59,11 +60,15 @@ public class VuforiaJME extends SimpleApplication {
 	// A flag indicating if the JME Image has been already initialized.
 	private boolean mVideoImageInitialized = false;
 	// A flag indicating if a new Android camera image is available.
-	private boolean mNewCameraFrameAvailable = false;
+	boolean mNewCameraFrameAvailable = false;
+
+
+
 // The virtual world object, it is in fact the scene
 //    private World virtualWorld;
 //    private Spatial ninja;
 //    private Node scotty;
+    private SoundCapture soundCapture;
 
     private float mForegroundCamFOVY = 30;
 
@@ -86,14 +91,33 @@ public class VuforiaJME extends SimpleApplication {
 
     
 	public static void main(String[] args) {
+		VuforiaJME app = new VuforiaJME();
 
-        VuforiaJME app = new VuforiaJME();
 		app.start();
 	}
 
     //A Applistener that we will be using for callback
     public AppListener appListener;
 
+
+    //See https://github.com/latestpost/JMonkey3-Android-Examples/blob/master/src/jmeproject/innovationtech/co/uk/Game7.java
+    //For example
+    @Override
+    public void onTouch(String name, TouchEvent touchEvent, float v)
+    {
+        //Log.d(TAG,"Action on screen");
+
+        soundCapture.onScenarioTouch(name, touchEvent, v);
+    }
+
+    interface AppListener
+    {
+        //Callaback for showing a informative menu with the provided menu
+        public void showInformativeMenuCallback(ScenarioEnum scenarioEnum);
+
+        //Callaback for telling the upper layer that VuforiaJME is done loading
+        public void onFinishSimpleInit();
+    }
 
     //A way to register to the appListener
     public void setAppListener(AppListener appListener)
@@ -105,15 +129,16 @@ public class VuforiaJME extends SimpleApplication {
 	@Override
 	public void simpleInitApp()
     {
-        // Where the AppLogger is called for the first time and the log level is set
-        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.NONE);
+		Log.i(TAG, "simpleInitApp");
 
-        AppLogger.getInstance().i(TAG, "simpleInitApp");
 
 		// Do not display statistics or frames per second	
 		setDisplayStatView(true);
 		setDisplayFps(true);
-
+		
+		//Logger.getLogger("").setLevel(Level.SEVERE);
+		 
+		
 		// We use custom viewports - so the main viewport does not need to contain the rootNode
 		viewPort.detachScene(rootNode);
 		
@@ -126,6 +151,9 @@ public class VuforiaJME extends SimpleApplication {
 		initForegroundScene();
 
         appListener.onFinishSimpleInit();
+
+
+
 	}
 
 	// This function creates the geometry, the viewport and the virtual camera
@@ -133,7 +161,7 @@ public class VuforiaJME extends SimpleApplication {
 	// graph
 	public void initVideoBackground(int screenWidth, int screenHeight) {
 
-        AppLogger.getInstance().d(TAG, "* initVideoBackground with width : " + Integer.toString(screenWidth) + " height: " + Integer.toString(screenHeight));
+        Log.d(TAG,"* initVideoBackground with width : " + Integer.toString(screenWidth) + " height: " + Integer.toString(screenHeight) );
 
 		// Create a Quad shape.
 		Quad videoBGQuad = new Quad(1, 1, true);
@@ -162,7 +190,7 @@ public class VuforiaJME extends SimpleApplication {
 
         int settingsWidth = settings.getWidth();
         int settingsHeight = settings.getHeight();
-        AppLogger.getInstance().d(TAG, "* initBackgroundCamera with width : " + Integer.toString(settingsWidth) + " height: " + Integer.toString(settingsHeight));
+        Log.d(TAG, "* initBackgroundCamera with width : " + Integer.toString(settingsWidth) + " height: " + Integer.toString(settingsHeight));
 		videoBGCam = new Camera(settingsWidth, settingsHeight);
 		videoBGCam.setViewPort(0.0f, 1.0f, 0.f, 1.0f);
 		videoBGCam.setLocation(new Vector3f(0f, 0f, 1.f));
@@ -182,24 +210,27 @@ public class VuforiaJME extends SimpleApplication {
 
     public void initForegroundScene() {
 
-        AppLogger.getInstance().d(TAG, "initForegroundScene");
+        Log.d(TAG,"initForegroundScene" );
 
         initLights();
 
-        List<Node> nodeList = new ArrayList<Node>();
-        nodeList.add(rootNode);
-        scenarioManager = new ScenarioManager(nodeList, assetManager, fgCam, appListener, renderManager);
+        //Init SoundCapture scenario
+        soundCapture = new SoundCapture(assetManager, fgCam);
+        soundCapture.scale(20.0f);
+        soundCapture.setName("SoundCapture");
+        Quaternion rot = new Quaternion();
+        rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
+        soundCapture.rotate(rot);
+        rootNode.attachChild(soundCapture);
 
-        //TODO: Move in scenario Manager
         //Correction for BUG TR-176
         //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
         //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
-        renderManager.preloadScene(rootNode);
+        renderManager.preloadScene(soundCapture);
+
 
         inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click
-        inputManager.addListener(scenarioManager, new String[]{"Touch"});
-
-
+        inputManager.addListener(this, new String[]{"Touch"});
 
 
         //focusableObjects.attachChild(soundCapture);
@@ -207,13 +238,11 @@ public class VuforiaJME extends SimpleApplication {
 	}
 
 
-
-
     public void initForegroundCamera(float fovY) {
 
         int settingsWidth = settings.getWidth();
         int settingsHeight = settings.getHeight();
-        AppLogger.getInstance().d(TAG, "initForegroundCamera with width : " + Integer.toString(settings.getWidth()) + " height: " + Integer.toString(settings.getHeight()));
+        Log.d(TAG,"initForegroundCamera with width : " + Integer.toString(settings.getWidth()) + " height: " + Integer.toString(settings.getHeight()) );
 		fgCam = new Camera(settingsWidth, settingsHeight);
 		
 		fgCam.setViewPort(0, 1.0f, 0.f, 1.0f);
@@ -253,6 +282,26 @@ public class VuforiaJME extends SimpleApplication {
 
     }
 
+    //TODO: TEMPORARY NEED REFACTORING TO SUPPORT MULTI SCENARIO
+    /**
+     * Simple function to detach or attach children scenario to the
+     * rootNode. Called from native code.
+     * @param attachScenarios
+     */
+    public void attachScenarios(boolean attachScenarios)
+    {
+        boolean hasScenarioChild = rootNode.hasChild(soundCapture);
+
+        if (!hasScenarioChild && attachScenarios)
+        {
+            rootNode.attachChild(soundCapture);
+        }
+        else if (hasScenarioChild && !attachScenarios)
+        {
+            rootNode.detachChild(soundCapture);
+        }
+    }
+
 	public void setCameraPerspectiveNative(float fovY,float aspectRatio) {
         // Log.d(TAG,"Update Camera Perspective..");
 
@@ -263,7 +312,7 @@ public class VuforiaJME extends SimpleApplication {
 	public void setCameraViewportNative(float viewport_w,float viewport_h,float size_x,float size_y) {
 		 //Log.d(TAG,"Update Camera Viewport..");
 
-        AppLogger.getInstance().d(TAG, "setCameraViewportNative with viewport_w : " + Float.toString(viewport_w) + " viewport_h: " + Float.toString(viewport_h));
+        Log.d(TAG,"setCameraViewportNative with viewport_w : " + Float.toString(viewport_w) + " viewport_h: " + Float.toString(viewport_h   ));
 		float newWidth = 1.f;
 		float newHeight = 1.f;
 		
@@ -296,15 +345,27 @@ public class VuforiaJME extends SimpleApplication {
 		mVideoBGGeom.setLocalScale(newWidth, newHeight, 1.f);
 	}
 	
+	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z) {
+		 Log.d(TAG,"Update Camera Pose..");
 
-	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z, int id) {
-         AppLogger.getInstance().d(TAG, "Update Camera Pose..");
+//         Log.d(TAG, "Coordinates : x = " + Float.toString(cam_x) + " y = "
+//                 + Float.toString(cam_y) + " z = " + Float.toString(cam_z));
 
-        //         Log.d(TAG, "Coordinates : x = " + Float.toString(cam_x) + " y = "
-        //                 + Float.toString(cam_y) + " z = " + Float.toString(cam_z));
+         Log.d(TAG, "Sound Capture Position X : " + soundCapture.getWorldTranslation().x);
+         Log.d(TAG, "Sound Capture Position Y : " + soundCapture.getWorldTranslation().y);
+         Log.d(TAG, "Sound Capture Position Z : " + soundCapture.getWorldTranslation().z);
+
+         Log.d(TAG, "RootNode Position X : " + rootNode.getLocalTranslation().x);
+         Log.d(TAG, "RootNode Position Y : " + rootNode.getLocalTranslation().y);
+         Log.d(TAG, "RootNode Position Z : " + rootNode.getLocalTranslation().z);
+
+         Log.d(TAG, "Camera Position X : " + fgCam.getLocation().x);
+         Log.d(TAG, "Camera Position Y : " + fgCam.getLocation().y);
+         Log.d(TAG, "Camera Position Z : " + fgCam.getLocation().z);
 
          // Set the new foreground camera position
-		 fgCam.setLocation(new Vector3f(cam_x, cam_y, cam_z));
+         fgCam.setLocation(new Vector3f(0.0f, 0.0f, 0.0f));
+		 rootNode.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
 
 	}
 	
@@ -313,55 +374,71 @@ public class VuforiaJME extends SimpleApplication {
 		 
 		//Log.d(TAG,"Update Orientation Pose..");
 
-        //        Log.d(TAG, "direction : x = " + Float.toString(cam_dir_x) + " y = "
-        //                + Float.toString(cam_dir_y) + " z = " + Float.toString(cam_dir_z));
+//        Log.d(TAG, "direction : x = " + Float.toString(cam_dir_x) + " y = "
+//                + Float.toString(cam_dir_y) + " z = " + Float.toString(cam_dir_z));
 
    		 //left,up,direction
-		 fgCam.setAxes(
-                 new Vector3f(-cam_right_x, -cam_right_y, -cam_right_z),
-                 new Vector3f(-cam_up_x, -cam_up_y, -cam_up_z),
-                 new Vector3f(cam_dir_x, cam_dir_y, cam_dir_z));
+		    fgCam.setAxes(
+                 new Vector3f(1.0f, 0.0f, 0.0f),
+                 new Vector3f(0.0f, 1.0f, 0.0f),
+                 new Vector3f(0.0f, 0.0f, 1.0f));
+
+        // Adding the world rotation
+        com.jme3.math.Matrix3f rotMatrix = new com.jme3.math.Matrix3f(1.0f, -cam_right_y, cam_right_z,
+                                                                      cam_up_x, cam_up_y, cam_up_z,
+                                                                      cam_dir_x, cam_dir_y, cam_dir_z);
+        rootNode.setLocalRotation(rotMatrix);
+
 	}
-	public void setTrackableVisibleNative(int id, int isVisible)
-    {
-        //TODO: Attack/Detach node dependeing on vsibility status
-    }
-    // This method retrieves the preview images from the Android world and puts them into a JME image.
-    public void setVideoBGTexture(final Image image) {
-        if (!mSceneInitialized) {
-            return;
+		 
+	// This method retrieves the preview images from the Android world and puts them into a JME image.
+		public void setVideoBGTexture(final Image image) {
+			if (!mSceneInitialized) {
+				return;
+			}
+			mCameraImage = image;
+			mNewCameraFrameAvailable = true;
+		}	
+		
+		@Override
+		public void simpleUpdate(float tpf) {
+			
+			updateTracking();
+			
+			if (mNewCameraFrameAvailable) {
+				mCameraTexture.setImage(mCameraImage);
+				mvideoBGMat.setTexture("ColorMap", mCameraTexture);
+			}
+
+//			mCubeGeom.rotate(new Quaternion(1.f, 0.f, 0.f, 0.01f));
+			mVideoBGGeom.updateLogicalState(tpf);
+			mVideoBGGeom.updateGeometricState();
+
+
+            if (soundCapture.simpleUpdate(tpf))
+            {
+                appListener.showInformativeMenuCallback(ScenarioEnum.SOUNDCAPTURE);
+            }
+
+
+            // Update the world depending on what is in focus
+            //virtualWorld.UpdateFocus(fgCam,focusableObjects);
+			//virtualWorld.UpdateViewables(rootNode,focusableObjects);
+		}
+
+		@Override
+		public void simpleRender(RenderManager rm) {
+			// TODO: add render code
+		}
+
+
+
+    public class onAudioEvent implements Callable{
+        @Override
+        public Object call() throws Exception {
+
+            soundCapture.onAudioEvent();
+            return null;
         }
-        mCameraImage = image;
-        mNewCameraFrameAvailable = true;
     }
-
-    @Override
-    public void simpleUpdate(float tpf) {
-
-        updateTracking();
-
-        if (mNewCameraFrameAvailable) {
-            mCameraTexture.setImage(mCameraImage);
-            mvideoBGMat.setTexture("ColorMap", mCameraTexture);
-        }
-
-        // mCubeGeom.rotate(new Quaternion(1.f, 0.f, 0.f, 0.01f));
-        mVideoBGGeom.updateLogicalState(tpf);
-        mVideoBGGeom.updateGeometricState();
-
-
-        scenarioManager.simpleUpdate(tpf);
-
-
-        // Update the world depending on what is in focus
-        //virtualWorld.UpdateFocus(fgCam,focusableObjects);
-        //virtualWorld.UpdateViewables(rootNode,focusableObjects);
-    }
-
-    @Override
-    public void simpleRender(RenderManager rm) {
-        // TODO: add render code
-    }
-
-
 }
