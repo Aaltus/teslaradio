@@ -61,8 +61,6 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 	private boolean mVideoImageInitialized = false;
 	// A flag indicating if a new Android camera image is available.
 	boolean mNewCameraFrameAvailable = false;
-    // The rotation matrix of the world
-    private com.jme3.math.Matrix3f rotMatrix;
 
 
 
@@ -115,7 +113,7 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
     interface AppListener
     {
         //Callaback for showing a informative menu with the provided menu
-        public void showInformativeMenuCallback(ScenarioEnum scenarioEnum);
+        public void toggleInformativeMenuCallback(ScenarioEnum scenarioEnum);
 
         //Callaback for telling the upper layer that VuforiaJME is done loading
         public void onFinishSimpleInit();
@@ -347,37 +345,48 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 		mVideoBGGeom.setLocalScale(newWidth, newHeight, 1.f);
 	}
 	
-	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z) {
+	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z, int id) {
 		 Log.d(TAG,"Update Camera Pose..");
 
 //         Log.d(TAG, "Coordinates : x = " + Float.toString(cam_x) + " y = "
 //                 + Float.toString(cam_y) + " z = " + Float.toString(cam_z));
+
+         Log.d(TAG, "Sound Capture Position X : " + soundCapture.getWorldTranslation().x);
+         Log.d(TAG, "Sound Capture Position Y : " + soundCapture.getWorldTranslation().y);
+         Log.d(TAG, "Sound Capture Position Z : " + soundCapture.getWorldTranslation().z);
+
+         Log.d(TAG, "RootNode Position X : " + rootNode.getLocalTranslation().x);
+         Log.d(TAG, "RootNode Position Y : " + rootNode.getLocalTranslation().y);
+         Log.d(TAG, "RootNode Position Z : " + rootNode.getLocalTranslation().z);
+
+         Log.d(TAG, "Camera Position X : " + fgCam.getLocation().x);
+         Log.d(TAG, "Camera Position Y : " + fgCam.getLocation().y);
+         Log.d(TAG, "Camera Position Z : " + fgCam.getLocation().z);
 
          // Set the new foreground camera position
          fgCam.setLocation(new Vector3f(0.0f, 0.0f, 0.0f));
 		 rootNode.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
 
 	}
-
+	
 	public void setCameraOrientationNative(float cam_right_x,float cam_right_y,float cam_right_z,
 			float cam_up_x,float cam_up_y,float cam_up_z,float cam_dir_x,float cam_dir_y,float cam_dir_z) {
-
+		 
 		//Log.d(TAG,"Update Orientation Pose..");
 
 //        Log.d(TAG, "direction : x = " + Float.toString(cam_dir_x) + " y = "
 //                + Float.toString(cam_dir_y) + " z = " + Float.toString(cam_dir_z));
 
    		 //left,up,direction
-		 fgCam.setAxes(
-             new Vector3f(1.0f, 0.0f, 0.0f),
-             new Vector3f(0.0f, 1.0f, 0.0f),
-             new Vector3f(0.0f, 0.0f, 1.0f));
+		    fgCam.setAxes(
+                 new Vector3f(1.0f, 0.0f, 0.0f),
+                 new Vector3f(0.0f, 1.0f, 0.0f),
+                 new Vector3f(0.0f, 0.0f, 1.0f));
 
         // Adding the world rotation
-        rotMatrix = new com.jme3.math.Matrix3f( cam_right_x, cam_up_x , -cam_dir_x ,
-                                                cam_right_y, cam_up_y, -cam_dir_y,
-                                                -cam_right_z , -cam_up_z , cam_dir_z);
-
+        com.jme3.math.Matrix3f rotMatrix = new com.jme3.math.Matrix3f(1.0f, -cam_right_y, cam_right_z,
+                                                                      cam_up_x, cam_up_y, cam_up_z,
+                                                                      cam_dir_x, cam_dir_y, cam_dir_z);
         rootNode.setLocalRotation(rotMatrix);
 
 	}
@@ -408,7 +417,7 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 
             if (soundCapture.simpleUpdate(tpf))
             {
-                appListener.showInformativeMenuCallback(ScenarioEnum.SOUNDCAPTURE);
+                appListener.toggleInformativeMenuCallback(ScenarioEnum.SOUNDCAPTURE);
             }
 
 
