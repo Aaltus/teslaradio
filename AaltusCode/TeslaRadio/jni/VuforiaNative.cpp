@@ -435,9 +435,9 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
                 QCAR::Tool::convertPose2GLMatrix(result->getPose());
 
             //get the camera transformation
-            QCAR::Matrix44F inverseMV = MathUtil::Matrix44FInverse(modelViewMatrix);
-            //QCAR::Matrix44F invTranspMV = modelViewMatrix;
-            QCAR::Matrix44F invTranspMV = MathUtil::Matrix44FTranspose(inverseMV);
+            //QCAR::Matrix44F inverseMV = MathUtil::Matrix44FInverse(modelViewMatrix);
+            QCAR::Matrix44F invTranspMV = modelViewMatrix;
+            //QCAR::Matrix44F invTranspMV = MathUtil::Matrix44FTranspose(inverseMV);
 
             //get position
             float cam_x = invTranspMV.data[12];
