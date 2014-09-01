@@ -23,6 +23,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -56,6 +57,8 @@ import java.util.logging.Level;
  * It also initialize vuforia library and jme app.
  */
 public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements VuforiaJME.AppListener {
+
+    private static final boolean UseProfiler = false;
 
 	private static final String TAG = VuforiaJMEActivity.class.getName();
 
@@ -755,6 +758,12 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         super.onCreate(savedInstanceState);
 
+        //Enabling Profiler
+        if (UseProfiler)
+        {
+            Debug.startMethodTracing("traceFile");
+        }
+
         //Set an AppListener to receive callbacks from VuforiaJME e.g. to show informative menu
         ((VuforiaJME) app).setAppListener(this);
 
@@ -819,7 +828,17 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
 //        QCAR.onSurfaceCreated();
 	}
-	
+
+    @Override
+    protected void onStop()
+    {
+        // Stop the profiler
+        if (UseProfiler)
+        {
+            Debug.stopMethodTracing();
+        }
+    }
+
 	@Override
     protected void onDestroy()
     {
