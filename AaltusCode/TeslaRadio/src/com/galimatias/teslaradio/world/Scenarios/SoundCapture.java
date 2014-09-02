@@ -341,30 +341,55 @@ public final class SoundCapture extends Scenario {
 
     public void initTextBox()
     {
-        boolean lookAtCamera = true;
+        boolean lookAtCamera = false;
         boolean showDebugBox = false;
         float textBoxWidth = 5.2f;
         float textBoxHeight = 0.8f;
-        Vector3f titleTextPosition = new Vector3f(0f, 8f, 0f);
+        
         ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
         ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
         titleTextBox = new TextBox(assetManager, titleText, titleTextSize, titleTextColor, titleBackColor, textBoxWidth, textBoxHeight, "titleText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
+        
+        //move the text on the ground without moving
+        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
+        titleTextBox.rotate((float)-Math.PI/2, 0, 0);
+        
+        //Was in its position when in the air and rotating
+        //Vector3f titleTextPosition = new Vector3f(0f, 8f, 0f);
+        
         titleTextBox.move(titleTextPosition);
+        
         
         // Add other text boxes here
         float instrumentTextBoxWidth = 4f;
         float instrumentTextBoxHeight = 1.7f;
         ColorRGBA instrumentTextBackColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f);
-        Vector3f instrumentTextPosition = ((drumHandleOut.getLocalTranslation().subtract(guitarHandleOut.getLocalTranslation())).divide(2f)).add(new Vector3f(-4f, 2f, 0f));
         instrumentTextBox = new TextBox(assetManager, instrumentText, secondaryTextSize, defaultTextColor, instrumentTextBackColor, instrumentTextBoxWidth, instrumentTextBoxHeight, "instrumentText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
+        
+        //move the text on the ground without moving
+        Vector3f instrumentTextPosition = new Vector3f(-5f, 0.25f, -3.5f);
+        instrumentTextBox.rotate((float)-Math.PI/2, 0, 0);
+        
+        //Was in its position when in the air and rotating
+        //Vector3f instrumentTextPosition = ((drumHandleOut.getLocalTranslation().subtract(guitarHandleOut.getLocalTranslation())).divide(2f)).add(new Vector3f(-4f, 2f, 0f));
         instrumentTextBox.move(instrumentTextPosition);
+        
         
         float micTextBoxWidth = 6f;
         float micTextBoxHeight = 1.2f;
         ColorRGBA micTextBackColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f);
-        Vector3f microphoneTextPosition = micHandleIn.getLocalTranslation().add(new Vector3f(2.2f, 2f, 0f));
+        
         microphoneTextBox = new TextBox(assetManager, microphoneText, secondaryTextSize, defaultTextColor, micTextBackColor, micTextBoxWidth, micTextBoxHeight, "instrumentText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
+        
+        //move the text on the ground without moving
+        Vector3f microphoneTextPosition = new Vector3f(5f, 0.25f, -3.5f);
+        microphoneTextBox.rotate((float)-Math.PI/2, 0, 0);
+        
+        //Was in its position when in the air and rotating
+        //Vector3f microphoneTextPosition = micHandleIn.getLocalTranslation().add(new Vector3f(2.2f, 2f, 0f));
+        
         microphoneTextBox.move(microphoneTextPosition);
+        
         
         
         // Messages to display if textBox is touched
@@ -372,6 +397,7 @@ public final class SoundCapture extends Scenario {
         //lstUpdatedText.add(" amet quam eu consectetur. Duis dapibus,");
         //lstUpdatedText.add("Aliquam euismod diam eget pharetra imperdiet.");
 
+        
         touchable.attachChild(titleTextBox);
         touchable.attachChild(instrumentTextBox);
         touchable.attachChild(microphoneTextBox);
