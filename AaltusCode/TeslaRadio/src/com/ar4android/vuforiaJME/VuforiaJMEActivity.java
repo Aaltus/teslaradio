@@ -18,6 +18,7 @@
 
 package com.ar4android.vuforiaJME;
 
+import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -38,6 +39,7 @@ import com.galimatias.teslaradio.R;
 import com.galimatias.teslaradio.SplashscreenDialogFragment;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
+import com.jme3.input.event.TouchEvent;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
 import com.qualcomm.QCAR.QCAR;
@@ -267,7 +269,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     Show the informative menu with the provided scenario to show
      */
     @Override
-    public void showInformativeMenuCallback(final ScenarioEnum scenarioEnum)
+    public void toggleInformativeMenuCallback(final ScenarioEnum scenarioEnum)
     {
         Log.d(TAG,"showInformativeMenuCallback");
 
@@ -276,14 +278,21 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         {
             public void run()
             {
-                FragmentManager fm = getSupportFragmentManager();//getSupportFragmentManager();
-                InformativeMenuFragment informativeMenuFragment =
-                        (InformativeMenuFragment) fm.findFragmentByTag(INFORMATIVE_MENU_FRAGMENT_TAG);
-                informativeMenuFragment.toggleFragmentsVisibility(scenarioEnum);
+                getInformativeMenuFragment().toggleFragmentsVisibility(scenarioEnum);
 
             }
         });
     }
+
+    public InformativeMenuFragment getInformativeMenuFragment()
+    {
+        FragmentManager fm = getSupportFragmentManager();//getSupportFragmentManager();
+        InformativeMenuFragment informativeMenuFragment =
+                (InformativeMenuFragment) fm.findFragmentByTag(INFORMATIVE_MENU_FRAGMENT_TAG);
+        return informativeMenuFragment;
+    }
+
+
 
     @Override
     public void onFinishSimpleInit()
@@ -852,6 +861,36 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         System.gc();
         
+    }
+
+    //jdesmarais: I override this because from AndroidHarness because I want to provide a way to use the back button to dismiss the UI
+    @Override
+    public void onTouch(String name, TouchEvent evt, float tpf) {
+        if (name.equals(ESCAPE_EVENT)) {
+            switch (evt.getType()) {
+                case KEY_UP:
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (getInformativeMenuFragment().isChildFragmentsHidden())
+                            {
+                                toggleInformativeMenuCallback(null);
+                            }
+                            else
+                            {
+                                AlertDialog dialog = new AlertDialog.Builder(VuforiaJMEActivity.this) // .setIcon(R.drawable.alert_dialog_icon)
+                                        .setTitle(exitDialogTitle).setPositiveButton("Yes", VuforiaJMEActivity.this).setNegativeButton("No", VuforiaJMEActivity.this).setMessage(exitDialogMessage).create();
+                                dialog.show();
+                            }
+
+                        }
+                    });
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     /**

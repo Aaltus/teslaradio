@@ -211,7 +211,7 @@ public class AndroidHarnessFragmentActivity extends FragmentActivity implements 
     protected boolean isGLThreadPaused = true;
     protected ImageView splashImageView = null;
     protected FrameLayout frameLayout = null;
-    final private String ESCAPE_EVENT = "TouchEscape";
+    final protected String ESCAPE_EVENT = "TouchEscape";
     private boolean firstDrawFrame = true;
     private boolean inConfigChange = false;
 

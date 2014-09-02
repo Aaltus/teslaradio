@@ -134,7 +134,21 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
     }
 
+    public boolean isChildFragmentsHidden()
+    {
 
+        FragmentManager fm                = getChildFragmentManager(); //getSupportFragmentManager();s
+        ItemListFragment listFragment     = (ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
+
+        boolean isHidden = false;
+        if(listFragment != null && listFragment.isVisible())
+        {
+            isHidden = true;
+        }
+
+        return isHidden;
+
+    }
 
     /** Action when a listfragment item is selected*/
     @Override
@@ -258,7 +272,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
             ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
             if (fragmentDetail.isHidden())
             {
-                Log.d(TAG,"Showing detail fragment");
+                Log.d(TAG, "Showing detail fragment");
                 ft.show(fragmentDetail);
             }
             else

@@ -112,7 +112,7 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
     interface AppListener
     {
         //Callaback for showing a informative menu with the provided menu
-        public void showInformativeMenuCallback(ScenarioEnum scenarioEnum);
+        public void toggleInformativeMenuCallback(ScenarioEnum scenarioEnum);
 
         //Callaback for telling the upper layer that VuforiaJME is done loading
         public void onFinishSimpleInit();
@@ -396,7 +396,7 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 
             if (soundCapture.simpleUpdate(tpf))
             {
-                appListener.showInformativeMenuCallback(ScenarioEnum.SOUNDCAPTURE);
+                appListener.toggleInformativeMenuCallback(ScenarioEnum.SOUNDCAPTURE);
             }
 
 
