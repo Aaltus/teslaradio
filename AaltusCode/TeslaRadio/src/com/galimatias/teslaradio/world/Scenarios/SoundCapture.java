@@ -341,12 +341,14 @@ public final class SoundCapture extends Scenario {
 
     public void initTextBox()
     {
+        boolean lookAtCamera = true;
+        boolean showDebugBox = false;
         float textBoxWidth = 5.2f;
         float textBoxHeight = 0.8f;
         Vector3f titleTextPosition = new Vector3f(0f, 8f, 0f);
         ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
         ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
-        titleTextBox = new TextBox(assetManager, titleText, titleTextSize, titleTextColor, titleBackColor, textBoxWidth, textBoxHeight, "titleText", BitmapFont.Align.Center, false);
+        titleTextBox = new TextBox(assetManager, titleText, titleTextSize, titleTextColor, titleBackColor, textBoxWidth, textBoxHeight, "titleText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
         titleTextBox.move(titleTextPosition);
         
         // Add other text boxes here
@@ -354,14 +356,14 @@ public final class SoundCapture extends Scenario {
         float instrumentTextBoxHeight = 1.7f;
         ColorRGBA instrumentTextBackColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f);
         Vector3f instrumentTextPosition = ((drumHandleOut.getLocalTranslation().subtract(guitarHandleOut.getLocalTranslation())).divide(2f)).add(new Vector3f(-4f, 2f, 0f));
-        instrumentTextBox = new TextBox(assetManager, instrumentText, secondaryTextSize, defaultTextColor, instrumentTextBackColor, instrumentTextBoxWidth, instrumentTextBoxHeight, "instrumentText", BitmapFont.Align.Center, false);
+        instrumentTextBox = new TextBox(assetManager, instrumentText, secondaryTextSize, defaultTextColor, instrumentTextBackColor, instrumentTextBoxWidth, instrumentTextBoxHeight, "instrumentText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
         instrumentTextBox.move(instrumentTextPosition);
         
         float micTextBoxWidth = 6f;
         float micTextBoxHeight = 1.2f;
         ColorRGBA micTextBackColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f);
         Vector3f microphoneTextPosition = micHandleIn.getLocalTranslation().add(new Vector3f(2.2f, 2f, 0f));
-        microphoneTextBox = new TextBox(assetManager, microphoneText, secondaryTextSize, defaultTextColor, micTextBackColor, micTextBoxWidth, micTextBoxHeight, "instrumentText", BitmapFont.Align.Center, false);
+        microphoneTextBox = new TextBox(assetManager, microphoneText, secondaryTextSize, defaultTextColor, micTextBackColor, micTextBoxWidth, micTextBoxHeight, "instrumentText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
         microphoneTextBox.move(microphoneTextPosition);
         
         

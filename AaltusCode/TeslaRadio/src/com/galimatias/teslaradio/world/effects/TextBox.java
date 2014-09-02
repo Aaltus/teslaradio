@@ -39,14 +39,16 @@ public class TextBox extends Node {
     private Geometry overTouchBox;
     private Geometry backgroundBox;
     
+    private boolean lookAtCamera = false;
+    
 
-    public TextBox(AssetManager assetManager, String textToDisplay, float size, ColorRGBA color,  ColorRGBA backgroundColor, float textBoxWidth, float textBoxHeight, String textBoxName, BitmapFont.Align alignment, boolean showBoxDebug)
+    public TextBox(AssetManager assetManager, String textToDisplay, float size, ColorRGBA color,  ColorRGBA backgroundColor, float textBoxWidth, float textBoxHeight, String textBoxName, BitmapFont.Align alignment, boolean showBoxDebug, boolean lookAtCamera)
     {
         this.detachAllChildren();
         guiFont = assetManager.loadFont("Interface/Fonts/Helvetica.fnt");
         text = new BitmapText(guiFont, false);
         this.setName(textBoxName);
-        init(assetManager, textToDisplay, size, color, backgroundColor, textBoxWidth, textBoxHeight, alignment, showBoxDebug);
+        init(assetManager, textToDisplay, size, color, backgroundColor, textBoxWidth, textBoxHeight, alignment, showBoxDebug, lookAtCamera);
     }
 
     /**
@@ -72,7 +74,9 @@ public class TextBox extends Node {
         if(updatedColor != null)
             text.setColor(updatedColor);
         
-        this.lookAt(cam.getLocation(), scenarioUpVector);
+        if(lookAtCamera){
+            this.lookAt(cam.getLocation(), scenarioUpVector);
+        }
     }
 
     /**
@@ -95,8 +99,11 @@ public class TextBox extends Node {
                          float textBoxWidth,
                          float textBoxHeight,
                          BitmapFont.Align alignment,
-                         boolean showBoxDebug)
+                         boolean showBoxDebug,
+                         boolean lookAtCamera)
     {
+        this.lookAtCamera = lookAtCamera;
+        
         //create text with the specified parameter
         text.setBox(new Rectangle(0, 0, textBoxWidth, textBoxHeight));
         text.setQueueBucket(Bucket.Transparent);
