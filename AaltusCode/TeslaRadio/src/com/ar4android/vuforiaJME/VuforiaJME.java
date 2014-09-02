@@ -344,7 +344,7 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 		mVideoBGGeom.setLocalScale(newWidth, newHeight, 1.f);
 	}
 	
-	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z) {
+	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z, int id) {
 		 Log.d(TAG,"Update Camera Pose..");
 
 //         Log.d(TAG, "Coordinates : x = " + Float.toString(cam_x) + " y = "

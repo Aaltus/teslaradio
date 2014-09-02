@@ -62,7 +62,7 @@ void AaltusTrackable::setCameraPosition(Matrix44F modelViewMatrix)
 }
 void AaltusTrackable::setOrigin(AaltusTrackable* origin)
 {
-	_origin = origin;
+	_origin = this;// origin;
 	calculatePosition();
 }
 

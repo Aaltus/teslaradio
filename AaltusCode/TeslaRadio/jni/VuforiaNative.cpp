@@ -293,9 +293,10 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
             LOGE("Updating camera");
             //Update camera
             QCAR::Vec4F vector = at->getPositionFromOrigin();
-            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFFII)V");
+            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFFI)V");
             env->CallVoidMethod(obj,setCameraPoseMethod,vector.data[0],vector.data[1],
-            vector.data[2],at->getId(), tIdx==0? 1:0);
+            vector.data[2],at->getId());
+            LOGE("Camera Updated!");
         }
 
     QCAR::Renderer::getInstance().end();
