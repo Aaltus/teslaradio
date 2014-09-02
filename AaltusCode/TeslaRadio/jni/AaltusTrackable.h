@@ -10,6 +10,7 @@
 #include <QCAR/DataSet.h>
 #include <QCAR/Tool.h>
 #include <QCAR/ImageTracker.h>
+#include <QCAR/Trackable.h>
 #include <string>
 
 class AaltusTrackable {

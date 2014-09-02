@@ -41,6 +41,19 @@ int AaltusTrackable::initializeDataSet(QCAR::ImageTracker* imageTracker)
          LOGE("Failed to activate %s dataset",_name.c_str());
         return 0;
     }
+
+    for (int i = 0; i < _dataSet->getNumTrackables(); i++)
+    {
+        QCAR::Trackable* trackable = _dataSet->getTrackable(i);
+        if (strcmp(trackable->getName(), _name.c_str()) == 0)
+        {
+            // Start extended tracking on “chips” target
+            if (!trackable->startExtendedTracking())
+            {
+                LOGD ("Failed to start extended tracking on %s target",_name.c_str());
+            }
+        }
+    }
     return 1;
 }
 
