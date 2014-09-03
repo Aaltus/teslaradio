@@ -363,40 +363,40 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
                  new Vector3f(-cam_up_x, -cam_up_y, -cam_up_z),
                  new Vector3f(cam_dir_x, cam_dir_y, cam_dir_z));
 	}
+		 
+    // This method retrieves the preview images from the Android world and puts them into a JME image.
+    public void setVideoBGTexture(final Image image) {
+        if (!mSceneInitialized) {
+            return;
+        }
+        mCameraImage = image;
+        mNewCameraFrameAvailable = true;
+    }
 
-	// This method retrieves the preview images from the Android world and puts them into a JME image.
-		public void setVideoBGTexture(final Image image) {
-			if (!mSceneInitialized) {
-				return;
-			}
-			mCameraImage = image;
-			mNewCameraFrameAvailable = true;
-		}	
-		
-		@Override
-		public void simpleUpdate(float tpf) {
-			
-			updateTracking();
-			
-			if (mNewCameraFrameAvailable) {
-				mCameraTexture.setImage(mCameraImage);
-				mvideoBGMat.setTexture("ColorMap", mCameraTexture);
-			}
+    @Override
+    public void simpleUpdate(float tpf) {
 
-//			mCubeGeom.rotate(new Quaternion(1.f, 0.f, 0.f, 0.01f));
-			mVideoBGGeom.updateLogicalState(tpf);
-			mVideoBGGeom.updateGeometricState();
+        updateTracking();
 
+        if (mNewCameraFrameAvailable) {
+            mCameraTexture.setImage(mCameraImage);
+            mvideoBGMat.setTexture("ColorMap", mCameraTexture);
+        }
 
-            if (soundCapture.simpleUpdate(tpf))
-            {
-                appListener.toggleInformativeMenuCallback(ScenarioEnum.SOUNDCAPTURE);
-            }
+        // mCubeGeom.rotate(new Quaternion(1.f, 0.f, 0.f, 0.01f));
+        mVideoBGGeom.updateLogicalState(tpf);
+        mVideoBGGeom.updateGeometricState();
 
 
-            // Update the world depending on what is in focus
-            //virtualWorld.UpdateFocus(fgCam,focusableObjects);
-			//virtualWorld.UpdateViewables(rootNode,focusableObjects);
+        if (soundCapture.simpleUpdate(tpf))
+        {
+            appListener.toggleInformativeMenuCallback(ScenarioEnum.SOUNDCAPTURE);
+        }
+
+
+        // Update the world depending on what is in focus
+        //virtualWorld.UpdateFocus(fgCam,focusableObjects);
+        //virtualWorld.UpdateViewables(rootNode,focusableObjects);
     }
 
     @Override

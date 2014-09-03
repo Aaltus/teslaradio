@@ -73,7 +73,6 @@ const int      numberOfDataSet          = 2;
 
 bool switchDataSetAsap          = false;
 
-
 //global variables
 JavaVM* javaVM = 0;
 jobject activityObj = 0;
