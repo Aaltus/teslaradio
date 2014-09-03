@@ -281,7 +281,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
                 ((World*)world)->setOrigin(trackable.getName());
                 //Update origin camera
-                QCAR::Matrix44F cam = at->getInvTranspMV();
+                QCAR::Matrix44F cam = at->getCam();
                 jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
                 env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
                 jmethodID setCameraOrientationMethod = env->GetMethodID(activityClass,"setCameraOrientationNative", "(FFFFFFFFF)V");

@@ -34,6 +34,7 @@ public:
 	std::string		  getName(){return _name;}
 	QCAR::Matrix44F   getInverseMV(){return _inverseMV;}
 	QCAR::Matrix44F   getInvTranspMV(){return _invTranspMV;}
+	QCAR::Matrix44F   getCam() {return _poseMVMatrix;}
 	
 	void              setCameraPosition(QCAR::Matrix44F modelViewMatrix);
 	void              setOrigin(AaltusTrackable* origin);
