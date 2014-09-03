@@ -19,15 +19,6 @@
  */
 
 #include <jni.h>
-#include <android/log.h>
-
-//#define LOG_TAG "VuforiaNative"
-#define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG,__VA_ARGS__)
-#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG  , LOG_TAG,__VA_ARGS__)
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO   , LOG_TAG,__VA_ARGS__)
-#define LOGW(...) __android_log_print(ANDROID_LOG_WARN   , LOG_TAG,__VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR  , LOG_TAG,__VA_ARGS__)
-
 
 #include <stdio.h>
 #include <string.h>
@@ -53,6 +44,7 @@
 #include <QCAR/Image.h>
 #include "World.h"
 #include "SampleMath.h"
+#include "AaltusCommon.h"
 
 
 #include "MathUtils.h"
@@ -81,9 +73,11 @@ const int      numberOfDataSet          = 2;
 
 bool switchDataSetAsap          = false;
 
+
 //global variables
 JavaVM* javaVM = 0;
 jobject activityObj = 0;
+
 
 JNIEXPORT jint JNICALL
 JNI_OnLoad(JavaVM* vm,  void* reserved) {
@@ -124,7 +118,7 @@ class VuforiaJME_UpdateCallback : public QCAR::UpdateCallback
                 int height = imageRGB565->getHeight();
                 int numPixels = width * height;
 
-                LOGV("Update video image... !OnUpdate!");
+                LOGD("Update video image... !OnUpdate!");
                 jbyteArray pixelArray = env->NewByteArray(numPixels * 2);
                 env->SetByteArrayRegion(pixelArray, 0, numPixels * 2, (const jbyte*) pixels);
                 jclass javaClass = env->GetObjectClass(activityObj);
@@ -197,8 +191,10 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData(JNIEnv *, j
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative(JNIEnv *, jobject, jint loggerLvl)
 {
+    logLevel = loggerLvl;
+
     LOGI("com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative registerCallback");
     // Register the update callback where we handle the data set swap:
     QCAR::registerCallback(&updateCallback);
