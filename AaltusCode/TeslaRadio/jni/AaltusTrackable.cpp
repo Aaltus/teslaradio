@@ -85,10 +85,14 @@ void AaltusTrackable::calculatePosition()
 {
     if(_origin == this)
     {
-        _poseFromOrigin.data[0] = _invTranspMV.data[12];
+       /* _poseFromOrigin.data[0] = _invTranspMV.data[12];
         _poseFromOrigin.data[1] = _invTranspMV.data[13];
         _poseFromOrigin.data[2] = _invTranspMV.data[14];
-        _poseFromOrigin.data[4] = _invTranspMV.data[15];
+        _poseFromOrigin.data[4] = _invTranspMV.data[15];*/
+        _poseFromOrigin.data[0] = _poseMVMatrix.data[12];
+        _poseFromOrigin.data[1] = _poseMVMatrix.data[13];
+        _poseFromOrigin.data[2] = _poseMVMatrix.data[14];
+        _poseFromOrigin.data[4] = _poseMVMatrix.data[15];
 
     }
     else
