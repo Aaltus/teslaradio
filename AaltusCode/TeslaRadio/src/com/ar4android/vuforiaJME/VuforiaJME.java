@@ -45,6 +45,8 @@ import java.util.concurrent.Callable;
 
 public class VuforiaJME extends SimpleApplication  implements TouchListener{
 
+    private final static int DEBUG_NTargets = 1;
+
 	private static final String TAG = VuforiaJME.class.getName();
 	// The geometry which will represent the video background
 	private Geometry mVideoBGGeom;
@@ -71,6 +73,7 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 //    private Spatial ninja;
 //    private Node scotty;
     private SoundCapture soundCapture;
+    private SoundCapture soundCapture2;
 
     private float mForegroundCamFOVY = 30;
 
@@ -133,14 +136,12 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
     {
 		Log.i(TAG, "simpleInitApp");
 
-
 		// Do not display statistics or frames per second	
 		setDisplayStatView(true);
 		setDisplayFps(true);
 		
 		//Logger.getLogger("").setLevel(Level.SEVERE);
-		 
-		
+
 		// We use custom viewports - so the main viewport does not need to contain the rootNode
 		viewPort.detachScene(rootNode);
 		
@@ -153,8 +154,6 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 		initForegroundScene();
 
         appListener.onFinishSimpleInit();
-
-
 
 	}
 
@@ -218,24 +217,27 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 
         //Init SoundCapture scenario
         soundCapture = new SoundCapture(assetManager, fgCam);
-        soundCapture.scale(20.0f);
+        soundCapture.scale(10.0f);
         soundCapture.setName("SoundCapture");
-        Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
-        soundCapture.rotate(rot);
+        //Quaternion rot = new Quaternion();
+        //rot.fromAngleAxis(3.14f / 4, new Vector3f(1.0f, 0.0f, 0.0f));
+        //soundCapture.rotate(rot);
         rootNode.attachChild(soundCapture);
+
+        soundCapture2 = new SoundCapture(assetManager, fgCam);
+        soundCapture2.scale(10.0f);
+        soundCapture2.setName("SoundCapture2");
+        //soundCapture2.rotate(rot);
+        rootNode.attachChild(soundCapture2);
 
         //Correction for BUG TR-176
         //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
         //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
         renderManager.preloadScene(soundCapture);
-
+        renderManager.preloadScene(soundCapture2);
 
         inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click
         inputManager.addListener(this, new String[]{"Touch"});
-
-
-        //focusableObjects.attachChild(soundCapture);
 
 	}
 
@@ -244,7 +246,7 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 
         int settingsWidth = settings.getWidth();
         int settingsHeight = settings.getHeight();
-        Log.d(TAG,"initForegroundCamera with width : " + Integer.toString(settings.getWidth()) + " height: " + Integer.toString(settings.getHeight()) );
+        Log.d(TAG, "initForegroundCamera with width : " + Integer.toString(settings.getWidth()) + " height: " + Integer.toString(settings.getHeight()));
 		fgCam = new Camera(settingsWidth, settingsHeight);
 		
 		fgCam.setViewPort(0, 1.0f, 0.f, 1.0f);
@@ -348,19 +350,33 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 	}
 	
 	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z, int id) {
-		 Log.d(TAG,"Update Camera Pose..");
+        Log.d(TAG, "Update Camera Pose..");
 
-//         Log.d(TAG, "Coordinates : x = " + Float.toString(cam_x) + " y = "
+//      Log.d(TAG, "Coordinates : x = " + Float.toString(cam_x) + " y = "
 //                 + Float.toString(cam_y) + " z = " + Float.toString(cam_z));
 
-         // Set the new foreground camera position
-         fgCam.setLocation(new Vector3f(0.0f, 0.0f, 0.0f));
-		 rootNode.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
+        fgCam.setLocation(new Vector3f(0.0f, 0.0f, 0.0f));
+
+        Log.d(TAG, "Trackable ID : "  + id);
+
+        if (DEBUG_NTargets == 1) {
+            if (id == 0) {
+                // Set the new foreground camera position
+                soundCapture.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
+            } else if (id == 1) {
+                soundCapture2.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
+            }
+        }
+        else
+        {
+            rootNode.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
+        }
+
 
 	}
 
 	public void setCameraOrientationNative(float cam_right_x,float cam_right_y,float cam_right_z,
-			float cam_up_x,float cam_up_y,float cam_up_z,float cam_dir_x,float cam_dir_y,float cam_dir_z) {
+			float cam_up_x,float cam_up_y,float cam_up_z,float cam_dir_x,float cam_dir_y,float cam_dir_z, int id) {
 
 		//Log.d(TAG,"Update Orientation Pose..");
 
@@ -378,7 +394,17 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
                                                 cam_right_y, cam_up_y, -cam_dir_y,
                                                 -cam_right_z , -cam_up_z , cam_dir_z);
 
-        rootNode.setLocalRotation(rotMatrix);
+        if (DEBUG_NTargets == 1) {
+            if (id == 0) {
+                soundCapture.setLocalRotation(rotMatrix);
+            } else if (id == 1) {
+                soundCapture2.setLocalRotation(rotMatrix);
+            }
+        }
+        else
+        {
+            rootNode.setLocalRotation(rotMatrix);
+        }
 
 	}
 		 
