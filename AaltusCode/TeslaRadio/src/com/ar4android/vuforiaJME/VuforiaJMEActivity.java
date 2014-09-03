@@ -27,7 +27,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -42,13 +41,10 @@ import com.galimatias.teslaradio.subject.SubjectContent;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
 import com.qualcomm.QCAR.QCAR;
+import com.utils.AppLogger;
 import com.utils.LanguageLocaleChanger;
-
 import java.nio.ByteBuffer;
-import java.util.logging.Level;
 
-//Old code
-//public class VuforiaJMEActivity extends AndroidHarness {
 
 /**
  * Center of the Android side of the application. All Android view and specific thing are here.
@@ -57,7 +53,6 @@ import java.util.logging.Level;
 public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements VuforiaJME.AppListener {
 
     private static final boolean UseProfiler = false;
-
 	private static final String TAG = VuforiaJMEActivity.class.getName();
 
     private final String INFORMATIVE_MENU_FRAGMENT_TAG = "INFORMATIVE_MENU_FRAGMENT_TAG";
@@ -82,8 +77,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     // Name of the native dynamic libraries to load:
     private static final String NATIVE_LIB_SAMPLE = "VuforiaNative";
     private static final String NATIVE_LIB_QCAR = "Vuforia";
-
-
 
     // Display size of the device:
     private int mScreenWidth = 0;
@@ -116,11 +109,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     private boolean mContAutofocus = false;
 
     // The menu item for swapping data sets:
-    MenuItem mDataSetMenuItem = null;
-    boolean mIsStonesAndChipsDataSetActive  = false;
-    
+    private MenuItem mDataSetMenuItem = null;
+    private boolean mIsStonesAndChipsDataSetActive  = false;
     private RelativeLayout mUILayout;
-
 
     /** Native tracker initialization and deinitialization. */
     public native int initTracker();
@@ -131,7 +122,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     public native void destroyTrackerData();
 
     /** Native sample initialization. */
-    public native void onQCARInitializedNative();
+    public native void onQCARInitializedNative(int loggerLvl);
 
     /** Native methods for starting and stopping the camera. */
     private native void startCamera();
@@ -180,8 +171,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         mouseEventsInvertX = true;
         // Invert the MouseEvents Y (default = true)
         mouseEventsInvertY = true;
-
-        logger.setLevel(Level.SEVERE);
     }
 
     Image cameraJMEImageRGB565;
@@ -189,68 +178,24 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     java.nio.ByteBuffer mPreviewByteBufferRGB565;
     static boolean firstTimeGetImage=true;
 
-    //TO BE REMOVED
-//    //SoundAlert specific info
-//    private int mThreshold = 10;
-//    private boolean mAudioRunning = false;
-//    private SoundMeter mSensor;
-//    private int mHitCount = 0;
-//    private int mHitCountThreshold = 5;
-//    private static final int POLL_INTERVAL = 100;
-//    private Handler mHandler = new Handler();
-//
-//    private Runnable mPollTask = new Runnable() {
-//        public void run() {
-//            double amp = mSensor.getAmplitude();
-//
-//            Log.d(TAG,"mPollTask: " + Double.toString(amp));
-//            if ((amp > mThreshold)) {
-//
-//                VuforiaJME.onAudioEvent task = ((VuforiaJME) app). new onAudioEvent();
-//                ((VuforiaJME) app).enqueue(task);
-//
-//            }
-//            if(mAudioRunning){
-//                mHandler.postDelayed(mPollTask, POLL_INTERVAL);
-//            }
-//        }
-//    };
-//
-//    private void audioStart() {
-//        mHitCount = 0;
-//        mAudioRunning = true;
-//        mSensor.start();
-//        Log.i(TAG, "AudioStart");
-//        mHandler.postDelayed(mPollTask, POLL_INTERVAL);
-//    }
-//
-//    private void audioStop() {
-//        //mHandler.removeCallbacks(mSleepTask);
-//        mHandler.removeCallbacks(mPollTask);
-//        mSensor.stop();
-//        Log.i(TAG, "AudioStop");
-//        mAudioRunning = false;
-//    }
-
-
     /** A helper for loading native libraries stored in "libs/armeabi*". */
     public static boolean loadLibrary(String nLibName)
     {
         try
         {
             System.loadLibrary(nLibName);
-            Log.e(TAG, "Native library lib" + nLibName + ".so loaded");
+            AppLogger.getInstance().d(TAG, "Native library lib" + nLibName + ".so loaded");
             return true;
         }
         catch (UnsatisfiedLinkError ulee)
         {
-            Log.e(TAG, "The library lib" + nLibName +
-                            ".so could not be loaded");
+            AppLogger.getInstance().e(TAG, "The library lib" + nLibName +
+                    ".so could not be loaded");
         }
         catch (SecurityException se)
         {
-        	Log.e(TAG, "The library lib" + nLibName +
-                            ".so was not allowed to be loaded");
+            AppLogger.getInstance().e(TAG, "The library lib" + nLibName +
+                    ".so was not allowed to be loaded");
         }
 
         return false;
@@ -272,7 +217,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     @Override
     public void showInformativeMenuCallback(final ScenarioEnum scenarioEnum)
     {
-        Log.d(TAG,"showInformativeMenuCallback");
+        AppLogger.getInstance().i(TAG, "showInformativeMenuCallback");
 
         //Run on UI thread
         runOnUiThread(new Runnable()
@@ -346,15 +291,15 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             // initialization status:
             if (result)
             {
-                Log.d(TAG,"InitQCARTask::onPostExecute: QCAR " +
-                              "initialization successful");
+                AppLogger.getInstance().d(TAG, "InitQCARTask::onPostExecute: QCAR " +
+                        "initialization successful");
 
                 updateApplicationStatus(APPSTATUS_INIT_TRACKER);
             }
             else
             {
-            	Log.d(TAG,"InitQCARTask::onPostExecute: QCAR " +
-                    "initialization failed");
+                AppLogger.getInstance().d(TAG, "InitQCARTask::onPostExecute: QCAR " +
+                        "initialization failed");
             }
         }
     }
@@ -374,8 +319,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         protected void onPostExecute(Boolean result)
         {
-            Log.d(TAG,"LoadTrackerTask::onPostExecute: execution " +
-                        (result ? "successful" : "failed"));
+            AppLogger.getInstance().d(TAG, "LoadTrackerTask::onPostExecute: execution " +
+                    (result ? "successful" : "failed"));
 
             if (result)
             {
@@ -400,7 +345,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        Log.d(TAG, "Store screen dimension width: " + Integer.toString(metrics.widthPixels) + " heigth: " + Integer.toString(metrics.heightPixels) );
+        AppLogger.getInstance().d(TAG, "Store screen dimension width: " + Integer.toString(metrics.widthPixels) + " heigth: " + Integer.toString(metrics.heightPixels));
 
         mScreenWidth = metrics.widthPixels;
         mScreenHeight = metrics.heightPixels;
@@ -419,7 +364,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             // Set projection matrix if there is already a valid one:
             if (QCAR.isInitialized() && (mAppStatus == APPSTATUS_CAMERA_RUNNING))
             {
-                Log.d(TAG,"VuforiaJMEActivity::updateRenderView");
+                AppLogger.getInstance().d(TAG, "VuforiaJMEActivity::updateRenderView");
 
                 // Query display dimensions:
                 storeScreenDimensions();
@@ -456,7 +401,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 // initialization:
                 initApplication();
 
-                Log.i(TAG,"In APPSTATUS_INIT_APP");
+                AppLogger.getInstance().i(TAG, "In APPSTATUS_INIT_APP");
                 // Proceed to next application initialization status:
                 updateApplicationStatus(APPSTATUS_INIT_QCAR);
 
@@ -473,7 +418,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 //
                 // NOTE: This task instance must be created and invoked on the
                 // UI thread and it can be executed only once!
-                Log.i(TAG,"In APPSTATUS_INIT_QCAR");
+                AppLogger.getInstance().i(TAG, "In APPSTATUS_INIT_QCAR");
                 try
                 {
                     mInitQCARTask = new InitQCARTask();
@@ -481,13 +426,13 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 }
                 catch (Exception e)
                 {
-                   Log.w(TAG,"Initializing QCAR SDK failed");
+                    AppLogger.getInstance().w(TAG, "Initializing QCAR SDK failed");
                 }
                 break;
 
             case APPSTATUS_INIT_TRACKER:
                 // Initialize the ImageTracker:
-                Log.i(TAG,"In APPSTATUS_INIT_TRACKER");
+                AppLogger.getInstance().i(TAG, "In APPSTATUS_INIT_TRACKER");
                 if (initTracker() > 0)
                 {
                     // Proceed to next application initialization status:
@@ -497,7 +442,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
             case APPSTATUS_INIT_APP_AR:
 
-                Log.i(TAG,"In APPSTATUS_INIT_AR");
+                AppLogger.getInstance().i(TAG, "In APPSTATUS_INIT_AR");
                 // Initialize Augmented Reality-specific application elements
                 // that may rely on the fact that the QCAR SDK has been
                 // already initialized:
@@ -509,7 +454,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
             case APPSTATUS_LOAD_TRACKER:
 
-                Log.i(TAG,"In APPSTATUS_LOAD_TRACKER");
+                AppLogger.getInstance().i(TAG, "In APPSTATUS_LOAD_TRACKER");
                 // Load the tracking data set:
                 //
                 // NOTE: This task instance must be created and invoked on the
@@ -521,13 +466,13 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 }
                 catch (Exception e)
                 {
-                    Log.w(TAG,"Loading tracking data set failed");
+                    AppLogger.getInstance().w(TAG, "Loading tracking data set failed");
                 }
                 break;
 
             case APPSTATUS_INIT_LAYOUT:
 
-                Log.i(TAG, "In APPSTATUS_INIT_LAYOUT");
+                AppLogger.getInstance().i(TAG, "In APPSTATUS_INIT_LAYOUT");
 
                 //create the layout on top of the jmonkey view to add button and fragments
                 //initTopLayout();
@@ -555,7 +500,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
             case APPSTATUS_INITED:
 
-                Log.i(TAG,"In APPSTATUS_INITED");
+                AppLogger.getInstance().i(TAG, "In APPSTATUS_INITED");
                 // Hint to the virtual machine that it would be a good time to
                 // run the garbage collector:
                 //
@@ -564,22 +509,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 System.gc();
 
                 // Native post initialization:
-                onQCARInitializedNative();
-
-                // Activate the renderer:
-               // mRenderer.mIsActive = true;
-
-                // Now add the GL surface view. It is important
-                // that the OpenGL ES surface view gets added
-                // BEFORE the camera is started and video
-                // background is configured.
-                
-              //  addContentView(mGlView, new LayoutParams(LayoutParams.MATCH_PARENT,
-              //          LayoutParams.MATCH_PARENT));
-
-                // Sets the UILayout to be drawn in front of the camera
-              //  mUILayout.bringToFront();
-
+                onQCARInitializedNative(AppLogger.getInstance().getLogLvl().ordinal());
 
                 // Start the camera:
                 updateApplicationStatus(APPSTATUS_CAMERA_RUNNING);
@@ -587,14 +517,14 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 break;
 
             case APPSTATUS_CAMERA_STOPPED:
-                Log.i(TAG,"In APPSTATUS_CAMERA_STOPPED");
+                AppLogger.getInstance().i(TAG, "In APPSTATUS_CAMERA_STOPPED");
                 // Call the native function to stop the camera:
                 stopCamera();
                 break;
 
             case APPSTATUS_CAMERA_RUNNING:
 
-                Log.i(TAG,"In APPSTATUS_CAMERA_RUNNING");
+                AppLogger.getInstance().i(TAG, "In APPSTATUS_CAMERA_RUNNING");
                 // Call the native function to start the camera:
                 startCamera();
 
@@ -619,7 +549,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
             default:
                 String errorMesasge = "Invalid application state";
-                Log.e(TAG,errorMesasge);
+                AppLogger.getInstance().e(TAG, errorMesasge);
                 throw new RuntimeException(errorMesasge);
         }
     }
@@ -627,7 +557,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     /** Initialize application GUI elements that are not related to AR. */
     private void initApplication()
     {
-        Log.d(TAG,"initApplication");
+        AppLogger.getInstance().i(TAG, "initApplication");
 
         // Set the screen orientation:
         // NOTE: Use SCREEN_ORIENTATION_LANDSCAPE or SCREEN_ORIENTATION_PORTRAIT
@@ -654,7 +584,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     /** Initializes AR application components. */
     private void initApplicationAR()
     {
-        Log.d(TAG,"initApplicationAR");
+        AppLogger.getInstance().d(TAG, "initApplicationAR");
         // Do application initialization in native code (e.g. registering
         // callbacks, etc.):
         initApplicationNative(mScreenWidth, mScreenHeight);
@@ -689,7 +619,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
      */
 	public void initializeImageBuffer(int width,int height)
 	{
-        Log.d(TAG,"initializeImageBuffer");
+        AppLogger.getInstance().d(TAG, "initializeImageBuffer");
 
 		int bufferSizeRGB565 = width * height * 2;
 
@@ -712,8 +642,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
      * @param height
      */
 	 public void setRGB565CameraImage(byte[] buffer, int width, int height)  {
-		 
-		    Log.d(TAG,"setRGB565CameraImage Update Camera Image..");
+
+            AppLogger.getInstance().d(TAG, "setRGB565CameraImage Update Camera Image..");
 		 	if (firstTimeGetImage) 
 		 	{
 		 		initializeImageBuffer(width,height);
@@ -740,7 +670,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
-        Log.i(TAG,"onCreate");
+        AppLogger.getInstance().i(TAG, "onCreate");
 
         //We load the language saved in the sharedpreferences to have the correct language
         LanguageLocaleChanger.loadLanguageLocaleInActivity(this);
@@ -762,14 +692,11 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         // Update the application status to start initializing application:
         updateApplicationStatus(APPSTATUS_INIT_APP);
-
-        //mSensor = new SoundMeter();
-
 	}
 	
 	@Override
     public void onResume() {
-        Log.i(TAG,"onResume");
+        AppLogger.getInstance().i(TAG, "onResume");
     	super.onResume();
     	
     	// make sure the AndroidGLSurfaceView view is on top of the view
@@ -787,19 +714,14 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         }
         
         firstTimeGetImage=true;
-
-        //audioStart();
-
-
 	}
 
 	@Override
 	protected void onPause() {
 
-        Log.i(TAG,"onPause");
+        AppLogger.getInstance().i(TAG, "onPause");
 		super.onPause();		
 	
-
         if (mAppStatus == APPSTATUS_CAMERA_RUNNING)
         {
             updateApplicationStatus(APPSTATUS_CAMERA_STOPPED);
@@ -816,8 +738,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         QCAR.onPause();
         
         firstTimeGetImage=true;
-
-//        QCAR.onSurfaceCreated();
 	}
 
     @Override
@@ -828,12 +748,13 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         {
             Debug.stopMethodTracing();
         }
+        super.onStop();
     }
 
 	@Override
     protected void onDestroy()
     {
-        Log.i(TAG,"onDestroy");
+        AppLogger.getInstance().i(TAG, "onDestroy");
         super.onDestroy();
         
         // Cancel potentially running tasks
@@ -880,8 +801,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 	@Override
     public void onConfigurationChanged(Configuration config)
     {
-        Log.i(TAG,"onConfigurationChanged");
-       // DebugLog.LOGD("VuforiaJMEActivity::onConfigurationChanged");
+        AppLogger.getInstance().i(TAG, "onConfigurationChanged");
         super.onConfigurationChanged(config);
 
         storeScreenDimensions();
@@ -911,7 +831,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     private void showSplashscreenDialog()
     {
 
-        Log.d(TAG,"Show splashscreen dialog");
+        AppLogger.getInstance().d(TAG, "Show splashscreen dialog");
         FragmentManager fm = getSupportFragmentManager();//getSupportFragmentManager();
         SplashscreenDialogFragment  SplashscreenDialogFragment = new  SplashscreenDialogFragment();
         SplashscreenDialogFragment.show(fm, ITEM_SPLASHSCREEN_FRAGMENT_TAG);
@@ -921,12 +841,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     private void dismissSplashscreenDialog()
     {
 
-        Log.d(TAG,"Dismiss splashscreen dialog");
+        AppLogger.getInstance().d(TAG, "Dismiss splashscreen dialog");
         FragmentManager fm = getSupportFragmentManager();//getSupportFragmentManager();
         SplashscreenDialogFragment splashscreenDialogFragment = (SplashscreenDialogFragment) fm.findFragmentByTag(ITEM_SPLASHSCREEN_FRAGMENT_TAG);
         splashscreenDialogFragment.dismiss();
-
-
     }
 
 

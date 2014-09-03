@@ -14,6 +14,7 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
+import com.utils.AppLogger;
 
 /**
  * This class provides a floating 2D image for the 3D world. 
@@ -91,13 +92,13 @@ public class ImageBox extends Node{
         {
             currentFadingTime += tpf;
             imageGeom.getMaterial().setColor("Color", new ColorRGBA(1f ,1f ,1f,currentFadingTime / fadingTime));
-            System.out.println("Fade In Time " + currentFadingTime);
+            AppLogger.getInstance().d("ImageBox.java", "Fade In Time " + Float.toString(currentFadingTime));
         }
         else if(!showImage && currentFadingTime > 0)
         {
             currentFadingTime -= tpf;
             imageGeom.getMaterial().setColor("Color", new ColorRGBA(1f ,1f ,1f,currentFadingTime / fadingTime));
-            System.out.println("Fade Out Time " + currentFadingTime);
+            AppLogger.getInstance().d("ImageBox.java", "Fade In Time " + Float.toString(currentFadingTime));
         }
         
     }

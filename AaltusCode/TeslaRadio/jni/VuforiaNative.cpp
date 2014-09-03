@@ -21,15 +21,16 @@
 #include <jni.h>
 #include <android/log.h>
 
-//#define LOG_TAG "VuforiaNative"
-#define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG,__VA_ARGS__)
-#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG  , LOG_TAG,__VA_ARGS__)
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO   , LOG_TAG,__VA_ARGS__)
-#define LOGW(...) __android_log_print(ANDROID_LOG_WARN   , LOG_TAG,__VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR  , LOG_TAG,__VA_ARGS__)
+#define LOG_NONE    0
+#define LOG_INFO    1
+#define LOG_WARNING 2
+#define LOG_ERROR   3
+#define LOG_DEBUG   4
+#define LOG_ALL     5
 
 
 #include <stdio.h>
+#include <stdarg.h>
 #include <string.h>
 #include <assert.h>
 #include <math.h>
@@ -79,9 +80,50 @@ const int      numberOfDataSet          = 2;
 
 bool switchDataSetAsap          = false;
 
+int logLevel = LOG_NONE;
+
 //global variables
 JavaVM* javaVM = 0;
 jobject activityObj = 0;
+
+
+inline void LOGI(const char* text ...)
+{
+    va_list va_args;
+    va_start( va_args, text );
+
+    if (logLevel >= LOG_INFO) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, text, va_args);
+
+    va_end(va_args);
+}
+
+inline void LOGW(const char* text ...)
+{
+    va_list va_args;
+    va_start( va_args, text );
+
+    if (logLevel >= LOG_WARNING) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, text, va_args);
+
+    va_end(va_args);
+}
+inline void LOGE(const char* text ...)
+{
+    va_list va_args;
+    va_start( va_args, text );
+
+    if (logLevel >= LOG_ERROR) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, text, va_args);
+
+    va_end(va_args);
+}
+inline void LOGD(const char* text ...)
+{
+    va_list va_args;
+    va_start( va_args, text );
+
+    if (logLevel >= LOG_DEBUG) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, text, va_args);
+
+    va_end(va_args);
+}
 
 JNIEXPORT jint JNICALL
 JNI_OnLoad(JavaVM* vm,  void* reserved) {
@@ -324,8 +366,10 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData(JNIEnv *, j
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative(JNIEnv *, jobject, jint loggerLvl)
 {
+    logLevel = loggerLvl;
+
     LOGI("com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative registerCallback");
     // Register the update callback where we handle the data set swap:
     QCAR::registerCallback(&updateCallback);
