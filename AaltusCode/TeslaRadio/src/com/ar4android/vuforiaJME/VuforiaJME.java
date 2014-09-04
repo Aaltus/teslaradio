@@ -45,7 +45,7 @@ import java.util.concurrent.Callable;
 
 public class VuforiaJME extends SimpleApplication  implements TouchListener{
 
-    private final static int DEBUG_NTargets = 1;
+    private final static int DEBUG_NTargets = 0;
 
 	private static final String TAG = VuforiaJME.class.getName();
 	// The geometry which will represent the video background
@@ -74,6 +74,8 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 //    private Node scotty;
     private SoundCapture soundCapture;
     private SoundCapture soundCapture2;
+    private Node trackableA = new Node("TrackableA");
+    private Node trackableB = new Node("TrackableB");
 
     private float mForegroundCamFOVY = 30;
 
@@ -219,16 +221,18 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
         soundCapture = new SoundCapture(assetManager, fgCam);
         soundCapture.scale(10.0f);
         soundCapture.setName("SoundCapture");
-        //Quaternion rot = new Quaternion();
-        //rot.fromAngleAxis(3.14f / 4, new Vector3f(1.0f, 0.0f, 0.0f));
-        //soundCapture.rotate(rot);
-        rootNode.attachChild(soundCapture);
+        Quaternion rot = new Quaternion();
+        rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
+        soundCapture.rotate(rot);
+        trackableA.attachChild(soundCapture);
+        rootNode.attachChild(trackableA);
 
         soundCapture2 = new SoundCapture(assetManager, fgCam);
         soundCapture2.scale(10.0f);
         soundCapture2.setName("SoundCapture2");
-        //soundCapture2.rotate(rot);
-        rootNode.attachChild(soundCapture2);
+        soundCapture2.rotate(rot);
+        trackableB.attachChild(soundCapture2);
+        rootNode.attachChild(trackableB);
 
         //Correction for BUG TR-176
         //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
@@ -362,9 +366,9 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
         if (DEBUG_NTargets == 1) {
             if (id == 0) {
                 // Set the new foreground camera position
-                soundCapture.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
+                trackableA.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
             } else if (id == 1) {
-                soundCapture2.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
+                trackableB.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
             }
         }
         else
@@ -396,9 +400,9 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 
         if (DEBUG_NTargets == 1) {
             if (id == 0) {
-                soundCapture.setLocalRotation(rotMatrix);
+                trackableA.setLocalRotation(rotMatrix);
             } else if (id == 1) {
-                soundCapture2.setLocalRotation(rotMatrix);
+                trackableB.setLocalRotation(rotMatrix);
             }
         }
         else
