@@ -4,7 +4,7 @@
  * accompanying the book
  * "Augmented Reality for Android Application Development", Packt Publishing, 2013.
  *
- * Copyright © 2013 Jens Grubert, Raphael Grasset / Packt Publishing.
+ * Copyright ï¿½ 2013 Jens Grubert, Raphael Grasset / Packt Publishing.
  *
  * This code is the proprietary information of Qualcomm Connected Experiences, Inc.
  * Any use of this code is subject to the terms of the License Agreement for Vuforia Software Development Kit
@@ -27,10 +27,7 @@
 
 // Includes:
 #include <QCAR/Tool.h>
-
-// Utility for logging:
-#define LOG_TAG    "QCARJME3"
-#define LOG(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+#include "AaltusCommon.h"
 
 
 /// A utility class used by the QCAR SDK samples.
