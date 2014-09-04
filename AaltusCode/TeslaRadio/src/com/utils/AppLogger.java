@@ -2,6 +2,7 @@ package com.utils;
 
 /**
  * Created by Greenwood0 on 2014-09-02.
+ * This is the Logger use for the Android Application. Please only use this logger.
  */
 public class AppLogger {
 

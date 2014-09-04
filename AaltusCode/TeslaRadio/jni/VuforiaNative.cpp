@@ -44,9 +44,6 @@
 #include <QCAR/Image.h>
 #include "World.h"
 #include "SampleMath.h"
-#include "AaltusCommon.h"
-
-
 #include "MathUtils.h"
 
 #ifdef __cplusplus
