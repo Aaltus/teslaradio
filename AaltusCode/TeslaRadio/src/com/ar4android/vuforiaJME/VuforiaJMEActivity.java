@@ -52,7 +52,7 @@ import java.nio.ByteBuffer;
  * Center of the Android side of the application. All Android view and specific thing are here.
  * It also initialize vuforia library and jme app.
  */
-public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements VuforiaJME.AppListener {
+public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements AppListener {
 
     // Boolean to use the profiler. If it's set to true, you can get the tracefile on your phone /sdcard/traceFile.trace
     private static final boolean UseProfiler = false;
