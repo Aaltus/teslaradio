@@ -18,18 +18,13 @@
 
 package com.ar4android.vuforiaJME;
 
-import android.util.Log;
-import com.galimatias.teslaradio.subject.ScenarioEnum;
-import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
+import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.jme3.app.SimpleApplication;
-import com.jme3.input.controls.TouchListener;
 import com.jme3.input.controls.TouchTrigger;
-import com.jme3.input.event.TouchEvent;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
@@ -40,11 +35,16 @@ import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
 import com.utils.AppLogger;
-import java.util.concurrent.Callable;
 
-public class VuforiaJME extends SimpleApplication  implements TouchListener{
+import java.util.ArrayList;
+import java.util.List;
+
+public class VuforiaJME extends SimpleApplication {
 
 	private static final String TAG = VuforiaJME.class.getName();
+
+    private ScenarioManager scenarioManager;
+
 	// The geometry which will represent the video background
 	private Geometry mVideoBGGeom;
 	// The material which will be applied to the video background geometry.
@@ -64,7 +64,6 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 //    private World virtualWorld;
 //    private Spatial ninja;
 //    private Node scotty;
-    private SoundCapture soundCapture;
 
     private float mForegroundCamFOVY = 30;
 
@@ -95,25 +94,6 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
     //A Applistener that we will be using for callback
     public AppListener appListener;
 
-
-    //See https://github.com/latestpost/JMonkey3-Android-Examples/blob/master/src/jmeproject/innovationtech/co/uk/Game7.java
-    //For example
-    @Override
-    public void onTouch(String name, TouchEvent touchEvent, float v)
-    {
-        //Log.d(TAG,"Action on screen");
-
-        soundCapture.onScenarioTouch(name, touchEvent, v);
-    }
-
-    interface AppListener
-    {
-        //Callaback for showing a informative menu with the provided menu
-        public void toggleInformativeMenuCallback(ScenarioEnum scenarioEnum);
-
-        //Callaback for telling the upper layer that VuforiaJME is done loading
-        public void onFinishSimpleInit();
-    }
 
     //A way to register to the appListener
     public void setAppListener(AppListener appListener)
@@ -206,28 +186,27 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 
         initLights();
 
-        //Init SoundCapture scenario
-        soundCapture = new SoundCapture(assetManager, fgCam);
-        soundCapture.scale(20.0f);
-        soundCapture.setName("SoundCapture");
-        Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
-        soundCapture.rotate(rot);
-        rootNode.attachChild(soundCapture);
+        List<Node> nodeList = new ArrayList<Node>();
+        nodeList.add(rootNode);
+        scenarioManager = new ScenarioManager(nodeList, assetManager, fgCam, appListener, renderManager);
 
+        //TODO: Move in scenario Manager
         //Correction for BUG TR-176
         //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
         //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
-        renderManager.preloadScene(soundCapture);
-
+        renderManager.preloadScene(rootNode);
 
         inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click
-        inputManager.addListener(this, new String[]{"Touch"});
+        inputManager.addListener(scenarioManager, new String[]{"Touch"});
+
+
 
 
         //focusableObjects.attachChild(soundCapture);
 
 	}
+
+
 
 
     public void initForegroundCamera(float fovY) {
@@ -272,26 +251,6 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
         ambient.setColor(ColorRGBA.White);
         rootNode.addLight(ambient);
 
-    }
-
-    //TODO: TEMPORARY NEED REFACTORING TO SUPPORT MULTI SCENARIO
-    /**
-     * Simple function to detach or attach children scenario to the
-     * rootNode. Called from native code.
-     * @param attachScenarios
-     */
-    public void attachScenarios(boolean attachScenarios)
-    {
-        boolean hasScenarioChild = rootNode.hasChild(soundCapture);
-
-        if (!hasScenarioChild && attachScenarios)
-        {
-            rootNode.attachChild(soundCapture);
-        }
-        else if (hasScenarioChild && !attachScenarios)
-        {
-            rootNode.detachChild(soundCapture);
-        }
     }
 
 	public void setCameraPerspectiveNative(float fovY,float aspectRatio) {
@@ -391,10 +350,7 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
         mVideoBGGeom.updateGeometricState();
 
 
-        if (soundCapture.simpleUpdate(tpf))
-        {
-            appListener.toggleInformativeMenuCallback(ScenarioEnum.SOUNDCAPTURE);
-        }
+        scenarioManager.simpleUpdate(tpf);
 
 
         // Update the world depending on what is in focus
@@ -407,12 +363,5 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
         // TODO: add render code
     }
 
-    public class onAudioEvent implements Callable{
-        @Override
-        public Object call() throws Exception {
 
-            soundCapture.onAudioEvent();
-            return null;
-        }
-    }
 }
