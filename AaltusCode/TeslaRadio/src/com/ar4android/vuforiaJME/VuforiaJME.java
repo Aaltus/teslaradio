@@ -18,6 +18,7 @@
 
 package com.ar4android.vuforiaJME;
 
+import com.galimatias.teslaradio.world.Scenarios.IScenarioManager;
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.controls.TouchTrigger;
@@ -43,7 +44,12 @@ public class VuforiaJME extends SimpleApplication {
 
 	private static final String TAG = VuforiaJME.class.getName();
 
-    private ScenarioManager scenarioManager;
+
+
+    private IScenarioManager scenarioManager;
+    public IScenarioManager getScenarioManager() {
+        return scenarioManager;
+    }
 
 	// The geometry which will represent the video background
 	private Geometry mVideoBGGeom;
@@ -326,6 +332,7 @@ public class VuforiaJME extends SimpleApplication {
     {
         //TODO: Attack/Detach node dependeing on vsibility status
     }
+
     // This method retrieves the preview images from the Android world and puts them into a JME image.
     public void setVideoBGTexture(final Image image) {
         if (!mSceneInitialized) {

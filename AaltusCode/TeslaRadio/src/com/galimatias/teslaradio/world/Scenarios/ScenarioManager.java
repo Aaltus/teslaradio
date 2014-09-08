@@ -3,7 +3,6 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.jme3.asset.AssetManager;
-import com.jme3.input.controls.TouchListener;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -18,7 +17,7 @@ import java.util.List;
 /**
  * Created by jimbojd72 on 9/3/14.
  */
-public class ScenarioManager  implements TouchListener {
+public class ScenarioManager  implements IScenarioManager {
 
     //List<Scenario> allScenario      = new ArrayList<Scenario>();
     private ScenarioGroup currentScenario = null;
@@ -115,26 +114,32 @@ public class ScenarioManager  implements TouchListener {
 
 
     //TODO: MODIFY THIS TO RECEIVE A LIST<NODE> TO ATTACH THE SCENARIO TO THE RIGHT TRACKABLE/NODE
+    @Override
     public void setNextScenario(){
         if(getCurrentScenario().getIndex()+1 < scenarioList.size())
         {
             setCurrentScenario(scenarioList.getScenarioByIndex(getCurrentScenario().getIndex() + 1));
         }
     }
+    @Override
     public void setPreviousScenario(){
         if(getCurrentScenario().getIndex()-1 >= 0)
         {
             setCurrentScenario(scenarioList.getScenarioByIndex(getCurrentScenario().getIndex() - 1));
         }
     }
+    @Override
     public void setScenarioByEnum(ScenarioEnum scenarioEnum){
         
         setCurrentScenario(scenarioList.getScenarioListByEnum(scenarioEnum));
     }
 
+    @Override
     public void setNodeList(List<Node> nodeList) {
         this.nodeList = nodeList;
     }
+
+
 
     public void simpleUpdate(float tpf){
 

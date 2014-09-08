@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
+import com.galimatias.teslaradio.world.Scenarios.IScenarioManager;
 import com.utils.LanguageLocaleChanger;
 import com.utils.VerticalSeekBar;
 
@@ -21,6 +22,11 @@ import com.utils.VerticalSeekBar;
  */
 public class InformativeMenuFragment extends Fragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener,
         ItemListFragment.Callbacks, ItemDetailFragment.OnClickDetailFragmentListener{
+
+    IScenarioManager iScenarioManager = null;
+    public void setScenarioManager(IScenarioManager iScenarioManager) {
+        this.iScenarioManager = iScenarioManager;
+    }
 
 
     private static final String TAG = "InformativeMenuFragment";

@@ -498,6 +498,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 Fragment fragment = new InformativeMenuFragment();
+                //TODO it should be a better idea to create a scenario manager in the activity and then pass it to vuforia jme.
+                ((InformativeMenuFragment)fragment).setScenarioManager(((VuforiaJME) app).getScenarioManager());
                 ft.replace(frameLayout1.getId(), fragment, INFORMATIVE_MENU_FRAGMENT_TAG);
                 ft.commit();
                 fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
