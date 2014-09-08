@@ -46,6 +46,8 @@
 #include "SampleMath.h"
 #include "MathUtils.h"
 
+
+#define CALL_JAVA env->CallVoidMethod
 #ifdef __cplusplus
 extern "C"
 {
@@ -57,6 +59,8 @@ unsigned int screenHeight       = 0;
 
 // Indicates whether screen is in portrait (true) or landscape (false) mode
 bool isActivityInPortraitMode   = false;
+
+bool trackableFound[AALTUS_NBR_TARGET] = {false};
 
 // The projection matrix used for rendering virtual objects:
 QCAR::Matrix44F projectionMatrix;
@@ -205,12 +209,18 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative(JNIEnv
 JNIEXPORT void JNICALL
 Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject obj)
 {
+    jclass activityClass = env->GetObjectClass(obj);
+    jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
+    jmethodID setCameraViewportMethod = env->GetMethodID(activityClass,"setCameraViewportNative", "(FFFF)V");
+    jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFFI)V");
+    jmethodID setTrackableVisible  = env->GetMethodID(activityClass, "setTrackableVisible", "(II)V");
+    jmethodID setCameraOrientationMethod = env->GetMethodID(activityClass,"setCameraOrientationNative", "(FFFFFFFFF)V");
     //LOG("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_GLRenderer_renderFrame");
 
     // Get the state from QCAR and mark the beginning of a rendering section
     QCAR::State state = QCAR::Renderer::getInstance().begin();
 
-    jclass activityClass = env->GetObjectClass(obj);
+
 
     // Code pasted here to fix TR-141
     //get perspective transformation
@@ -247,50 +257,52 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
       aspectRatio     = aspectRatio    * viewportDistort;
   }
 
-    jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
-    env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
+
+    CALL_JAVA(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
 
     // jclass activityClass = env->GetObjectClass(obj);
-    jmethodID setCameraViewportMethod = env->GetMethodID(activityClass,"setCameraViewportNative", "(FFFF)V");
-    env->CallVoidMethod(obj,setCameraViewportMethod,viewportWidth,viewportHeight,cameraCalibration.getSize().data[0],cameraCalibration.getSize().data[1]);
 
-        // Did we find any trackables this frame?
-        for(int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++)
-        {
-            const QCAR::TrackableResult* result = state.getTrackableResult(tIdx);
+    CALL_JAVA(obj,setCameraViewportMethod,viewportWidth,viewportHeight,cameraCalibration.getSize().data[0],cameraCalibration.getSize().data[1]);
+
+    for(int i  = 0; i < AALTUS_NBR_TARGET; i++)
+    {
+        trackableFound[i] = false;
+    }
+    // Did we find any trackables this frame?
+    for(int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++)
+    {
+        const QCAR::TrackableResult* result = state.getTrackableResult(tIdx);
 
 
-            const QCAR::Trackable& trackable         = result->getTrackable();
+        const QCAR::Trackable& trackable         = result->getTrackable();
+
+        trackableFound[tIdx] = true;
+        //register position
+        AaltusTrackable* at = ((World*) world)->getTrackable(trackable.getName());
+        at->setCameraPosition( QCAR::Tool::convertPose2GLMatrix(result->getPose()) );
 
 
-            //register position
-            AaltusTrackable* at = ((World*) world)->getTrackable(trackable.getName());
-            at->setCameraPosition( QCAR::Tool::convertPose2GLMatrix(result->getPose()) );
+        ((World*)world)->setOrigin(trackable.getName());
+        //Update origin camera
+         QCAR::Matrix44F cam = at->getInvTranspMV();
+         CALL_JAVA(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
+         CALL_JAVA(obj,setCameraOrientationMethod,
+            cam.data[0],cam.data[1],cam.data[2],
+            cam.data[4],cam.data[5],cam.data[6],cam.data[8],cam.data[9],cam.data[10]);
 
-            //Update origin status
-            if(tIdx == 0)
-            {
 
-                ((World*)world)->setOrigin(trackable.getName());
-                //Update origin camera
-                QCAR::Matrix44F cam = at->getInvTranspMV();
-                jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
-                env->CallVoidMethod(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
-                jmethodID setCameraOrientationMethod = env->GetMethodID(activityClass,"setCameraOrientationNative", "(FFFFFFFFF)V");
-                env->CallVoidMethod(obj,setCameraOrientationMethod,
-                cam.data[0],cam.data[1],cam.data[2],
-                cam.data[4],cam.data[5],cam.data[6],cam.data[8],cam.data[9],cam.data[10]);
+        LOGE("Updating camera");
+        //Update camera
+        QCAR::Vec4F vector = at->getPositionFromOrigin();
 
-            }
-            LOGE("Updating camera");
-            //Update camera
-            QCAR::Vec4F vector = at->getPositionFromOrigin();
-            jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFFI)V");
-            env->CallVoidMethod(obj,setCameraPoseMethod,vector.data[0],vector.data[1],
-            vector.data[2],at->getId());
-            LOGE("Camera Updated!");
-        }
+        CALL_JAVA(obj,setCameraPoseMethod,vector.data[0],vector.data[1],
+        vector.data[2],at->getId());
+    }
 
+    for(int i  = 0; i < AALTUS_NBR_TARGET; i++)
+    {
+            CALL_JAVA(obj,setTrackableVisible,i,trackableFound[i]);
+    }
     QCAR::Renderer::getInstance().end();
 }
 
