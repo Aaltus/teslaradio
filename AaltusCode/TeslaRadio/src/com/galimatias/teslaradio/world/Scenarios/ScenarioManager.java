@@ -36,15 +36,20 @@ public class ScenarioManager  implements IScenarioManager {
 
         //Init SoundCapture scenario
         Scenario soundCapture = new SoundCapture(assetManager, cam);
+        Scenario soundCapture2 = new SoundCapture(assetManager, cam);
         soundCapture.scale(10.0f);
+        soundCapture2.scale(10.0f);
         soundCapture.setName("SoundCapture");
+        soundCapture2.setName("SoundCapture");
         Quaternion rot = new Quaternion();
         rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
         soundCapture.rotate(rot);
+        soundCapture2.rotate(rot);
         //this.nodeList.attachChild(soundCapture);
         //allScenario.add(soundCapture);
         List<Scenario> soundCaptureList = new ArrayList<Scenario>();
         soundCaptureList.add(soundCapture);
+        soundCaptureList.add(soundCapture2);
         scenarioList.addScenario(ScenarioEnum.SOUNDCAPTURE,soundCaptureList);
 
 
@@ -121,6 +126,7 @@ public class ScenarioManager  implements IScenarioManager {
             setCurrentScenario(scenarioList.getScenarioByIndex(getCurrentScenario().getIndex() + 1));
         }
     }
+
     @Override
     public void setPreviousScenario(){
         if(getCurrentScenario().getIndex()-1 >= 0)
@@ -128,6 +134,7 @@ public class ScenarioManager  implements IScenarioManager {
             setCurrentScenario(scenarioList.getScenarioByIndex(getCurrentScenario().getIndex() - 1));
         }
     }
+
     @Override
     public void setScenarioByEnum(ScenarioEnum scenarioEnum){
         
