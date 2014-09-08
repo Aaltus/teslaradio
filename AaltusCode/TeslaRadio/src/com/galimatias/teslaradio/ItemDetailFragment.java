@@ -104,8 +104,8 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
             mItem    = SubjectContent.ITEM_MAP.get(Integer.parseInt(getArguments().getString(ARG_ITEM_ID)));
-            mLayouts = mItem.listXml;
-            Log.i(TAG,"Loading SubjectContent : " + mItem.title);
+            mLayouts = mItem.getListXml();
+            Log.i(TAG,"Loading SubjectContent : " + mItem.getTitle());
         }
 
     }
@@ -121,7 +121,7 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
         View rootView = inflater.inflate(R.layout.viewpager_container, container, false);
 
         TextView titleTextView= (TextView) rootView.findViewById(R.id.item_detail_fragment_title_textview);
-        titleTextView.setText(mItem.title);
+        titleTextView.setText(mItem.getTitle());
 
         ImageButton cancelImageButton = (ImageButton) rootView.findViewById(R.id.item_detail_fragment_close_button);
         cancelImageButton.setOnClickListener(this);
