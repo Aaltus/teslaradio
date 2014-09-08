@@ -214,7 +214,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
     jmethodID setCameraViewportMethod = env->GetMethodID(activityClass,"setCameraViewportNative", "(FFFF)V");
     jmethodID setCameraPoseMethod = env->GetMethodID(activityClass,"setCameraPoseNative", "(FFFI)V");
     jmethodID setTrackableVisible  = env->GetMethodID(activityClass, "setTrackableVisibleNative", "(II)V");
-    jmethodID setCameraOrientationMethod = env->GetMethodID(activityClass,"setCameraOrientationNative", "(FFFFFFFFF)V");
+    jmethodID setCameraOrientationMethod = env->GetMethodID(activityClass,"setCameraOrientationNative", "(FFFFFFFFFI)V");
     //LOG("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_GLRenderer_renderFrame");
 
     // Get the state from QCAR and mark the beginning of a rendering section
@@ -284,11 +284,11 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
         ((World*)world)->setOrigin(trackable.getName());
         //Update origin camera
-         QCAR::Matrix44F cam = at->getInvTranspMV();
+         QCAR::Matrix44F cam = at->getPoseMatrix();
          CALL_JAVA(obj,setCameraPerspectiveMethod,fovDegrees,aspectRatio);
          CALL_JAVA(obj,setCameraOrientationMethod,
             cam.data[0],cam.data[1],cam.data[2],
-            cam.data[4],cam.data[5],cam.data[6],cam.data[8],cam.data[9],cam.data[10]);
+            cam.data[4],cam.data[5],cam.data[6],cam.data[8],cam.data[9],cam.data[10], at->getId());
 
 
         LOGE("Updating camera");
@@ -303,6 +303,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
     {
             CALL_JAVA(obj,setTrackableVisible,i,trackableFound[i]);
     }
+
     QCAR::Renderer::getInstance().end();
 }
 

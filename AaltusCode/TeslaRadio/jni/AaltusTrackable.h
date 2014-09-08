@@ -32,6 +32,7 @@ public:
 	QCAR::Vec3F getPositionFromCamera();
 	int				  getId(){return _id;}
 	std::string		  getName(){return _name;}
+	QCAR::Matrix44F   getPoseMatrix(){return _poseMVMatrix;}
 	QCAR::Matrix44F   getInverseMV(){return _inverseMV;}
 	QCAR::Matrix44F   getInvTranspMV(){return _invTranspMV;}
 	

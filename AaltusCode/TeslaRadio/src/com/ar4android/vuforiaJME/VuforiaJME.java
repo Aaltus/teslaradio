@@ -26,6 +26,7 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
@@ -44,7 +45,8 @@ public class VuforiaJME extends SimpleApplication {
 
 	private static final String TAG = VuforiaJME.class.getName();
 
-
+    // Enable this value to get multiple trackables
+    private static final int DEBUG_NTargets = 1;
 
     private IScenarioManager scenarioManager;
     public IScenarioManager getScenarioManager() {
@@ -82,7 +84,10 @@ public class VuforiaJME extends SimpleApplication {
 	Camera videoBGCam;
 	Camera fgCam;
 
-    private Node focusableObjects = new Node("Scenario");
+    private Node trackableA = new Node("TrackableA");
+    private Node trackableB = new Node("TrackableB");
+
+    private Matrix3f rotMatrix;
 
     /** Native function for initializing the renderer. */
     public native void initTracking(int width, int height);
@@ -100,7 +105,6 @@ public class VuforiaJME extends SimpleApplication {
     //A Applistener that we will be using for callback
     public AppListener appListener;
 
-
     //A way to register to the appListener
     public void setAppListener(AppListener appListener)
     {
@@ -112,7 +116,7 @@ public class VuforiaJME extends SimpleApplication {
 	public void simpleInitApp()
     {
         // Where the AppLogger is called for the first time and the log level is set
-        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.NONE);
+        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.DEBUG);
 
         AppLogger.getInstance().i(TAG, "simpleInitApp");
 
@@ -192,8 +196,12 @@ public class VuforiaJME extends SimpleApplication {
 
         initLights();
 
+        rootNode.attachChild(trackableA);
+        rootNode.attachChild(trackableB);
+
         List<Node> nodeList = new ArrayList<Node>();
-        nodeList.add(rootNode);
+        nodeList.add(trackableA);
+        nodeList.add(trackableB);
         scenarioManager = new ScenarioManager(nodeList, assetManager, fgCam, appListener, renderManager);
 
         //TODO: Move in scenario Manager
@@ -204,11 +212,6 @@ public class VuforiaJME extends SimpleApplication {
 
         inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click
         inputManager.addListener(scenarioManager, new String[]{"Touch"});
-
-
-
-
-        //focusableObjects.attachChild(soundCapture);
 
 	}
 
@@ -306,31 +309,68 @@ public class VuforiaJME extends SimpleApplication {
 	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z, int id) {
          AppLogger.getInstance().d(TAG, "Update Camera Pose..");
 
-        //         Log.d(TAG, "Coordinates : x = " + Float.toString(cam_x) + " y = "
+        //         AppLogger.getInstance().d(TAG, "Coordinates : x = " + Float.toString(cam_x) + " y = "
         //                 + Float.toString(cam_y) + " z = " + Float.toString(cam_z));
 
-         // Set the new foreground camera position
-		 fgCam.setLocation(new Vector3f(cam_x, cam_y, cam_z));
+        // Set the foreground camera position
+        fgCam.setLocation(new Vector3f(0.0f, 0.0f, 0.0f));
+
+        AppLogger.getInstance().d(TAG, "Trackable ID : " + id);
+
+        if (DEBUG_NTargets == 1) {
+            if (id == 0)
+            {
+                trackableA.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
+            }
+            else if (id == 1)
+            {
+                trackableB.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
+            }
+        }
+        else
+        {
+            rootNode.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
+        }
 
 	}
 	
 	public void setCameraOrientationNative(float cam_right_x,float cam_right_y,float cam_right_z,
-			float cam_up_x,float cam_up_y,float cam_up_z,float cam_dir_x,float cam_dir_y,float cam_dir_z) {
+			float cam_up_x,float cam_up_y,float cam_up_z,float cam_dir_x,float cam_dir_y,float cam_dir_z, int id) {
 		 
-		//Log.d(TAG,"Update Orientation Pose..");
+		//AppLogger.getInstance().d(TAG,"Update Orientation Pose..");
 
-        //        Log.d(TAG, "direction : x = " + Float.toString(cam_dir_x) + " y = "
+        //        AppLogger.getInstance().d(TAG, "direction : x = " + Float.toString(cam_dir_x) + " y = "
         //                + Float.toString(cam_dir_y) + " z = " + Float.toString(cam_dir_z));
 
-   		 //left,up,direction
-		 fgCam.setAxes(
-                 new Vector3f(-cam_right_x, -cam_right_y, -cam_right_z),
-                 new Vector3f(-cam_up_x, -cam_up_y, -cam_up_z),
-                 new Vector3f(cam_dir_x, cam_dir_y, cam_dir_z));
+        //left,up,direction
+        fgCam.setAxes(
+                new Vector3f(1.0f, 0.0f, 0.0f),
+                new Vector3f(0.0f, 1.0f, 0.0f),
+                new Vector3f(0.0f, 0.0f, 1.0f));
+
+        // Adding the world rotation
+        rotMatrix = new Matrix3f( cam_right_x, cam_up_x , -cam_dir_x ,
+                                  cam_right_y, cam_up_y, -cam_dir_y,
+                                  -cam_right_z , -cam_up_z , cam_dir_z);
+
+        if (DEBUG_NTargets == 1) {
+            if (id == 0)
+            {
+                trackableA.setLocalRotation(rotMatrix);
+            }
+            else if (id == 1)
+            {
+                trackableB.setLocalRotation(rotMatrix);
+            }
+        }
+        else
+        {
+            rootNode.setLocalRotation(rotMatrix);
+        }
 	}
 	public void setTrackableVisibleNative(int id, int isVisible)
     {
-        //TODO: Attack/Detach node dependeing on vsibility status
+        //TODO: Attack/Detach node depending on visibility status
     }
 
     // This method retrieves the preview images from the Android world and puts them into a JME image.
