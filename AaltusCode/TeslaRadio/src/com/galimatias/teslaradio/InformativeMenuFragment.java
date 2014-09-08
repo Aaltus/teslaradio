@@ -13,7 +13,8 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
-import com.galimatias.teslaradio.world.Scenarios.IScenarioManager;
+import com.galimatias.teslaradio.subject.SubjectContent;
+import com.galimatias.teslaradio.world.Scenarios.IScenarioSwitcher;
 import com.utils.LanguageLocaleChanger;
 import com.utils.VerticalSeekBar;
 
@@ -23,10 +24,11 @@ import com.utils.VerticalSeekBar;
 public class InformativeMenuFragment extends Fragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener,
         ItemListFragment.Callbacks, ItemDetailFragment.OnClickDetailFragmentListener{
 
-    IScenarioManager iScenarioManager = null;
-    public void setScenarioManager(IScenarioManager iScenarioManager) {
-        this.iScenarioManager = iScenarioManager;
+    private IScenarioSwitcher scenarioSwitcher;
+    public void setScenarioSwitcher(IScenarioSwitcher scenarioSwitcher) {
+        this.scenarioSwitcher = scenarioSwitcher;
     }
+
 
 
     private static final String TAG = "InformativeMenuFragment";
@@ -172,6 +174,10 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
         ft.replace(R.id.item_detail_fragment_vuforia, fragment, ITEM_DETAIL_FRAGMENT_TAG).commit();
         fm.executePendingTransactions();
+
+        ScenarioEnum scenarioEnum = SubjectContent.ITEM_MAP.get(id).getScenarioEnum();
+        scenarioSwitcher.setScenarioByEnum(scenarioEnum);
+
 
     }
 

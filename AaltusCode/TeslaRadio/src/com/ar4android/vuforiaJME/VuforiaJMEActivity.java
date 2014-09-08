@@ -39,6 +39,7 @@ import com.galimatias.teslaradio.R;
 import com.galimatias.teslaradio.SplashscreenDialogFragment;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
+import com.galimatias.teslaradio.world.Scenarios.IScenarioSwitcher;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
@@ -46,13 +47,14 @@ import com.qualcomm.QCAR.QCAR;
 import com.utils.AppLogger;
 import com.utils.LanguageLocaleChanger;
 import java.nio.ByteBuffer;
+import java.util.concurrent.Callable;
 
 
 /**
  * Center of the Android side of the application. All Android view and specific thing are here.
  * It also initialize vuforia library and jme app.
  */
-public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements AppListener {
+public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements AppListener, IScenarioSwitcher {
 
     // Boolean to use the profiler. If it's set to true, you can get the tracefile on your phone /sdcard/traceFile.trace
     private static final boolean UseProfiler = false;
@@ -246,14 +248,40 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     @Override
     public void onFinishSimpleInit()
     {
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                dismissSplashscreenDialog();
-            }
-        });
 
+
+        class OneShotTask implements Runnable {
+            IScenarioSwitcher scenarioSwitcher;
+            OneShotTask(IScenarioSwitcher s) { scenarioSwitcher = s; }
+            public void run() {
+                dismissSplashscreenDialog();
+                //TODO it should be a better idea to create a scenario manager in the activity and then pass it to vuforia jme.
+                getInformativeMenuFragment().setScenarioSwitcher(scenarioSwitcher);
+            }
+        }
+
+        OneShotTask oneShotTask = new OneShotTask(this);
+        runOnUiThread(oneShotTask);
+
+    }
+
+    @Override
+    public void setNextScenario() {
+
+    }
+
+    @Override
+    public void setPreviousScenario() {
+
+    }
+
+    @Override
+    public void setScenarioByEnum(final ScenarioEnum scenarioEnum) {
+        ((VuforiaJME)app).enqueue(new Callable<Object>() {
+                    public Object call() throws Exception {
+                        ((VuforiaJME)app).getScenarioManager().setScenarioByEnum(scenarioEnum);
+                        return null;
+                    }});
     }
 
 
@@ -498,8 +526,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 Fragment fragment = new InformativeMenuFragment();
-                //TODO it should be a better idea to create a scenario manager in the activity and then pass it to vuforia jme.
-                ((InformativeMenuFragment)fragment).setScenarioManager(((VuforiaJME) app).getScenarioManager());
                 ft.replace(frameLayout1.getId(), fragment, INFORMATIVE_MENU_FRAGMENT_TAG);
                 ft.commit();
                 fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
