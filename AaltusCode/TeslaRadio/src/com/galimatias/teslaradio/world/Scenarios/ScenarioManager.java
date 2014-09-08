@@ -8,6 +8,7 @@ import com.jme3.input.event.TouchEvent;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
 
 import java.util.ArrayList;
@@ -22,7 +23,46 @@ public class ScenarioManager  implements TouchListener {
     //List<Scenario> allScenario      = new ArrayList<Scenario>();
     private ScenarioGroup currentScenario = null;
     private ScenarioList  scenarioList    = new ScenarioList();
-    private Node rootNode;
+    private List<Node> nodeList;
+    private AppListener appListener;
+
+    public List<Node> getNodeList() {
+        return nodeList;
+    }
+
+    public ScenarioManager(List<Node> node, AssetManager assetManager, Camera cam, AppListener appListener, RenderManager renderManager)
+    {
+        this.appListener = appListener;
+        setNodeList(node);
+
+        //Init SoundCapture scenario
+        Scenario soundCapture = new SoundCapture(assetManager, cam);
+        soundCapture.scale(10.0f);
+        soundCapture.setName("SoundCapture");
+        Quaternion rot = new Quaternion();
+        rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
+        soundCapture.rotate(rot);
+        //this.nodeList.attachChild(soundCapture);
+        //allScenario.add(soundCapture);
+        List<Scenario> soundCaptureList = new ArrayList<Scenario>();
+        soundCaptureList.add(soundCapture);
+        scenarioList.addScenario(ScenarioEnum.SOUNDCAPTURE,soundCaptureList);
+
+
+
+
+        //Only for debugging purpose deactivate it please.
+        scenarioList.addScenario(ScenarioEnum.AMMODULATION,new ArrayList<Scenario>());
+        scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
+
+
+
+        //setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));
+        setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDCAPTURE));
+
+
+    }
+
 
     private ScenarioGroup getCurrentScenario() {
         return currentScenario;
@@ -40,23 +80,41 @@ public class ScenarioManager  implements TouchListener {
         if(getCurrentScenario() != null){
             for(Scenario scenario : getCurrentScenario().getScenarios() )
             {
-                rootNode.detachChild(scenario);
+                scenario.getParent().detachChild(scenario);
             }
         }
     }
 
     private void attachCurrentScenario()
     {
-        for(Scenario scenario : getCurrentScenario().getScenarios() )
+        int count = 0;
+        for(Node node : getNodeList())
         {
-            rootNode.attachChild(scenario);
+            if(count < getCurrentScenario().getScenarios().size()){
+                Scenario currentScenario = getCurrentScenario().getScenarios().get(count);
+                if(node != null)
+                {
+                    node.attachChild(currentScenario);
+                }
+                else
+                {
+                    node.detachChild(currentScenario);
+                }
+            }
+            count++;
         }
+//        int count = 0;
+//        for(Scenario scenario : getCurrentScenario().getScenarios() )
+//        {
+//            nodeList.get(count).attachChild(scenario);
+//            count++;
+//        }
     }
 
-    AppListener appListener;
 
 
-    //TODO: MODIFY THIS TO RECEIVE A LIST<NODE> TO ATTACH THE SECNARIO TO THE RIGHT TRACKABLE/NODE
+
+    //TODO: MODIFY THIS TO RECEIVE A LIST<NODE> TO ATTACH THE SCENARIO TO THE RIGHT TRACKABLE/NODE
     public void setNextScenario(){
         if(getCurrentScenario().getIndex()+1 < scenarioList.size())
         {
@@ -69,10 +127,13 @@ public class ScenarioManager  implements TouchListener {
             setCurrentScenario(scenarioList.getScenarioByIndex(getCurrentScenario().getIndex() - 1));
         }
     }
-    public void setScenario(ScenarioEnum scenarioEnum){
+    public void setScenarioByEnum(ScenarioEnum scenarioEnum){
         
         setCurrentScenario(scenarioList.getScenarioListByEnum(scenarioEnum));
-        
+    }
+
+    public void setNodeList(List<Node> nodeList) {
+        this.nodeList = nodeList;
     }
 
     public void simpleUpdate(float tpf){
@@ -84,59 +145,25 @@ public class ScenarioManager  implements TouchListener {
                 appListener.toggleInformativeMenuCallback(scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios()));
             }
         }
-//        if (allScenario.get(0).simpleUpdate(tpf))
-//        {
-//            appListener.toggleInformativeMenuCallback(ScenarioEnum.SOUNDCAPTURE);
-//        }
     };
 
 
 
-    public ScenarioManager(Node node, AssetManager assetManager, Camera cam, AppListener appListener)
-    {
-        this.appListener = appListener;
-        this.rootNode = node;
 
-        //Init SoundCapture scenario
-        Scenario soundCapture = new SoundCapture(assetManager, cam);
-        soundCapture.scale(20.0f);
-        soundCapture.setName("SoundCapture");
-        Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
-        soundCapture.rotate(rot);
-        //this.rootNode.attachChild(soundCapture);
-        //allScenario.add(soundCapture);
-        List<Scenario> soundCaptureList = new ArrayList<Scenario>();
-        soundCaptureList.add(soundCapture);
-        scenarioList.addScenario(ScenarioEnum.SOUNDCAPTURE,soundCaptureList);
-
-
-        //Only for debugging purpose deactivate it please.
-        scenarioList.addScenario(ScenarioEnum.AMMODULATION,new ArrayList<Scenario>());
-        scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
-
-
-
-        setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));
-
-
-    }
 
     //See https://github.com/latestpost/JMonkey3-Android-Examples/blob/master/src/jmeproject/innovationtech/co/uk/Game7.java
     //For example
     @Override
     public void onTouch(String name, TouchEvent touchEvent, float v)
     {
-        //Log.d(TAG,"Action on screen");
         for(Scenario scenario : getCurrentScenario().getScenarios() )
         {
             scenario.onScenarioTouch(name, touchEvent, v);
         }
-        //allScenario.get(0).onScenarioTouch(name, touchEvent, v);
     }
 
 
-    class ScenarioGroup
+    private class ScenarioGroup
     {
 
         List<Scenario> scenarios  = null;
@@ -158,7 +185,7 @@ public class ScenarioManager  implements TouchListener {
 
     }
 
-    class ScenarioList
+    private class ScenarioList
     {
 
         private EnumMap<ScenarioEnum,List<Scenario>> enumScenarioEnumMap = new EnumMap<ScenarioEnum, List<Scenario>>(ScenarioEnum.class);
@@ -237,7 +264,6 @@ public class ScenarioManager  implements TouchListener {
             }
             return currentScenatioEnum;
         }
-
     }
 
 

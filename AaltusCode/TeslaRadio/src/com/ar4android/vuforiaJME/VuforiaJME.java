@@ -36,6 +36,9 @@ import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
 import com.utils.AppLogger;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class VuforiaJME extends SimpleApplication {
 
 	private static final String TAG = VuforiaJME.class.getName();
@@ -183,13 +186,15 @@ public class VuforiaJME extends SimpleApplication {
 
         initLights();
 
-        scenarioManager = new ScenarioManager(rootNode, assetManager, fgCam, appListener);
+        List<Node> nodeList = new ArrayList<Node>();
+        nodeList.add(rootNode);
+        scenarioManager = new ScenarioManager(nodeList, assetManager, fgCam, appListener, renderManager);
 
+        //TODO: Move in scenario Manager
         //Correction for BUG TR-176
         //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
         //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
         renderManager.preloadScene(rootNode);
-
 
         inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click
         inputManager.addListener(scenarioManager, new String[]{"Touch"});
@@ -200,6 +205,8 @@ public class VuforiaJME extends SimpleApplication {
         //focusableObjects.attachChild(soundCapture);
 
 	}
+
+
 
 
     public void initForegroundCamera(float fovY) {
