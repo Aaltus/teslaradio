@@ -20,6 +20,8 @@ Vec3F AaltusTrackable::getPositionFromCamera()
 	return pos;
 }
 
+
+
 int AaltusTrackable::initializeDataSet(QCAR::ImageTracker* imageTracker)
 {
 

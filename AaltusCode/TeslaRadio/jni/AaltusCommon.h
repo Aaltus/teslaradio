@@ -13,7 +13,7 @@
 #define LOG_DEBUG   4
 #define LOG_ALL     5
 
-#define AALTUS_NBR_TARGET 5
+#define AALTUS_NBR_TARGET 2
 
 static int logLevel = LOG_NONE;
 

@@ -363,7 +363,10 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
                  new Vector3f(-cam_up_x, -cam_up_y, -cam_up_z),
                  new Vector3f(cam_dir_x, cam_dir_y, cam_dir_z));
 	}
-		 
+	public void setTrackableVisibleNative(int id, int isVisible)
+    {
+        //TODO: Attack/Detach node dependeing on vsibility status
+    }
     // This method retrieves the preview images from the Android world and puts them into a JME image.
     public void setVideoBGTexture(final Image image) {
         if (!mSceneInitialized) {
