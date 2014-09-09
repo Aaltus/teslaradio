@@ -120,6 +120,26 @@ public class VuforiaJME extends SimpleApplication {
     //A Applistener that we will be using for callback
     public AppListener appListener;
 
+
+    //See https://github.com/latestpost/JMonkey3-Android-Examples/blob/master/src/jmeproject/innovationtech/co/uk/Game7.java
+    //For example
+    @Override
+    public void onTouch(String name, TouchEvent touchEvent, float v)
+    {
+        //Log.d(TAG,"Action on screen");
+
+        soundCapture.onScenarioTouch(name, touchEvent, v);
+    }
+
+    interface AppListener
+    {
+        //Callaback for showing a informative menu with the provided menu
+        public void toggleInformativeMenuCallback(ScenarioEnum scenarioEnum);
+
+        //Callaback for telling the upper layer that VuforiaJME is done loading
+        public void onFinishSimpleInit();
+    }
+
     //A way to register to the appListener
     public void setAppListener(AppListener appListener)
     {
