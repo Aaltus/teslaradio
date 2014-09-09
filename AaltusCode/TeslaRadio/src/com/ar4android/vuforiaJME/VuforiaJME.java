@@ -21,6 +21,7 @@ package com.ar4android.vuforiaJME;
 import android.util.Log;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
+import com.galimatias.teslaradio.world.Scenarios.SoundCapturev2;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.controls.TouchListener;
 import com.jme3.input.controls.TouchTrigger;
@@ -64,7 +65,7 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
 //    private World virtualWorld;
 //    private Spatial ninja;
 //    private Node scotty;
-    private SoundCapture soundCapture;
+    private SoundCapturev2 soundCapture;
 
     private float mForegroundCamFOVY = 30;
 
@@ -207,7 +208,7 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
         initLights();
 
         //Init SoundCapture scenario
-        soundCapture = new SoundCapture(assetManager, fgCam);
+        soundCapture = new SoundCapturev2(assetManager, fgCam, null);
         soundCapture.scale(20.0f);
         soundCapture.setName("SoundCapture");
         Quaternion rot = new Quaternion();
@@ -381,6 +382,7 @@ public class VuforiaJME extends SimpleApplication  implements TouchListener{
         if (mNewCameraFrameAvailable) {
             mCameraTexture.setImage(mCameraImage);
             mvideoBGMat.setTexture("ColorMap", mCameraTexture);
+            mNewCameraFrameAvailable = false;
         }
 
         // mCubeGeom.rotate(new Quaternion(1.f, 0.f, 0.f, 0.01f));
