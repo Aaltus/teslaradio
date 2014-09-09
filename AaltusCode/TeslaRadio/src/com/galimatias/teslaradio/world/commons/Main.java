@@ -1,5 +1,6 @@
 package com.galimatias.teslaradio.world.commons;
 
+import com.galimatias.teslaradio.world.Scenarios.DummyScenario;
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
@@ -50,8 +51,16 @@ public class Main extends SimpleApplication
         floor.setMaterial(floorMaterial);
         rootNode.attachChild(floor);
         
+        DummyScenario dummy = new DummyScenario(assetManager, ColorRGBA.Orange);
+        
+        
+        
         // Attaching the modules to the scene
         rootNode.attachChild(soundCapture);
+        rootNode.attachChild(dummy);
+        
+        dummy.scale(20);
+        
         
         initLights();
         
