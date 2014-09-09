@@ -48,7 +48,7 @@ public class VuforiaJME extends SimpleApplication {
 
     // Enable this value to get multiple trackables
     private static final int DEBUG_NTargets = 1;
-
+	
     private IScenarioManager scenarioManager;
     public IScenarioManager getScenarioManager() {
         return scenarioManager;
@@ -108,7 +108,7 @@ public class VuforiaJME extends SimpleApplication {
 	}
 
     //A Applistener that we will be using for callback
-    public AppListener appListener;
+    private AppListener appListener;
 
     //A way to register to the appListener
     public void setAppListener(AppListener appListener)
