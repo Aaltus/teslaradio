@@ -19,5 +19,11 @@ public interface IScenarioManager extends TouchListener {
 
     void setNodeList(List<Node> nodeList);
 
+    void updateNodeList(List<Node> nodeList, int idx);
+
+    Boolean getIsNodeVisible();
+
+    void setIsNodeVisible(Boolean isNodeVisible);
+
     void simpleUpdate(float tpf);
 }

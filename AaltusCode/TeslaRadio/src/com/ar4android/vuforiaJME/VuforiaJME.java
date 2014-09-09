@@ -37,6 +37,7 @@ import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
 import com.utils.AppLogger;
+import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +87,10 @@ public class VuforiaJME extends SimpleApplication {
 
     private Node trackableA = new Node("TrackableA");
     private Node trackableB = new Node("TrackableB");
+    private Boolean isNodeVisibleA = new Boolean(false);
+    private Boolean isNodeVisibleB = new Boolean(false);
+
+    private List<Node> nodeList = new ArrayList<Node>();
 
     private Matrix3f rotMatrix;
 
@@ -199,7 +204,6 @@ public class VuforiaJME extends SimpleApplication {
         rootNode.attachChild(trackableA);
         rootNode.attachChild(trackableB);
 
-        List<Node> nodeList = new ArrayList<Node>();
         nodeList.add(trackableA);
         nodeList.add(trackableB);
         scenarioManager = new ScenarioManager(nodeList, assetManager, fgCam, appListener, renderManager);
@@ -315,7 +319,7 @@ public class VuforiaJME extends SimpleApplication {
         // Set the foreground camera position
         fgCam.setLocation(new Vector3f(0.0f, 0.0f, 0.0f));
 
-        AppLogger.getInstance().d(TAG, "Trackable ID : " + id);
+        // AppLogger.getInstance().d(TAG, "Trackable ID : " + id);
 
         if (DEBUG_NTargets == 1) {
             if (id == 0)
@@ -368,9 +372,77 @@ public class VuforiaJME extends SimpleApplication {
             rootNode.setLocalRotation(rotMatrix);
         }
 	}
-	public void setTrackableVisibleNative(int id, int isVisible)
+	public void setTrackableVisibleNative(int id, int isTrackableVisible)
     {
         //TODO: Attack/Detach node depending on visibility status
+        if (id == 0 && isTrackableVisible == 0)
+        {
+            if (isNodeVisibleA)
+            {
+                getScenarioManager().setIsNodeVisible(!isNodeVisibleA);
+                getScenarioManager().updateNodeList(nodeList, 0);
+                isNodeVisibleA = false;
+            }
+            else if (!isNodeVisibleA)
+            {
+                // Do nothing, we don't see the trackable and Node has to be invisible.
+            }
+            else
+            {
+                // Do nothing...
+            }
+        }
+        else if (id == 0 && isTrackableVisible == 1)
+        {
+            if (isNodeVisibleA)
+            {
+                // Do nothing, we can see the trackable and the Node has spawned.
+            }
+            else if (!isNodeVisibleA)
+            {
+                getScenarioManager().setIsNodeVisible(!isNodeVisibleA);
+                getScenarioManager().updateNodeList(nodeList, 0);
+                isNodeVisibleA = true;
+            }
+            else
+            {
+                // Do nothing...
+            }
+        }
+        else if (id == 1 && isTrackableVisible == 0)
+        {
+            if (isNodeVisibleB)
+            {
+                getScenarioManager().setIsNodeVisible(!isNodeVisibleB);
+                getScenarioManager().updateNodeList(nodeList, 1);
+                isNodeVisibleB = false;
+            }
+            else if (!isNodeVisibleB)
+            {
+                // Do nothing, we don't see the trackable and Node has to be invisible.
+            }
+            else
+            {
+                // Do nothing...
+            }
+        }
+        else if (id == 1 && isTrackableVisible == 1)
+        {
+            if (isNodeVisibleB)
+            {
+                // Do nothing, we can see the trackable and the Node has spawned.
+            }
+            else if (!isNodeVisibleB)
+            {
+                getScenarioManager().setIsNodeVisible(!isNodeVisibleB);
+                getScenarioManager().updateNodeList(nodeList, 1);
+                isNodeVisibleB = true;
+            }
+            else
+            {
+                // Do nothing...
+            }
+        }
     }
 
     // This method retrieves the preview images from the Android world and puts them into a JME image.

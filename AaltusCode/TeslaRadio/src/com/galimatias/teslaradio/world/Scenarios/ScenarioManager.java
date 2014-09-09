@@ -24,6 +24,7 @@ public class ScenarioManager  implements IScenarioManager {
     private ScenarioList  scenarioList    = new ScenarioList();
     private List<Node> nodeList;
     private AppListener appListener;
+    private Boolean isNodeVisible = new Boolean(true);
 
     public List<Node> getNodeList() {
         return nodeList;
@@ -33,6 +34,8 @@ public class ScenarioManager  implements IScenarioManager {
     {
         this.appListener = appListener;
         setNodeList(node);
+
+        //TODO Remove the second scenar
 
         //Init SoundCapture scenario
         Scenario soundCapture = new SoundCapture(assetManager, cam);
@@ -115,12 +118,23 @@ public class ScenarioManager  implements IScenarioManager {
 //        }
     }
 
+    private void updateAttachedVisibleNode(int idx) {
 
+        Scenario currentScenario = getCurrentScenario().getScenarios().get(idx);
+        if(!isNodeVisible)
+        {
+            nodeList.get(idx).detachChild(currentScenario);
+        }
+        else
+        {
+            nodeList.get(idx).attachChild(currentScenario);
+        }
+    }
 
 
     //TODO: MODIFY THIS TO RECEIVE A LIST<NODE> TO ATTACH THE SCENARIO TO THE RIGHT TRACKABLE/NODE
     @Override
-    public void setNextScenario(){
+    public void setNextScenario() {
         if(getCurrentScenario().getIndex()+1 < scenarioList.size())
         {
             setCurrentScenario(scenarioList.getScenarioByIndex(getCurrentScenario().getIndex() + 1));
@@ -142,11 +156,19 @@ public class ScenarioManager  implements IScenarioManager {
     }
 
     @Override
-    public void setNodeList(List<Node> nodeList) {
+    public void setNodeList(List<Node> nodeList) {this.nodeList = nodeList;}
+
+    @Override
+    public Boolean getIsNodeVisible(){return isNodeVisible;}
+
+    @Override
+    public void setIsNodeVisible(Boolean isNodeVisible){this.isNodeVisible = isNodeVisible;}
+
+    @Override
+    public void updateNodeList(List<Node> nodeList, int idx) {
         this.nodeList = nodeList;
+        updateAttachedVisibleNode(idx);
     }
-
-
 
     public void simpleUpdate(float tpf){
 
