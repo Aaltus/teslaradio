@@ -24,7 +24,6 @@ public class ScenarioManager  implements IScenarioManager {
     private ScenarioList  scenarioList    = new ScenarioList();
     private List<Node> nodeList;
     private AppListener appListener;
-    private Boolean isNodeVisible = new Boolean(true);
 
     public List<Node> getNodeList() {
         return nodeList;
@@ -33,18 +32,16 @@ public class ScenarioManager  implements IScenarioManager {
     public ScenarioManager(List<Node> node, AssetManager assetManager, Camera cam, AppListener appListener, RenderManager renderManager)
     {
         this.appListener = appListener;
-        setNodeList(node);
 
-        //TODO Remove the second scenar
+
+        //TODO Remove the second scenario
 
         //Init SoundCapture scenario
-        //Scenario soundCapture = new SoundCapturev2(assetManager, cam, null);
-        //Scenario soundCapture2 = new SoundCapturev2(assetManager, cam, null);
         Scenario soundEmission = new SoundEmission(assetManager, cam, null);
         Scenario soundCapture = new SoundCapture(assetManager, cam, null);
         soundEmission.scale(10.0f);
         soundCapture.scale(10.0f);
-        soundEmission.setName("SoundEmission");
+        soundEmission.setName("SoundCapture");
         soundCapture.setName("SoundCapture");
         Quaternion rot = new Quaternion();
         rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
@@ -56,16 +53,16 @@ public class ScenarioManager  implements IScenarioManager {
         scenarioList.addScenario(ScenarioEnum.SOUNDCAPTURE,soundCaptureList);
 
 
-
-
         //Only for debugging purpose deactivate it please.
         scenarioList.addScenario(ScenarioEnum.AMMODULATION,new ArrayList<Scenario>());
         scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
-
-
+        scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
+        scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
 
         //setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));
         setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDCAPTURE));
+
+        setNodeList(node);
 
 
     }
@@ -95,20 +92,27 @@ public class ScenarioManager  implements IScenarioManager {
     private void attachCurrentScenario()
     {
         int count = 0;
-        for(Node node : getNodeList())
-        {
-            if(count < getCurrentScenario().getScenarios().size()){
-                Scenario currentScenario = getCurrentScenario().getScenarios().get(count);
-                if(node != null)
-                {
-                    node.attachChild(currentScenario);
+        int size = getCurrentScenario() == null ? 0 : getCurrentScenario().getScenarios().size();
+        if(getNodeList() != null){
+            for(Node node : getNodeList())
+            {
+                if(count < size){
+                    Scenario currentScenario = getCurrentScenario().getScenarios().get(count);
+                    if(node != null)
+                    {
+                        node.attachChild(currentScenario);
+                    }
+                    else
+                    {
+                        Node parent = currentScenario.getParent();
+                        if(parent != null)
+                        {
+                            parent.detachChild(currentScenario);
+                        }
+                    }
                 }
-                else
-                {
-                    node.detachChild(currentScenario);
-                }
+                count++;
             }
-            count++;
         }
 //        int count = 0;
 //        for(Scenario scenario : getCurrentScenario().getScenarios() )
@@ -117,20 +121,6 @@ public class ScenarioManager  implements IScenarioManager {
 //            count++;
 //        }
     }
-
-    private void updateAttachedVisibleNode(int idx) {
-
-        Scenario currentScenario = getCurrentScenario().getScenarios().get(idx);
-        if(!isNodeVisible)
-        {
-            nodeList.get(idx).detachChild(currentScenario);
-        }
-        else
-        {
-            nodeList.get(idx).attachChild(currentScenario);
-        }
-    }
-
 
     //TODO: MODIFY THIS TO RECEIVE A LIST<NODE> TO ATTACH THE SCENARIO TO THE RIGHT TRACKABLE/NODE
     @Override
@@ -156,19 +146,12 @@ public class ScenarioManager  implements IScenarioManager {
     }
 
     @Override
-    public void setNodeList(List<Node> nodeList) {this.nodeList = nodeList;}
+    public void setNodeList(List<Node> nodeList) {
 
-    @Override
-    public Boolean getIsNodeVisible(){return isNodeVisible;}
-
-    @Override
-    public void setIsNodeVisible(Boolean isNodeVisible){this.isNodeVisible = isNodeVisible;}
-
-    @Override
-    public void updateNodeList(List<Node> nodeList, int idx) {
         this.nodeList = nodeList;
-        updateAttachedVisibleNode(idx);
+        attachCurrentScenario();
     }
+
 
     public void simpleUpdate(float tpf){
 
