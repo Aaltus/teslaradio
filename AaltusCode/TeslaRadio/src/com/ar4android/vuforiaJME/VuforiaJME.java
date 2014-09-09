@@ -38,7 +38,6 @@ import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
 import com.utils.AppLogger;
-import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,7 +111,7 @@ public class VuforiaJME extends SimpleApplication {
 	}
 
     //A Applistener that we will be using for callback
-    public AppListener appListener;
+    private AppListener appListener;
 
     //A way to register to the appListener
     public void setAppListener(AppListener appListener)
@@ -402,17 +401,15 @@ public class VuforiaJME extends SimpleApplication {
         {
             if (isNodeVisibleA)
             {
-                getScenarioManager().setIsNodeVisible(!isNodeVisibleA);
-                getScenarioManager().updateNodeList(nodeList, 0);
                 isNodeVisibleA = false;
-            }
-            else if (!isNodeVisibleA)
-            {
-                // Do nothing, we don't see the trackable and Node has to be invisible.
+                nodeList.set(id,null);
+                getScenarioManager().setNodeList(nodeList);
+                //getScenarioManager().setIsNodeVisible(isNodeVisibleA);
+                //getScenarioManager().updateNodeList(nodeList, 0);
             }
             else
             {
-                // Do nothing...
+                // Do nothing, we don't see the trackable and Node has to be invisible.
             }
         }
         else if (id == 0 && isTrackableVisible == 1)
@@ -421,32 +418,29 @@ public class VuforiaJME extends SimpleApplication {
             {
                 // Do nothing, we can see the trackable and the Node has spawned.
             }
-            else if (!isNodeVisibleA)
-            {
-                getScenarioManager().setIsNodeVisible(!isNodeVisibleA);
-                getScenarioManager().updateNodeList(nodeList, 0);
-                isNodeVisibleA = true;
-            }
             else
             {
-                // Do nothing...
+                isNodeVisibleA = true;
+                //getScenarioManager().setIsNodeVisible(isNodeVisibleA);
+                //getScenarioManager().updateNodeList(nodeList, 0);
+                nodeList.set(id,trackableA_fixeAngle);
+                getScenarioManager().setNodeList(nodeList);
+
             }
         }
         else if (id == 1 && isTrackableVisible == 0)
         {
             if (isNodeVisibleB)
             {
-                getScenarioManager().setIsNodeVisible(!isNodeVisibleB);
-                getScenarioManager().updateNodeList(nodeList, 1);
                 isNodeVisibleB = false;
-            }
-            else if (!isNodeVisibleB)
-            {
-                // Do nothing, we don't see the trackable and Node has to be invisible.
+                nodeList.set(id,null);
+                getScenarioManager().setNodeList(nodeList);
+                //getScenarioManager().setIsNodeVisible(isNodeVisibleB);
+                //getScenarioManager().updateNodeList(nodeList, 1);
             }
             else
             {
-                // Do nothing...
+                // Do nothing, we don't see the trackable and Node has to be invisible.
             }
         }
         else if (id == 1 && isTrackableVisible == 1)
@@ -455,15 +449,14 @@ public class VuforiaJME extends SimpleApplication {
             {
                 // Do nothing, we can see the trackable and the Node has spawned.
             }
-            else if (!isNodeVisibleB)
-            {
-                getScenarioManager().setIsNodeVisible(!isNodeVisibleB);
-                getScenarioManager().updateNodeList(nodeList, 1);
-                isNodeVisibleB = true;
-            }
             else
             {
-                // Do nothing...
+                isNodeVisibleB = true;
+                nodeList.set(id,trackableB_fixeAngle);
+                getScenarioManager().setNodeList(nodeList);
+                //getScenarioManager().setIsNodeVisible(isNodeVisibleB);
+                //getScenarioManager().updateNodeList(nodeList, 1);
+
             }
         }
     }
