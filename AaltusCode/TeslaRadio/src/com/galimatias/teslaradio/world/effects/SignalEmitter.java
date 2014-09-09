@@ -26,8 +26,8 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
 {
     
     private Vector<Vector3f> paths = new Vector<Vector3f>();
-    private Geometry mainParticle;
-    private Geometry secondaryParticle;
+    private Geometry mainParticle = null;
+    private Geometry secondaryParticle = null;
     private float particlesSpeed;
     private SignalType signalType;
     private float capturePathLength = -1;
@@ -42,14 +42,42 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
     
 	private Spline curveSpline;
 
-    public SignalEmitter(Vector<Vector3f> paths, Geometry mainParticle, Geometry secondaryParticle, float particlesSpeed, SignalType signalType) {
+    /**
+     * This is how the particle emitter will be instanciated in the future
+     * @param particleSpeed
+     * @param signalType
+     */
+    public SignalEmitter(float particleSpeed, SignalType signalType)
+    {
+        this.particlesSpeed = particleSpeed;
+        this.signalType = signalType;
+    }
+
+    /**
+     * Deprecated
+     * @param paths
+     * @param mainParticle
+     * @param secondaryParticle
+     * @param particleSpeed
+     * @param signalType
+     */
+    public SignalEmitter(Vector<Vector3f> paths, Geometry mainParticle, Geometry secondaryParticle, float particleSpeed, SignalType signalType) {
         this.paths = paths;
         this.mainParticle = mainParticle;
         this.secondaryParticle = secondaryParticle;
-        this.particlesSpeed = particlesSpeed;
+        this.particlesSpeed = particleSpeed;
         this.signalType = signalType;
     }
-    
+
+    /**
+     * Deprecated
+     * @param paths
+     * @param capturePathLength
+     * @param mainParticle
+     * @param secondaryParticle
+     * @param particlesSpeed
+     * @param signalType
+     */
     public SignalEmitter(Vector<Vector3f> paths, float capturePathLength, Geometry mainParticle, Geometry secondaryParticle, float particlesSpeed, SignalType signalType) {
         this.paths = paths;
         this.mainParticle = mainParticle;
@@ -58,7 +86,15 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
         this.signalType = signalType;
         this.capturePathLength = capturePathLength;
     }
-    
+
+    /**
+     * Deprecated
+     * @param paths
+     * @param mainParticle
+     * @param secondaryParticle
+     * @param particlesSpeed
+     * @param signalType
+     */
     public SignalEmitter(Spline paths, Geometry mainParticle, Geometry secondaryParticle, float particlesSpeed, SignalType signalType) {
         this.curveSpline = paths;
         this.mainParticle = mainParticle;
@@ -93,6 +129,25 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
         }
     }
 
+    public void emitParticles(float magnitude, List<Geometry> signalToSend) {
+
+        Node waveNode = new Node();
+
+        if(signalType == SignalType.Air)
+        {
+            emitAirParticles(waveNode, magnitude);
+        }
+        else if(signalType == SignalType.Wire)
+        {
+            emitCurWireParticles(waveNode, magnitude);
+        }
+
+    }
+
+    /**
+     * Deprecated
+     * @param magnitude
+     */
     public void emitParticles(float magnitude) {
         
         Node waveNode = new Node();
@@ -107,7 +162,10 @@ public class SignalEmitter extends Node implements EmitterObserver, Observable
         }
 
     }
-    
+
+    /**
+     * Deprecated
+     */
     public void emitWaves() {
     
         this.waveIndex = 0;
