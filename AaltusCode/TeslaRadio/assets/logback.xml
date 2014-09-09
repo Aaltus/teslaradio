@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug='true'>
+
+    <!-- Used by Android Application--> 
+
+        <!-- Create a logcat appender -->
+    <appender name="logcat" class="ch.qos.logback.classic.android.LogcatAppender">
+        <encoder>
+            <pattern>%msg</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Create a AppLogger appender -->
+    <logger name="com.utils.AppLogger" level="DEBUG">
+        <appender-ref ref="logcat" />
+    </logger>
+</configuration>

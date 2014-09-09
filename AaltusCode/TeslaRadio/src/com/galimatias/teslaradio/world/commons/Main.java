@@ -15,6 +15,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
+import com.utils.AppLogger;
 
 /**
  * test
@@ -35,7 +36,7 @@ public class Main extends SimpleApplication
     @Override
     public void simpleInitApp() 
     {
-        
+        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ALL);
         
         soundCapture = new SoundCapture(assetManager, this.getCamera());
         flyCam.setMoveSpeed(100f);

@@ -124,7 +124,7 @@ public class VuforiaJME extends SimpleApplication {
 	public void simpleInitApp()
     {
         // Where the AppLogger is called for the first time and the log level is set
-        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.DEBUG);
+        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.NONE);
 
         AppLogger.getInstance().i(TAG, "simpleInitApp");
 

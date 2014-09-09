@@ -21,6 +21,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
+import com.utils.AppLogger;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -107,6 +108,7 @@ public final class SoundCapture extends Scenario {
         
         loadUnmovableObjects();
         loadMovableObjects();
+        AppLogger.getInstance().i(TAG,"SoundCapture initiated.");
     }
 
     public SoundCapture(AssetManager assetManager)
