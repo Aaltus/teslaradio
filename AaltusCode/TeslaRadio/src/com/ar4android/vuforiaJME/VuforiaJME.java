@@ -75,11 +75,6 @@ public class VuforiaJME extends SimpleApplication {
 	private boolean mVideoImageInitialized = false;
 	// A flag indicating if a new Android camera image is available.
 	private boolean mNewCameraFrameAvailable = false;
-// The virtual world object, it is in fact the scene
-//    private World virtualWorld;
-//    private Spatial ninja;
-//    private Node scotty;
-    private SoundCapturev2 soundCapture;
 
     private float mForegroundCamFOVY = 30;
 
@@ -104,6 +99,9 @@ public class VuforiaJME extends SimpleApplication {
 
     private Matrix3f rotMatrix;
 
+    //A Applistener that we will be using for callback
+    public com.ar4android.vuforiaJME.AppListener appListener;
+
     /** Native function for initializing the renderer. */
     public native void initTracking(int width, int height);
 
@@ -116,29 +114,6 @@ public class VuforiaJME extends SimpleApplication {
         VuforiaJME app = new VuforiaJME();
 		app.start();
 	}
-
-    //A Applistener that we will be using for callback
-    public AppListener appListener;
-
-
-    //See https://github.com/latestpost/JMonkey3-Android-Examples/blob/master/src/jmeproject/innovationtech/co/uk/Game7.java
-    //For example
-    @Override
-    public void onTouch(String name, TouchEvent touchEvent, float v)
-    {
-        //Log.d(TAG,"Action on screen");
-
-        soundCapture.onScenarioTouch(name, touchEvent, v);
-    }
-
-    interface AppListener
-    {
-        //Callaback for showing a informative menu with the provided menu
-        public void toggleInformativeMenuCallback(ScenarioEnum scenarioEnum);
-
-        //Callaback for telling the upper layer that VuforiaJME is done loading
-        public void onFinishSimpleInit();
-    }
 
     //A way to register to the appListener
     public void setAppListener(AppListener appListener)
@@ -249,10 +224,6 @@ public class VuforiaJME extends SimpleApplication {
 
         inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click
         inputManager.addListener(scenarioManager, new String[]{"Touch"});
-
-	}
-
-        //focusableObjects.attachChild(soundCapture);
 
 	}
 
@@ -527,24 +498,10 @@ public class VuforiaJME extends SimpleApplication {
         {
             appListener.toggleInformativeMenuCallback(ScenarioEnum.SOUNDCAPTURE);
         }
-
-
-        // Update the world depending on what is in focus
-        //virtualWorld.UpdateFocus(fgCam,focusableObjects);
-        //virtualWorld.UpdateViewables(rootNode,focusableObjects);
     }
 
     @Override
     public void simpleRender(RenderManager rm) {
         // TODO: add render code
-    }
-
-    public class onAudioEvent implements Callable{
-        @Override
-        public Object call() throws Exception {
-
-            soundCapture.onAudioEvent();
-            return null;
-        }
     }
 }

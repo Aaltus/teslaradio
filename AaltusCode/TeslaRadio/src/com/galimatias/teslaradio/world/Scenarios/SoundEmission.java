@@ -92,16 +92,27 @@ public class SoundEmission extends Scenario {
     @Override
     protected void loadUnmovableObjects() {
 
-        scene = (Node) assetManager.loadModel("Models/SoundCapture/SoundCapture.j3o");
+        Node sceneDrum = (Node) assetManager.loadModel("Models/SoundEmission/Tambour.j3o");
+        Node sceneGuit = (Node) assetManager.loadModel("Models/SoundEmission/Guitare.j3o");
+
+        scene = new Node();
+        touchable = new Node();
+
+        scene.attachChild(sceneDrum);
+        scene.attachChild(sceneGuit);
+
         scene.setName("SoundEmission");
         this.attachChild(scene);
         scene.scale(10.0f,10.0f,10.0f);
 
-        touchable = (Node) scene.getParent().getChild("Touchable");
-        drum = touchable.getParent().getChild("Tambour");
-        guitar = touchable.getParent().getChild("Guitar");
-        guitarHandleOut = scene.getParent().getChild("Guitar_Output_Handle");
-        drumHandleOut = scene.getParent().getChild("Drum_Output_Handle");
+        drum = sceneDrum.getChild("Tambour");
+        guitar = sceneGuit.getChild("Guitar");
+
+        touchable.attachChild(drum);
+        touchable.attachChild(guitar);
+
+        guitarHandleOut = sceneGuit.getChild("Guitar_Output_Handle");
+        drumHandleOut = sceneDrum.getChild("Drum_Output_Handle");
         drumPosition = drum.getLocalTranslation();
         guitarPosition = guitar.getLocalTranslation();
         drumHandleOutPosition = drumHandleOut.getWorldTranslation();
@@ -181,7 +192,7 @@ public class SoundEmission extends Scenario {
         waveMagnitudes.add(3f);
         waveMagnitudes.add(1f);
 
-        DrumSoundEmitter.setWaves(waveMagnitudes, 0.25f);
+        //DrumSoundEmitter.setWaves(waveMagnitudes, 0.25f);
     }
 
     /**
@@ -416,73 +427,73 @@ public class SoundEmission extends Scenario {
 
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
-
-        switch(touchEvent.getType()){
-
-            //Checking for down event is very responsive
-            case DOWN:
-
-                //case TAP:
-                if (name.equals("Touch"))
-                {
-
-                    // 1. Reset results list.
-                    CollisionResults results = new CollisionResults();
-
-                    // 2. Mode 1: user touch location.
-                    //Vector2f click2d = inputManager.getCursorPosition();
-
-                    Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
-                    Vector3f click3d = Camera.getWorldCoordinates(
-                            new Vector2f(click2d.x, click2d.y), 0f).clone();
-                    Vector3f dir = Camera.getWorldCoordinates(
-                            new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
-                    Ray ray = new Ray(click3d, dir);
-
-                    // 3. Collect intersections between Ray and Shootables in results list.
-                    //focusableObjects.collideWith(ray, results);
-                    touchable.collideWith(ray, results);
-
-                    // 4. Print the results
-                    //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
-                    for (int i = 0; i < results.size(); i++) {
-                        // For each hit, we know distance, impact point, name of geometry.
-                        float dist = results.getCollision(i).getDistance();
-                        Vector3f pt = results.getCollision(i).getContactPoint();
-                        String hit = results.getCollision(i).getGeometry().getName();
-
-                        //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
-                    }
-
-                    // 5. Use the results (we mark the hit object)
-                    if (results.size() > 0)
-                    {
-
-                        // The closest collision point is what was truly hit:
-                        CollisionResult closest = results.getClosestCollision();
-
-                        Spatial touchedGeometry = closest.getGeometry();
-                        String nameToCompare = touchedGeometry.getParent().getName();
-
-                        if (nameToCompare.equals(drum.getName()))
-                        {
-                            this.drumTouchEffect();
-                            break;
-                        }
-                        else if (nameToCompare.equals(guitar.getName()))
-                        {
-                            this.guitarTouchEffect();
-                            break;
-                        }
-                        else if (nameToCompare.equals(titleTextBox.getName()) || nameToCompare.equals(instrumentTextBox.getName()))
-                        {
-                            //this.textTouchEffect();
-                            showInformativeMenu = true;
-                            break;
-                        }
-                    }
-                }
-        }
+//
+//        switch(touchEvent.getType()){
+//
+//            //Checking for down event is very responsive
+//            case DOWN:
+//
+//                //case TAP:
+//                if (name.equals("Touch"))
+//                {
+//
+//                    // 1. Reset results list.
+//                    CollisionResults results = new CollisionResults();
+//
+//                    // 2. Mode 1: user touch location.
+//                    //Vector2f click2d = inputManager.getCursorPosition();
+//
+//                    Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
+//                    Vector3f click3d = Camera.getWorldCoordinates(
+//                            new Vector2f(click2d.x, click2d.y), 0f).clone();
+//                    Vector3f dir = Camera.getWorldCoordinates(
+//                            new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+//                    Ray ray = new Ray(click3d, dir);
+//
+//                    // 3. Collect intersections between Ray and Shootables in results list.
+//                    //focusableObjects.collideWith(ray, results);
+//                    touchable.collideWith(ray, results);
+//
+//                    // 4. Print the results
+//                    //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
+//                    for (int i = 0; i < results.size(); i++) {
+//                        // For each hit, we know distance, impact point, name of geometry.
+//                        float dist = results.getCollision(i).getDistance();
+//                        Vector3f pt = results.getCollision(i).getContactPoint();
+//                        String hit = results.getCollision(i).getGeometry().getName();
+//
+//                        //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+//                    }
+//
+//                    // 5. Use the results (we mark the hit object)
+//                    if (results.size() > 0)
+//                    {
+//
+//                        // The closest collision point is what was truly hit:
+//                        CollisionResult closest = results.getClosestCollision();
+//
+//                        Spatial touchedGeometry = closest.getGeometry();
+//                        String nameToCompare = touchedGeometry.getParent().getName();
+//
+//                        if (nameToCompare.equals(drum.getName()))
+//                        {
+//                            this.drumTouchEffect();
+//                            break;
+//                        }
+//                        else if (nameToCompare.equals(guitar.getName()))
+//                        {
+//                            this.guitarTouchEffect();
+//                            break;
+//                        }
+//                        else if (nameToCompare.equals(titleTextBox.getName()) || nameToCompare.equals(instrumentTextBox.getName()))
+//                        {
+//                            //this.textTouchEffect();
+//                            showInformativeMenu = true;
+//                            break;
+//                        }
+//                    }
+//                }
+//        }
     }
 
     @Override
@@ -495,9 +506,9 @@ public class SoundEmission extends Scenario {
             ShowHintImages();
         }
 
-        DrumSoundEmitter.simpleUpdate(tpf, this.Camera);
-        GuitarSoundEmitter.simpleUpdate(tpf, this.Camera);
-        touchEffectEmitter.simpleUpdate(tpf);
+       // DrumSoundEmitter.simpleUpdate(tpf, this.Camera);
+        //GuitarSoundEmitter.simpleUpdate(tpf, this.Camera);
+        //touchEffectEmitter.simpleUpdate(tpf);
         halo_drum.simpleUpdate(tpf);
         halo_guitar.simpleUpdate(tpf);
 

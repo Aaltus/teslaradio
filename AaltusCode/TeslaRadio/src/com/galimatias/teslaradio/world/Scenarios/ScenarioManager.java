@@ -38,21 +38,21 @@ public class ScenarioManager  implements IScenarioManager {
         //TODO Remove the second scenar
 
         //Init SoundCapture scenario
-        Scenario soundCapture = new SoundCapture(assetManager, cam);
-        Scenario soundCapture2 = new SoundCapture(assetManager, cam);
+        //Scenario soundCapture = new SoundCapturev2(assetManager, cam, null);
+        //Scenario soundCapture2 = new SoundCapturev2(assetManager, cam, null);
+        Scenario soundEmission = new SoundEmission(assetManager, cam, null);
+        Scenario soundCapture = new SoundCapture(assetManager, cam, null);
+        soundEmission.scale(10.0f);
         soundCapture.scale(10.0f);
-        soundCapture2.scale(10.0f);
+        soundEmission.setName("SoundEmission");
         soundCapture.setName("SoundCapture");
-        soundCapture2.setName("SoundCapture");
         Quaternion rot = new Quaternion();
         rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
+        soundEmission.rotate(rot);
         soundCapture.rotate(rot);
-        soundCapture2.rotate(rot);
-        //this.nodeList.attachChild(soundCapture);
-        //allScenario.add(soundCapture);
         List<Scenario> soundCaptureList = new ArrayList<Scenario>();
+        soundCaptureList.add(soundEmission);
         soundCaptureList.add(soundCapture);
-        soundCaptureList.add(soundCapture2);
         scenarioList.addScenario(ScenarioEnum.SOUNDCAPTURE,soundCaptureList);
 
 
