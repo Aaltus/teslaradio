@@ -1,6 +1,8 @@
 package com.galimatias.teslaradio.world.commons;
 
 import com.galimatias.teslaradio.world.Scenarios.DummyScenario;
+import com.galimatias.teslaradio.world.Scenarios.IScenarioManager;
+import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
@@ -13,10 +15,13 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
 import com.utils.AppLogger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * test
@@ -31,7 +36,8 @@ public class Main extends SimpleApplication
     }
 
     private Spatial sceneModel;
-    private SoundCapture soundCapture;
+    private List<Node> nodeList;
+    private IScenarioManager scenarioManager;
     
     
     @Override
@@ -39,27 +45,46 @@ public class Main extends SimpleApplication
     {
         AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ALL);
         
-        soundCapture = new SoundCapture(assetManager, this.getCamera());
+        //Initialized a list of nodes to attach to the scenario manager.
+        nodeList = new ArrayList<Node>();
+        Node nodeA = new Node();
+        Node nodeB = new Node();
+        rootNode.attachChild(nodeA);
+        rootNode.attachChild(nodeB);
+        float value = 60;
+        nodeA.move(value,0,0);
+        nodeB.move(-value,0,0);
+        nodeList.add(nodeA);
+        nodeList.add(nodeB);
+        
+        scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.DESKTOP, nodeList, assetManager, cam, null, renderManager);
+        
         flyCam.setMoveSpeed(100f);
         cam.setLocation(new Vector3f(-60,80,80));
-        cam.lookAt(soundCapture.getWorldTranslation(), Vector3f.UNIT_Y);
+        cam.lookAt(rootNode.getWorldTranslation(), Vector3f.UNIT_Y);
         
         //Add a floor
         Geometry floor = new Geometry("Floor", new Box (60,Float.MIN_VALUE,60));
         Material floorMaterial  = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         floorMaterial.setColor("Color", new ColorRGBA(0.75f,0.75f,0.75f, 1f));
         floor.setMaterial(floorMaterial);
-        rootNode.attachChild(floor);
+        nodeA.attachChild(floor);
         
-        DummyScenario dummy = new DummyScenario(assetManager, ColorRGBA.Orange);
+        Geometry floor2 = new Geometry("Floor", new Box (60,Float.MIN_VALUE,60));
+        Material floorMaterial2  = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        floorMaterial2.setColor("Color", ColorRGBA.Yellow);
+        floor2.setMaterial(floorMaterial2);
+        nodeB.attachChild(floor2);
         
+        //soundCapture = new SoundCapture(assetManager, this.getCamera());
+        //rootNode.attachChild(soundCapture);
+        
+        //DummyScenario dummy = new DummyScenario(assetManager, ColorRGBA.Orange);
+        //rootNode.attachChild(dummy);
         
         
         // Attaching the modules to the scene
-        rootNode.attachChild(soundCapture);
-        rootNode.attachChild(dummy);
-        
-        dummy.scale(20);
+        //dummy.scale(20);
         
         
         initLights();
@@ -72,7 +97,7 @@ public class Main extends SimpleApplication
     public void simpleUpdate(float tpf) 
     {
         //TODO: add update code
-        soundCapture.simpleUpdate(tpf);
+        scenarioManager.simpleUpdate(tpf);
     }
 
     @Override
@@ -100,11 +125,11 @@ public class Main extends SimpleApplication
         {
           if (name.equals("Guitar") && !keyPressed) {
               //soundCapture.drumTouchEffect();
-              soundCapture.guitarTouchEffect();
+              //soundCapture.guitarTouchEffect();
           }
           else if (name.equals("Drum") && !keyPressed) {
               //soundCapture.drumTouchEffect();
-              soundCapture.drumTouchEffect();
+              //soundCapture.drumTouchEffect();
           }
         }
     };

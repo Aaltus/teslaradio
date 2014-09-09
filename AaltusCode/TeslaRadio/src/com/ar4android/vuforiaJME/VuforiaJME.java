@@ -211,7 +211,12 @@ public class VuforiaJME extends SimpleApplication {
 
         nodeList.add(trackableA_fixeAngle);
         nodeList.add(trackableB_fixeAngle);
-        scenarioManager = new ScenarioManager(nodeList, assetManager, fgCam, appListener, renderManager);
+        scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.ANDROID,
+                nodeList,
+                assetManager,
+                fgCam,
+                appListener,
+                renderManager);
 
         //TODO: Move in scenario Manager
         //Correction for BUG TR-176

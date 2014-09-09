@@ -4,6 +4,7 @@ import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -19,6 +20,10 @@ import java.util.List;
  */
 public class ScenarioManager  implements IScenarioManager {
 
+    public enum ApplicationType {
+        ANDROID, DESKTOP
+    }
+    
     //List<Scenario> allScenario      = new ArrayList<Scenario>();
     private ScenarioGroup currentScenario = null;
     private ScenarioList  scenarioList    = new ScenarioList();
@@ -29,31 +34,29 @@ public class ScenarioManager  implements IScenarioManager {
         return nodeList;
     }
 
-    public ScenarioManager(List<Node> node, AssetManager assetManager, Camera cam, AppListener appListener, RenderManager renderManager)
+    public ScenarioManager(ApplicationType applicationType, List<Node> node, AssetManager assetManager, Camera cam, AppListener appListener, RenderManager renderManager)
     {
         this.appListener = appListener;
-
-
-        //TODO Remove the second scenario
-
+        
+        //This a list of all the scenario that we will rotate/scale according
+        //to which environment we are in. Don't forget to add scenario in it. 
+        List<Scenario> scenarios = new ArrayList<Scenario>();
+        
         //Init SoundCapture scenario
         Scenario soundCapture = new SoundCapture(assetManager, cam);
-        Scenario soundCapture2 = new SoundCapture(assetManager, cam);
-        soundCapture.scale(10.0f);
-        soundCapture2.scale(10.0f);
         soundCapture.setName("SoundCapture");
-        soundCapture2.setName("SoundCapture");
-        Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
-        soundCapture.rotate(rot);
-        soundCapture2.rotate(rot);
+        scenarios.add(soundCapture);
+        
+        //Init SoundCapture scenario
+        DummyScenario dummy = new DummyScenario(assetManager, ColorRGBA.Orange);
+        scenarios.add(dummy);
+        
+        adjustScenario(applicationType, scenarios);
+        
         List<Scenario> soundCaptureList = new ArrayList<Scenario>();
         soundCaptureList.add(soundCapture);
-        soundCaptureList.add(soundCapture2);
+        soundCaptureList.add(dummy);
         scenarioList.addScenario(ScenarioEnum.SOUNDCAPTURE,soundCaptureList);
-
-
-
 
         //Only for debugging purpose deactivate it please.
         scenarioList.addScenario(ScenarioEnum.AMMODULATION,new ArrayList<Scenario>());
@@ -67,6 +70,35 @@ public class ScenarioManager  implements IScenarioManager {
         setNodeList(node);
 
 
+    }
+    
+    private void adjustScenario(ApplicationType applicationType, List<Scenario> scenarios)
+    {
+        switch(applicationType)
+        {
+            case ANDROID:
+                
+                //This is the rotation to put a scenarion in the correct angle for VuforiaJME
+                Quaternion rot = new Quaternion();
+                rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
+                float scale = 10.0f;
+                
+                for(Scenario scenario : scenarios)
+                {
+                    scenario.rotate(rot);
+                    scenario.scale(scale);
+                }
+                
+                
+                break;
+            case DESKTOP:
+                //Do nothing because we don't need any scale.
+                break;
+                
+            default:
+                
+                break;
+        }
     }
 
 
@@ -159,7 +191,7 @@ public class ScenarioManager  implements IScenarioManager {
 
         for(Scenario scenario : getCurrentScenario().getScenarios() )
         {
-            if (scenario.simpleUpdate(tpf))
+            if (scenario.simpleUpdate(tpf) && appListener != null)
             {
                 appListener.toggleInformativeMenuCallback(scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios()));
             }
