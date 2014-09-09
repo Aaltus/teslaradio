@@ -27,6 +27,7 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
@@ -48,7 +49,7 @@ public class VuforiaJME extends SimpleApplication {
 
     // Enable this value to get multiple trackables
     private static final int DEBUG_NTargets = 1;
-	
+
     private IScenarioManager scenarioManager;
     public IScenarioManager getScenarioManager() {
         return scenarioManager;
@@ -87,6 +88,9 @@ public class VuforiaJME extends SimpleApplication {
 
     private Node trackableA = new Node("TrackableA");
     private Node trackableB = new Node("TrackableB");
+    private Node trackableA_fixeAngle = new Node("trackableA_fixeAngle");
+    private Node trackableB_fixeAngle = new Node("trackableB_fixeAngle");	
+	
     private Boolean isNodeVisibleA = new Boolean(false);
     private Boolean isNodeVisibleB = new Boolean(false);
 
@@ -108,7 +112,7 @@ public class VuforiaJME extends SimpleApplication {
 	}
 
     //A Applistener that we will be using for callback
-    private AppListener appListener;
+    public AppListener appListener;
 
     //A way to register to the appListener
     public void setAppListener(AppListener appListener)
@@ -203,9 +207,11 @@ public class VuforiaJME extends SimpleApplication {
 
         rootNode.attachChild(trackableA);
         rootNode.attachChild(trackableB);
+        trackableA.attachChild(trackableA_fixeAngle);
+        trackableB.attachChild(trackableB_fixeAngle);
 
-        nodeList.add(trackableA);
-        nodeList.add(trackableB);
+        nodeList.add(trackableA_fixeAngle);
+        nodeList.add(trackableB_fixeAngle);
         scenarioManager = new ScenarioManager(nodeList, assetManager, fgCam, appListener, renderManager);
 
         //TODO: Move in scenario Manager
@@ -322,6 +328,7 @@ public class VuforiaJME extends SimpleApplication {
         // AppLogger.getInstance().d(TAG, "Trackable ID : " + id);
 
         if (DEBUG_NTargets == 1) {
+
             if (id == 0)
             {
                 trackableA.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
@@ -330,6 +337,7 @@ public class VuforiaJME extends SimpleApplication {
             {
                 trackableB.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
             }
+
         }
         else
         {
@@ -357,15 +365,30 @@ public class VuforiaJME extends SimpleApplication {
                                   cam_right_y, cam_up_y, -cam_dir_y,
                                   -cam_right_z , -cam_up_z , cam_dir_z);
 
+        // calculate the angle of rotation of the trackable relative to the AB vector
+        Vector3f vx = new Vector3f(cam_right_x, cam_up_x, -cam_dir_x);
+        Vector3f vectorAB = new Vector3f(trackableB.getLocalTranslation().subtract(trackableA.getLocalTranslation()));
+        double angleX = Math.atan2(vectorAB.normalize().y,vectorAB.normalize().x) - Math.atan2(vx.normalize().y,vx.normalize().x);
+        if(angleX < 0)
+            angleX = angleX + 2*3.141592654;
+        float angleX_f = (float) angleX;  // TODO : This is the angle to return as input to the scenario manager
+        Quaternion qAngle = new Quaternion();
+        qAngle.fromAngleAxis(-angleX_f,new Vector3f(0,0,1));
+
+
         if (DEBUG_NTargets == 1) {
+
             if (id == 0)
             {
                 trackableA.setLocalRotation(rotMatrix);
+                trackableA_fixeAngle.setLocalRotation(qAngle);
             }
             else if (id == 1)
             {
                 trackableB.setLocalRotation(rotMatrix);
+                trackableB_fixeAngle.setLocalRotation(qAngle);
             }
+
         }
         else
         {
