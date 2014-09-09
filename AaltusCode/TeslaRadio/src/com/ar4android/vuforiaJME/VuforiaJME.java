@@ -19,9 +19,14 @@
 package com.ar4android.vuforiaJME;
 
 import com.galimatias.teslaradio.world.Scenarios.IScenarioManager;
+import com.galimatias.teslaradio.subject.ScenarioEnum;
+import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
+import com.galimatias.teslaradio.world.Scenarios.SoundCapturev2;
 import com.jme3.app.SimpleApplication;
+import com.jme3.input.controls.TouchListener;
 import com.jme3.input.controls.TouchTrigger;
+import com.jme3.input.event.TouchEvent;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
@@ -39,7 +44,7 @@ import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
 import com.utils.AppLogger;
 import org.w3c.dom.NodeList;
-
+import java.util.concurrent.Callable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +79,7 @@ public class VuforiaJME extends SimpleApplication {
 //    private World virtualWorld;
 //    private Spatial ninja;
 //    private Node scotty;
+    private SoundCapturev2 soundCapture;
 
     private float mForegroundCamFOVY = 30;
 
@@ -220,12 +226,15 @@ public class VuforiaJME extends SimpleApplication {
         //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
         renderManager.preloadScene(rootNode);
 
+
         inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click
         inputManager.addListener(scenarioManager, new String[]{"Touch"});
 
 	}
 
+        //focusableObjects.attachChild(soundCapture);
 
+	}
 
 
     public void initForegroundCamera(float fovY) {
@@ -271,6 +280,7 @@ public class VuforiaJME extends SimpleApplication {
         rootNode.addLight(ambient);
 
     }
+
 
 	public void setCameraPerspectiveNative(float fovY,float aspectRatio) {
         // Log.d(TAG,"Update Camera Perspective..");
@@ -485,6 +495,7 @@ public class VuforiaJME extends SimpleApplication {
         if (mNewCameraFrameAvailable) {
             mCameraTexture.setImage(mCameraImage);
             mvideoBGMat.setTexture("ColorMap", mCameraTexture);
+            mNewCameraFrameAvailable = false;
         }
 
         // mCubeGeom.rotate(new Quaternion(1.f, 0.f, 0.f, 0.01f));
@@ -493,6 +504,9 @@ public class VuforiaJME extends SimpleApplication {
 
 
         scenarioManager.simpleUpdate(tpf);
+        {
+            appListener.toggleInformativeMenuCallback(ScenarioEnum.SOUNDCAPTURE);
+        }
 
 
         // Update the world depending on what is in focus
@@ -505,5 +519,12 @@ public class VuforiaJME extends SimpleApplication {
         // TODO: add render code
     }
 
+    public class onAudioEvent implements Callable{
+        @Override
+        public Object call() throws Exception {
 
+            soundCapture.onAudioEvent();
+            return null;
+        }
+    }
 }

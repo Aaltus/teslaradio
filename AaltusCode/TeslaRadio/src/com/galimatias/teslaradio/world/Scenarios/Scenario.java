@@ -5,18 +5,22 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.ViewState;
+import com.galimatias.teslaradio.world.effects.SignalEmitter;
+import com.galimatias.teslaradio.world.observer.Observable;
+import com.galimatias.teslaradio.world.observer.ScenarioObservable;
+import com.galimatias.teslaradio.world.observer.ScenarioObserver;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.scene.Node;
 
-
+import java.util.List;
 
 
 /**
  * Abstract class that regroup a scenario.
  * @author Alexandre Hamel
  */
-public abstract class Scenario extends Node {
+public abstract class Scenario extends Node implements ScenarioObservable{
 
     private final static String TAG = "Scenario";
 
@@ -66,6 +70,10 @@ public abstract class Scenario extends Node {
      */
     protected Node scene;
 
+    protected List<ScenarioObserver> observers;
+
+    protected List<SignalEmitter> signEmitter;
+
     /**
      * We make the default constructor private to prevent its use.
      * We always want a assetmanager and a camera
@@ -75,12 +83,12 @@ public abstract class Scenario extends Node {
 
     }
 
-    public Scenario(AssetManager assetManager, com.jme3.renderer.Camera Camera)
+    public Scenario(AssetManager assetManager, com.jme3.renderer.Camera Camera, ScenarioObserver observer)
     {
         this.assetManager = assetManager;
         this.Camera = Camera;
 
-        
+        registerObserver(observer);
     }
 
     /**
@@ -128,4 +136,28 @@ public abstract class Scenario extends Node {
      * To receive events from the device microphone from scenario manager.
      */
     public abstract void onAudioEvent();
+
+    @Override
+    public void registerObserver(ScenarioObserver observer)
+    {
+        if (observer != null)
+        {
+            this.observers.add(observer);
+        }
+    }
+
+    @Override
+    public void removeObserver(ScenarioObserver observer)
+    {
+        if (observer != null)
+        {
+            this.observers.remove(observer);
+        }
+    }
+
+    @Override
+    public void notifyObservers(Object caller)
+    {
+
+    }
 }
