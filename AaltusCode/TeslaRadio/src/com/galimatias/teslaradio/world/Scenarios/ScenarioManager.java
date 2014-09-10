@@ -3,6 +3,10 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.jme3.asset.AssetManager;
+import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -28,6 +32,8 @@ import java.util.List;
  */
 public class ScenarioManager  implements IScenarioManager {
 
+    
+
     /**
      * An enum that provide insight to the manager to which scale/rotation it must provide to the scenario
      * created to fit in to the Android app or the JMonkey SDK app.
@@ -40,6 +46,7 @@ public class ScenarioManager  implements IScenarioManager {
      * The current group of scenario that is attach to the List of nodes
      */
     private ScenarioGroup currentScenario = null;
+    
     /**
      * Where the pair of scenarios are saved and accessed
      */
@@ -57,10 +64,21 @@ public class ScenarioManager  implements IScenarioManager {
      * Callback interface to open the informativeMenu.
      */
     private AppListener appListener;
+    
+    private static final String NEXT_SCENARIO = "NextScenario";
+    private static final String TEXT = "Text";
+    private static final String GUITAR = "Guitar";
+    private static final String DRUM = "Drum";
+    private static final String PREVIOUS_SCENARIO = "PreviousScenario";
+    
 
-
-
-    public ScenarioManager(ApplicationType applicationType, List<Node> node, AssetManager assetManager, Camera cam, AppListener appListener, RenderManager renderManager)
+    public ScenarioManager(ApplicationType applicationType,
+            List<Node> node,
+            AssetManager assetManager,
+            Camera cam,
+            AppListener appListener,
+            RenderManager renderManager,
+            InputManager inputManager)
     {
         this.appListener = appListener;
         
@@ -80,7 +98,7 @@ public class ScenarioManager  implements IScenarioManager {
         scenarios.add(soundEmission);
         
         
-        adjustScenario(applicationType, scenarios, renderManager);
+        adjustScenario(applicationType, scenarios, renderManager, inputManager);
         
         List<Scenario> soundCaptureList = new ArrayList<Scenario>();
         soundCaptureList.add(soundCapture);
@@ -105,7 +123,7 @@ public class ScenarioManager  implements IScenarioManager {
      * @param applicationType
      * @param scenarios
      */
-    private void adjustScenario(ApplicationType applicationType, List<Scenario> scenarios, RenderManager renderManager)
+    private void adjustScenario(ApplicationType applicationType, List<Scenario> scenarios, RenderManager renderManager, InputManager inputManager)
     {
         switch(applicationType)
         {
@@ -121,7 +139,9 @@ public class ScenarioManager  implements IScenarioManager {
                     //Correction for BUG TR-176
                     //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
                     //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
-                    renderManager.preloadScene(scenario);
+                    if(renderManager != null){
+                        renderManager.preloadScene(scenario);
+                    }
                     scenario.rotate(rot);
                     scenario.scale(scale);
                 }
@@ -129,6 +149,21 @@ public class ScenarioManager  implements IScenarioManager {
                 
                 break;
             case DESKTOP:
+                if(inputManager != null){
+                        // You can map one or several inputs to one named action
+                        inputManager.addMapping(DRUM, new KeyTrigger(KeyInput.KEY_T));
+                        inputManager.addMapping(GUITAR, new KeyTrigger(KeyInput.KEY_G));
+                        inputManager.addMapping(TEXT, new KeyTrigger(KeyInput.KEY_H));
+                        inputManager.addMapping(NEXT_SCENARIO, new KeyTrigger(KeyInput.KEY_P));
+                        inputManager.addMapping(PREVIOUS_SCENARIO, new KeyTrigger(KeyInput.KEY_O));
+
+                        // Add the names to the action listener.
+                        inputManager.addListener(this, DRUM);
+                        inputManager.addListener(this, GUITAR);
+                        inputManager.addListener(this, TEXT);
+                        inputManager.addListener(this, NEXT_SCENARIO);
+                        inputManager.addListener(this, PREVIOUS_SCENARIO);
+                    }
                 //Do nothing because we don't need any scale or rotation.
                 break;
                 
@@ -253,6 +288,38 @@ public class ScenarioManager  implements IScenarioManager {
         for(Scenario scenario : getCurrentScenario().getScenarios() )
         {
             scenario.onScenarioTouch(name, touchEvent, v);
+        }
+    }
+    
+    @Override
+    public void onAction(String name, boolean keyPressed, float tpf) {
+        
+        if ((name.equals(GUITAR) || name.equals(DRUM)) && !keyPressed) {
+            List<Scenario> scenarios = getCurrentScenario().getScenarios();
+            if(scenarios != null){
+                for(Scenario scenario : scenarios ){
+                    if(scenario instanceof SoundEmission){
+                        if(name.equals(DRUM))
+                        {
+                            ((SoundEmission)scenario).drumTouchEffect();
+                        }
+                        if(name.equals(GUITAR))
+                        {
+                            ((SoundEmission)scenario).guitarTouchEffect();
+                        }
+                    }
+                }
+            }
+        }
+        else if (name.equals(NEXT_SCENARIO) && !keyPressed) {
+            //soundCapture.drumTouchEffect();
+            //soundCapture.drumTouchEffect();
+            this.setNextScenario();
+        }
+        else if (name.equals(PREVIOUS_SCENARIO) && !keyPressed) {
+            //soundCapture.drumTouchEffect();
+            //soundCapture.drumTouchEffect();
+            this.setPreviousScenario();
         }
     }
 

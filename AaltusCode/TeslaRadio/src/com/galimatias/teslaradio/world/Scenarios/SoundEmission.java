@@ -36,6 +36,7 @@ public class SoundEmission extends Scenario {
 
     private Spatial drumHandleOut;
     private Spatial guitarHandleOut;
+    private Spatial micHandleIn;
 
     private Halo halo_drum, halo_guitar;
 
@@ -57,11 +58,12 @@ public class SoundEmission extends Scenario {
     private Vector3f guitarPosition;
     private Vector3f drumHandleOutPosition;
     private Vector3f guitarHandleOutPosition;
+    private Vector3f micHandleInPosition;
 
     //CHANGE THIS VALUE CHANGE THE PARTICULE BEHAVIOUR
     //Setting the direction norms and the speed displacement to the trajectories
-    private float VecDirectionNorms = 80f;
-    private float SoundParticles_Speed = 50f;
+    private float VecDirectionNorms = 8f;
+    private float SoundParticles_Speed = 5f;
 
     // CHANGE THESE VALUES TO SET THE TOUCH EFFECT BEHAVIOUR
     private float drumScaleGradient = 50.0f;
@@ -98,12 +100,17 @@ public class SoundEmission extends Scenario {
         Node sceneDrum = (Node) assetManager.loadModel("Models/SoundCapture/drum.j3o");
         Node sceneGuit = (Node) assetManager.loadModel("Models/SoundCapture/guitar.j3o");
         
-        float movementValue = 2.5f;
-        sceneDrum.setLocalTranslation(0,0,movementValue);
-        sceneGuit.setLocalTranslation(0,0,-movementValue);
+        float movementValue  = 2.5f;
+        float movementValue2 = 2.5f;
+        sceneDrum.setLocalTranslation(movementValue2,0,movementValue);
+        sceneGuit.setLocalTranslation(movementValue2,0,-movementValue);
         
         touchable.attachChild(sceneDrum);
         touchable.attachChild(sceneGuit);
+        
+        micHandleIn = new Node();
+        this.attachChild(micHandleIn);
+        micHandleIn.setLocalTranslation(10f, 10f, 0f);
         
         //this.attachChild(sceneDrum);
         //this.attachChild(sceneGuit);
@@ -117,12 +124,15 @@ public class SoundEmission extends Scenario {
         guitarPosition = sceneGuit.getLocalTranslation();
         drumHandleOutPosition = drumHandleOut.getLocalTranslation().add(sceneDrum.getLocalTranslation());
         guitarHandleOutPosition = guitarHandleOut.getLocalTranslation().add(sceneGuit.getLocalTranslation());//guitarHandleOut.getWorldTranslation();
+        micHandleInPosition = micHandleIn.getLocalTranslation();
 
         initAudio();
         initTextBox();
         initImageBoxes();
         initHaloEffects();
         initOnTouchEffect();
+        
+        
 
     }
 
@@ -152,8 +162,9 @@ public class SoundEmission extends Scenario {
      */
     private void initDrumParticlesEmitter()
     {
-        // Getting all the trajectories from the position of the mic-drums and
-        // the number of directions
+        // Getting all the trajectories from the position of the mic-drums and 
+        // the number of directions        
+        Vector3f drumMicDirection = micHandleInPosition.subtract(drumHandleOutPosition);
 
         int totalNbDirections = 10;
         int nbXYDirections = 2;
@@ -162,16 +173,16 @@ public class SoundEmission extends Scenario {
          * The trajectories will not be sent in the init
          */
         // Creating the trajectories
-//        SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
-//        directionFactory.setTrajectories(drumMicDirection, VecDirectionNorms);
-//        drum_trajectories = directionFactory.getTrajectories();
+        SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
+        directionFactory.setTrajectories(drumMicDirection, VecDirectionNorms);
+        drum_trajectories = directionFactory.getTrajectories();
 
         // calculalate drum to mic path length
-//        Vector3f drum2MicVector = drumHandleOutPosition.subtract(micHandleInPosition);
-//        float drum2MicLength = drum2MicVector.length();
+        Vector3f drum2MicVector = drumHandleOutPosition.subtract(micHandleInPosition);
+        float drum2MicLength = drum2MicVector.length();
 
         // instantiate 3d Sound particul model
-        Quad rect = new Quad(1.0f, 1.0f);
+        Quad rect = new Quad(0.1f, 0.1f);
         Geometry soundParticle = new Geometry("particul",rect);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         soundParticul_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
@@ -181,9 +192,9 @@ public class SoundEmission extends Scenario {
         Geometry soundParticleTranslucent = soundParticle.clone();
         soundParticleTranslucent.getMaterial().setTexture("ColorMap", assetManager.loadTexture("Textures/Sound_wAlpha.png"));
 
-//        DrumSoundEmitter = new SignalEmitter(drum_trajectories, drum2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
-//        this.attachChild(DrumSoundEmitter);
-//        DrumSoundEmitter.setLocalTranslation(drumHandleOutPosition); // TO DO: utiliser le object handle blender pour position
+        DrumSoundEmitter = new SignalEmitter(drum_trajectories, drum2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
+        this.attachChild(DrumSoundEmitter);
+        DrumSoundEmitter.setLocalTranslation(drumHandleOutPosition); // TO DO: utiliser le object handle blender pour position
 
         //Set the impulsional response of the emitter
         ArrayList<Float> waveMagnitudes = new ArrayList(3);
@@ -192,7 +203,7 @@ public class SoundEmission extends Scenario {
         waveMagnitudes.add(3f);
         waveMagnitudes.add(1f);
 
-        //DrumSoundEmitter.setWaves(waveMagnitudes, 0.25f);
+        DrumSoundEmitter.setWaves(waveMagnitudes, 0.25f);
     }
 
     /**
@@ -202,26 +213,26 @@ public class SoundEmission extends Scenario {
     {
         // Getting all the trajectories from the position of the mic-drums and
         // the number of directions
-//        Vector3f guitarMicDirection = micHandleInPosition.subtract(guitarHandleOutPosition);
+        Vector3f guitarMicDirection = micHandleInPosition.subtract(guitarHandleOutPosition);
 //
-//        int totalNbDirections = 10;
-//        int nbXYDirections = 2;
+        int totalNbDirections = 10;
+        int nbXYDirections = 2;
 //
 //        // Creating the trajectories
-//        SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
-//        directionFactory.setTrajectories(guitarMicDirection, VecDirectionNorms);
-//        guitar_trajectories = directionFactory.getTrajectories();
+        SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
+        directionFactory.setTrajectories(guitarMicDirection, VecDirectionNorms);
+        guitar_trajectories = directionFactory.getTrajectories();
 //
 //        // calculalate drum to mic path length
-//        Vector3f guitar2MicVector = guitarHandleOutPosition.subtract(micHandleInPosition);
-//        float guitar2MicLength = guitar2MicVector.length();
+        Vector3f guitar2MicVector = guitarHandleOutPosition.subtract(micHandleInPosition);
+        float guitar2MicLength = guitar2MicVector.length();
 
         // instantiate 3d Sound particul model
         //Sphere sphere = new Sphere(8, 8, 0.9f);
         //Geometry soundParticle = new Geometry("particul",sphere);
         //Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
 
-        Quad rect = new Quad(1.0f, 1.0f);
+        Quad rect = new Quad(0.1f, 0.1f);
         Geometry soundParticle = new Geometry("particul",rect);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         soundParticul_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
@@ -231,9 +242,9 @@ public class SoundEmission extends Scenario {
         Geometry soundParticleTranslucent = soundParticle.clone();
         soundParticleTranslucent.getMaterial().setTexture("ColorMap", assetManager.loadTexture("Textures/Sound_wAlpha.png"));
 
-//        GuitarSoundEmitter = new SignalEmitter(guitar_trajectories, guitar2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
-//        this.attachChild(GuitarSoundEmitter);
-//        GuitarSoundEmitter.setLocalTranslation(guitarHandleOutPosition); // TO DO: utiliser le object handle blender pour position
+        GuitarSoundEmitter = new SignalEmitter(guitar_trajectories, guitar2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
+        this.attachChild(GuitarSoundEmitter);
+        GuitarSoundEmitter.setLocalTranslation(guitarHandleOutPosition); // TO DO: utiliser le object handle blender pour position
 
         //Set the impulsional response of the emitter
         ArrayList<Float> waveMagnitudes = new ArrayList(7);
@@ -246,7 +257,7 @@ public class SoundEmission extends Scenario {
         waveMagnitudes.add(1.0f);
         waveMagnitudes.add(0.8f);
 
-//        GuitarSoundEmitter.setWaves(waveMagnitudes, 0.25f);
+        GuitarSoundEmitter.setWaves(waveMagnitudes, 0.25f);
 
     }
 
@@ -255,13 +266,13 @@ public class SoundEmission extends Scenario {
         Material effect_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         effect_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
         effect_mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        Box rect = new Box(1.0f, Float.MIN_VALUE, 1.0f);
+        Box rect = new Box(0.1f, Float.MIN_VALUE, 0.1f);
         Geometry drumTouchEffect = new Geometry("DrumTouchEffect",rect);
         drumTouchEffect.setMaterial(effect_mat);
 
         touchEffectEmitter = new TouchEffectEmitter("DrumEffect", drumMinScale, drumMaxScale, drumScaleGradient, drumTouchEffect, new Vector3f(1.0f,0.0f,1.0f));
         this.attachChild(touchEffectEmitter);
-        touchEffectEmitter.setLocalTranslation(drumHandleOutPosition.add(new Vector3f(0.0f,1.0f,0.0f)));
+        touchEffectEmitter.setLocalTranslation(drumHandleOutPosition.add(new Vector3f(0.0f,0.1f,0.0f)));
     }
 
     private void initHaloEffects()
@@ -312,7 +323,7 @@ public class SoundEmission extends Scenario {
         titleTextBox = new TextBox(assetManager, titleText, titleTextSize, titleTextColor, titleBackColor, textBoxWidth, textBoxHeight, "titleText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
 
         //move the text on the ground without moving
-        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
+        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 5f);
         titleTextBox.rotate((float)-Math.PI/2, 0, 0);
 
         //Was in its position when in the air and rotating
@@ -328,7 +339,7 @@ public class SoundEmission extends Scenario {
         instrumentTextBox = new TextBox(assetManager, instrumentText, secondaryTextSize, defaultTextColor, instrumentTextBackColor, instrumentTextBoxWidth, instrumentTextBoxHeight, "instrumentText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
 
         //move the text on the ground without moving
-        Vector3f instrumentTextPosition = new Vector3f(-5f, 0.25f, -3.5f);
+        Vector3f instrumentTextPosition = new Vector3f(-3f, 0.25f, 1f);
         instrumentTextBox.rotate((float)-Math.PI/2, 0, 0);
 
         //Was in its position when in the air and rotating
@@ -427,73 +438,74 @@ public class SoundEmission extends Scenario {
 
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
-//
-//        switch(touchEvent.getType()){
-//
-//            //Checking for down event is very responsive
-//            case DOWN:
-//
-//                //case TAP:
-//                if (name.equals("Touch"))
-//                {
-//
-//                    // 1. Reset results list.
-//                    CollisionResults results = new CollisionResults();
-//
-//                    // 2. Mode 1: user touch location.
-//                    //Vector2f click2d = inputManager.getCursorPosition();
-//
-//                    Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
-//                    Vector3f click3d = Camera.getWorldCoordinates(
-//                            new Vector2f(click2d.x, click2d.y), 0f).clone();
-//                    Vector3f dir = Camera.getWorldCoordinates(
-//                            new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
-//                    Ray ray = new Ray(click3d, dir);
-//
-//                    // 3. Collect intersections between Ray and Shootables in results list.
-//                    //focusableObjects.collideWith(ray, results);
-//                    touchable.collideWith(ray, results);
-//
-//                    // 4. Print the results
-//                    //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
-//                    for (int i = 0; i < results.size(); i++) {
-//                        // For each hit, we know distance, impact point, name of geometry.
-//                        float dist = results.getCollision(i).getDistance();
-//                        Vector3f pt = results.getCollision(i).getContactPoint();
-//                        String hit = results.getCollision(i).getGeometry().getName();
-//
-//                        //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
-//                    }
-//
-//                    // 5. Use the results (we mark the hit object)
-//                    if (results.size() > 0)
-//                    {
-//
-//                        // The closest collision point is what was truly hit:
-//                        CollisionResult closest = results.getClosestCollision();
-//
-//                        Spatial touchedGeometry = closest.getGeometry();
-//                        String nameToCompare = touchedGeometry.getParent().getName();
-//
-//                        if (nameToCompare.equals(drum.getName()))
-//                        {
-//                            this.drumTouchEffect();
-//                            break;
-//                        }
-//                        else if (nameToCompare.equals(guitar.getName()))
-//                        {
-//                            this.guitarTouchEffect();
-//                            break;
-//                        }
-//                        else if (nameToCompare.equals(titleTextBox.getName()) || nameToCompare.equals(instrumentTextBox.getName()))
-//                        {
-//                            //this.textTouchEffect();
-//                            showInformativeMenu = true;
-//                            break;
-//                        }
-//                    }
-//                }
-//        }
+
+        switch(touchEvent.getType()){
+
+            //Checking for down event is very responsive
+            case DOWN:
+
+                //case TAP:
+                if (name.equals("Touch"))
+                {
+
+                    // 1. Reset results list.
+                    CollisionResults results = new CollisionResults();
+
+                    // 2. Mode 1: user touch location.
+                    //Vector2f click2d = inputManager.getCursorPosition();
+
+                    Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
+                    Vector3f click3d = Camera.getWorldCoordinates(
+                            new Vector2f(click2d.x, click2d.y), 0f).clone();
+                    Vector3f dir = Camera.getWorldCoordinates(
+                            new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+                    Ray ray = new Ray(click3d, dir);
+
+                    // 3. Collect intersections between Ray and Shootables in results list.
+                    //focusableObjects.collideWith(ray, results);
+                    touchable.collideWith(ray, results);
+
+                    // 4. Print the results
+                    //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
+                    for (int i = 0; i < results.size(); i++) {
+                        // For each hit, we know distance, impact point, name of geometry.
+                        float dist = results.getCollision(i).getDistance();
+                        Vector3f pt = results.getCollision(i).getContactPoint();
+                        String hit = results.getCollision(i).getGeometry().getName();
+
+                        //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+                    }
+
+                    // 5. Use the results (we mark the hit object)
+                    if (results.size() > 0)
+                    {
+
+                        // The closest collision point is what was truly hit:
+                        CollisionResult closest = results.getClosestCollision();
+
+                        Spatial touchedGeometry = closest.getGeometry();
+                        String nameToCompare = touchedGeometry.getParent().getName();
+                        
+                        if (nameToCompare.equals(drum.getName()))
+                        {
+                            this.drumTouchEffect();
+                            break;
+                        }
+                        else if (nameToCompare.equals(guitar.getName()))
+                        {
+                            this.guitarTouchEffect();
+                            break;
+                        }
+                        else if (nameToCompare.equals(titleTextBox.getName()) || nameToCompare.equals(instrumentTextBox.getName()))
+                        {
+                            //this.textTouchEffect();
+                            showInformativeMenu = true;
+                            break;
+                        }
+                    }
+                }
+                break;
+        }
     }
 
     @Override
@@ -506,9 +518,9 @@ public class SoundEmission extends Scenario {
             ShowHintImages();
         }
 
-       // DrumSoundEmitter.simpleUpdate(tpf, this.Camera);
-        //GuitarSoundEmitter.simpleUpdate(tpf, this.Camera);
-        //touchEffectEmitter.simpleUpdate(tpf);
+        DrumSoundEmitter.simpleUpdate(tpf, this.Camera);
+        GuitarSoundEmitter.simpleUpdate(tpf, this.Camera);
+        touchEffectEmitter.simpleUpdate(tpf);
         halo_drum.simpleUpdate(tpf);
         halo_guitar.simpleUpdate(tpf);
 

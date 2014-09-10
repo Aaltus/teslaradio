@@ -217,7 +217,8 @@ public class VuforiaJME extends SimpleApplication {
                 assetManager,
                 fgCam,
                 appListener,
-                renderManager);
+                renderManager,
+                inputManager);
 
 
         inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click

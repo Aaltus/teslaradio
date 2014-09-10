@@ -2,6 +2,7 @@ package com.galimatias.teslaradio.world.commons;
 
 import com.galimatias.teslaradio.world.Scenarios.DummyScenario;
 import com.galimatias.teslaradio.world.Scenarios.IScenarioManager;
+import com.galimatias.teslaradio.world.Scenarios.Scenario;
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.jme3.app.SimpleApplication;
@@ -29,11 +30,6 @@ import java.util.List;
  */
 public class Main extends SimpleApplication 
 {
-    private static final String NEXT_SCENARIO = "NextScenario";
-    private static final String TEXT = "Text";
-    public static final String GUITAR = "Guitar";
-    public static final String DRUM = "Drum";
-    public static final String PREVIOUS_SCENARIO = "PreviousScenario";
     public static void main(String[] args) 
     {
         Main app = new Main();
@@ -62,7 +58,7 @@ public class Main extends SimpleApplication
         nodeList.add(nodeA);
         nodeList.add(nodeB);
         
-        scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.DESKTOP, nodeList, assetManager, cam, null, renderManager);
+        scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.DESKTOP, nodeList, assetManager, cam, null, renderManager, inputManager);
         
         flyCam.setMoveSpeed(100f);
         cam.setLocation(new Vector3f(-60,80,80));
@@ -94,8 +90,6 @@ public class Main extends SimpleApplication
         
         initLights();
         
-        // Load the custom keybindings
-        initKeys();
     }
 
     @Override
@@ -110,48 +104,6 @@ public class Main extends SimpleApplication
     {
         //TODO: add render code
     }
-    
-    /** Custom Keybinding: Map named actions to inputs. */
-    private void initKeys() 
-    {
-        // You can map one or several inputs to one named action
-        inputManager.addMapping(DRUM, new KeyTrigger(KeyInput.KEY_T));
-        inputManager.addMapping(GUITAR, new KeyTrigger(KeyInput.KEY_G));
-        inputManager.addMapping(TEXT, new KeyTrigger(KeyInput.KEY_H));
-        inputManager.addMapping(NEXT_SCENARIO, new KeyTrigger(KeyInput.KEY_P));
-        inputManager.addMapping(PREVIOUS_SCENARIO, new KeyTrigger(KeyInput.KEY_O));
-        
-        // Add the names to the action listener.
-        inputManager.addListener(actionListener, DRUM);
-        inputManager.addListener(actionListener, GUITAR);
-        inputManager.addListener(actionListener, TEXT);
-        inputManager.addListener(actionListener, NEXT_SCENARIO);
-        inputManager.addListener(actionListener, PREVIOUS_SCENARIO);
-  }
-    
-    private ActionListener actionListener = new ActionListener() {
-        public void onAction(String name, boolean keyPressed, float tpf) 
-        {
-          if (name.equals(GUITAR) && !keyPressed) {
-              //soundCapture.drumTouchEffect();
-              //soundCapture.guitarTouchEffect();
-          }
-          else if (name.equals(DRUM) && !keyPressed) {
-              //soundCapture.drumTouchEffect();
-              //soundCapture.drumTouchEffect();
-          }
-          else if (name.equals(NEXT_SCENARIO) && !keyPressed) {
-              //soundCapture.drumTouchEffect();
-              //soundCapture.drumTouchEffect();
-              scenarioManager.setNextScenario();
-          }
-          else if (name.equals(PREVIOUS_SCENARIO) && !keyPressed) {
-              //soundCapture.drumTouchEffect();
-              //soundCapture.drumTouchEffect();
-              scenarioManager.setPreviousScenario();
-          }
-        }
-    };
     
     private void initLights(){
     
