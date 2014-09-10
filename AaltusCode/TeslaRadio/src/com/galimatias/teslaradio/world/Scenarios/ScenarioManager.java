@@ -16,23 +16,49 @@ import java.util.EnumMap;
 import java.util.List;
 
 /**
+ * A IScenarioManager Implemenations
+ *
+ * What I try to do is have a list of (list of scenarios) that the user can change with next/previous button or
+ * with an enum describing the scenario provided.
+ *
+ * The manager provide a direct mapping between a list of Node and the list of scenario. So
+ * the first scenario will always be attached to the first Node, second to second...
+ *
  * Created by jimbojd72 on 9/3/14.
  */
 public class ScenarioManager  implements IScenarioManager {
 
+    /**
+     * An enum that provide insight to the manager to which scale/rotation it must provide to the scenario
+     * created to fit in to the Android app or the JMonkey SDK app.
+     */
     public enum ApplicationType {
         ANDROID, DESKTOP
     }
-    
-    //List<Scenario> allScenario      = new ArrayList<Scenario>();
+
+    /**
+     * The current group of scenario that is attach to the List of nodes
+     */
     private ScenarioGroup currentScenario = null;
+    /**
+     * Where the pair of scenarios are saved and accessed
+     */
     private ScenarioList  scenarioList    = new ScenarioList();
+    /**
+     * The list of node that the currentScenarios will be attached to.
+     */
     private List<Node> nodeList;
-    private AppListener appListener;
 
     public List<Node> getNodeList() {
         return nodeList;
     }
+
+    /**
+     * Callback interface to open the informativeMenu.
+     */
+    private AppListener appListener;
+
+
 
     public ScenarioManager(ApplicationType applicationType, List<Node> node, AssetManager assetManager, Camera cam, AppListener appListener, RenderManager renderManager)
     {
@@ -51,7 +77,7 @@ public class ScenarioManager  implements IScenarioManager {
         DummyScenario dummy = new DummyScenario(assetManager, ColorRGBA.Orange);
         scenarios.add(dummy);
         
-        adjustScenario(applicationType, scenarios);
+        adjustScenario(applicationType, scenarios, renderManager);
         
         List<Scenario> soundCaptureList = new ArrayList<Scenario>();
         soundCaptureList.add(soundCapture);
@@ -68,11 +94,14 @@ public class ScenarioManager  implements IScenarioManager {
         setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDCAPTURE));
 
         setNodeList(node);
-
-
     }
-    
-    private void adjustScenario(ApplicationType applicationType, List<Scenario> scenarios)
+
+    /**
+     * Make transformation to the scenario according to the application type.
+     * @param applicationType
+     * @param scenarios
+     */
+    private void adjustScenario(ApplicationType applicationType, List<Scenario> scenarios, RenderManager renderManager)
     {
         switch(applicationType)
         {
@@ -85,6 +114,10 @@ public class ScenarioManager  implements IScenarioManager {
                 
                 for(Scenario scenario : scenarios)
                 {
+                    //Correction for BUG TR-176
+                    //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
+                    //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
+                    renderManager.preloadScene(scenario);
                     scenario.rotate(rot);
                     scenario.scale(scale);
                 }
@@ -92,7 +125,7 @@ public class ScenarioManager  implements IScenarioManager {
                 
                 break;
             case DESKTOP:
-                //Do nothing because we don't need any scale.
+                //Do nothing because we don't need any scale or rotation.
                 break;
                 
             default:
@@ -113,16 +146,25 @@ public class ScenarioManager  implements IScenarioManager {
         attachCurrentScenario();
     }
 
+    /**
+     * Detach all the current scenarios from its parent if possible
+     */
     private void detachCurrentScenario()
     {
         if(getCurrentScenario() != null){
             for(Scenario scenario : getCurrentScenario().getScenarios() )
             {
-                scenario.getParent().detachChild(scenario);
+                Node parent = scenario.getParent();
+                if(parent != null){
+                    parent.detachChild(scenario);
+                }
             }
         }
     }
 
+    /**
+     * Attache all scenario to the Node if the node are not null.
+     */
     private void attachCurrentScenario()
     {
         int count = 0;
@@ -148,12 +190,6 @@ public class ScenarioManager  implements IScenarioManager {
                 count++;
             }
         }
-//        int count = 0;
-//        for(Scenario scenario : getCurrentScenario().getScenarios() )
-//        {
-//            nodeList.get(count).attachChild(scenario);
-//            count++;
-//        }
     }
 
     //TODO: MODIFY THIS TO RECEIVE A LIST<NODE> TO ATTACH THE SCENARIO TO THE RIGHT TRACKABLE/NODE
@@ -186,7 +222,10 @@ public class ScenarioManager  implements IScenarioManager {
         attachCurrentScenario();
     }
 
-
+    /**
+     * To be call to update the scenario
+     * @param tpf
+     */
     public void simpleUpdate(float tpf){
 
         for(Scenario scenario : getCurrentScenario().getScenarios() )
@@ -198,12 +237,12 @@ public class ScenarioManager  implements IScenarioManager {
         }
     };
 
-
-
-
-
-    //See https://github.com/latestpost/JMonkey3-Android-Examples/blob/master/src/jmeproject/innovationtech/co/uk/Game7.java
-    //For example
+    /**
+     * To pass down on touch event to the scenario.
+     * @param name
+     * @param touchEvent
+     * @param v
+     */
     @Override
     public void onTouch(String name, TouchEvent touchEvent, float v)
     {
@@ -213,7 +252,9 @@ public class ScenarioManager  implements IScenarioManager {
         }
     }
 
-
+    /**
+     * A class to have both an index and a list<Scenario> together in the same data structure.
+     */
     private class ScenarioGroup
     {
 
@@ -236,6 +277,9 @@ public class ScenarioManager  implements IScenarioManager {
 
     }
 
+    /**
+     * A class that will be able to map enum and scenario index internally
+     */
     private class ScenarioList
     {
 

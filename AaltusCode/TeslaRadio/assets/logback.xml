@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug='true'>
 
+    <!--
+         logback-android library look for Assets/logback.xml but not Assets/logback-test.xml first. 
+         So I used logback.xml for the Android app and logback-test.xml for the DevFramework.
+         --> 
     <!-- Used by Android Application--> 
 
         <!-- Create a logcat appender -->

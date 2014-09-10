@@ -29,6 +29,11 @@ import java.util.List;
  */
 public class Main extends SimpleApplication 
 {
+    private static final String NEXT_SCENARIO = "NextScenario";
+    private static final String TEXT = "Text";
+    public static final String GUITAR = "Guitar";
+    public static final String DRUM = "Drum";
+    public static final String PREVIOUS_SCENARIO = "PreviousScenario";
     public static void main(String[] args) 
     {
         Main app = new Main();
@@ -110,26 +115,40 @@ public class Main extends SimpleApplication
     private void initKeys() 
     {
         // You can map one or several inputs to one named action
-        inputManager.addMapping("Drum", new KeyTrigger(KeyInput.KEY_T));
-        inputManager.addMapping("Guitar", new KeyTrigger(KeyInput.KEY_G));
-        inputManager.addMapping("Text", new KeyTrigger(KeyInput.KEY_H));
+        inputManager.addMapping(DRUM, new KeyTrigger(KeyInput.KEY_T));
+        inputManager.addMapping(GUITAR, new KeyTrigger(KeyInput.KEY_G));
+        inputManager.addMapping(TEXT, new KeyTrigger(KeyInput.KEY_H));
+        inputManager.addMapping(NEXT_SCENARIO, new KeyTrigger(KeyInput.KEY_P));
+        inputManager.addMapping(PREVIOUS_SCENARIO, new KeyTrigger(KeyInput.KEY_O));
         
         // Add the names to the action listener.
-        inputManager.addListener(actionListener,"Drum");
-        inputManager.addListener(actionListener,"Guitar");
-        inputManager.addListener(actionListener,"Text");
+        inputManager.addListener(actionListener, DRUM);
+        inputManager.addListener(actionListener, GUITAR);
+        inputManager.addListener(actionListener, TEXT);
+        inputManager.addListener(actionListener, NEXT_SCENARIO);
+        inputManager.addListener(actionListener, PREVIOUS_SCENARIO);
   }
     
     private ActionListener actionListener = new ActionListener() {
         public void onAction(String name, boolean keyPressed, float tpf) 
         {
-          if (name.equals("Guitar") && !keyPressed) {
+          if (name.equals(GUITAR) && !keyPressed) {
               //soundCapture.drumTouchEffect();
               //soundCapture.guitarTouchEffect();
           }
-          else if (name.equals("Drum") && !keyPressed) {
+          else if (name.equals(DRUM) && !keyPressed) {
               //soundCapture.drumTouchEffect();
               //soundCapture.drumTouchEffect();
+          }
+          else if (name.equals(NEXT_SCENARIO) && !keyPressed) {
+              //soundCapture.drumTouchEffect();
+              //soundCapture.drumTouchEffect();
+              scenarioManager.setNextScenario();
+          }
+          else if (name.equals(PREVIOUS_SCENARIO) && !keyPressed) {
+              //soundCapture.drumTouchEffect();
+              //soundCapture.drumTouchEffect();
+              scenarioManager.setPreviousScenario();
           }
         }
     };

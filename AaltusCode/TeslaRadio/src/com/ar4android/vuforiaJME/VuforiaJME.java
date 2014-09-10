@@ -204,13 +204,14 @@ public class VuforiaJME extends SimpleApplication {
 
         initLights();
 
+
         rootNode.attachChild(trackableA);
         rootNode.attachChild(trackableB);
         trackableA.attachChild(trackableA_fixeAngle);
         trackableB.attachChild(trackableB_fixeAngle);
-
         nodeList.add(trackableA_fixeAngle);
         nodeList.add(trackableB_fixeAngle);
+
         scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.ANDROID,
                 nodeList,
                 assetManager,
@@ -218,11 +219,6 @@ public class VuforiaJME extends SimpleApplication {
                 appListener,
                 renderManager);
 
-        //TODO: Move in scenario Manager
-        //Correction for BUG TR-176
-        //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
-        //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
-        renderManager.preloadScene(rootNode);
 
         inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click
         inputManager.addListener(scenarioManager, new String[]{"Touch"});
