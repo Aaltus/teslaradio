@@ -99,6 +99,8 @@ public final class SoundCapture extends Scenario {
         micPosition = micro.getWorldTranslation();
         micHandleInPosition = micHandleIn.getWorldTranslation();
         
+        scene.attachChild(touchable);
+        
         initAudio();
         initTextBox();
 
@@ -178,7 +180,7 @@ public final class SoundCapture extends Scenario {
         microphoneTextBox = new TextBox(assetManager, microphoneText, secondaryTextSize, defaultTextColor, micTextBackColor, micTextBoxWidth, micTextBoxHeight, "instrumentText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
         
         //move the text on the ground without moving
-        Vector3f microphoneTextPosition = new Vector3f(5f, 0.25f, -3.5f);
+        Vector3f microphoneTextPosition = new Vector3f(0f, 0.25f, 3.5f);
         microphoneTextBox.rotate((float)-Math.PI/2, 0, 0);
         
         microphoneTextBox.move(microphoneTextPosition);
@@ -196,64 +198,64 @@ public final class SoundCapture extends Scenario {
     
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
-//
-//        switch(touchEvent.getType()){
-//
-//            //Checking for down event is very responsive
-//            case DOWN:
-//
-//            //case TAP:
-//                if (name.equals("Touch"))
-//                {
-//
-//                    // 1. Reset results list.
-//                    CollisionResults results = new CollisionResults();
-//
-//                    // 2. Mode 1: user touch location.
-//                    //Vector2f click2d = inputManager.getCursorPosition();
-//
-//                    Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
-//                    Vector3f click3d = Camera.getWorldCoordinates(
-//                            new Vector2f(click2d.x, click2d.y), 0f).clone();
-//                    Vector3f dir = Camera.getWorldCoordinates(
-//                            new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
-//                    Ray ray = new Ray(click3d, dir);
-//
-//                    // 3. Collect intersections between Ray and Shootables in results list.
-//                    //focusableObjects.collideWith(ray, results);
-//                    touchable.collideWith(ray, results);
-//
-//                    // 4. Print the results
-//                    //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
-//                    for (int i = 0; i < results.size(); i++) {
-//                        // For each hit, we know distance, impact point, name of geometry.
-//                        float dist = results.getCollision(i).getDistance();
-//                        Vector3f pt = results.getCollision(i).getContactPoint();
-//                        String hit = results.getCollision(i).getGeometry().getName();
-//
-//                        //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
-//                    }
-//
-//                    // 5. Use the results (we mark the hit object)
-//                    if (results.size() > 0)
-//                    {
-//
-//                        // The closest collision point is what was truly hit:
-//                        CollisionResult closest = results.getClosestCollision();
-//
-//                        Spatial touchedGeometry = closest.getGeometry();
-//                        String nameToCompare = touchedGeometry.getParent().getName();
-//
-//
-//                        if (nameToCompare.equals(microphoneTextBox.getName()))
-//                        {
-//                            //this.textTouchEffect();
-//                            showInformativeMenu = true;
-//                            break;
-//                        }
-//                }
-//            }
-//        }
+
+        switch(touchEvent.getType()){
+
+            //Checking for down event is very responsive
+            case DOWN:
+
+            //case TAP:
+                if (name.equals("Touch"))
+                {
+
+                    // 1. Reset results list.
+                    CollisionResults results = new CollisionResults();
+
+                    // 2. Mode 1: user touch location.
+                    //Vector2f click2d = inputManager.getCursorPosition();
+
+                    Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
+                    Vector3f click3d = Camera.getWorldCoordinates(
+                            new Vector2f(click2d.x, click2d.y), 0f).clone();
+                    Vector3f dir = Camera.getWorldCoordinates(
+                            new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+                    Ray ray = new Ray(click3d, dir);
+
+                    // 3. Collect intersections between Ray and Shootables in results list.
+                    //focusableObjects.collideWith(ray, results);
+                    touchable.collideWith(ray, results);
+
+                    // 4. Print the results
+                    //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
+                    for (int i = 0; i < results.size(); i++) {
+                        // For each hit, we know distance, impact point, name of geometry.
+                        float dist = results.getCollision(i).getDistance();
+                        Vector3f pt = results.getCollision(i).getContactPoint();
+                        String hit = results.getCollision(i).getGeometry().getName();
+
+                        //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+                    }
+
+                    // 5. Use the results (we mark the hit object)
+                    if (results.size() > 0)
+                    {
+
+                        // The closest collision point is what was truly hit:
+                        CollisionResult closest = results.getClosestCollision();
+
+                        Spatial touchedGeometry = closest.getGeometry();
+                        String nameToCompare = touchedGeometry.getParent().getName();
+
+
+                        if (nameToCompare.equals(microphoneTextBox.getName()))
+                        {
+                            //this.textTouchEffect();
+                            showInformativeMenu = true;
+                            break;
+                        }
+                }
+            }
+        }
     }
 
     @Override
