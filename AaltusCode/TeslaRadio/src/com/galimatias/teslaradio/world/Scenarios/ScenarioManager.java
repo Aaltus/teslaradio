@@ -74,14 +74,18 @@ public class ScenarioManager  implements IScenarioManager {
         scenarios.add(soundCapture);
         
         //Init SoundCapture scenario
-        DummyScenario dummy = new DummyScenario(assetManager, ColorRGBA.Orange);
-        scenarios.add(dummy);
+        //DummyScenario dummy = new DummyScenario(assetManager, ColorRGBA.Orange);
+        //scenarios.add(dummy);
+        SoundEmission soundEmission = new SoundEmission(assetManager, cam);
+        scenarios.add(soundEmission);
+        
         
         adjustScenario(applicationType, scenarios, renderManager);
         
         List<Scenario> soundCaptureList = new ArrayList<Scenario>();
         soundCaptureList.add(soundCapture);
-        soundCaptureList.add(dummy);
+        //soundCaptureList.add(dummy);
+        soundCaptureList.add(soundEmission);
         scenarioList.addScenario(ScenarioEnum.SOUNDCAPTURE,soundCaptureList);
 
         //Only for debugging purpose deactivate it please.
