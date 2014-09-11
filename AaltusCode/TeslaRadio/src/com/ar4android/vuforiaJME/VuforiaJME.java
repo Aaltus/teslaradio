@@ -69,33 +69,16 @@ public class VuforiaJME extends SimpleApplication {
 	private boolean mVideoImageInitialized = false;
 	// A flag indicating if a new Android camera image is available.
 	private boolean mNewCameraFrameAvailable = false;
-// The virtual world object, it is in fact the scene
-//    private World virtualWorld;
-//    private Spatial ninja;
-//    private Node scotty;
+
 
     private float mForegroundCamFOVY = 30;
 
-	// for animation	
-	// The controller allows access to the animation sequences of the model
-//	private AnimControl mAniControl;
-	// the channel is used to run one animation sequence at a time
-//	private AnimChannel mAniChannel;
   
 	Camera videoBGCam;
 	Camera fgCam;
+    TrackableManager mTrackableManager = new TrackableManager(rootNode);
 
-    private Node trackableA = new Node("TrackableA");
-    private Node trackableB = new Node("TrackableB");
-    private Node trackableA_fixeAngle = new Node("trackableA_fixeAngle");
-    private Node trackableB_fixeAngle = new Node("trackableB_fixeAngle");	
-	
-    private Boolean isNodeVisibleA = new Boolean(false);
-    private Boolean isNodeVisibleB = new Boolean(false);
 
-    private List<Node> nodeList = new ArrayList<Node>();
-
-    private Matrix3f rotMatrix;
 
     /** Native function for initializing the renderer. */
     public native void initTracking(int width, int height);
@@ -124,7 +107,7 @@ public class VuforiaJME extends SimpleApplication {
 	public void simpleInitApp()
     {
         // Where the AppLogger is called for the first time and the log level is set
-        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.NONE);
+        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ALL);
 
         AppLogger.getInstance().i(TAG, "simpleInitApp");
 
@@ -204,16 +187,10 @@ public class VuforiaJME extends SimpleApplication {
 
         initLights();
 
-
-        rootNode.attachChild(trackableA);
-        rootNode.attachChild(trackableB);
-        trackableA.attachChild(trackableA_fixeAngle);
-        trackableB.attachChild(trackableB_fixeAngle);
-        nodeList.add(trackableA_fixeAngle);
-        nodeList.add(trackableB_fixeAngle);
+        this.mTrackableManager.init();
 
         scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.ANDROID,
-                nodeList,
+                this.mTrackableManager.getNodeList(),
                 assetManager,
                 fgCam,
                 appListener,
@@ -238,7 +215,10 @@ public class VuforiaJME extends SimpleApplication {
 		
 		fgCam.setViewPort(0, 1.0f, 0.f, 1.0f);
 		fgCam.setLocation(new Vector3f(0f, 0f, 0f));
-		fgCam.setAxes(new Vector3f(-1f, 0f, 0f), new Vector3f(0f, 1f, 0f), new Vector3f(0f, 0f, -1f));
+        fgCam.setAxes(
+                new Vector3f(1.0f, 0.0f, 0.0f),
+                new Vector3f(0.0f, 1.0f, 0.0f),
+                new Vector3f(0.0f, 0.0f, 1.0f));
 		fgCam.setFrustumPerspective(fovY, settingsWidth / settingsHeight, 1000, 10000);
 
 		ViewPort fgVP = renderManager.createMainView("ForegroundView", fgCam);
@@ -320,30 +300,10 @@ public class VuforiaJME extends SimpleApplication {
 	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z, int id) {
          AppLogger.getInstance().d(TAG, "Update Camera Pose..");
 
-        //         AppLogger.getInstance().d(TAG, "Coordinates : x = " + Float.toString(cam_x) + " y = "
-        //                 + Float.toString(cam_y) + " z = " + Float.toString(cam_z));
 
-        // Set the foreground camera position
-        fgCam.setLocation(new Vector3f(0.0f, 0.0f, 0.0f));
+        this.mTrackableManager.updatePosition(id,new Vector3f(-cam_x,-cam_y,cam_z));
 
-        // AppLogger.getInstance().d(TAG, "Trackable ID : " + id);
 
-        if (DEBUG_NTargets == 1) {
-
-            if (id == 0)
-            {
-                trackableA.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
-            }
-            else if (id == 1)
-            {
-                trackableB.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
-            }
-
-        }
-        else
-        {
-            rootNode.setLocalTranslation(new Vector3f(-cam_x, -cam_y, cam_z));
-        }
 
 	}
 	
@@ -355,112 +315,20 @@ public class VuforiaJME extends SimpleApplication {
         //        AppLogger.getInstance().d(TAG, "direction : x = " + Float.toString(cam_dir_x) + " y = "
         //                + Float.toString(cam_dir_y) + " z = " + Float.toString(cam_dir_z));
 
-        //left,up,direction
-        fgCam.setAxes(
-                new Vector3f(1.0f, 0.0f, 0.0f),
-                new Vector3f(0.0f, 1.0f, 0.0f),
-                new Vector3f(0.0f, 0.0f, 1.0f));
+
 
         // Adding the world rotation
-        rotMatrix = new Matrix3f( cam_right_x, cam_up_x , -cam_dir_x ,
+        Matrix3f rotMatrix = new Matrix3f( cam_right_x, cam_up_x , -cam_dir_x ,
                                   cam_right_y, cam_up_y, -cam_dir_y,
                                   -cam_right_z , -cam_up_z , cam_dir_z);
 
-        // calculate the angle of rotation of the trackable relative to the AB vector
         Vector3f vx = new Vector3f(cam_right_x, cam_up_x, -cam_dir_x);
-        Vector3f vectorAB = new Vector3f(trackableB.getLocalTranslation().subtract(trackableA.getLocalTranslation()));
-        double angleX = Math.atan2(vectorAB.normalize().y,vectorAB.normalize().x) - Math.atan2(vx.normalize().y,vx.normalize().x);
-        if(angleX < 0)
-            angleX = angleX + 2*3.141592654;
-        float angleX_f = (float) angleX;  // TODO : This is the angle to return as input to the scenario manager
-        Quaternion qAngle = new Quaternion();
-        qAngle.fromAngleAxis(-angleX_f,new Vector3f(0,0,1));
 
-
-        if (DEBUG_NTargets == 1) {
-
-            if (id == 0)
-            {
-                trackableA.setLocalRotation(rotMatrix);
-                trackableA_fixeAngle.setLocalRotation(qAngle);
-            }
-            else if (id == 1)
-            {
-                trackableB.setLocalRotation(rotMatrix);
-                trackableB_fixeAngle.setLocalRotation(qAngle);
-            }
-
-        }
-        else
-        {
-            rootNode.setLocalRotation(rotMatrix);
-        }
+        this.mTrackableManager.updateRotationMatrix(id,rotMatrix,vx);
 	}
 	public void setTrackableVisibleNative(int id, int isTrackableVisible)
     {
-        //TODO: Attack/Detach node depending on visibility status
-        if (id == 0 && isTrackableVisible == 0)
-        {
-            if (isNodeVisibleA)
-            {
-                isNodeVisibleA = false;
-                nodeList.set(id,null);
-                getScenarioManager().setNodeList(nodeList);
-                //getScenarioManager().setIsNodeVisible(isNodeVisibleA);
-                //getScenarioManager().updateNodeList(nodeList, 0);
-            }
-            else
-            {
-                // Do nothing, we don't see the trackable and Node has to be invisible.
-            }
-        }
-        else if (id == 0 && isTrackableVisible == 1)
-        {
-            if (isNodeVisibleA)
-            {
-                // Do nothing, we can see the trackable and the Node has spawned.
-            }
-            else
-            {
-                isNodeVisibleA = true;
-                //getScenarioManager().setIsNodeVisible(isNodeVisibleA);
-                //getScenarioManager().updateNodeList(nodeList, 0);
-                nodeList.set(id,trackableA_fixeAngle);
-                getScenarioManager().setNodeList(nodeList);
-
-            }
-        }
-        else if (id == 1 && isTrackableVisible == 0)
-        {
-            if (isNodeVisibleB)
-            {
-                isNodeVisibleB = false;
-                nodeList.set(id,null);
-                getScenarioManager().setNodeList(nodeList);
-                //getScenarioManager().setIsNodeVisible(isNodeVisibleB);
-                //getScenarioManager().updateNodeList(nodeList, 1);
-            }
-            else
-            {
-                // Do nothing, we don't see the trackable and Node has to be invisible.
-            }
-        }
-        else if (id == 1 && isTrackableVisible == 1)
-        {
-            if (isNodeVisibleB)
-            {
-                // Do nothing, we can see the trackable and the Node has spawned.
-            }
-            else
-            {
-                isNodeVisibleB = true;
-                nodeList.set(id,trackableB_fixeAngle);
-                getScenarioManager().setNodeList(nodeList);
-                //getScenarioManager().setIsNodeVisible(isNodeVisibleB);
-                //getScenarioManager().updateNodeList(nodeList, 1);
-
-            }
-        }
+        this.mTrackableManager.updateVisibility(id, isTrackableVisible > 0 ? true:false);
     }
 
     // This method retrieves the preview images from the Android world and puts them into a JME image.
