@@ -276,10 +276,13 @@ Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject ob
 
         const QCAR::Trackable& trackable         = result->getTrackable();
 
-        trackableFound[tIdx] = true;
+
         //register position
-        AaltusTrackable* at = ((World*) world)->getTrackable(trackable.getName());
+        AaltusTrackable* at = ((World*) world)
+        ->getTrackable(trackable.getName());
         at->setCameraPosition( QCAR::Tool::convertPose2GLMatrix(result->getPose()) );
+        int id = at->getId();
+        trackableFound[id] = true;
 
 
         ((World*)world)->setOrigin(trackable.getName());

@@ -10,6 +10,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import com.utils.AppLogger;
 
 import java.io.IOException;
 
@@ -71,12 +72,14 @@ public class TrackableControl extends AbstractControl {
     public void setSpatial(Spatial spatial) {
         this.mTrackable = (Node) spatial;
         this.mFixedAngleChild = new Node(this.mTrackable.getName().concat("_fixedAngleChild"));
+        this.mTrackable.attachChild(this.mFixedAngleChild);
     }
 
     @Override
     protected void controlUpdate(float v) {
         this.mTrackable.setLocalRotation(this.mRotationMatrix);
         this.mTrackable.setLocalTranslation(this.mPosition);
+
         this.mFixedAngleChild.setLocalRotation(this.mChildRotation);
     }
 

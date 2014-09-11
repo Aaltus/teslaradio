@@ -28,8 +28,6 @@ public class TrackableManager {
     }
     public void init()
     {
-        this.mRootNode.attachChild(mTrackableA);
-        this.mRootNode.attachChild(mTrackableB);
         this.mNodeList.add(0, mTrackableA);
         this.mNodeList.add(1, mTrackableB);
         this.mTrackableA.addControl(new TrackableControl());
@@ -49,7 +47,8 @@ public class TrackableManager {
     public void updateVisibility(Integer id, Boolean isVisible)
     {
         Boolean previousState = this.mNodeList.get(id).getControl(TrackableControl.class).getIsVisible();
-        if(previousState != isVisible)
+
+        if(previousState != isVisible);
         {
             if(isVisible)
             {
