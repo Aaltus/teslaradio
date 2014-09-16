@@ -3,11 +3,14 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
 
 /**
  * Created by Batcave on 2014-09-09.
@@ -65,10 +68,18 @@ public class Modulation extends Scenario {
     @Override
     protected void loadUnmovableObjects() {
 
-        scene = (Node) assetManager.loadModel("Models/SoundCapture/micro.j3o");
-        scene.setName("SoundCapture");
-        this.attachChild(scene);
-        scene.scale(10.0f,10.0f,10.0f);
+       /** create a blue box at coordinates (1,-1,1) */
+        Box box1 = new Box(1,1,1);
+        Geometry blue = new Geometry("Box", box1);
+        blue.scale(10.0f);
+        blue.setLocalTranslation(new Vector3f(0,10,0));
+        Material mat1 = new Material(assetManager, 
+                "Common/MatDefs/Misc/Unshaded.j3md");
+        mat1.setColor("Color", ColorRGBA.Green);
+        blue.setMaterial(mat1);
+        this.attachChild(blue);
+        
+        initTunerButton();
     }
 
     @Override
@@ -89,6 +100,9 @@ public class Modulation extends Scenario {
 
     @Override
     public boolean simpleUpdate(float tpf) {
+        
+        float angleX = this.getUserData("angleX");
+        
         return false;
     }
 
@@ -104,14 +118,22 @@ public class Modulation extends Scenario {
     
     private void initTunerButton() {
         
+        /** create a blue box at coordinates (1,-1,1) */
+        Box box1 = new Box(1,1,1);
+        Geometry blue = new Geometry("Box", box1);
+        blue.scale(10.0f);
+        blue.setLocalTranslation(new Vector3f(0,10,40));
+        Material mat1 = new Material(assetManager, 
+                "Common/MatDefs/Misc/Unshaded.j3md");
+        mat1.setColor("Color", ColorRGBA.Blue);
+        blue.setMaterial(mat1);
+        this.attachChild(blue);
+        
     }
     
     private void turnTunerButton(float angle, Boolean AM) {
         
-        //TODO add the verification of the angle
-        if (angle >= 2*Math.PI/3 && AM) {
-            changeModulation(frequency.AM498);
-        }
+
     }
     
     private void switchModulationAM_FM(Boolean AM) {

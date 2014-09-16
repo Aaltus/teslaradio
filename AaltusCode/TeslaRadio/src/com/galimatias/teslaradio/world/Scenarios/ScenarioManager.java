@@ -92,8 +92,8 @@ public class ScenarioManager  implements IScenarioManager {
         scenarios.add(soundCapture);
         
         //Init SoundCapture scenario
-        DummyScenario dummy = new DummyScenario(assetManager, ColorRGBA.Orange);
-        scenarios.add(dummy);
+        Modulation modulation = new Modulation(assetManager, cam);
+        scenarios.add(modulation);
         SoundEmission soundEmission = new SoundEmission(assetManager, cam);
         scenarios.add(soundEmission);
         
@@ -111,7 +111,7 @@ public class ScenarioManager  implements IScenarioManager {
         
         //soundCaptureList.add(dummy);
         modulationList.add(soundCapture);
-        modulationList.add(dummy);
+        modulationList.add(modulation);
         scenarioList.addScenario(ScenarioEnum.AMMODULATION,modulationList);
 
         //Only for debugging purpose deactivate it please.
