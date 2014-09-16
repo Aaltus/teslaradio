@@ -3,10 +3,11 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 
 /**
+ * Interface that can switch between scenario with a next/previous or an enum
+ *
  * Created by jimbojd72 on 9/8/14.
  */
 public interface IScenarioSwitcher {
-    //TODO: MODIFY THIS TO RECEIVE A LIST<NODE> TO ATTACH THE SCENARIO TO THE RIGHT TRACKABLE/NODE
     void setNextScenario();
 
     void setPreviousScenario();
