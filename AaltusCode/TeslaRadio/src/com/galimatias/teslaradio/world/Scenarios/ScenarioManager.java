@@ -70,6 +70,7 @@ public class ScenarioManager  implements IScenarioManager {
     private static final String GUITAR = "Guitar";
     private static final String DRUM = "Drum";
     private static final String PREVIOUS_SCENARIO = "PreviousScenario";
+    private static final String FREQUENCY_SWITCH = "FrequencySwitch";
     
 
     public ScenarioManager(ApplicationType applicationType,
@@ -163,6 +164,7 @@ public class ScenarioManager  implements IScenarioManager {
                         inputManager.addMapping(TEXT, new KeyTrigger(KeyInput.KEY_H));
                         inputManager.addMapping(NEXT_SCENARIO, new KeyTrigger(KeyInput.KEY_P));
                         inputManager.addMapping(PREVIOUS_SCENARIO, new KeyTrigger(KeyInput.KEY_O));
+                        inputManager.addMapping(FREQUENCY_SWITCH, new KeyTrigger(KeyInput.KEY_F));
 
                         // Add the names to the action listener.
                         inputManager.addListener(this, DRUM);
@@ -170,6 +172,7 @@ public class ScenarioManager  implements IScenarioManager {
                         inputManager.addListener(this, TEXT);
                         inputManager.addListener(this, NEXT_SCENARIO);
                         inputManager.addListener(this, PREVIOUS_SCENARIO);
+                        inputManager.addListener(this, FREQUENCY_SWITCH);
                     }
                 //Do nothing because we don't need any scale or rotation.
                 break;
@@ -327,6 +330,17 @@ public class ScenarioManager  implements IScenarioManager {
             //soundCapture.drumTouchEffect();
             //soundCapture.drumTouchEffect();
             this.setPreviousScenario();
+        }
+        
+        else if (name.equals(FREQUENCY_SWITCH) && !keyPressed) {
+            List<Scenario> scenarios = getCurrentScenario().getScenarios();
+            if(scenarios != null){
+                for(Scenario scenario : scenarios ){
+                    if(scenario instanceof Modulation){
+                        ((Modulation)scenario).toggleModulationMode();
+                    }
+                }
+            }
         }
     }
 
