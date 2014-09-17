@@ -13,6 +13,7 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
@@ -28,7 +29,7 @@ import java.util.List;
  * test
  * @author normenhansen
  */
-public class Main extends SimpleApplication 
+public class Main extends SimpleApplication implements ActionListener
 {
     public static void main(String[] args) 
     {
@@ -37,9 +38,19 @@ public class Main extends SimpleApplication
     }
 
     private Spatial sceneModel;
+    private Node nodeA;
+    private Node nodeB;
     private List<Node> nodeList;
     private IScenarioManager scenarioManager;
     
+    private static final String ScenarioB_move_X_pos = "ScenarioB_move_X_pos";
+    private static final String ScenarioB_move_X_neg = "ScenarioB_move_X_neg";
+    private static final String ScenarioB_move_Y_pos = "ScenarioB_move_Y_pos";
+    private static final String ScenarioB_move_Y_neg = "ScenarioB_move_Y_neg";
+    private static final String ScenarioB_move_Z_pos = "ScenarioB_move_Z_pos";
+    private static final String ScenarioB_move_Z_neg = "ScenarioB_move_Z_neg";
+    private static final String ScenarioB_rotate_Y_pos = "ScenarioB_rotate_Y_pos";
+    private static final String ScenarioB_rotate_Y_neg = "ScenarioB_rotate_Y_neg";
     
     @Override
     public void simpleInitApp() 
@@ -48,8 +59,8 @@ public class Main extends SimpleApplication
         
         //Initialized a list of nodes to attach to the scenario manager.
         nodeList = new ArrayList<Node>();
-        Node nodeA = new Node();
-        Node nodeB = new Node();
+        nodeA = new Node();
+        nodeB = new Node();
         rootNode.attachChild(nodeA);
         rootNode.attachChild(nodeB);
         float value = 60;
@@ -57,6 +68,25 @@ public class Main extends SimpleApplication
         nodeB.move(-value,0,0);
         nodeList.add(nodeA);
         nodeList.add(nodeB);
+        
+        inputManager.addMapping(ScenarioB_move_X_neg, new KeyTrigger(KeyInput.KEY_NUMPAD1));
+        inputManager.addMapping(ScenarioB_move_Z_neg, new KeyTrigger(KeyInput.KEY_NUMPAD2));
+        inputManager.addMapping(ScenarioB_move_X_pos, new KeyTrigger(KeyInput.KEY_NUMPAD3));
+        inputManager.addMapping(ScenarioB_move_Y_neg, new KeyTrigger(KeyInput.KEY_NUMPAD4));
+        inputManager.addMapping(ScenarioB_move_Z_pos, new KeyTrigger(KeyInput.KEY_NUMPAD5));
+        inputManager.addMapping(ScenarioB_rotate_Y_neg, new KeyTrigger(KeyInput.KEY_NUMPAD6));
+        inputManager.addMapping(ScenarioB_move_Y_pos, new KeyTrigger(KeyInput.KEY_NUMPAD7));
+        inputManager.addMapping(ScenarioB_rotate_Y_pos, new KeyTrigger(KeyInput.KEY_NUMPAD9));
+
+        // Add the names to the action listener.
+        inputManager.addListener(this, ScenarioB_move_X_neg);
+        inputManager.addListener(this, ScenarioB_move_Y_neg);
+        inputManager.addListener(this, ScenarioB_move_X_pos);
+        inputManager.addListener(this, ScenarioB_move_Z_neg);
+        inputManager.addListener(this, ScenarioB_move_Y_pos);
+        inputManager.addListener(this, ScenarioB_rotate_Y_neg);
+        inputManager.addListener(this, ScenarioB_move_Z_pos);
+        inputManager.addListener(this, ScenarioB_rotate_Y_pos);
         
         scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.DESKTOP, nodeList, assetManager, cam, null, renderManager, inputManager);
         
@@ -126,6 +156,50 @@ public class Main extends SimpleApplication
         ambient.setColor(ColorRGBA.White);
         rootNode.addLight(ambient);
     
+    }
+
+    @Override
+    public void onAction(String name, boolean isPressed, float tpf) {
+        Vector3f tempPosition = new Vector3f();
+        Quaternion tempRotation = new Quaternion();
+        
+        if(!isPressed){
+            
+            if(name.equals(ScenarioB_move_X_pos)){
+                tempPosition = nodeB.getLocalTranslation();
+                nodeB.setLocalTranslation(tempPosition.x+(10), tempPosition.y, tempPosition.z);
+            }
+            else if(name.equals(ScenarioB_move_X_neg)){
+                tempPosition = nodeB.getLocalTranslation();
+                nodeB.setLocalTranslation(tempPosition.x-(10), tempPosition.y, tempPosition.z);                
+            }
+            else if(name.equals(ScenarioB_move_Y_pos)){
+                tempPosition = nodeB.getLocalTranslation();
+                nodeB.setLocalTranslation(tempPosition.x, tempPosition.y+(10), tempPosition.z);                 
+            }
+            else if(name.equals(ScenarioB_move_Y_neg)){
+                tempPosition = nodeB.getLocalTranslation();
+                nodeB.setLocalTranslation(tempPosition.x, tempPosition.y-(10), tempPosition.z);                 
+            }
+            else if(name.equals(ScenarioB_move_Z_pos)){
+                tempPosition = nodeB.getLocalTranslation();
+                nodeB.setLocalTranslation(tempPosition.x, tempPosition.y, tempPosition.z+(10));                 
+            }
+            else if(name.equals(ScenarioB_move_Z_neg)){
+                tempPosition = nodeB.getLocalTranslation();
+                nodeB.setLocalTranslation(tempPosition.x, tempPosition.y, tempPosition.z-(10));                 
+            }
+            else if(name.equals(ScenarioB_rotate_Y_pos)){
+                tempRotation = nodeB.getLocalRotation();
+                tempRotation.multLocal((new Quaternion()).fromAngles(0, 0.1f, 0));
+                nodeB.setLocalRotation(tempRotation);
+            }
+            else if(name.equals(ScenarioB_rotate_Y_neg)){
+                tempRotation = nodeB.getLocalRotation();
+                tempRotation.multLocal((new Quaternion()).fromAngles(0, -0.1f, 0));
+                nodeB.setLocalRotation(tempRotation);          
+            }            
+        }  
     }
     
 }
