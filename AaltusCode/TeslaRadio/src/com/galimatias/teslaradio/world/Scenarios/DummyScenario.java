@@ -29,7 +29,7 @@ public class DummyScenario extends Scenario {
     }
 
     @Override
-    public void sendSignalToEmitter(Signal newSignal) {
+    public void sendSignalToEmitter(Geometry newSignal, float magnitude) {
         
     }
 
@@ -48,8 +48,7 @@ public class DummyScenario extends Scenario {
 
     @Override
     protected void loadUnmovableObjects() {
-        
-        
+
         Box box1 = new Box(20,5,10);
         box = new Geometry("Box", box1);
         box.setLocalTranslation(new Vector3f(0,5f,0));
@@ -92,7 +91,7 @@ public class DummyScenario extends Scenario {
     }
 
     @Override
-    public void signalEndOfPath(Signal caller) {
+    public void signalEndOfPath(Geometry caller, float magnitude) {
 
     }
 }

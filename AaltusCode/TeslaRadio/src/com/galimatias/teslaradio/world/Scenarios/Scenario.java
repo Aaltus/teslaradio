@@ -12,6 +12,7 @@ import com.galimatias.teslaradio.world.observer.SignalObserver;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
 
@@ -144,14 +145,14 @@ public abstract class Scenario extends Node implements SignalObserver{
      * Sends a signal from the first scenario to the next visible one
      * @param newSignal
      */
-    public abstract void sendSignalToEmitter(Signal newSignal);
+    public abstract void sendSignalToEmitter(Geometry newSignal, float magnitude);
 
     /**
      * This returns the Scenario receiver handle 3D vector
      */
-    public void signalEndOfPath(Signal caller) {
+    public void signalEndOfPath(Geometry caller, float magnitude) {
         if (particleLinker != null && caller != null){
-            particleLinker.sendSignalToNextScenario(this, caller);
+            particleLinker.sendSignalToNextScenario(this, caller, magnitude);
         }
     }
 }

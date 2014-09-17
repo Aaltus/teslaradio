@@ -172,7 +172,7 @@ public class SoundEmission extends Scenario {
         waveMagnitudes.add(3f);
         waveMagnitudes.add(1f);
 
-        DrumSoundEmitter.setWaves(waveMagnitudes, soundParticle, soundParticleTranslucent, SoundParticlePeriod, SoundParticleSpeed, SignalType.Air);
+        DrumSoundEmitter.setWaves(waveMagnitudes, soundParticle, soundParticleTranslucent, SoundParticlePeriod, SoundParticleSpeed);
     }
 
     /**
@@ -205,7 +205,7 @@ public class SoundEmission extends Scenario {
         waveMagnitudes.add(1.0f);
         waveMagnitudes.add(0.8f);
 
-        GuitarSoundEmitter.setWaves(waveMagnitudes, soundParticle, soundParticleTranslucent, SoundParticlePeriod, SoundParticleSpeed, SignalType.Air);
+        GuitarSoundEmitter.setWaves(waveMagnitudes, soundParticle, soundParticleTranslucent, SoundParticlePeriod, SoundParticleSpeed);
 
     }
 
@@ -497,7 +497,7 @@ public class SoundEmission extends Scenario {
     }
 
     @Override
-    public void sendSignalToEmitter(Signal newSignal) {
+    public void sendSignalToEmitter(Geometry newSignal, float magnitude) {
         // The Sound Emission Scenario does not receive any signal for now.
     }
 }

@@ -2,7 +2,6 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
-import com.galimatias.teslaradio.world.effects.Signal;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.InputManager;
@@ -14,6 +13,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLinker {
 
-    public final static int ANDROID_SCALE_DEFAULT = 100;
+    public static int WORLD_SCALE_DEFAULT = 100;
 
     /**
      * Method that return the next scenario's receiver handle position
@@ -42,12 +42,21 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
      */
     @Override
     public Vector3f GetEmitterDestinationPaths(Scenario caller) {
-        return currentScenario.getNextScenarioInGroup(caller).getParticleReceiverHandle();
+        Scenario nextScenario = currentScenario.getNextScenarioInGroup(caller);
+        if (nextScenario != null){
+            return nextScenario.getParticleReceiverHandle();
+        }
+        else{
+            return null;
+        }
     }
 
     @Override
-    public void sendSignalToNextScenario(Scenario caller, Signal newSignal) {
-        currentScenario.getNextScenarioInGroup(caller).sendSignalToEmitter(newSignal);
+    public void sendSignalToNextScenario(Scenario caller, Geometry newSignal, float magnitude) {
+        Scenario nextScenario = currentScenario.getNextScenarioInGroup(caller);
+        if (nextScenario != null){
+            nextScenario.sendSignalToEmitter(newSignal, magnitude);
+        }
     }
 
     /**
@@ -166,7 +175,9 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
                         renderManager.preloadScene(scenario);
                     }
                     scenario.rotate(rot);
-                    scenario.scale(ANDROID_SCALE_DEFAULT);
+
+                    WORLD_SCALE_DEFAULT = 100;
+                    scenario.scale(WORLD_SCALE_DEFAULT);
                 }
                 
                 
@@ -187,7 +198,8 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
                         inputManager.addListener(this, NEXT_SCENARIO);
                         inputManager.addListener(this, PREVIOUS_SCENARIO);
                     }
-                //Do nothing because we don't need any scale or rotation.
+
+                WORLD_SCALE_DEFAULT = 1;
                 break;
                 
             default:
@@ -370,12 +382,12 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
         }
 
         public Scenario getNextScenarioInGroup(Scenario scenario){
-            for (Scenario scenarioInList: scenarios){
-                if (scenarioInList != scenario){
-                    return scenarioInList;
-                }
+            if (scenarios.get(0) == scenario && scenarios.size() > 1){
+                return scenarios.get(1);
             }
-            return null;
+            else{
+                return null;
+            }
         }
 
     }

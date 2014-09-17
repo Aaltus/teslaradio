@@ -161,7 +161,7 @@ public class Signal extends Geometry implements SignalObservable {
     public void notifyEndOfPath() {
         for (SignalObserver observer: signalObservers){
             if (isCurved || (!isCurved && signalOnVector)){
-                observer.signalEndOfPath(this);
+                observer.signalEndOfPath(this, startScale);
             }
             this.removeFromParent();
         }
