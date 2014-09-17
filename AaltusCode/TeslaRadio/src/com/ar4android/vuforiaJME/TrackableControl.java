@@ -19,20 +19,20 @@ import java.io.IOException;
  */
 public class TrackableControl extends AbstractControl {
 
-    protected Node       mTrackable = null;
     protected Node       mFixedAngleChild = null;
     protected Matrix3f   mRotationMatrix = new Matrix3f(0f,0f,0f,0f,0f,0f,0f,0f,0f);
     protected Quaternion mChildRotation = new Quaternion(0f,0f,0f,0f);
     protected Vector3f   mPosition = new Vector3f(0f,0f,0f);
     protected Vector3f   mVx = new Vector3f(0f,0f,0f);
-    protected Boolean    mIsVisible = false;
+    protected boolean    mIsVisible = false;
 
     public TrackableControl()
     {
-
+        this.mFixedAngleChild = new Node("Node");
     }
 
     public Vector3f getPosition(){return this.mPosition;}
+    public Node     getFixedAngleChild(){return this.mFixedAngleChild;}
 
     public void updatePosition( Vector3f newPosition)
     {
@@ -42,11 +42,12 @@ public class TrackableControl extends AbstractControl {
     {
         this.mRotationMatrix.set(newMatrix);
         this.mVx.set(newVx);
+
     }
     public void updateDistance(Vector3f distance)
     {
         Vector3f vectorAB = new Vector3f(this.mPosition.subtract(distance));
-        Double angleX = Math.atan2(vectorAB.normalize().y,vectorAB.normalize().x) - Math.atan2(this.mVx.normalize().y,this.mVx.normalize().x);
+        double angleX = Math.atan2(vectorAB.normalize().y,vectorAB.normalize().x) - Math.atan2(this.mVx.normalize().y,this.mVx.normalize().x);
         if(angleX < 0)
         {
             angleX += 2*Math.PI;
@@ -55,7 +56,7 @@ public class TrackableControl extends AbstractControl {
 
         for(Spatial spatial : this.mFixedAngleChild.getChildren())
         {
-            spatial.setUserData("angleX",angleX);
+            spatial.setUserData("angleX",(float)angleX);
         }
     }
     public void setIsVisible(Boolean isVisible)
@@ -63,22 +64,22 @@ public class TrackableControl extends AbstractControl {
         this.mIsVisible = isVisible;
     }
 
-    public Boolean getIsVisible()
+    public boolean getIsVisible()
     {
         return this.mIsVisible;
     }
 
     @Override
     public void setSpatial(Spatial spatial) {
-        this.mTrackable = (Node) spatial;
-        this.mFixedAngleChild = new Node(this.mTrackable.getName().concat("_fixedAngleChild"));
-        this.mTrackable.attachChild(this.mFixedAngleChild);
+        this.spatial = spatial;
+        this.mFixedAngleChild.setName(this.spatial.getName().concat("_fixedAngleChild"));
+        ((Node)this.spatial).attachChild(this.mFixedAngleChild);
     }
 
     @Override
     protected void controlUpdate(float v) {
-        this.mTrackable.setLocalRotation(this.mRotationMatrix);
-        this.mTrackable.setLocalTranslation(this.mPosition);
+        this.spatial.setLocalRotation(this.mRotationMatrix);
+        this.spatial.setLocalTranslation(this.mPosition);
 
         this.mFixedAngleChild.setLocalRotation(this.mChildRotation);
     }
