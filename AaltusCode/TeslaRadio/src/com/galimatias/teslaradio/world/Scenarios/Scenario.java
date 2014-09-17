@@ -5,8 +5,14 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.ViewState;
+import com.galimatias.teslaradio.world.effects.Signal;
+import com.galimatias.teslaradio.world.observer.Observer;
+import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
+import com.galimatias.teslaradio.world.observer.SignalObserver;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
 
@@ -16,9 +22,10 @@ import com.jme3.scene.Node;
  * Abstract class that regroup a scenario.
  * @author Alexandre Hamel
  */
-public abstract class Scenario extends Node {
+public abstract class Scenario extends Node implements SignalObserver{
 
     private final static String TAG = "Scenario";
+    ParticleEmitReceiveLinker particleLinker;
 
     /**
      * AssetManager object needed to loal model and souns in a scenario
@@ -75,11 +82,11 @@ public abstract class Scenario extends Node {
 
     }
 
-    public Scenario(AssetManager assetManager, com.jme3.renderer.Camera Camera)
+    public Scenario(AssetManager assetManager, com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker)
     {
         this.assetManager = assetManager;
         this.Camera = Camera;
-
+        this.particleLinker = particleLinker;
         
     }
 
@@ -128,4 +135,25 @@ public abstract class Scenario extends Node {
      * To receive events from the device microphone from scenario manager.
      */
     public abstract void onAudioEvent();
+
+    /**
+     * This returns the Scenario receiver handle 3D vector
+     */
+    public abstract Vector3f getParticleReceiverHandle();
+
+    /**
+     * Sends a signal from the first scenario to the next visible one
+     * @param newSignal
+     */
+    public abstract void sendSignalToEmitter(Geometry newSignal, float magnitude);
+
+    /**
+     * This returns the Scenario receiver handle 3D vector
+     */
+    public void signalEndOfPath(Geometry caller, float magnitude) {
+        if (particleLinker != null && caller != null){
+            particleLinker.sendSignalToNextScenario(this, caller, magnitude);
+        }
+    }
 }
+

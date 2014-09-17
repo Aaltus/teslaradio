@@ -8,6 +8,6 @@ package com.galimatias.teslaradio.world.observer;
  *
  * @author David
  */
-public interface EmitterObserver {
+public interface EmitterObserver extends Observer {
     public void observerUpdate(float magnitude);
 }

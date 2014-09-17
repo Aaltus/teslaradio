@@ -6,6 +6,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.*;
 //import com.galimatias.teslaradio.world.observer.ScenarioObserver;
+import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
@@ -13,7 +14,6 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.*;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
@@ -21,11 +21,8 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Quad;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Vector;
+//import com.galimatias.teslaradio.world.observer.ScenarioObserver;
 
 /**
  *
@@ -38,11 +35,14 @@ public final class SoundCapture extends Scenario {
 
     private final static String TAG = "SoundCapture";
 
+    private AudioNode micro_sound;
+    
     private Spatial micro;
     private TouchEffectEmitter touchEffectEmitter;
     private Spatial micHandleIn;
 
     private SignalEmitter MicWireEmitter;
+    private Material electricParticleMat;
 
     private TextBox titleTextBox;
     private TextBox microphoneTextBox;
@@ -68,17 +68,12 @@ public final class SoundCapture extends Scenario {
     private float maxTimeRefreshHint = 30f;
     private float timeLastTouch = maxTimeRefreshHint;
        
-    public SoundCapture(AssetManager assetManager, Camera Camera/*, ScenarioObserver observer*/)
+    public SoundCapture(AssetManager assetManager, Camera Camera, ParticleEmitReceiveLinker particleLinker)
     {
-        super(assetManager,Camera/*, observer*/);
+        super(assetManager,Camera, particleLinker);
         
         loadUnmovableObjects();
         loadMovableObjects();
-    }
-
-    public SoundCapture(AssetManager assetManager)
-    {
-        this(assetManager, null/*, null*/);
     }
 
     /**
@@ -91,14 +86,13 @@ public final class SoundCapture extends Scenario {
         scene = (Node) assetManager.loadModel("Models/SoundCapture/micro.j3o");
         scene.setName("SoundCapture");
         this.attachChild(scene);
-        scene.scale(10.0f,10.0f,10.0f);
         
         touchable = new Node();//(Node) scene.getParent().getChild("Touchable");
         micro = scene.getParent().getChild("Boule_micro");
         micHandleIn = scene.getParent().getChild("Mic_Input_Handle");
         micPosition = micro.getWorldTranslation();
         micHandleInPosition = micHandleIn.getWorldTranslation();
-        
+        touchable.attachChild(micro);
         scene.attachChild(touchable);
         
         initAudio();
@@ -118,27 +112,19 @@ public final class SoundCapture extends Scenario {
        
     private void initMicWireParticlesEmitter()
     {
-        SignalTrajectories directionFactory = new SignalTrajectories();
-        Spline curvedPath = new Spline();
-        
+ MicWireEmitter = new SignalEmitter(this);
+        //MicWireEmitter = new SignalEmitter(curvedPath, electricParticle, electricParticle, 35f /*Speed*/, SignalType.Wire );
+        this.attachChild(MicWireEmitter);
+        MicWireEmitter.setLocalTranslation(micPosition.x, micPosition.y,micPosition.z); // TO DO: utiliser le object handle blender pour position
+
         Node micWire_node = (Node) scene.getParent().getChild("WirePath");
         Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
-        Mesh micWire_mesh = micWire_geom.getMesh();
+        Geometry tmpGeom = (Geometry)micWire_geom;//.scale(1/ScenarioManager.WORLD_SCALE_DEFAULT);
+        MicWireEmitter.setWaves(tmpGeom.getMesh(), 0.25f, 3.5f);
 
-        curvedPath = directionFactory.getCurvedPath(micWire_mesh);
-        
-        // instantiate 3d Sound particul model
-        Box rect = new Box(1.0f, 1.0f, 0.01f);
-        Geometry electricParticle = new Geometry("particul",rect);
-        Material electricParticle_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        electricParticle_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Electric3.png"));
-        electricParticle.setMaterial(electricParticle_mat);
-                
-        
-        MicWireEmitter = new SignalEmitter(curvedPath, electricParticle, electricParticle, 35f /*Speed*/, SignalType.Wire );
-        this.attachChild(MicWireEmitter);
-        MicWireEmitter.setLocalTranslation(micPosition.x, micPosition.y,micPosition.z); // TO DO: utiliser le object handle blender pour position        
-        
+        electricParticleMat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        electricParticleMat.setTexture("ColorMap", assetManager.loadTexture("Textures/Electric3.png"));
+
     }
     
     private void initOnTouchEffect() {
@@ -153,6 +139,12 @@ public final class SoundCapture extends Scenario {
         /**
          * Will be used for the mic touch effect
          */
+        
+        micro_sound = new AudioNode(assetManager, "Sounds/micro_sound.wav", false);
+        micro_sound.setPositional(false);
+        micro_sound.setLooping(false);
+        micro_sound.setVolume(2);
+        this.attachChild(micro_sound);
 
     }
 
@@ -188,7 +180,19 @@ public final class SoundCapture extends Scenario {
         touchable.attachChild(titleTextBox);
         touchable.attachChild(microphoneTextBox);
     }
+    
+    public void microTouchEffect()
+    {
+        
+        //DrumSoundEmitter.emitParticles(1.0f);
+        //DrumSoundEmitter.emitWaves();
+        MicWireEmitter.emitParticles(3.0f);
 
+        //touchEffectEmitter.isTouched();
+
+        micro_sound.playInstance();
+
+    }
     
     public void textBoxesUpdate(Vector3f upVector)
     {
@@ -246,13 +250,15 @@ public final class SoundCapture extends Scenario {
                         Spatial touchedGeometry = closest.getGeometry();
                         String nameToCompare = touchedGeometry.getParent().getName();
 
-
-                        if (nameToCompare.equals(microphoneTextBox.getName()))
+                        if (nameToCompare.equals(micro.getName()))
                         {
-                            //this.textTouchEffect();
-                            showInformativeMenu = true;
-                            break;
+                            this.microTouchEffect();
                         }
+                        else if (nameToCompare.equals(microphoneTextBox.getName()))
+                        {
+                            showInformativeMenu = true;
+                        }
+
                 }
             }
         }
@@ -267,8 +273,8 @@ public final class SoundCapture extends Scenario {
     @Override
     public boolean simpleUpdate(float tpf) {
 
-  //      MicWireEmitter.simpleUpdate(tpf, this.Camera);
-//        touchEffectEmitter.simpleUpdate(tpf);
+        MicWireEmitter.simpleUpdate(tpf, this.Camera);
+        //touchEffectEmitter.simpleUpdate(tpf);
         
         if(Camera != null) {
             Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
@@ -280,8 +286,9 @@ public final class SoundCapture extends Scenario {
             showInformativeMenu = false;
             return true;
         }
-        else
+        else{
             return false;
+        }
     }
 
     @Override
@@ -298,4 +305,19 @@ public final class SoundCapture extends Scenario {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public Vector3f getParticleReceiverHandle(){
+
+        return micHandleIn.getWorldTranslation();
+    }
+
+    @Override
+    public void sendSignalToEmitter(Geometry newSignal, float magnitude) {
+
+        if (MicWireEmitter != null){
+            // We have a new material out there! Since the Signal is now becoming "Electrical", we set the Electrical material to it
+            newSignal.setMaterial(electricParticleMat);
+            MicWireEmitter.prepareEmitParticles(newSignal, magnitude);
+        }
+    }
 }

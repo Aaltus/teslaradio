@@ -11,7 +11,7 @@ AaltusTrackable::~AaltusTrackable()
 
 Vec4F AaltusTrackable::getPositionFromOrigin()
 {
-    LOGE("Trackable is %s and position is %f %f %f", _name.c_str(), _poseFromOrigin.data[0],_poseFromOrigin.data[1],_poseFromOrigin.data[2]);
+    //LOGE("Trackable is %s and position is %f %f %f", _name.c_str(), _poseFromOrigin.data[0],_poseFromOrigin.data[1],_poseFromOrigin.data[2]);
     return  _poseFromOrigin;
 }
 Vec3F AaltusTrackable::getPositionFromCamera()

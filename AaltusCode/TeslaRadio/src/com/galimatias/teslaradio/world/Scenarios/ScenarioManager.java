@@ -2,6 +2,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
+import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
@@ -13,6 +14,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
 import java.util.ArrayList;
@@ -30,9 +32,33 @@ import java.util.List;
  *
  * Created by jimbojd72 on 9/3/14.
  */
-public class ScenarioManager  implements IScenarioManager {
+public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLinker {
 
-    
+    public static int WORLD_SCALE_DEFAULT = 100;
+
+    /**
+     * Method that return the next scenario's receiver handle position
+     * @param caller
+     * @return the handle vector
+     */
+    @Override
+    public Vector3f GetEmitterDestinationPaths(Scenario caller) {
+        Scenario nextScenario = currentScenario.getNextScenarioInGroup(caller);
+        if (nextScenario != null){
+            return nextScenario.getParticleReceiverHandle();
+        }
+        else{
+            return null;
+        }
+    }
+
+    @Override
+    public void sendSignalToNextScenario(Scenario caller, Geometry newSignal, float magnitude) {
+        Scenario nextScenario = currentScenario.getNextScenarioInGroup(caller);
+        if (nextScenario != null){
+            nextScenario.sendSignalToEmitter(newSignal, magnitude);
+        }
+    }
 
     /**
      * An enum that provide insight to the manager to which scale/rotation it must provide to the scenario
@@ -66,12 +92,12 @@ public class ScenarioManager  implements IScenarioManager {
     private AppListener appListener;
     
     private static final String NEXT_SCENARIO = "NextScenario";
+    private static final String PREVIOUS_SCENARIO = "PreviousScenario";
     private static final String TEXT = "Text";
     private static final String GUITAR = "Guitar";
     private static final String DRUM = "Drum";
-    private static final String PREVIOUS_SCENARIO = "PreviousScenario";
+    private static final String MICRO = "Micro";
     private static final String FREQUENCY_SWITCH = "FrequencySwitch";
-    
 
     public ScenarioManager(ApplicationType applicationType,
             List<Node> node,
@@ -88,14 +114,14 @@ public class ScenarioManager  implements IScenarioManager {
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
         //Init SoundCapture scenario
-        Scenario soundCapture = new SoundCapture(assetManager, cam);
+        Scenario soundCapture = new SoundCapture(assetManager, cam, this);
         soundCapture.setName("SoundCapture");
         scenarios.add(soundCapture);
         
         //Init SoundCapture scenario
         Modulation modulation = new Modulation(assetManager, cam);
         scenarios.add(modulation);
-        SoundEmission soundEmission = new SoundEmission(assetManager, cam);
+        SoundEmission soundEmission = new SoundEmission(assetManager, cam, this);
         scenarios.add(soundEmission);
         
         
@@ -140,7 +166,7 @@ public class ScenarioManager  implements IScenarioManager {
                 //This is the rotation to put a scenarion in the correct angle for VuforiaJME
                 Quaternion rot = new Quaternion();
                 rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
-                float scale = 10.0f;
+                //float scale = 10.0f;
                 
                 for(Scenario scenario : scenarios)
                 {
@@ -151,7 +177,9 @@ public class ScenarioManager  implements IScenarioManager {
                         renderManager.preloadScene(scenario);
                     }
                     scenario.rotate(rot);
-                    scenario.scale(scale);
+
+                    WORLD_SCALE_DEFAULT = 100;
+                    scenario.scale(WORLD_SCALE_DEFAULT);
                 }
                 
                 
@@ -162,6 +190,7 @@ public class ScenarioManager  implements IScenarioManager {
                         inputManager.addMapping(DRUM, new KeyTrigger(KeyInput.KEY_T));
                         inputManager.addMapping(GUITAR, new KeyTrigger(KeyInput.KEY_G));
                         inputManager.addMapping(TEXT, new KeyTrigger(KeyInput.KEY_H));
+                        inputManager.addMapping(MICRO, new KeyTrigger(KeyInput.KEY_M));
                         inputManager.addMapping(NEXT_SCENARIO, new KeyTrigger(KeyInput.KEY_P));
                         inputManager.addMapping(PREVIOUS_SCENARIO, new KeyTrigger(KeyInput.KEY_O));
                         inputManager.addMapping(FREQUENCY_SWITCH, new KeyTrigger(KeyInput.KEY_F));
@@ -170,11 +199,13 @@ public class ScenarioManager  implements IScenarioManager {
                         inputManager.addListener(this, DRUM);
                         inputManager.addListener(this, GUITAR);
                         inputManager.addListener(this, TEXT);
+                        inputManager.addListener(this, MICRO);
                         inputManager.addListener(this, NEXT_SCENARIO);
                         inputManager.addListener(this, PREVIOUS_SCENARIO);
                         inputManager.addListener(this, FREQUENCY_SWITCH);
                     }
-                //Do nothing because we don't need any scale or rotation.
+
+                WORLD_SCALE_DEFAULT = 10;
                 break;
                 
             default:
@@ -304,7 +335,7 @@ public class ScenarioManager  implements IScenarioManager {
     @Override
     public void onAction(String name, boolean keyPressed, float tpf) {
         
-        if ((name.equals(GUITAR) || name.equals(DRUM)) && !keyPressed) {
+        if ((name.equals(GUITAR) || name.equals(DRUM) || name.equals(MICRO)) && !keyPressed) {
             List<Scenario> scenarios = getCurrentScenario().getScenarios();
             if(scenarios != null){
                 for(Scenario scenario : scenarios ){
@@ -316,6 +347,12 @@ public class ScenarioManager  implements IScenarioManager {
                         if(name.equals(GUITAR))
                         {
                             ((SoundEmission)scenario).guitarTouchEffect();
+                        }
+                    }
+                    if(scenario instanceof SoundCapture){
+                        if(name.equals(MICRO))
+                        {
+                            ((SoundCapture)scenario).microTouchEffect();
                         }
                     }
                 }
@@ -365,6 +402,15 @@ public class ScenarioManager  implements IScenarioManager {
 
         public Integer getIndex() {
             return index;
+        }
+
+        public Scenario getNextScenarioInGroup(Scenario scenario){
+            if (scenarios.get(0) == scenario && scenarios.size() > 1){
+                return scenarios.get(1);
+            }
+            else{
+                return null;
+            }
         }
 
     }

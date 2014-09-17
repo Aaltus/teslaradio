@@ -1,10 +1,13 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.Signal;
+import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
@@ -15,10 +18,24 @@ public class DummyScenario extends Scenario {
 
     ColorRGBA color;
     Geometry box;
-    
+
+    public DummyScenario(AssetManager assetManager, com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker) {
+        super(assetManager, Camera, particleLinker);
+    }
+
+    @Override
+    public Vector3f getParticleReceiverHandle() {
+        return null;
+    }
+
+    @Override
+    public void sendSignalToEmitter(Geometry newSignal, float magnitude) {
+        
+    }
+
     public DummyScenario(AssetManager assetManager, com.jme3.renderer.Camera Camera, ColorRGBA color)
     {
-        super(assetManager,Camera);
+        super(assetManager,Camera, null);
         this.color = color;
         loadUnmovableObjects();
         loadMovableObjects();
@@ -31,8 +48,7 @@ public class DummyScenario extends Scenario {
 
     @Override
     protected void loadUnmovableObjects() {
-        
-        
+
         Box box1 = new Box(20,5,10);
         box = new Geometry("Box", box1);
         box.setLocalTranslation(new Vector3f(0,5f,0));
@@ -71,6 +87,11 @@ public class DummyScenario extends Scenario {
 
     @Override
     public void onAudioEvent() {
+
+    }
+
+    @Override
+    public void signalEndOfPath(Geometry caller, float magnitude) {
 
     }
 }
