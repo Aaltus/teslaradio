@@ -6,6 +6,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.*;
 //import com.galimatias.teslaradio.world.observer.ScenarioObserver;
+import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
@@ -68,17 +69,12 @@ public final class SoundCapture extends Scenario {
     private float maxTimeRefreshHint = 30f;
     private float timeLastTouch = maxTimeRefreshHint;
        
-    public SoundCapture(AssetManager assetManager, Camera Camera/*, ScenarioObserver observer*/)
+    public SoundCapture(AssetManager assetManager, Camera Camera, ParticleEmitReceiveLinker particleLinker)
     {
-        super(assetManager,Camera/*, observer*/);
+        super(assetManager,Camera, particleLinker);
         
         loadUnmovableObjects();
         loadMovableObjects();
-    }
-
-    public SoundCapture(AssetManager assetManager)
-    {
-        this(assetManager, null/*, null*/);
     }
 
     /**
@@ -91,7 +87,7 @@ public final class SoundCapture extends Scenario {
         scene = (Node) assetManager.loadModel("Models/SoundCapture/micro.j3o");
         scene.setName("SoundCapture");
         this.attachChild(scene);
-        scene.scale(10.0f,10.0f,10.0f);
+        //scene.scale(10.0f,10.0f,10.0f);
         
         touchable = new Node();//(Node) scene.getParent().getChild("Touchable");
         micro = scene.getParent().getChild("Boule_micro");
@@ -296,6 +292,17 @@ public final class SoundCapture extends Scenario {
     public void setGlobalSpeed(float speed)
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void observerUpdate() {
+
+    }
+
+    @Override
+    public Vector3f GetParticleReceiverHandle(){
+
+        return micHandleIn.getWorldTranslation();
     }
 
 }

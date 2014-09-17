@@ -5,6 +5,7 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.*;
+import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
@@ -103,7 +104,7 @@ public final class SoundCapturev2 extends Scenario {
 
     public SoundCapturev2(AssetManager assetManager, Camera Camera/*, ScenarioObserver observer*/)
     {
-        super(assetManager,Camera/*, observer*/);
+        super(assetManager,Camera, null/*, observer*/);
 
         loadUnmovableObjects();
         loadMovableObjects();
@@ -112,6 +113,10 @@ public final class SoundCapturev2 extends Scenario {
     public SoundCapturev2(AssetManager assetManager)
     {
         this(assetManager, null/*, null*/);
+    }
+
+    public SoundCapturev2(AssetManager assetManager, Camera Camera, ParticleEmitReceiveLinker particleLinker) {
+        super(assetManager, Camera, particleLinker);
     }
 
     /**
@@ -155,8 +160,8 @@ public final class SoundCapturev2 extends Scenario {
         initMicWireParticlesEmitter();
         initOnTouchEffect();
 
-        DrumSoundEmitter.registerObserver(MicWireEmitter);
-        GuitarSoundEmitter.registerObserver(MicWireEmitter);
+        //DrumSoundEmitter.registerObserver(MicWireEmitter);
+        //GuitarSoundEmitter.registerObserver(MicWireEmitter);
 
         this.attachChild(movableObjects);
     }
@@ -419,9 +424,9 @@ public final class SoundCapturev2 extends Scenario {
     public void drumTouchEffect()
     {
         this.removeHintImages();
-        //DrumSoundEmitter.emitParticles(1.0f);
+        //DrumSoundEmitter.prepareEmitParticles(1.0f);
         DrumSoundEmitter.emitWaves();
-        //MicWireEmitter.emitParticles();
+        //MicWireEmitter.prepareEmitParticles();
 
         touchEffectEmitter.isTouched();
 
@@ -601,9 +606,18 @@ public final class SoundCapturev2 extends Scenario {
     }
 
     @Override
+    public Vector3f GetParticleReceiverHandle() {
+        return null;
+    }
+
+    @Override
     public void setGlobalSpeed(float speed)
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public void observerUpdate() {
+
+    }
 }

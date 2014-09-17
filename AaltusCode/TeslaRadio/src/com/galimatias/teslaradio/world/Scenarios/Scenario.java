@@ -5,8 +5,11 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.ViewState;
+import com.galimatias.teslaradio.world.observer.Observer;
+import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 
@@ -16,9 +19,10 @@ import com.jme3.scene.Node;
  * Abstract class that regroup a scenario.
  * @author Alexandre Hamel
  */
-public abstract class Scenario extends Node {
+public abstract class Scenario extends Node implements Observer{
 
     private final static String TAG = "Scenario";
+    ParticleEmitReceiveLinker particleLinker;
 
     /**
      * AssetManager object needed to loal model and souns in a scenario
@@ -75,11 +79,11 @@ public abstract class Scenario extends Node {
 
     }
 
-    public Scenario(AssetManager assetManager, com.jme3.renderer.Camera Camera)
+    public Scenario(AssetManager assetManager, com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker)
     {
         this.assetManager = assetManager;
         this.Camera = Camera;
-
+        this.particleLinker = particleLinker;
         
     }
 
@@ -128,4 +132,9 @@ public abstract class Scenario extends Node {
      * To receive events from the device microphone from scenario manager.
      */
     public abstract void onAudioEvent();
+
+    /**
+     * This returns the Scenario receiver handle 3D vector
+     */
+    public abstract Vector3f GetParticleReceiverHandle();
 }

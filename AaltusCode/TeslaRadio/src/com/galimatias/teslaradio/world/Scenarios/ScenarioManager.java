@@ -2,6 +2,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
+import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
@@ -30,9 +31,20 @@ import java.util.List;
  *
  * Created by jimbojd72 on 9/3/14.
  */
-public class ScenarioManager  implements IScenarioManager {
+public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLinker {
 
-    
+    public final static int ANDROID_SCALE_DEFAULT = 100;
+
+    @Override
+    public Vector3f GetEmitterDestinationPaths(Scenario caller) {
+        List<Scenario> currentScenarios = currentScenario.getScenarios();
+        for (Scenario scenario: currentScenarios){
+            if (scenario != caller){
+                return scenario.GetParticleReceiverHandle();
+            }
+        }
+        return null;
+    }
 
     /**
      * An enum that provide insight to the manager to which scale/rotation it must provide to the scenario
@@ -87,14 +99,14 @@ public class ScenarioManager  implements IScenarioManager {
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
         //Init SoundCapture scenario
-        Scenario soundCapture = new SoundCapture(assetManager, cam);
+        Scenario soundCapture = new SoundCapture(assetManager, cam, this);
         soundCapture.setName("SoundCapture");
         scenarios.add(soundCapture);
         
         //Init SoundCapture scenario
         DummyScenario dummy = new DummyScenario(assetManager, ColorRGBA.Orange);
         scenarios.add(dummy);
-        SoundEmission soundEmission = new SoundEmission(assetManager, cam);
+        SoundEmission soundEmission = new SoundEmission(assetManager, cam, this);
         scenarios.add(soundEmission);
         
         
@@ -139,7 +151,7 @@ public class ScenarioManager  implements IScenarioManager {
                 //This is the rotation to put a scenarion in the correct angle for VuforiaJME
                 Quaternion rot = new Quaternion();
                 rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
-                float scale = 10.0f;
+                //float scale = 10.0f;
                 
                 for(Scenario scenario : scenarios)
                 {
@@ -150,7 +162,7 @@ public class ScenarioManager  implements IScenarioManager {
                         renderManager.preloadScene(scenario);
                     }
                     scenario.rotate(rot);
-                    scenario.scale(scale);
+                    scenario.scale(ANDROID_SCALE_DEFAULT);
                 }
                 
                 
