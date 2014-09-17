@@ -5,7 +5,6 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.*;
-//import com.galimatias.teslaradio.world.observer.ScenarioObserver;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
@@ -13,7 +12,6 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.*;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
@@ -21,11 +19,8 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Quad;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Vector;
+//import com.galimatias.teslaradio.world.observer.ScenarioObserver;
 
 /**
  *
@@ -37,7 +32,12 @@ import java.util.Vector;
 public final class SoundCapture extends Scenario {
 
     private final static String TAG = "SoundCapture";
+    
 
+    
+    
+    private AudioNode micro_sound;
+    
     private Spatial micro;
     private TouchEffectEmitter touchEffectEmitter;
     private Spatial micHandleIn;
@@ -62,7 +62,7 @@ public final class SoundCapture extends Scenario {
     private float secondaryTextSize = 0.25f;
     private float instrumentTextSize = 0.25f;
     private float microphoneTextSize = 0.25f;
-    private ColorRGBA defaultTextColor = new ColorRGBA(1f, 0f, 1f, 1f);
+    private ColorRGBA defaultTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
 
     // Refresh hint values
     private float maxTimeRefreshHint = 30f;
@@ -98,7 +98,7 @@ public final class SoundCapture extends Scenario {
         micHandleIn = scene.getParent().getChild("Mic_Input_Handle");
         micPosition = micro.getWorldTranslation();
         micHandleInPosition = micHandleIn.getWorldTranslation();
-        
+        touchable.attachChild(micro);
         scene.attachChild(touchable);
         
         initAudio();
@@ -153,6 +153,12 @@ public final class SoundCapture extends Scenario {
         /**
          * Will be used for the mic touch effect
          */
+        
+        micro_sound = new AudioNode(assetManager, "Sounds/micro_sound.wav", false);
+        micro_sound.setPositional(false);
+        micro_sound.setLooping(false);
+        micro_sound.setVolume(2);
+        this.attachChild(micro_sound);
 
     }
 
@@ -188,7 +194,19 @@ public final class SoundCapture extends Scenario {
         touchable.attachChild(titleTextBox);
         touchable.attachChild(microphoneTextBox);
     }
+    
+    public void microTouchEffect()
+    {
+        
+        //DrumSoundEmitter.emitParticles(1.0f);
+        //DrumSoundEmitter.emitWaves();
+        MicWireEmitter.emitParticles(3.0f);
 
+        //touchEffectEmitter.isTouched();
+
+        micro_sound.playInstance();
+
+    }
     
     public void textBoxesUpdate(Vector3f upVector)
     {
@@ -246,13 +264,15 @@ public final class SoundCapture extends Scenario {
                         Spatial touchedGeometry = closest.getGeometry();
                         String nameToCompare = touchedGeometry.getParent().getName();
 
-
-                        if (nameToCompare.equals(microphoneTextBox.getName()))
+                        if (nameToCompare.equals(micro.getName()))
                         {
-                            //this.textTouchEffect();
-                            showInformativeMenu = true;
-                            break;
+                            this.microTouchEffect();
                         }
+                        else if (nameToCompare.equals(microphoneTextBox.getName()))
+                        {
+                            showInformativeMenu = true;
+                        }
+
                 }
             }
         }
@@ -267,8 +287,8 @@ public final class SoundCapture extends Scenario {
     @Override
     public boolean simpleUpdate(float tpf) {
 
-  //      MicWireEmitter.simpleUpdate(tpf, this.Camera);
-//        touchEffectEmitter.simpleUpdate(tpf);
+        MicWireEmitter.simpleUpdate(tpf, this.Camera);
+        //touchEffectEmitter.simpleUpdate(tpf);
         
         if(Camera != null) {
             Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
@@ -280,8 +300,9 @@ public final class SoundCapture extends Scenario {
             showInformativeMenu = false;
             return true;
         }
-        else
+        else{
             return false;
+        }
     }
 
     @Override
