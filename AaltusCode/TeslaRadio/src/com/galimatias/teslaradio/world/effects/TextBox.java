@@ -42,7 +42,17 @@ public class TextBox extends Node {
     private boolean lookAtCamera = false;
     
 
-    public TextBox(AssetManager assetManager, String textToDisplay, float size, ColorRGBA color,  ColorRGBA backgroundColor, float textBoxWidth, float textBoxHeight, String textBoxName, BitmapFont.Align alignment, boolean showBoxDebug, boolean lookAtCamera)
+    public TextBox(AssetManager assetManager, 
+                   String textToDisplay, 
+                   float size, 
+                   ColorRGBA color,  
+                   ColorRGBA backgroundColor, 
+                   float textBoxWidth, 
+                   float textBoxHeight, 
+                   String textBoxName, 
+                   BitmapFont.Align alignment, 
+                   boolean showBoxDebug, 
+                   boolean lookAtCamera)
     {
         this.detachAllChildren();
         guiFont = assetManager.loadFont("Interface/Fonts/Helvetica.fnt");

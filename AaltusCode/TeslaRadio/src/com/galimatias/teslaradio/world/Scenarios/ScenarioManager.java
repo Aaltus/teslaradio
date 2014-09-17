@@ -119,7 +119,7 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
         scenarios.add(soundCapture);
         
         //Init SoundCapture scenario
-        Modulation modulation = new Modulation(assetManager, cam);
+        Modulation modulation = new Modulation(assetManager, cam, this);
         scenarios.add(modulation);
         SoundEmission soundEmission = new SoundEmission(assetManager, cam, this);
         scenarios.add(soundEmission);
@@ -178,7 +178,7 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
                     }
                     scenario.rotate(rot);
 
-                    WORLD_SCALE_DEFAULT = 100;
+                    //WORLD_SCALE_DEFAULT = 100;
                     scenario.scale(WORLD_SCALE_DEFAULT);
                 }
                 
@@ -206,6 +206,12 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
                     }
 
                 WORLD_SCALE_DEFAULT = 10;
+                
+                for (Scenario scenario : scenarios) {
+                    
+                    scenario.scale(WORLD_SCALE_DEFAULT);
+                }
+                
                 break;
                 
             default:

@@ -1,10 +1,13 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.SignalEmitter;
+import com.galimatias.teslaradio.world.effects.SignalType;
 import com.galimatias.teslaradio.world.effects.TextBox;
+import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
 import static com.jme3.input.event.TouchEvent.Type.DOWN;
 import com.jme3.material.Material;
@@ -41,10 +44,11 @@ public class Modulation extends Scenario {
     private final String sAM498 = "498 AM";
     private final String sAM707 = "707 AM";
     private       Boolean isFM = true;
+    private Boolean switchIsToggled = false;
     
     // 3D objects of the scene
-    private Spatial pcb;
-    private Spatial button;
+    private Spatial turnButton;
+    private Spatial dodecagone; // This is a carrier wave form...
     
     // TextBox of the scene
     private TextBox titleTextBox;
@@ -53,11 +57,12 @@ public class Modulation extends Scenario {
     // Default text to be seen when scenario starts
     private String titleText = "La Modulation";
     private float titleTextSize = 0.5f;
-    private ColorRGBA defaultTextColor = new ColorRGBA(1f, 0f, 1f, 1f);
+    private ColorRGBA defaultTextColor = ColorRGBA.Green;
     
     // Signals emitters 
-    private SignalEmitter electricalParticles;
-    private SignalEmitter carrierParticles;
+    private SignalEmitter electricalEmitter = new SignalEmitter(this);
+    private SignalEmitter carrierEmitter = new SignalEmitter(this);
+    private SignalEmitter modulatedEmitter = new SignalEmitter(this);
     
     // Geometry of the carrier signals
     private Geometry cubeCarrier;
@@ -76,38 +81,28 @@ public class Modulation extends Scenario {
     private float trackableAngle = 0;
     private int direction = 1;
     
-    public Modulation(AssetManager assetManager, com.jme3.renderer.Camera Camera /*, ScenarioObserver observer*/) {
+    public Modulation(AssetManager assetManager, com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker) {
 
-        super(assetManager, Camera);
+        super(assetManager, Camera, particleLinker);
 
         loadUnmovableObjects();
         loadMovableObjects();
     }
-    
-    public Modulation(AssetManager assetManager) {
-        this(assetManager,null /*, null */);
-    }
 
     @Override
     protected void loadUnmovableObjects() {
-
-       /** create a blue box at coordinates (1,-1,1) */
-        Box box1 = new Box(1,1,1);
-        Geometry blue = new Geometry("Box", box1);
-        blue.scale(10.0f);
-        blue.setLocalTranslation(new Vector3f(0,10,0));
-        Material mat1 = new Material(assetManager, 
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", ColorRGBA.Green);
-        blue.setMaterial(mat1);
-        this.attachChild(blue);
         
-        initTunerButton();
+        scene = (Node) assetManager.loadModel("Models/Modulation/modulation.j3o");
+        scene.setName("Modulation");
+        this.attachChild(scene);
+        
+        initDigitalDisplay();
     }
 
     @Override
     public void loadMovableObjects() {
-
+        
+        turnButton = scene.getChild("Button");
         initCarrierGeometries();
     }
 
@@ -167,7 +162,7 @@ public class Modulation extends Scenario {
                         
                         if (nameToCompare.equals(this.getChild("Switch").getName()))
                         {
-                            toggleModulationMode();
+                            switchIsToggled = true;
                             break;
                         }
                     }
@@ -181,7 +176,7 @@ public class Modulation extends Scenario {
         
         //float angleX = this.getUserData("angleX");
         
-        trackableAngle += direction * pi/9/2000;
+        trackableAngle += direction * (pi/9)* tpf;
         if (trackableAngle >= 2*pi || trackableAngle <= 0)
         {
             //trackableAngle = 0;
@@ -189,9 +184,8 @@ public class Modulation extends Scenario {
         }
         
         checkTrackableAngle(trackableAngle);
-        
-        
-        
+        checkModulationMode(tpf);
+                
         return false;
     }
 
@@ -205,8 +199,29 @@ public class Modulation extends Scenario {
 
     }
     
+    @Override
+    public Vector3f getParticleReceiverHandle() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void sendSignalToEmitter(Geometry newSignal, float magnitude) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    private void checkModulationMode(float tpf) {
+        
+        // TODO use tpf to animate the switch when touched
+        if(switchIsToggled)
+        {
+            isFM = isFM ? false : true;
+            switchIsToggled = false;
+        }
+    }
+    
     public void toggleModulationMode() {
-        isFM = isFM ? false : true;
+        
+        switchIsToggled = true;   
     }
     
     private void initCarrierGeometries() {
@@ -220,40 +235,55 @@ public class Modulation extends Scenario {
 
         Dome pyramid = new Dome(2, 4, 1.0f);
         pyramidCarrier = new Geometry("PyramidCarrier", pyramid);
+        mat1.setColor("Color", ColorRGBA.Green);
         pyramidCarrier.setMaterial(mat1);
         
-        // TODO Change this carrier
-        PQTorus torus = new PQTorus(pi, pi, pi, pi, RF_BOUND, refreshFlags);
-        dodecagoneCarrier = new Geometry("DodecagoneCarrier", torus);
-        dodecagoneCarrier.setMaterial(mat1);
-                
+        dodecagone = (Node) assetManager.loadModel("Models/Modulation/Dodecahedron.j3o");
+                         
     }
     
     private void initEmitters() {
         
+        // Get the different paths to follow
+        
+        
+        //electricalEmitter = new SignalEmitter();
+        
     }
     
-    private void initTunerButton() {
+    private void initDigitalDisplay() {
         
-        /** create a blue box at coordinates (1,-1,1) */
-        Box box1 = new Box(1,1,1);
-        Geometry blue = new Geometry("Box2", box1);
-        blue.scale(10.0f);
-        blue.setLocalTranslation(new Vector3f(0,10,40));
-        Material mat1 = new Material(assetManager, 
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", ColorRGBA.Blue);
-        blue.setMaterial(mat1);
-        this.attachChild(blue);
+        // Default configuration of the digital display
+        digitalDisplay = new TextBox(assetManager, 
+                                     sFM1061, 
+                                     titleTextSize, 
+                                     defaultTextColor, 
+                                     new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f), 
+                                     3.5f, 1.0f, 
+                                     "DigitalDisplay", 
+                                     BitmapFont.Align.Center.Center, 
+                                     false, 
+                                     false);
         
-    }
+        // Get the digital display parameters
+        Vector3f displayPosition = scene.getChild("Display").getWorldTranslation();
+        displayPosition.add(0.0f, 10.0f, -5.0f);
+        
+        digitalDisplay.setLocalTranslation(displayPosition);
+        Quaternion rotY = new Quaternion();
+        Quaternion rotZ = new Quaternion();
+        rotY.fromAngleAxis(pi/2, Vector3f.UNIT_Y);
+        rotZ.fromAngleAxis(-pi/2, Vector3f.UNIT_X);
+        digitalDisplay.rotate(rotY);
+        digitalDisplay.rotate(rotZ);
+        scene.attachChild(digitalDisplay);
+    }  
     
     private void turnTunerButton(float ZXangle) {
         
-        Spatial Box = this.getChild("Box2");
         Quaternion rot = new Quaternion();
         rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
-        Box.setLocalRotation(rot);
+        turnButton.setLocalRotation(rot);
     }
     
     private void changeModulation(int frequency, Boolean isFM) {
@@ -261,22 +291,22 @@ public class Modulation extends Scenario {
         if (isFM){
             switch(frequency){
                 case 1:
-                    //digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     System.out.println(sFM1061);
                     changeElectricalParticles();
                     break;
                 case 2:
-                    //digitalDisplay.simpleUpdate(sFM977, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sFM977, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     System.out.println(sFM977);
                     changeElectricalParticles();
                     break;
                 case 3:
-                    //digitalDisplay.simpleUpdate(sFM952, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sFM952, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     System.out.println(sFM952);
                     changeElectricalParticles();
                     break;
                 default:
-                    //digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     System.out.println(sFM1061);
                     changeElectricalParticles();
                     break;
@@ -285,17 +315,17 @@ public class Modulation extends Scenario {
         else{
             switch(frequency){
                 case 1:
-                    //digitalDisplay.simpleUpdate(sAM697, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sAM697, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     System.out.println(sAM697);
                     changeElectricalParticles();
                     break;
                 case 2:
-                    //digitalDisplay.simpleUpdate(sAM498, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sAM498, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     System.out.println(sAM498);
                     changeElectricalParticles();
                     break;
                 case 3:
-                    //digitalDisplay.simpleUpdate(sAM707, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sAM707, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     System.out.println(sAM707);
                     changeElectricalParticles();
                     break;
