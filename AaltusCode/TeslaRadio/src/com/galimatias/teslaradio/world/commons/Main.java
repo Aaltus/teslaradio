@@ -64,8 +64,8 @@ public class Main extends SimpleApplication implements ActionListener
         rootNode.attachChild(nodeA);
         rootNode.attachChild(nodeB);
         float value = 60;
-        nodeA.move(value,0,0);
-        nodeB.move(-value,0,0);
+        nodeA.move(-value,0,0);
+        nodeB.move(+value,0,0);
         nodeList.add(nodeA);
         nodeList.add(nodeB);
         

@@ -49,9 +49,9 @@ public class DummyScenario extends Scenario {
     @Override
     protected void loadUnmovableObjects() {
 
-        Box box1 = new Box(20,5,10);
+        Box box1 = new Box(2,0.5f,1);
         box = new Geometry("Box", box1);
-        box.setLocalTranslation(new Vector3f(0,5f,0));
+        box.setLocalTranslation(new Vector3f(0,0.5f,0));
         Material mat1 = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setColor("Color", this.color);
