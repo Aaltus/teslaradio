@@ -75,7 +75,7 @@ public class SoundEmission extends Scenario {
     private float titleTextSize = 0.5f;
     private float secondaryTextSize = 0.25f;
     private float instrumentTextSize = 0.25f;
-    private ColorRGBA defaultTextColor = new ColorRGBA(1f, 0f, 1f, 1f);
+    private ColorRGBA defaultTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
 
     // Refresh hint values
     private float maxTimeRefreshHint = 30f;

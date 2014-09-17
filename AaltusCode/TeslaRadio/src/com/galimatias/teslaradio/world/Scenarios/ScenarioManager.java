@@ -91,11 +91,11 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
     private AppListener appListener;
     
     private static final String NEXT_SCENARIO = "NextScenario";
+    private static final String PREVIOUS_SCENARIO = "PreviousScenario";
     private static final String TEXT = "Text";
     private static final String GUITAR = "Guitar";
     private static final String DRUM = "Drum";
-    private static final String PREVIOUS_SCENARIO = "PreviousScenario";
-    
+    private static final String MICRO = "Micro";
 
     public ScenarioManager(ApplicationType applicationType,
             List<Node> node,
@@ -188,6 +188,7 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
                         inputManager.addMapping(DRUM, new KeyTrigger(KeyInput.KEY_T));
                         inputManager.addMapping(GUITAR, new KeyTrigger(KeyInput.KEY_G));
                         inputManager.addMapping(TEXT, new KeyTrigger(KeyInput.KEY_H));
+                        inputManager.addMapping(MICRO, new KeyTrigger(KeyInput.KEY_M));
                         inputManager.addMapping(NEXT_SCENARIO, new KeyTrigger(KeyInput.KEY_P));
                         inputManager.addMapping(PREVIOUS_SCENARIO, new KeyTrigger(KeyInput.KEY_O));
 
@@ -195,6 +196,7 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
                         inputManager.addListener(this, DRUM);
                         inputManager.addListener(this, GUITAR);
                         inputManager.addListener(this, TEXT);
+                        inputManager.addListener(this, MICRO);
                         inputManager.addListener(this, NEXT_SCENARIO);
                         inputManager.addListener(this, PREVIOUS_SCENARIO);
                     }
@@ -329,7 +331,7 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
     @Override
     public void onAction(String name, boolean keyPressed, float tpf) {
         
-        if ((name.equals(GUITAR) || name.equals(DRUM)) && !keyPressed) {
+        if ((name.equals(GUITAR) || name.equals(DRUM) || name.equals(MICRO)) && !keyPressed) {
             List<Scenario> scenarios = getCurrentScenario().getScenarios();
             if(scenarios != null){
                 for(Scenario scenario : scenarios ){
@@ -341,6 +343,12 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
                         if(name.equals(GUITAR))
                         {
                             ((SoundEmission)scenario).guitarTouchEffect();
+                        }
+                    }
+                    if(scenario instanceof SoundCapture){
+                        if(name.equals(MICRO))
+                        {
+                            ((SoundCapture)scenario).microTouchEffect();
                         }
                     }
                 }
