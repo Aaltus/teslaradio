@@ -8,6 +8,7 @@ import android.util.Log;
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.galimatias.teslaradio.world.observer.Observable;
 import com.galimatias.teslaradio.world.observer.Observer;
+import com.galimatias.teslaradio.world.observer.SignalObservable;
 import com.galimatias.teslaradio.world.observer.SignalObserver;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Spline;
@@ -26,7 +27,7 @@ import java.util.Vector;
  *
  * @author David
  */
-public class SignalEmitter extends Node implements SignalObserver, Observable
+public class SignalEmitter extends Node
 {
     
     private Vector<Vector3f> paths = new Vector<Vector3f>();
@@ -35,7 +36,7 @@ public class SignalEmitter extends Node implements SignalObserver, Observable
     private float particlesSpeed;
     private SignalType signalType;
     private float capturePathLength = -1;
-    private List<Observer> observers = new ArrayList<Observer>();
+    private SignalObserver signalObserver = null;
     
     private ArrayList<Float> waveMagnitudes;
     private float wavePeriod;
@@ -104,8 +105,11 @@ public class SignalEmitter extends Node implements SignalObserver, Observable
      * New constructor
      * @param observer
      */
-    public SignalEmitter(Observer observer) {
-        this.registerObserver(observer);
+    public SignalEmitter(SignalObserver observer) {
+
+        if (observer != null){
+            signalObserver = observer;
+        }
     }
 
     /**
@@ -139,8 +143,9 @@ public class SignalEmitter extends Node implements SignalObserver, Observable
     }
 
     /**
-     * TODO: Implement this new method
+     * Method that prepares the emitter to send a signal to the receiver handle.
      * @param receiverHandlePosition
+     * @return the vector between the Signal Input and Output.
      */
     public void prepareEmitParticles(Vector3f receiverHandlePosition)
     {
@@ -226,9 +231,9 @@ public class SignalEmitter extends Node implements SignalObserver, Observable
             Signal mySignal;
             int a = paths.indexOf(path);
             if (paths.indexOf(path)==0)
-                mySignal = new Signal(plainParticle, path, particlesSpeed, magnitude, capturePathLength, this);
+                mySignal = new Signal(plainParticle, path, particlesSpeed, magnitude, true, signalObserver);
             else {
-                mySignal = new Signal(translucentParticle, path, particlesSpeed, magnitude, this);
+                mySignal = new Signal(translucentParticle, path, particlesSpeed, magnitude, false, signalObserver);
             }
             
             waveNode.attachChild(mySignal);
@@ -239,7 +244,7 @@ public class SignalEmitter extends Node implements SignalObserver, Observable
 
     private void emitCurWireParticles(Node waveNode, float magnitude){
         
-        Signal myCurvedSignal = new Signal(plainParticle, curveSpline, particlesSpeed, magnitude, this);
+        Signal myCurvedSignal = new Signal(plainParticle, curveSpline, particlesSpeed, magnitude, signalObserver);
         waveNode.attachChild(myCurvedSignal);
         this.attachChild(waveNode);
     }
@@ -268,29 +273,34 @@ public class SignalEmitter extends Node implements SignalObserver, Observable
 //        emitParticles(1.0f); //TODO: PASS THE CORRECT MAGNITUDE
 //    }
 
-    public void registerObserver(Observer observer) {
-        observers.add(observer);
-    }
-
-    public void removeObserver(Observer observer) {
-        observers.remove(observer);
-    }
-
-    public void notifyObservers(Object caller) {
-        for (Observer observer: observers)
-        {
-
-        }
-    }
+//    public void registerObserver(Observer observer) {
+//        observers.add(observer);
+//    }
+//
+//    public void removeObserver(Observer observer) {
+//        observers.remove(observer);
+//    }
+//
+//    public void notifyObservers(Object caller) {
+//        for (Observer observer: observers)
+//        {
+//
+//        }
+//    }
 
 //    @Override
 //    public void signalEndOfPath() {
 //
 //    }
 
-    @Override
-    public void signalEndOfPath(Signal caller) {
-        Log.d("HEHE", "HAAAAAAAA!!");
-    }
+//    @Override
+//    public void signalEndOfPath(Signal caller) {
+//        Log.d("HEHE", "HAAAAAAAA!!");
+//    }
+//
+//    @Override
+//    public void notifyEndOfPath() {
+//
+//    }
 }
 

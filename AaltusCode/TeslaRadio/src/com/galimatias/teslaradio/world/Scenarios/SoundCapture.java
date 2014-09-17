@@ -295,14 +295,13 @@ public final class SoundCapture extends Scenario {
     }
 
     @Override
-    public void observerUpdate() {
-
-    }
-
-    @Override
-    public Vector3f GetParticleReceiverHandle(){
+    public Vector3f getParticleReceiverHandle(){
 
         return micHandleIn.getWorldTranslation();
     }
 
+    @Override
+    public void sendSignalToEmitter(Signal newSignal) {
+
+    }
 }

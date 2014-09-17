@@ -1,5 +1,6 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.Signal;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.event.TouchEvent;
@@ -23,13 +24,13 @@ public class DummyScenario extends Scenario {
     }
 
     @Override
-    public Vector3f GetParticleReceiverHandle() {
+    public Vector3f getParticleReceiverHandle() {
         return null;
     }
 
     @Override
-    public void observerUpdate() {
-
+    public void sendSignalToEmitter(Signal newSignal) {
+        
     }
 
     public DummyScenario(AssetManager assetManager, com.jme3.renderer.Camera Camera, ColorRGBA color)
@@ -87,6 +88,11 @@ public class DummyScenario extends Scenario {
 
     @Override
     public void onAudioEvent() {
+
+    }
+
+    @Override
+    public void signalEndOfPath(Signal caller) {
 
     }
 }

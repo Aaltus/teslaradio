@@ -2,11 +2,11 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
+import com.galimatias.teslaradio.world.effects.Signal;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
-import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.math.ColorRGBA;
@@ -35,15 +35,19 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
 
     public final static int ANDROID_SCALE_DEFAULT = 100;
 
+    /**
+     * Method that return the next scenario's receiver handle position
+     * @param caller
+     * @return the handle vector
+     */
     @Override
     public Vector3f GetEmitterDestinationPaths(Scenario caller) {
-        List<Scenario> currentScenarios = currentScenario.getScenarios();
-        for (Scenario scenario: currentScenarios){
-            if (scenario != caller){
-                return scenario.GetParticleReceiverHandle();
-            }
-        }
-        return null;
+        return currentScenario.getNextScenarioInGroup(caller).getParticleReceiverHandle();
+    }
+
+    @Override
+    public void sendSignalToNextScenario(Scenario caller, Signal newSignal) {
+        currentScenario.getNextScenarioInGroup(caller).sendSignalToEmitter(newSignal);
     }
 
     /**
@@ -363,6 +367,15 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
 
         public Integer getIndex() {
             return index;
+        }
+
+        public Scenario getNextScenarioInGroup(Scenario scenario){
+            for (Scenario scenarioInList: scenarios){
+                if (scenarioInList != scenario){
+                    return scenarioInList;
+                }
+            }
+            return null;
         }
 
     }

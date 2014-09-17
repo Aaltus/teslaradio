@@ -606,8 +606,13 @@ public final class SoundCapturev2 extends Scenario {
     }
 
     @Override
-    public Vector3f GetParticleReceiverHandle() {
+    public Vector3f getParticleReceiverHandle() {
         return null;
+    }
+
+    @Override
+    public void sendSignalToEmitter(Signal newSignal) {
+
     }
 
     @Override
@@ -617,7 +622,7 @@ public final class SoundCapturev2 extends Scenario {
     }
 
     @Override
-    public void observerUpdate() {
+    public void signalEndOfPath(Signal caller) {
 
     }
 }

@@ -33,31 +33,13 @@ public class Signal extends Geometry implements SignalObservable {
     private float speed;
     private float startScale;
     private float distanceTraveled;
-    private float capturePathLength = -1;
+    private boolean signalOnVector;
     
     private int lineIndex = 0;
     private float currentLength = 0;
-    
-    // Linear path Particle
-    public Signal(Geometry particle, Vector3f path, float speed, float startScale, SignalObserver observer) {
-        this.setMesh(particle.getMesh());
-        this.setMaterial(particle.getMaterial());
-        this.speed = speed;
-        this.path = path;
-        this.isCurved = false;
-        this.getMaterial().getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        this.setQueueBucket(Bucket.Transparent);
-        this.capturePathLength = -1;
-        this.startScale = startScale;
-        this.setLocalScale(startScale);
 
-        if (observer != null){
-            this.signalObservers.add(observer);
-        }
-    }
- 
-    // Linear path Particle with capture
-    public Signal(Geometry particle, Vector3f path, float speed, float startScale, float capturePathLength, SignalObserver observer) {
+    // Linear path Particle
+    public Signal(Geometry particle, Vector3f path, float speed, float startScale, boolean signalOnVector, SignalObserver observer) {
         this.setMesh(particle.getMesh());
         this.setMaterial(particle.getMaterial());
         this.speed = speed;
@@ -65,7 +47,7 @@ public class Signal extends Geometry implements SignalObservable {
         this.isCurved = false;
         this.getMaterial().getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         this.setQueueBucket(Bucket.Transparent);
-        this.capturePathLength = capturePathLength;
+        this.signalOnVector = signalOnVector;
         this.startScale = startScale;
         this.setLocalScale(startScale);
 
@@ -147,11 +129,7 @@ public class Signal extends Geometry implements SignalObservable {
         Vector3f newPos = currentPos.add(path.normalize().mult(displacement));
         distanceTraveled += displacement;
         
-        //Deletion of the object if its at the end of its path.
-        if(distanceTraveled>capturePathLength && capturePathLength!= -1){
-            this.notifyEndOfPath();
-        }
-        else if (distanceTraveled>path.length()) {
+        if (distanceTraveled>path.length()) {
             this.notifyEndOfPath();
         }
         else {
@@ -182,7 +160,9 @@ public class Signal extends Geometry implements SignalObservable {
     @Override
     public void notifyEndOfPath() {
         for (SignalObserver observer: signalObservers){
-            observer.signalEndOfPath(this);
+            if (isCurved || (!isCurved && signalOnVector)){
+                observer.signalEndOfPath(this);
+            }
             this.removeFromParent();
         }
     }
