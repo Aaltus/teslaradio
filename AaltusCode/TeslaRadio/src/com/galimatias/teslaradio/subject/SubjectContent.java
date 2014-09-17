@@ -5,6 +5,7 @@ import android.util.SparseArray;
 import com.galimatias.teslaradio.R;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ public class SubjectContent {
      */
     public static List<SubjectItem> ITEMS = new ArrayList<SubjectItem>();
     public static SparseArray<SubjectItem> ITEM_MAP = new SparseArray<SubjectItem>();
+    public static EnumMap<ScenarioEnum,SubjectItem> ENUM_MAP = new EnumMap<ScenarioEnum, SubjectItem>(ScenarioEnum.class);
 
     /**
      * Add a all the subject content to the list with the language specified
@@ -44,6 +46,7 @@ public class SubjectContent {
     {
         ITEMS.add(item);
         ITEM_MAP.put(item.id, item);
+        ENUM_MAP.put(item.getScenarioEnum(),item);
     }
 
     /**

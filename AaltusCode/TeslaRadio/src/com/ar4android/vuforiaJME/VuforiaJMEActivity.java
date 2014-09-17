@@ -229,7 +229,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         {
             public void run()
             {
-                getInformativeMenuFragment().toggleFragmentsVisibility(scenarioEnum);
+                getInformativeMenuFragment().replaceDetailFragment(scenarioEnum);
 
             }
         });
@@ -842,9 +842,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                         @Override
                         public void run() {
 
-                            if (getInformativeMenuFragment().isChildFragmentsHidden())
+
+                            if (getInformativeMenuFragment().isChildFragmentShown())
                             {
-                                toggleInformativeMenuCallback(null);
+                                getInformativeMenuFragment().showAllChildFragments(false);
                             }
                             else
                             {
