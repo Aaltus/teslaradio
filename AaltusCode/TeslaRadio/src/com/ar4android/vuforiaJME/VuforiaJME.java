@@ -200,9 +200,6 @@ public class VuforiaJME extends SimpleApplication {
 
 	}
 
-
-
-
     public void initForegroundCamera(float fovY) {
 
         int settingsWidth = settings.getWidth();

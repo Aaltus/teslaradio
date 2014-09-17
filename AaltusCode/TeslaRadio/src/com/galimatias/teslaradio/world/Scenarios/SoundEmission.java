@@ -1,6 +1,7 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.*;
+import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
@@ -13,7 +14,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -36,7 +36,6 @@ public class SoundEmission extends Scenario {
 
     private Spatial drumHandleOut;
     private Spatial guitarHandleOut;
-    private Spatial micHandleIn;
 
     private Halo halo_drum, halo_guitar;
 
@@ -58,12 +57,12 @@ public class SoundEmission extends Scenario {
     private Vector3f guitarPosition;
     private Vector3f drumHandleOutPosition;
     private Vector3f guitarHandleOutPosition;
-    private Vector3f micHandleInPosition;
 
     //CHANGE THIS VALUE CHANGE THE PARTICULE BEHAVIOUR
     //Setting the direction norms and the speed displacement to the trajectories
     private float VecDirectionNorms = 8f;
-    private float SoundParticles_Speed = 5f;
+    private float SoundParticleSpeed = 5f;
+    private float SoundParticlePeriod = 0.25f;
 
     // CHANGE THESE VALUES TO SET THE TOUCH EFFECT BEHAVIOUR
     private float drumScaleGradient = 50.0f;
@@ -82,9 +81,9 @@ public class SoundEmission extends Scenario {
     private float maxTimeRefreshHint = 30f;
     private float timeLastTouch = maxTimeRefreshHint;
 
-    public SoundEmission(AssetManager assetManager, com.jme3.renderer.Camera Camera/*, ScenarioObserver observer*/)
+    public SoundEmission(AssetManager assetManager, com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker)
     {
-        super(assetManager,Camera/*, observer*/);
+        super(assetManager,Camera, particleLinker);
         
         touchable = new Node();
         touchable.setName("Touchable");
@@ -107,14 +106,7 @@ public class SoundEmission extends Scenario {
         
         touchable.attachChild(sceneDrum);
         touchable.attachChild(sceneGuit);
-        
-        micHandleIn = new Node();
-        this.attachChild(micHandleIn);
-        micHandleIn.setLocalTranslation(10f, 10f, 0f);
-        
-        //this.attachChild(sceneDrum);
-        //this.attachChild(sceneGuit);
-        this.scale(10.0f,10.0f,10.0f);
+
 
         drum = sceneDrum.getChild("Tambour");
         guitar = sceneGuit.getChild("Guitar");
@@ -123,17 +115,13 @@ public class SoundEmission extends Scenario {
         drumPosition = sceneDrum.getLocalTranslation();
         guitarPosition = sceneGuit.getLocalTranslation();
         drumHandleOutPosition = drumHandleOut.getLocalTranslation().add(sceneDrum.getLocalTranslation());
-        guitarHandleOutPosition = guitarHandleOut.getLocalTranslation().add(sceneGuit.getLocalTranslation());//guitarHandleOut.getWorldTranslation();
-        micHandleInPosition = micHandleIn.getLocalTranslation();
+        guitarHandleOutPosition = guitarHandleOut.getLocalTranslation().add(sceneGuit.getLocalTranslation());
 
         initAudio();
         initTextBox();
         initImageBoxes();
         initHaloEffects();
         initOnTouchEffect();
-        
-        
-
     }
 
     @Override
@@ -141,9 +129,6 @@ public class SoundEmission extends Scenario {
 
         initDrumParticlesEmitter();
         initGuitarParticlesEmitter();
-
-//        DrumSoundEmitter.registerObserver(MicWireEmitter);
-//        GuitarSoundEmitter.registerObserver(MicWireEmitter);
     }
 
     @Override
@@ -162,25 +147,6 @@ public class SoundEmission extends Scenario {
      */
     private void initDrumParticlesEmitter()
     {
-        // Getting all the trajectories from the position of the mic-drums and 
-        // the number of directions        
-        Vector3f drumMicDirection = micHandleInPosition.subtract(drumHandleOutPosition);
-
-        int totalNbDirections = 10;
-        int nbXYDirections = 2;
-
-        /**
-         * The trajectories will not be sent in the init
-         */
-        // Creating the trajectories
-        SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
-        directionFactory.setTrajectories(drumMicDirection, VecDirectionNorms);
-        drum_trajectories = directionFactory.getTrajectories();
-
-        // calculalate drum to mic path length
-        Vector3f drum2MicVector = drumHandleOutPosition.subtract(micHandleInPosition);
-        float drum2MicLength = drum2MicVector.length();
-
         // instantiate 3d Sound particul model
         Quad rect = new Quad(0.1f, 0.1f);
         Geometry soundParticle = new Geometry("particul",rect);
@@ -192,9 +158,12 @@ public class SoundEmission extends Scenario {
         Geometry soundParticleTranslucent = soundParticle.clone();
         soundParticleTranslucent.getMaterial().setTexture("ColorMap", assetManager.loadTexture("Textures/Sound_wAlpha.png"));
 
-        DrumSoundEmitter = new SignalEmitter(drum_trajectories, drum2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
+        //DrumSoundEmitter = new SignalEmitter(drum_trajectories, drum2MicLength, soundParticle, soundParticleTranslucent, SoundParticleSpeed, SignalType.Air );
+
+        // Initializing the new Signal Emitter
+        DrumSoundEmitter = new SignalEmitter(this);
         this.attachChild(DrumSoundEmitter);
-        DrumSoundEmitter.setLocalTranslation(drumHandleOutPosition); // TO DO: utiliser le object handle blender pour position
+        DrumSoundEmitter.setLocalTranslation(drumHandleOutPosition);
 
         //Set the impulsional response of the emitter
         ArrayList<Float> waveMagnitudes = new ArrayList(3);
@@ -203,7 +172,7 @@ public class SoundEmission extends Scenario {
         waveMagnitudes.add(3f);
         waveMagnitudes.add(1f);
 
-        DrumSoundEmitter.setWaves(waveMagnitudes, 0.25f);
+        DrumSoundEmitter.setWaves(waveMagnitudes, soundParticle, soundParticleTranslucent, SoundParticlePeriod, SoundParticleSpeed);
     }
 
     /**
@@ -211,38 +180,17 @@ public class SoundEmission extends Scenario {
      */
     private void initGuitarParticlesEmitter()
     {
-        // Getting all the trajectories from the position of the mic-drums and
-        // the number of directions
-        Vector3f guitarMicDirection = micHandleInPosition.subtract(guitarHandleOutPosition);
-//
-        int totalNbDirections = 10;
-        int nbXYDirections = 2;
-//
-//        // Creating the trajectories
-        SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
-        directionFactory.setTrajectories(guitarMicDirection, VecDirectionNorms);
-        guitar_trajectories = directionFactory.getTrajectories();
-//
-//        // calculalate drum to mic path length
-        Vector3f guitar2MicVector = guitarHandleOutPosition.subtract(micHandleInPosition);
-        float guitar2MicLength = guitar2MicVector.length();
-
-        // instantiate 3d Sound particul model
-        //Sphere sphere = new Sphere(8, 8, 0.9f);
-        //Geometry soundParticle = new Geometry("particul",sphere);
-        //Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
 
         Quad rect = new Quad(0.1f, 0.1f);
         Geometry soundParticle = new Geometry("particul",rect);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         soundParticul_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
 
-        //soundParticul_mat.setColor("Color", ColorRGBA.Red);
         soundParticle.setMaterial(soundParticul_mat);
         Geometry soundParticleTranslucent = soundParticle.clone();
         soundParticleTranslucent.getMaterial().setTexture("ColorMap", assetManager.loadTexture("Textures/Sound_wAlpha.png"));
 
-        GuitarSoundEmitter = new SignalEmitter(guitar_trajectories, guitar2MicLength, soundParticle, soundParticleTranslucent, SoundParticles_Speed, SignalType.Air );
+        GuitarSoundEmitter = new SignalEmitter(this);
         this.attachChild(GuitarSoundEmitter);
         GuitarSoundEmitter.setLocalTranslation(guitarHandleOutPosition); // TO DO: utiliser le object handle blender pour position
 
@@ -257,7 +205,7 @@ public class SoundEmission extends Scenario {
         waveMagnitudes.add(1.0f);
         waveMagnitudes.add(0.8f);
 
-        GuitarSoundEmitter.setWaves(waveMagnitudes, 0.25f);
+        GuitarSoundEmitter.setWaves(waveMagnitudes, soundParticle, soundParticleTranslucent, SoundParticlePeriod, SoundParticleSpeed);
 
     }
 
@@ -374,12 +322,12 @@ public class SoundEmission extends Scenario {
     public void drumTouchEffect()
     {
         this.removeHintImages();
-        //DrumSoundEmitter.emitParticles(1.0f);
-        DrumSoundEmitter.emitWaves();
-        //MicWireEmitter.emitParticles();
+
+        // Here, we need to get the vector to the mic handle
+        Vector3f receiverHandleVector = particleLinker.GetEmitterDestinationPaths(this);
+        DrumSoundEmitter.prepareEmitParticles(receiverHandleVector);
 
         touchEffectEmitter.isTouched();
-
         drum_sound.playInstance();
 
     }
@@ -387,7 +335,11 @@ public class SoundEmission extends Scenario {
     public void guitarTouchEffect()
     {
         this.removeHintImages();
-        GuitarSoundEmitter.emitWaves();
+
+        // Here, we need to get the vector to the mic handle
+        Vector3f receiverHandleVector = particleLinker.GetEmitterDestinationPaths(this);
+        GuitarSoundEmitter.prepareEmitParticles(receiverHandleVector);
+
         guitar_sound.playInstance();
     }
 
@@ -447,13 +399,10 @@ public class SoundEmission extends Scenario {
                 //case TAP:
                 if (name.equals("Touch"))
                 {
-
                     // 1. Reset results list.
                     CollisionResults results = new CollisionResults();
 
                     // 2. Mode 1: user touch location.
-                    //Vector2f click2d = inputManager.getCursorPosition();
-
                     Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
                     Vector3f click3d = Camera.getWorldCoordinates(
                             new Vector2f(click2d.x, click2d.y), 0f).clone();
@@ -462,18 +411,14 @@ public class SoundEmission extends Scenario {
                     Ray ray = new Ray(click3d, dir);
 
                     // 3. Collect intersections between Ray and Shootables in results list.
-                    //focusableObjects.collideWith(ray, results);
                     touchable.collideWith(ray, results);
 
                     // 4. Print the results
-                    //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
                     for (int i = 0; i < results.size(); i++) {
                         // For each hit, we know distance, impact point, name of geometry.
                         float dist = results.getCollision(i).getDistance();
                         Vector3f pt = results.getCollision(i).getContactPoint();
                         String hit = results.getCollision(i).getGeometry().getName();
-
-                        //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
                     }
 
                     // 5. Use the results (we mark the hit object)
@@ -526,13 +471,6 @@ public class SoundEmission extends Scenario {
 
         if(Camera != null) {
             Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
-
-            // Resetting the values so that it is noob proof
-            //updatedText = null;
-            //updatedTextSize = 0.0f;
-            //updatedTextColor = null;
-            //Log.d(TAG,"Camera position :" + Camera.getLocation());
-
             textBoxesUpdate(upVector);
             hintsUpdate(tpf, upVector);
         }
@@ -552,4 +490,14 @@ public class SoundEmission extends Scenario {
         drumTouchEffect();
     }
 
+    @Override
+    public Vector3f getParticleReceiverHandle(){
+        // Since the Sound Emission is the first module, it doesn't receive anything.
+        return null;
+    }
+
+    @Override
+    public void sendSignalToEmitter(Geometry newSignal, float magnitude) {
+        // The Sound Emission Scenario does not receive any signal for now.
+    }
 }
