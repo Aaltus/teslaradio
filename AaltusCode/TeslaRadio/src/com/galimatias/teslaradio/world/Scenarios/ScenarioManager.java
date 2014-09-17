@@ -200,8 +200,13 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
                         inputManager.addListener(this, NEXT_SCENARIO);
                         inputManager.addListener(this, PREVIOUS_SCENARIO);
                     }
-
-                WORLD_SCALE_DEFAULT = 10;
+                
+                for(Scenario scenario : scenarios)
+                {
+                    WORLD_SCALE_DEFAULT = 10;
+                    scenario.scale(WORLD_SCALE_DEFAULT);
+                }
+                
                 break;
                 
             default:
