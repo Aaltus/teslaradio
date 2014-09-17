@@ -266,8 +266,10 @@ public class Modulation extends Scenario {
                                      false);
         
         // Get the digital display parameters
+        scene.getChild("Display").setQueueBucket(queueBucket.Transparent);
+        scene.getChild("Cube.005").setQueueBucket(queueBucket.Opaque);
         Vector3f displayPosition = scene.getChild("Display").getWorldTranslation();
-        displayPosition.add(0.0f, 10.0f, -5.0f);
+        displayPosition.addLocal(-0.4f, 0.17f, 0.0f);
         
         digitalDisplay.setLocalTranslation(displayPosition);
         Quaternion rotY = new Quaternion();
