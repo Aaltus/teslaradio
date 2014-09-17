@@ -34,10 +34,7 @@ import com.jme3.scene.shape.Box;
 public final class SoundCapture extends Scenario {
 
     private final static String TAG = "SoundCapture";
-    
 
-    
-    
     private AudioNode micro_sound;
     
     private Spatial micro;
@@ -77,11 +74,6 @@ public final class SoundCapture extends Scenario {
         
         loadUnmovableObjects();
         loadMovableObjects();
-    }
-
-    public SoundCapture(AssetManager assetManager)
-    {
-        this(assetManager, null/*, null*/);
     }
 
     /**

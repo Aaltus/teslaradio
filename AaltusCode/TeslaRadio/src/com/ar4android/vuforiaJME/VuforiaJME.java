@@ -104,7 +104,7 @@ public class VuforiaJME extends SimpleApplication {
 	public void simpleInitApp()
     {
         // Where the AppLogger is called for the first time and the log level is set
-        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.DEBUG);
+        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.NONE);
 
         AppLogger.getInstance().i(TAG, "simpleInitApp");
 
@@ -184,10 +184,10 @@ public class VuforiaJME extends SimpleApplication {
 
         initLights();
 
-        this.mTrackableManager.init();
+        this.rootNode.addControl(new TrackableManager());
 
-        scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.ANDROID,
-                this.mTrackableManager.getNodeList(),
+       scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.ANDROID,
+                this.rootNode.getControl(TrackableManager.class).getScenarioNodeList(),
                 assetManager,
                 fgCam,
                 appListener,
@@ -199,9 +199,6 @@ public class VuforiaJME extends SimpleApplication {
         inputManager.addListener(scenarioManager, new String[]{"Touch"});
 
 	}
-
-
-
 
     public void initForegroundCamera(float fovY) {
 
@@ -298,7 +295,7 @@ public class VuforiaJME extends SimpleApplication {
          AppLogger.getInstance().d(TAG, "Update Camera Pose..");
 
 
-        this.mTrackableManager.updatePosition(id,new Vector3f(-cam_x,-cam_y,cam_z));
+            this.rootNode.getControl(TrackableManager.class).updatePosition(id, new Vector3f(-cam_x, -cam_y, cam_z));
 
 
 
@@ -322,12 +319,24 @@ public class VuforiaJME extends SimpleApplication {
 
         Vector3f vx = new Vector3f(cam_right_x, cam_up_x, -cam_dir_x);
 
-        this.mTrackableManager.updateRotationMatrix(id,rotMatrix,vx);
+        this.rootNode.getControl(TrackableManager.class).updateRotationMatrix(id, rotMatrix, vx);
 
 	}
 	public void setTrackableVisibleNative(int id, int isTrackableVisible)
     {
-        this.mTrackableManager.updateVisibility(id, isTrackableVisible > 0 ? true:false);
+      boolean isVisible = false;
+      if(isTrackableVisible != 0)
+      {
+          isVisible = true;
+      }
+      try{
+          this.rootNode.getControl(TrackableManager.class).updateVisibility(id, isVisible);
+      }catch (Exception e)
+      {
+          System.out.println(e);
+      }
+
+
     }
 
     // This method retrieves the preview images from the Android world and puts them into a JME image.
