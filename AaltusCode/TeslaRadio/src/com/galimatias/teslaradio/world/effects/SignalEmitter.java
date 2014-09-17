@@ -144,7 +144,7 @@ public class SignalEmitter extends Node
      * Deprecated
      * @param magnitude
      */
-    public void emitParticles(float magnitude) {
+    private void emitParticles(float magnitude) {
         
         Node waveNode = new Node();
         
