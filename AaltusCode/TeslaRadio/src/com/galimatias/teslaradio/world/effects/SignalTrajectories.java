@@ -144,7 +144,7 @@ public class SignalTrajectories {
 
         for(int index =0; index < (nbVertex*2); index++)
         {
-            controlPoints[index] = getControlPoint(index,bezier_mesh).mult(10f);
+            controlPoints[index] = getControlPoint(index,bezier_mesh);
         }
 
         return new Spline(SplineType.Linear,controlPoints,1,false);

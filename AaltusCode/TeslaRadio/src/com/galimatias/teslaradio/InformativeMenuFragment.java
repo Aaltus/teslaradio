@@ -21,8 +21,10 @@ import com.utils.VerticalSeekBar;
 /**
  * Created by jimbojd72 on 4/26/14.
  */
-public class InformativeMenuFragment extends Fragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener,
-        ItemListFragment.Callbacks, ItemDetailFragment.OnClickDetailFragmentListener{
+public class InformativeMenuFragment extends Fragment implements View.OnClickListener,
+        SeekBar.OnSeekBarChangeListener,
+        ItemListFragment.Callbacks,
+        ItemDetailFragment.OnClickDetailFragmentListener{
 
     private IScenarioSwitcher scenarioSwitcher;
     public void setScenarioSwitcher(IScenarioSwitcher scenarioSwitcher) {
@@ -142,25 +144,65 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
     }
 
-    public boolean isChildFragmentsHidden()
+    public boolean isChildFragmentShown()
+    {
+        return isDetailFragmentsVisible() || isListFragmentsVisible();
+
+    }
+
+    public boolean isListFragmentsVisible()
     {
 
         FragmentManager fm                = getChildFragmentManager(); //getSupportFragmentManager();s
         ItemListFragment listFragment     = (ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
 
-        boolean isHidden = false;
+        boolean isVisible = false;
         if(listFragment != null && listFragment.isVisible())
         {
-            isHidden = true;
+            isVisible = true;
         }
 
-        return isHidden;
+        return isVisible;
 
     }
+
+    public boolean isDetailFragmentsVisible()
+    {
+
+        FragmentManager fm                = getChildFragmentManager(); //getSupportFragmentManager();s
+        ItemDetailFragment detailFragment     = (ItemDetailFragment) fm.findFragmentByTag(ITEM_DETAIL_FRAGMENT_TAG);
+
+        boolean isVisible = false;
+        if(detailFragment != null && detailFragment.isVisible())
+        {
+            isVisible = true;
+        }
+
+        return isVisible;
+
+    }
+
+    public void showAllChildFragments(boolean showFragment)
+    {
+        toggleFragmentsVisibility(showFragment);
+        toggleItemListVisibility(showFragment);
+    }
+
+
 
     /** Action when a listfragment item is selected*/
     @Override
     public void onItemSelected(int id) {
+
+        toggleItemListVisibility(false);
+
+        replaceDetailFragment(id);
+
+
+    }
+
+    public void replaceDetailFragment(int id)
+    {
 
         //Create the details fragment with the specified Id
         Bundle arguments = new Bundle();
@@ -178,7 +220,13 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         ScenarioEnum scenarioEnum = SubjectContent.ITEM_MAP.get(id).getScenarioEnum();
         scenarioSwitcher.setScenarioByEnum(scenarioEnum);
 
+        toggleFragmentsVisibility(true);
 
+    }
+
+    public void replaceDetailFragment(ScenarioEnum scenarioEnum)
+    {
+        replaceDetailFragment(SubjectContent.ENUM_MAP.get(scenarioEnum).getId());
     }
 
     /**
@@ -197,7 +245,12 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
                 break;
 
             case R.id.camera_toggle_info_button:
-                toggleFragmentsVisibility(null);
+                if(isListFragmentsVisible()){
+                    toggleItemListVisibility(false);
+                }
+                else{
+                    toggleItemListVisibility(true);
+                }
                 break;
 
             default:
@@ -235,54 +288,61 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
             //When fragment x button is clicked, close the fragment
             case R.id.item_detail_fragment_close_button:
                 //Log.d(TAG, "OnClick Callback from detail fragment");
-                toggleFragmentsVisibility(null);
+                toggleFragmentsVisibility(false);
                 break;
         }
     }
 
-    /**
-     * Toggle the detailfragment and listfragment visibility.
-     * @param scenarioEnum : the scenario to show
-     */
-    public void toggleFragmentsVisibility(ScenarioEnum scenarioEnum){
 
-
+    public void toggleItemListVisibility(boolean showFragment)
+    {
         FragmentManager fm                = getChildFragmentManager(); //getSupportFragmentManager();s
         ItemListFragment listFragment     = (ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
-        ItemDetailFragment fragmentDetail = (ItemDetailFragment) fm.findFragmentByTag(ITEM_DETAIL_FRAGMENT_TAG);
 
         if (listFragment != null)
         {
             FragmentTransaction ft = fm.beginTransaction();
             ft.setCustomAnimations(R.anim.enter_left, R.anim.exit_left);
-            if (listFragment.isHidden())
+            if (showFragment)
             {
                 Log.d(TAG, "Showing list fragment");
                 ft.show(listFragment);
-                if (scenarioEnum != null)
+
+                /*if (scenarioEnum != null)
                 {
                     //Choose a detail fragment based on the provided enum
                     listFragment.setActivatedPosition(scenarioEnum.ordinal());
                     onItemSelected(scenarioEnum.ordinal());
-                }
+                }*/
             }
             else
             {
                 Log.d(TAG, "Hiding list fragment");
-                if (scenarioEnum == null)
+                /*if (scenarioEnum == null)
                 {
                     ft.hide(listFragment);
-                }
+                }*/
+                ft.hide(listFragment);
             }
 
             ft.commit();
         }
+    }
+
+    /**
+     * Toggle the detailfragment and listfragment visibility.
+     */
+    public void toggleFragmentsVisibility(boolean showFragment){
+
+
+        FragmentManager fm                = getChildFragmentManager(); //getSupportFragmentManager();s
+        ItemDetailFragment fragmentDetail = (ItemDetailFragment) fm.findFragmentByTag(ITEM_DETAIL_FRAGMENT_TAG);
 
         if (fragmentDetail != null)
         {
             FragmentTransaction ft = fm.beginTransaction();
             ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
-            if (fragmentDetail.isHidden())
+            if (showFragment)
             {
                 Log.d(TAG, "Showing detail fragment");
                 ft.show(fragmentDetail);
@@ -290,10 +350,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
             else
             {
                 Log.d(TAG,"Hiding detail fragment");
-                if (scenarioEnum == null)
-                {
-                    ft.hide(fragmentDetail);
-                }
+                ft.hide(fragmentDetail);
             }
             ft.commit();
         }

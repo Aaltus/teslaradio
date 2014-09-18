@@ -21,6 +21,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Quad;
 
 //import com.galimatias.teslaradio.world.observer.ScenarioObserver;
 
@@ -41,6 +42,7 @@ public final class SoundCapture extends Scenario {
     private TouchEffectEmitter touchEffectEmitter;
     private Spatial micHandleIn;
 
+    private Geometry micTapParticle;
     private SignalEmitter MicWireEmitter;
     private Material electricParticleMat;
 
@@ -121,9 +123,14 @@ public final class SoundCapture extends Scenario {
         Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
         Geometry tmpGeom = (Geometry)micWire_geom;//.scale(1/ScenarioManager.WORLD_SCALE_DEFAULT);
         MicWireEmitter.setWaves(tmpGeom.getMesh(), 0.25f, 3.5f);
-
+        
+        
+        
         electricParticleMat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         electricParticleMat.setTexture("ColorMap", assetManager.loadTexture("Textures/Electric3.png"));
+        Quad rect = new Quad(0.1f, 0.1f);
+        micTapParticle = new Geometry("particul",rect);
+        micTapParticle.setMaterial(electricParticleMat);
 
     }
     
@@ -186,7 +193,7 @@ public final class SoundCapture extends Scenario {
         
         //DrumSoundEmitter.emitParticles(1.0f);
         //DrumSoundEmitter.emitWaves();
-        MicWireEmitter.emitParticles(3.0f);
+        MicWireEmitter.prepareEmitParticles(micTapParticle,3.0f);
 
         //touchEffectEmitter.isTouched();
 
