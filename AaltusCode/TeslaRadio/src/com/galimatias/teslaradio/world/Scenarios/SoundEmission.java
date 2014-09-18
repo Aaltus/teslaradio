@@ -457,6 +457,7 @@ public class SoundEmission extends Scenario {
     public boolean simpleUpdate(float tpf) {
 
         DrumSoundEmitter.setReceiverHandlePosition(particleLinker.GetEmitterDestinationPaths(this));
+        GuitarSoundEmitter.setReceiverHandlePosition(particleLinker.GetEmitterDestinationPaths(this));
         
         timeLastTouch += tpf;
 

@@ -235,6 +235,7 @@ public class SignalEmitter extends Node
         Vector3f direction = this.receiverHandlePosition.subtract(this.getWorldTranslation());
         Quaternion worldInverseTranslation = this.getWorldRotation().inverse();
         direction = worldInverseTranslation.toRotationMatrix().mult(direction);
+        direction = direction.divide(ScenarioManager.WORLD_SCALE_DEFAULT);
         this.capturePathLength = direction.length();
     }
 }
