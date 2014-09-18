@@ -456,6 +456,8 @@ public class SoundEmission extends Scenario {
     @Override
     public boolean simpleUpdate(float tpf) {
 
+        DrumSoundEmitter.setReceiverHandlePosition(particleLinker.GetEmitterDestinationPaths(this));
+        
         timeLastTouch += tpf;
 
         if ((int)timeLastTouch == maxTimeRefreshHint)
@@ -482,6 +484,7 @@ public class SoundEmission extends Scenario {
         }
         else
             return false;
+        
     }
 
     @Override

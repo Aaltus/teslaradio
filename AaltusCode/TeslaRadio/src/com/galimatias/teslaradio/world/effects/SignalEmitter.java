@@ -24,6 +24,8 @@ import java.util.Vector;
  */
 public class SignalEmitter extends Node
 {
+    private float airPropagationDistance = 30;
+    private Vector3f receiverHandlePosition = new Vector3f();
     
     private Vector<Vector3f> paths = new Vector<Vector3f>();
     private Geometry plainParticle;
@@ -40,7 +42,7 @@ public class SignalEmitter extends Node
     private boolean readyForEmission = false;
     private boolean areWavesEnabled = false;
     
-	private Spline curveSpline;
+    private Spline curveSpline;
 
     /**
      * New constructor
@@ -101,13 +103,14 @@ public class SignalEmitter extends Node
         direction = worldInverseTranslation.toRotationMatrix().mult(direction);
         // THIS IS REALLY IMPORTANT! DO NOT FORGET
         direction = direction.divide(ScenarioManager.WORLD_SCALE_DEFAULT);
+        this.capturePathLength = direction.length();
 
         // Signal Trajectory call to create all the paths
         int totalNbDirections = 10;
         int nbXYDirections = 2;
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
-        directionFactory.setTrajectories(direction, direction.length());
-        this.paths = directionFactory.getTrajectories();
+        directionFactory.setTrajectories(direction, airPropagationDistance);
+        this.paths = directionFactory.getTrajectories();  
 
         // Enabling Wave emission! Shhhhrroroohhhhh!
         this.waveIndex = 0;
@@ -204,9 +207,12 @@ public class SignalEmitter extends Node
             Signal mySignal;
             int a = paths.indexOf(path);
             if (paths.indexOf(path)==0)
-                mySignal = new Signal(plainParticle, path, particlesSpeed, magnitude, true, signalObserver);
+            {
+                mySignal = new Signal(plainParticle, path, particlesSpeed, magnitude, signalObserver);
+                mySignal.setPathLenghtNotification(this.capturePathLength);
+            }
             else {
-                mySignal = new Signal(translucentParticle, path, particlesSpeed, magnitude, false, signalObserver);
+                mySignal = new Signal(translucentParticle, path, particlesSpeed, magnitude, signalObserver);
             }
             
             waveNode.attachChild(mySignal);
@@ -219,6 +225,17 @@ public class SignalEmitter extends Node
         Signal myCurvedSignal = new Signal(plainParticle, curveSpline, particlesSpeed, magnitude, signalObserver);
         waveNode.attachChild(myCurvedSignal);
         this.attachChild(waveNode);
+    }
+    
+    public void setReceiverHandlePosition(Vector3f receiverHandlePosition)
+    {
+        this.receiverHandlePosition = receiverHandlePosition;
+       
+        // We're getting the vector between the emitter and receiver!
+        Vector3f direction = this.receiverHandlePosition.subtract(this.getWorldTranslation());
+        Quaternion worldInverseTranslation = this.getWorldRotation().inverse();
+        direction = worldInverseTranslation.toRotationMatrix().mult(direction);
+        this.capturePathLength = direction.length();
     }
 }
 
