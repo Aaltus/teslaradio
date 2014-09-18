@@ -52,12 +52,13 @@ button on the handset.
                         android:layout_margin="5dp"
                         android:background="@drawable/layer_list_info"/>
                 <!--android:background="@drawable/browser"-->
-
+                <!-- This is the vertical seek bar
                 <LinearLayout android:layout_width="50dp"
                               android:layout_margin="5dp"
                               android:orientation="vertical"
                               android:background="@drawable/button_bg"
                               style="@style/SeekBarLinearLayoutStyle">
+
                     <TextView android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
                               android:layout_gravity="center"
@@ -77,7 +78,14 @@ button on the handset.
                             android:layout_gravity="center"
                             android:progressDrawable="@drawable/apptheme_scrubber_progress_horizontal_holo_light"
                             android:thumb="@drawable/apptheme_scrubber_control_selector_holo_light"/>
+
                 </LinearLayout>
+                -->
+                <LinearLayout android:layout_width="50dp"
+                              android:layout_margin="5dp"
+                              android:orientation="vertical"
+                              android:layout_height="wrap_content"
+                              android:layout_weight="1"/>
                 <Button
                         android:id="@+id/camera_toggle_language_button"
                         android:layout_height="50dp"

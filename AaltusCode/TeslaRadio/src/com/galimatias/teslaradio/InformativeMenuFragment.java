@@ -10,19 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.SeekBar;
-import android.widget.TextView;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.galimatias.teslaradio.world.Scenarios.IScenarioSwitcher;
 import com.utils.LanguageLocaleChanger;
-import com.utils.VerticalSeekBar;
 
 /**
  * Created by jimbojd72 on 4/26/14.
  */
 public class InformativeMenuFragment extends Fragment implements View.OnClickListener,
-        SeekBar.OnSeekBarChangeListener,
+        //SeekBar.OnSeekBarChangeListener,
         ItemListFragment.Callbacks,
         ItemDetailFragment.OnClickDetailFragmentListener{
 
@@ -107,7 +104,9 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         languageButton.setOnClickListener(this);
         infoButton.setOnClickListener(this);
 
+        //Hi Jimbo myself, Hope you feel great, I commented because people asked me to hide
         //Get the vertical side bar and set its propriety
+        /*
         VerticalSeekBar sb = (VerticalSeekBar) getView().findViewById(R.id.seekBar1);
         if (sb != null)
         {
@@ -115,16 +114,15 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
             sb.setProgress(50);
             sb.setOnSeekBarChangeListener(this);
         }
+        */
 
 
     }
 
     /**
      * Update the vertical side bar progress and text
-     * @param v
-     * @param progress
-     * @param isUser
      */
+    /*
     @Override
     public void onProgressChanged(SeekBar v, int progress, boolean isUser)
     {
@@ -143,7 +141,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     {
 
     }
-
+*/
     public boolean isChildFragmentShown()
     {
         return isDetailFragmentsVisible() || isListFragmentsVisible();
