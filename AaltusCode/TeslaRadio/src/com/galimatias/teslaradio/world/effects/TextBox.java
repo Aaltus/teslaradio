@@ -46,6 +46,7 @@ public class TextBox extends Node {
     {
         this.detachAllChildren();
         guiFont = assetManager.loadFont("Interface/Fonts/Helvetica.fnt");
+        fixFont(guiFont);
         text = new BitmapText(guiFont, false);
         this.setName(textBoxName);
         init(assetManager, textToDisplay, size, color, backgroundColor, textBoxWidth, textBoxHeight, alignment, showBoxDebug, lookAtCamera);
@@ -76,6 +77,49 @@ public class TextBox extends Node {
         
         if(lookAtCamera){
             this.lookAt(cam.getLocation(), scenarioUpVector);
+        }
+    }
+    
+    //Source : http://hub.jmonkeyengine.org/forum/topic/how-to-make-an-interactive-texture-like-computer-screen/page/2/
+    /*
+     The easiest way to solve this is with a custom GeometryComparator for the
+     * transparent bucket that will always sort the panel behind
+     * (earlier in the list) than the text.
+     * You still need a bit of offset to prevent Z-fighting but proper sorting
+     * will prevent the problem you see.
+     * 
+    * Another thing that will minimize it is to grab the materials from the font
+    * and set alpha test on. JME, for whatever reason, hard codes BitmapFont to
+    * use the unshaded.j3md file directly instead of a font.j3m or something…
+    * so this has to be fixed in code. The font loader doesn’t do it but you can.
+
+    * Here is the method I use to make fonts work right in my own code:
+
+
+    void fixFont( BitmapFont font ) {
+        for( int i = 0; i < font.getPageSize(); i++ ) {
+            Material m = font.getPage(i);
+            m.getAdditionalRenderState().setAlphaTest(true);
+            m.getAdditionalRenderState().setAlphaFallOff(0.1f);
+        }
+    }
+    * I’ve been too lazy and worried about unintended side-effects to fix
+    * that in the font loader.
+
+    * Anyway, you will still need to fix the sorting issue as outlined above…
+    * but the alpha test stuff will minimize the issue if it still crops up…
+    * and more importantly, it keeps the individual letters from z-fighting
+    * where they overlap.
+     */
+    /**
+     * This function fix the transparency problem on the textbox
+     * @param font 
+     */
+    void fixFont( BitmapFont font ) {
+        for( int i = 0; i < font.getPageSize(); i++ ) {
+            Material m = font.getPage(i);
+            m.getAdditionalRenderState().setAlphaTest(true);
+            m.getAdditionalRenderState().setAlphaFallOff(0.1f);
         }
     }
 
@@ -152,7 +196,7 @@ public class TextBox extends Node {
         backgroundBoxMat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         backgroundBox.setQueueBucket(Bucket.Transparent);
         backgroundBox.setMaterial(backgroundBoxMat);
-        backgroundBox.setLocalTranslation(0, -textBoxHeight, -0.2f);
+        backgroundBox.setLocalTranslation(0, -textBoxHeight, -0.1f);//-0.2f);
         backgroundBox.move(-textBoxWidth / 2.0f, 0, 0);
 
         //Attach both element to the textBox node
