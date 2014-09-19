@@ -26,6 +26,8 @@ import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.PQTorus;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 /**
  * Created by Batcave on 2014-09-09.
@@ -49,6 +51,7 @@ public class Modulation extends Scenario {
     // 3D objects of the scene
     private Spatial turnButton;
     private Spatial dodecagone; // This is a carrier wave form...
+    private Spatial actionSwitch;
     
     // TextBox of the scene
     private TextBox titleTextBox;
@@ -81,6 +84,11 @@ public class Modulation extends Scenario {
     private float trackableAngle = 0;
     private int direction = 1;
     
+    //Variable for switch
+    private float initAngleSwitch;
+    private float tpfCumul =0;
+    private Quaternion rotationXSwitch = new Quaternion();
+    
     public Modulation(AssetManager assetManager, com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker) {
 
         super(assetManager, Camera, particleLinker);
@@ -101,8 +109,9 @@ public class Modulation extends Scenario {
 
     @Override
     public void loadMovableObjects() {
-        
         turnButton = scene.getChild("Button");
+        actionSwitch = scene.getChild("Switch");
+        initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
         initCarrierGeometries();
     }
 
@@ -162,7 +171,7 @@ public class Modulation extends Scenario {
                         
                         if (nameToCompare.equals(this.getChild("Switch").getName()))
                         {
-                            switchIsToggled = true;
+                            //switchIsToggled = true;
                             break;
                         }
                     }
@@ -172,10 +181,7 @@ public class Modulation extends Scenario {
     }
 
     @Override
-    public boolean simpleUpdate(float tpf) {
-        
-        //float angleX = this.getUserData("angleX");
-        
+    public boolean simpleUpdate(float tpf) {    
         trackableAngle += direction * (pi/9)* tpf;
         if (trackableAngle >= 2*pi || trackableAngle <= 0)
         {
@@ -185,7 +191,7 @@ public class Modulation extends Scenario {
         
         checkTrackableAngle(trackableAngle);
         checkModulationMode(tpf);
-                
+        
         return false;
     }
 
@@ -208,20 +214,31 @@ public class Modulation extends Scenario {
     public void sendSignalToEmitter(Geometry newSignal, float magnitude) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+    //Dynamic move
     private void checkModulationMode(float tpf) {
-        
-        // TODO use tpf to animate the switch when touched
-        if(switchIsToggled)
-        {
-            isFM = isFM ? false : true;
-            switchIsToggled = false;
+        if(switchIsToggled) {
+            tpfCumul = tpfCumul+ tpf;
+            switchRotation(isFM, tpfCumul);
+           // switchRotationWithoutDynamicSwitch(isFM);
+            float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
+            if(currAngle >= initAngleSwitch && currAngle <= (2*pi - initAngleSwitch)){
+                switchIsToggled = false;
+                tpfCumul =0;
+            }
         }
     }
+    /*
+    //only switch
+    private void checkModulationMode(float tpf) {
+        switchRotationWithoutDynamicSwitch(isFM);
+        switchIsToggled = false;
+    }*/
     
     public void toggleModulationMode() {
-        
-        switchIsToggled = true;   
+        if(!switchIsToggled){   
+            isFM = isFM ? false : true;
+            switchIsToggled = true;   
+        }
     }
     
     private void initCarrierGeometries() {
@@ -294,22 +311,22 @@ public class Modulation extends Scenario {
             switch(frequency){
                 case 1:
                     digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    System.out.println(sFM1061);
+               //     System.out.println(sFM1061);
                     changeElectricalParticles();
                     break;
                 case 2:
                     digitalDisplay.simpleUpdate(sFM977, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    System.out.println(sFM977);
+                 //   System.out.println(sFM977);
                     changeElectricalParticles();
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sFM952, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    System.out.println(sFM952);
+                 //   System.out.println(sFM952);
                     changeElectricalParticles();
                     break;
                 default:
                     digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    System.out.println(sFM1061);
+                   // System.out.println(sFM1061);
                     changeElectricalParticles();
                     break;
             }
@@ -318,22 +335,22 @@ public class Modulation extends Scenario {
             switch(frequency){
                 case 1:
                     digitalDisplay.simpleUpdate(sAM697, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    System.out.println(sAM697);
+                  //  System.out.println(sAM697);
                     changeElectricalParticles();
                     break;
                 case 2:
                     digitalDisplay.simpleUpdate(sAM498, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    System.out.println(sAM498);
+                  //  System.out.println(sAM498);
                     changeElectricalParticles();
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sAM707, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    System.out.println(sAM707);
+                  //  System.out.println(sAM707);
                     changeElectricalParticles();
                     break;
                 default :
                     //digitalDisplay.simpleUpdate(sAM697, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    System.out.println(sAM697);
+                  // System.out.println(sAM697);
                     changeElectricalParticles();
                     break;
                 }
@@ -347,7 +364,7 @@ public class Modulation extends Scenario {
     private void checkTrackableAngle(float trackableAngle) {
         
         float stepRange = 2*pi/3;
-        
+
         if (trackableAngle >= 0 && trackableAngle < stepRange  )
         {
             turnTunerButton(trackableAngle);
@@ -362,8 +379,38 @@ public class Modulation extends Scenario {
         {
             turnTunerButton(trackableAngle);
             changeModulation(3, isFM);
-        }
-            
+        }              
     }
+    
+    private void switchRotation(boolean isFM, float tpfCumul){
+        if(!isFM){
+            rotationXSwitch.fromAngleAxis(angleRangeTwoPi(initAngleSwitch - tpfCumul), Vector3f.UNIT_X);
+            actionSwitch.setLocalRotation(rotationXSwitch);
+        } else {
+            rotationXSwitch.fromAngleAxis(angleRangeTwoPi(-initAngleSwitch + tpfCumul), Vector3f.UNIT_X);
+            actionSwitch.setLocalRotation(rotationXSwitch);
+        }
+    }
+    
+      private void switchRotationWithoutDynamicSwitch(boolean isFM){
+        if(!isFM){
+            rotationXSwitch.fromAngleAxis(initAngleSwitch, Vector3f.UNIT_X);
+            actionSwitch.setLocalRotation(rotationXSwitch);
+        } else {
+            rotationXSwitch.fromAngleAxis(-initAngleSwitch , Vector3f.UNIT_X);
+            actionSwitch.setLocalRotation(rotationXSwitch);
+        }
+    }
+    //convert angle for range [0 ; 2pi]
+     private float angleRangeTwoPi(float angle){
+         float resultat = 0;
+            if(angle >= 0){
+                resultat =  angle;
+            } else {
+                resultat = 2*pi + angle;
+            }
+        return resultat;
+     }
+   
 }
 
