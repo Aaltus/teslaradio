@@ -26,8 +26,6 @@ import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.PQTorus;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 
 /**
  * Created by Batcave on 2014-09-09.
@@ -45,7 +43,7 @@ public class Modulation extends Scenario {
     private final String sAM697 = "697 AM";
     private final String sAM498 = "498 AM";
     private final String sAM707 = "707 AM";
-    private       Boolean isFM = true;
+    private Boolean isFM = true;
     private Boolean switchIsToggled = false;
     
     // 3D objects of the scene
@@ -88,6 +86,7 @@ public class Modulation extends Scenario {
     private float initAngleSwitch;
     private float tpfCumul =0;
     private Quaternion rotationXSwitch = new Quaternion();
+
     
     public Modulation(AssetManager assetManager, com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker) {
 
@@ -113,6 +112,12 @@ public class Modulation extends Scenario {
         actionSwitch = scene.getChild("Switch");
         initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
         initCarrierGeometries();
+        //Assign touchable
+
+        touchable = new Node();//(Node) scene.getParent().getChild("Touchable")
+        touchable.attachChild(actionSwitch);
+        scene.attachChild(touchable);  
+        
     }
 
     @Override
@@ -171,8 +176,8 @@ public class Modulation extends Scenario {
                         
                         if (nameToCompare.equals(this.getChild("Switch").getName()))
                         {
-                            //switchIsToggled = true;
-                            break;
+                            toggleModulationMode();
+                           
                         }
                     }
                 }
@@ -217,7 +222,7 @@ public class Modulation extends Scenario {
     //Dynamic move
     private void checkModulationMode(float tpf) {
         if(switchIsToggled) {
-            tpfCumul = tpfCumul+ tpf;
+            tpfCumul = tpfCumul+ 3*tpf;
             switchRotation(isFM, tpfCumul);
            // switchRotationWithoutDynamicSwitch(isFM);
             float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
