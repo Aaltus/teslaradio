@@ -64,7 +64,7 @@ public final class SoundCapture extends Scenario {
     private float secondaryTextSize = 0.25f;
     private float instrumentTextSize = 0.25f;
     private float microphoneTextSize = 0.25f;
-    private ColorRGBA defaultTextColor = new ColorRGBA(1f, 0f, 1f, 1f);
+    private ColorRGBA defaultTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
 
     // Refresh hint values
     private float maxTimeRefreshHint = 30f;
@@ -164,7 +164,7 @@ public final class SoundCapture extends Scenario {
         
         ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
         ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
-        titleTextBox = new TextBox(assetManager, titleText, titleTextSize, titleTextColor, titleBackColor, textBoxWidth, textBoxHeight, "titleText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
+        titleTextBox = new TextBox(assetManager, titleText, titleTextSize, defaultTextColor, titleBackColor, textBoxWidth, textBoxHeight, "titleText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
         
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
