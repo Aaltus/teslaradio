@@ -91,7 +91,7 @@ public class Main extends SimpleApplication implements ActionListener
         scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.DESKTOP, nodeList, assetManager, cam, null, renderManager, inputManager);
         
         flyCam.setMoveSpeed(100f);
-        flyCam.setEnabled(false);
+       // flyCam.setEnabled(false);
         cam.setLocation(new Vector3f(-60,80,80));
         cam.lookAt(rootNode.getWorldTranslation(), Vector3f.UNIT_Y);
         

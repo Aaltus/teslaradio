@@ -54,7 +54,7 @@ public class SignalEmitter extends Node
      * all controls should have a certain access to it.
      * Proof of concept here.
      */
-    private ScheduledThreadPoolExecutor executor;
+    static private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(3);
     private LinkedList<Future> futureListQ;
 
     /**
@@ -69,7 +69,7 @@ public class SignalEmitter extends Node
             this.signalObserver = observer;
         }
         this.waveMagnitudes = new ArrayList<>();
-        this.executor = new ScheduledThreadPoolExecutor(4); //10 waves?
+      
     }
 
     /**
@@ -121,8 +121,7 @@ public class SignalEmitter extends Node
     public void prepareEmitParticles(Vector3f receiverHandlePosition)
     {
         // If the vector we recieve is empty, we stop right here.
-        if (receiverHandlePosition == null || receiverHandlePosition == Vector3f.NAN
-                || this.futureListQ.size() > 2){
+        if (receiverHandlePosition == null || receiverHandlePosition == Vector3f.NAN){
             return;
         }
 
@@ -158,7 +157,7 @@ public class SignalEmitter extends Node
      */
     public void prepareEmitParticles(Geometry newSignal, float magnitude)
     {
-        if (newSignal == null || this.futureListQ.size() > 2){
+        if (newSignal == null){
             return;
         }
 
