@@ -2,6 +2,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
+import com.galimatias.teslaradio.world.effects.PrevSignalGenerator;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.InputManager;
@@ -36,36 +37,17 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
     public static int WORLD_SCALE_DEFAULT = 100;
 
     /**
-     * Method that return the next scenario's receiver handle position
-     * @param caller
-     * @return the handle vector
-     */
-    @Override
-    public Vector3f GetEmitterDestinationPaths(Scenario caller) {
-        Scenario nextScenario = currentScenario.getNextScenarioInGroup(caller);
-        if (nextScenario != null){
-            return nextScenario.getParticleReceiverHandle();
-        }
-        else{
-            return null;
-        }
-    }
-
-    @Override
-    public void sendSignalToNextScenario(Scenario caller, Geometry newSignal, float magnitude) {
-        Scenario nextScenario = currentScenario.getNextScenarioInGroup(caller);
-        if (nextScenario != null){
-            nextScenario.sendSignalToEmitter(newSignal, magnitude);
-        }
-    }
-
-    /**
      * An enum that provide insight to the manager to which scale/rotation it must provide to the scenario
      * created to fit in to the Android app or the JMonkey SDK app.
      */
     public enum ApplicationType {
         ANDROID, DESKTOP
     }
+
+    /**
+     * Signal Generator that will be used to generate
+     */
+    private PrevSignalGenerator signalGenerator;
 
     /**
      * The current group of scenario that is attach to the List of nodes
@@ -106,6 +88,9 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
             InputManager inputManager)
     {
         this.appListener = appListener;
+
+        // This will generate signals when SoundEmission is not shown
+        signalGenerator = new PrevSignalGenerator(assetManager);
         
         //This a list of all the scenario that we will rotate/scale according
         //to which environment we are in. Don't forget to add scenario in it. 
@@ -222,6 +207,7 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
 
     private void setCurrentScenario(ScenarioGroup currentScenario) {
 
+        signalGenerator.setSignal(scenarioList.getScenarioEnumFromScenarioList(currentScenario.getScenarios()), currentScenario.getScenarios().get(0));
         detachCurrentScenario();
         this.currentScenario = currentScenario;
         attachCurrentScenario();
@@ -233,6 +219,7 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
     private void detachCurrentScenario()
     {
         if(getCurrentScenario() != null){
+            nodeList.get(0).detachChild(signalGenerator);
             for(Scenario scenario : getCurrentScenario().getScenarios() )
             {
                 Node parent = scenario.getParent();
@@ -251,6 +238,9 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
         int count = 0;
         int size = getCurrentScenario() == null ? 0 : getCurrentScenario().getScenarios().size();
         if(getNodeList() != null){
+
+            nodeList.get(0).attachChild(signalGenerator);
+
             for(Node node : getNodeList())
             {
                 if(count < size){
@@ -304,10 +294,36 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
     }
 
     /**
+     * Method that return the next scenario's receiver handle position
+     * @param caller
+     * @return the handle vector
+     */
+    @Override
+    public Vector3f GetEmitterDestinationPaths(Scenario caller) {
+        Scenario nextScenario = currentScenario.getNextScenarioInGroup(caller);
+        if (nextScenario != null){
+            return nextScenario.getParticleReceiverHandle();
+        }
+        else{
+            return null;
+        }
+    }
+
+    @Override
+    public void sendSignalToNextScenario(Scenario caller, Geometry newSignal, float magnitude) {
+        Scenario nextScenario = currentScenario.getNextScenarioInGroup(caller);
+        if (nextScenario != null){
+            nextScenario.sendSignalToEmitter(newSignal, magnitude);
+        }
+    }
+
+    /**
      * To be call to update the scenario
      * @param tpf
      */
     public void simpleUpdate(float tpf){
+
+        signalGenerator.simpleUpdate(tpf, getCurrentScenario().getScenarios().get(0).getParticleReceiverHandle());
 
         for(Scenario scenario : getCurrentScenario().getScenarios() )
         {

@@ -16,6 +16,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -184,6 +185,22 @@ public class SignalEmitter extends Node
     }
 
     /**
+     * This method is for when you know in advance what kind of signal geom you're going to send
+     * It's Mainly for the SoundEmission Scenario.
+     * @param period
+     * @param particlesSpeed
+     * @param signalType
+     */
+    public void setWaves(float period, float particlesSpeed, SignalType signalType){
+        this.wavePeriod = period;
+        this.waveIndex = 0;
+        this.areWavesEnabled = false;
+        this.translucentParticle = null;
+        this.particlesSpeed = particlesSpeed;
+        this.signalType = signalType;
+    }
+
+    /**
      * This method is when you don't know the geoms you'll emit, but you know the mesh path it must take
      * The signal type is WIRE
      * @param meshToFollow
@@ -204,18 +221,20 @@ public class SignalEmitter extends Node
     {        
         for (Vector3f path : paths) {
             
-            Signal mySignal;
+            Signal mySignal = null;
             int a = paths.indexOf(path);
             if (paths.indexOf(path)==0)
             {
                 mySignal = new Signal(plainParticle, path, particlesSpeed, magnitude, signalObserver);
                 mySignal.setPathLenghtNotification(this.capturePathLength);
             }
-            else {
+            else if (translucentParticle != null){
                 mySignal = new Signal(translucentParticle, path, particlesSpeed, magnitude, signalObserver);
             }
-            
-            waveNode.attachChild(mySignal);
+            if (mySignal != null){
+                waveNode.attachChild(mySignal);
+            }
+
             this.attachChild(waveNode);
         }        
     }
