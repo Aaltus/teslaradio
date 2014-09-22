@@ -114,15 +114,15 @@ public final class SoundCapture extends Scenario {
        
     private void initMicWireParticlesEmitter()
     {
- MicWireEmitter = new SignalEmitter(this);
+        MicWireEmitter = new SignalEmitter(this);
         //MicWireEmitter = new SignalEmitter(curvedPath, electricParticle, electricParticle, 35f /*Speed*/, SignalType.Wire );
         this.attachChild(MicWireEmitter);
         MicWireEmitter.setLocalTranslation(micPosition.x, micPosition.y,micPosition.z); // TO DO: utiliser le object handle blender pour position
 
         Node micWire_node = (Node) scene.getParent().getChild("WirePath");
         Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
-        Geometry tmpGeom = (Geometry)micWire_geom;//.scale(1/ScenarioManager.WORLD_SCALE_DEFAULT);
-        MicWireEmitter.setWaves(tmpGeom.getMesh(), 0.25f, 3.5f);
+        //Geometry tmpGeom = (Geometry)micWire_geom;//.scale(1/ScenarioManager.WORLD_SCALE_DEFAULT);
+        MicWireEmitter.setWaves(micWire_geom.getMesh(), 0.25f, 3.5f);
         
         
         

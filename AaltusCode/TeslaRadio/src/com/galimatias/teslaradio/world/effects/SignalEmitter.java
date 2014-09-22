@@ -117,7 +117,7 @@ public class SignalEmitter extends Node
         this.areWavesEnabled = true;
     }
 
-
+    
     /**
      * Method that prepares the emitter to send a signal to the receiver handle.
      * @param newSignal
@@ -198,6 +198,21 @@ public class SignalEmitter extends Node
 
         SignalTrajectories directionFactory = new SignalTrajectories();
         this.curveSpline = directionFactory.getCurvedPath(meshToFollow);
+    }
+    
+     /**
+     * This method is when you know the geoms you'll emit and you know the mesh path it must take
+     * The signal type is WIRE
+     * @param meshToFollow
+     * @param plainParticle
+     * @param period
+     * @param particlesSpeed
+     */
+    public void setWaves(Mesh meshToFollow, Geometry plainParticle, float period, float particlesSpeed){
+       
+        this.setWaves(meshToFollow, period, particlesSpeed);
+        
+        this.plainParticle = plainParticle;
     }
     
     private void emitAirParticles(Node waveNode, float magnitude)

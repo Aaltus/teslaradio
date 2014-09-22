@@ -26,6 +26,7 @@ import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.PQTorus;
+import com.jme3.scene.shape.Quad;
 
 /**
  * Created by Batcave on 2014-09-09.
@@ -48,7 +49,6 @@ public class Modulation extends Scenario {
     
     // 3D objects of the scene
     private Spatial turnButton;
-    private Spatial dodecagone; // This is a carrier wave form...
     private Spatial actionSwitch;
     
     // TextBox of the scene
@@ -61,14 +61,25 @@ public class Modulation extends Scenario {
     private ColorRGBA defaultTextColor = ColorRGBA.Green;
     
     // Signals emitters 
-    private SignalEmitter electricalEmitter = new SignalEmitter(this);
+    private SignalEmitter wirePcbEmitter = new SignalEmitter(this);
     private SignalEmitter carrierEmitter = new SignalEmitter(this);
-    private SignalEmitter modulatedEmitter = new SignalEmitter(this);
+    private SignalEmitter pcbAmpEmitter = new SignalEmitter(this);
+    
+    // Handles for the emitter positions
+    private Spatial pathInHandle;
+    private Spatial pathCarrierHandle;
+    private Spatial pathOutHandle;
+    
+    // Paths
+    private Geometry pathIn;
+    private Geometry pathCarrier;
+    private Geometry pathOut;
     
     // Geometry of the carrier signals
     private Geometry cubeCarrier;
     private Geometry pyramidCarrier;
     private Geometry dodecagoneCarrier; // Really...
+    private Geometry currentCarrier;
     
     //CHANGE THIS VALUE CHANGE THE PARTICULE BEHAVIOUR 
     //Setting the direction norms and the speed displacement to the trajectories
@@ -103,7 +114,27 @@ public class Modulation extends Scenario {
         scene.setName("Modulation");
         this.attachChild(scene);
         
+        // Get the handles of the emitters
+        pathInHandle = scene.getChild("Handle.In");
+        pathCarrierHandle = scene.getChild("Handle.Generator");
+        pathOutHandle = scene.getChild("Handle.Out");
+        
+        // Get the different paths
+        Node wirePcb_node = (Node) scene.getChild("Path.In.Object");
+        pathIn = (Geometry) wirePcb_node.getChild("Path.In.Nurbs");
+        Node carrier_node = (Node) scene.getChild("Path.Generator.Object");
+        pathCarrier = (Geometry) carrier_node.getChild("Path.Generator.Nurbs");
+        Node pcbAmp_node = (Node) scene.getChild("Path.Out.Object");
+        pathOut = (Geometry) pcbAmp_node.getChild("Path.Out.Nurbs");
+
         initDigitalDisplay();
+        
+        // Initialize the emitters
+        initParticlesEmitter(wirePcbEmitter, pathInHandle, pathIn);
+        initParticlesEmitter(carrierEmitter, pathCarrierHandle, pathCarrier);
+        initParticlesEmitter(pcbAmpEmitter, pathOutHandle, pathOut);
+        
+        
     }
 
     @Override
@@ -194,6 +225,9 @@ public class Modulation extends Scenario {
             direction *= -1;
         }
         
+        wirePcbEmitter.simpleUpdate(tpf, this.Camera);
+        carrierEmitter.simpleUpdate(tpf, null);   
+        
         checkTrackableAngle(trackableAngle);
         checkModulationMode(tpf);
         
@@ -212,13 +246,17 @@ public class Modulation extends Scenario {
     
     @Override
     public Vector3f getParticleReceiverHandle() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return pathInHandle.getWorldTranslation();
     }
 
     @Override
     public void sendSignalToEmitter(Geometry newSignal, float magnitude) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (wirePcbEmitter != null){
+            // We have a new material out there! Since the Signal is now becoming "Electrical", we set the Electrical material to it
+            wirePcbEmitter.prepareEmitParticles(newSignal, magnitude);
+        }
     }
+    
     //Dynamic move
     private void checkModulationMode(float tpf) {
         if(switchIsToggled) {
@@ -260,17 +298,17 @@ public class Modulation extends Scenario {
         mat1.setColor("Color", ColorRGBA.Green);
         pyramidCarrier.setMaterial(mat1);
         
-        dodecagone = (Node) assetManager.loadModel("Models/Modulation/Dodecahedron.j3o");
+        Node dodecagone = (Node) assetManager.loadModel("Models/Modulation/Dodecahedron.j3o");
+        dodecagoneCarrier = (Geometry) dodecagone.getChild("Solid.0041");
+        dodecagoneCarrier.setMaterial(mat1);
                          
     }
     
-    private void initEmitters() {
+    private void initParticlesEmitter(SignalEmitter signalEmitter, Spatial handle, Geometry path) {
         
-        // Get the different paths to follow
-        
-        
-        //electricalEmitter = new SignalEmitter();
-        
+        this.attachChild(signalEmitter);
+        signalEmitter.setLocalTranslation(handle.getWorldTranslation()); // TO DO: utiliser le object handle blender pour position
+        signalEmitter.setWaves(path.getMesh(), 0.25f, 3.5f);
     }
     
     private void initDigitalDisplay() {
@@ -291,7 +329,7 @@ public class Modulation extends Scenario {
         scene.getChild("Display").setQueueBucket(queueBucket.Transparent);
         scene.getChild("Cube.005").setQueueBucket(queueBucket.Opaque);
         Vector3f displayPosition = scene.getChild("Display").getWorldTranslation();
-        displayPosition.addLocal(-0.4f, 0.17f, 0.0f);
+        displayPosition.addLocal(-0.4f, 0.35f, 0.0f);
         
         digitalDisplay.setLocalTranslation(displayPosition);
         Quaternion rotY = new Quaternion();
@@ -317,22 +355,22 @@ public class Modulation extends Scenario {
                 case 1:
                     digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                //     System.out.println(sFM1061);
-                    changeElectricalParticles();
+                    changeElectricalParticles(1);
                     break;
                 case 2:
                     digitalDisplay.simpleUpdate(sFM977, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                  //   System.out.println(sFM977);
-                    changeElectricalParticles();
+                    changeElectricalParticles(2);
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sFM952, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                  //   System.out.println(sFM952);
-                    changeElectricalParticles();
+                    changeElectricalParticles(3);
                     break;
                 default:
                     digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                    // System.out.println(sFM1061);
-                    changeElectricalParticles();
+                    changeElectricalParticles(1);
                     break;
             }
         }
@@ -341,28 +379,45 @@ public class Modulation extends Scenario {
                 case 1:
                     digitalDisplay.simpleUpdate(sAM697, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                   //  System.out.println(sAM697);
-                    changeElectricalParticles();
+                    changeElectricalParticles(1);
                     break;
                 case 2:
                     digitalDisplay.simpleUpdate(sAM498, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                   //  System.out.println(sAM498);
-                    changeElectricalParticles();
+                    changeElectricalParticles(2);
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sAM707, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                   //  System.out.println(sAM707);
-                    changeElectricalParticles();
+                    changeElectricalParticles(3);
                     break;
                 default :
-                    //digitalDisplay.simpleUpdate(sAM697, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sAM697, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                   // System.out.println(sAM697);
-                    changeElectricalParticles();
+                    changeElectricalParticles(1);
                     break;
                 }
         }   
     }
     
-    private void changeElectricalParticles() {
+    private void changeElectricalParticles(int frequency) {
+        
+        switch(frequency)
+        {
+            case 1:
+                currentCarrier = cubeCarrier;
+                break;
+            case 2:
+                currentCarrier = pyramidCarrier;
+                break;
+            case 3:
+                currentCarrier = dodecagoneCarrier;
+                break;
+        }
+        
+        if (carrierEmitter != null) {
+            carrierEmitter.prepareEmitParticles(currentCarrier, 0.25f);
+        }
         
     }
     
