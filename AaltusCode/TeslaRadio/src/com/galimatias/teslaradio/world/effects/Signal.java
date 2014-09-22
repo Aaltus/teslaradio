@@ -33,13 +33,13 @@ public class Signal extends Geometry implements SignalObservable {
     private float speed;
     private float startScale;
     private float distanceTraveled;
-    private float pathLenghtNotification = -1f;
+    private boolean signalOnVector;
     
     private int lineIndex = 0;
     private float currentLength = 0;
 
     // Linear path Particle
-    public Signal(Geometry particle, Vector3f path, float speed, float startScale, SignalObserver observer) {
+    public Signal(Geometry particle, Vector3f path, float speed, float startScale, boolean signalOnVector, SignalObserver observer) {
         this.setMesh(particle.getMesh());
         this.setMaterial(particle.getMaterial());
         this.speed = speed;
@@ -47,6 +47,7 @@ public class Signal extends Geometry implements SignalObservable {
         this.isCurved = false;
         this.getMaterial().getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         this.setQueueBucket(Bucket.Transparent);
+        this.signalOnVector = signalOnVector;
         this.startScale = startScale;
         this.setLocalScale(startScale);
 
@@ -128,15 +129,12 @@ public class Signal extends Geometry implements SignalObservable {
         Vector3f newPos = currentPos.add(path.normalize().mult(displacement));
         distanceTraveled += displacement;
         
-        if ((distanceTraveled>pathLenghtNotification) && (pathLenghtNotification > 0)) {
+        if (distanceTraveled>path.length()) {
             this.notifyEndOfPath();
-        }
-        else if(distanceTraveled > path.length()){
-            this.removeFromParent();
         }
         else {
             // set scaling
-            this.setLocalScale(startScale*(1-0.9f*(distanceTraveled/path.length())));
+            this.setLocalScale(startScale*(1-0.5f*(distanceTraveled/path.length())));
             // set position
             this.setLocalTranslation(newPos);
             
@@ -162,15 +160,13 @@ public class Signal extends Geometry implements SignalObservable {
     @Override
     public void notifyEndOfPath() {
         for (SignalObserver observer: signalObservers){
-            observer.signalEndOfPath(this, this.getLocalScale().x);
+            if (isCurved || (!isCurved && signalOnVector)){
+                observer.signalEndOfPath(this, startScale);
+            }
             this.removeFromParent();
         }
     }
 
-    public void setPathLenghtNotification(float lenght)
-    {
-        this.pathLenghtNotification = lenght;
-    }
 //    //TODO: Useful to removed ?!
 //    public void SetPropagationSpeed(){
 //

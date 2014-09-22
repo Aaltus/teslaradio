@@ -1,10 +1,20 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.Signal;
 import com.galimatias.teslaradio.world.effects.SignalEmitter;
 import com.galimatias.teslaradio.world.effects.SignalType;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
+import com.jme3.bounding.BoundingBox;
+import com.jme3.bounding.BoundingVolume;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.MeshCollisionShape;
+import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
@@ -22,6 +32,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Dome;
@@ -65,6 +76,10 @@ public class Modulation extends Scenario {
     private SignalEmitter carrierEmitter = new SignalEmitter(this);
     private SignalEmitter pcbAmpEmitter = new SignalEmitter(this);
     
+    // The entry of the chip
+    private Spatial chipEntry;
+    private CollisionResults soundChipCollisions = new CollisionResults();
+    
     // Handles for the emitter positions
     private Spatial pathInHandle;
     private Spatial pathCarrierHandle;
@@ -98,11 +113,14 @@ public class Modulation extends Scenario {
     private float tpfCumul =0;
     private Quaternion rotationXSwitch = new Quaternion();
 
+    private PhysicsSpace space;
     
-    public Modulation(AssetManager assetManager, com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker) {
+    public Modulation(AssetManager assetManager, com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker, PhysicsSpace physicSpace) {
 
         super(assetManager, Camera, particleLinker);
 
+        this.space = physicSpace;
+        
         loadUnmovableObjects();
         loadMovableObjects();
     }
@@ -114,10 +132,29 @@ public class Modulation extends Scenario {
         scene.setName("Modulation");
         this.attachChild(scene);
         
+        wirePcbEmitter.setSpace(space);
+        
+        // Get the chip entrance geometry
+        chipEntry = scene.getChild("Gate.In");
+        chipEntry.addControl(new GhostControl(new BoxCollisionShape(new Vector3f(0.1f,0.1f,0.1f))));
+        chipEntry.getControl(GhostControl.class).setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+        space.add(chipEntry);
+        
+        WireBox wirebox = new WireBox(0.1f, 0.1f, 0.1f);
+        wirebox.fromBoundingBox((BoundingBox) chipEntry.getWorldBound());
+        
+        Geometry bx = new Geometry("TheMesh", wirebox);
+        Material mat_box = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat_box.setColor("Color", ColorRGBA.Blue);
+        bx.setMaterial(mat_box);
+        bx.updateModelBound();
+        bx.setLocalTranslation(chipEntry.getWorldTranslation().addLocal(0.0f, 1.0f, 0.0f)); 
+        scene.attachChild(bx);
+        
         // Get the handles of the emitters
         pathInHandle = scene.getChild("Handle.In");
         pathCarrierHandle = scene.getChild("Handle.Generator");
-        pathOutHandle = scene.getChild("Handle.Out");
+        pathOutHandle = scene.getChild("Handle.Chip.Out");
         
         // Get the different paths
         Node wirePcb_node = (Node) scene.getChild("Path.In.Object");
@@ -142,9 +179,10 @@ public class Modulation extends Scenario {
         turnButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
         initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
+        
         initCarrierGeometries();
+        
         //Assign touchable
-
         touchable = new Node();//(Node) scene.getParent().getChild("Touchable")
         touchable.attachChild(actionSwitch);
         scene.attachChild(touchable);  
@@ -166,7 +204,6 @@ public class Modulation extends Scenario {
                 //case TAP:
                 if (name.equals("Touch"))
                 {
-
                     // 1. Reset results list.
                     CollisionResults results = new CollisionResults();
 
@@ -181,7 +218,6 @@ public class Modulation extends Scenario {
                     Ray ray = new Ray(click3d, dir);
 
                     // 3. Collect intersections between Ray and Shootables in results list.
-                    //focusableObjects.collideWith(ray, results);
                     touchable.collideWith(ray, results);
 
                     // 4. Print the results
@@ -207,8 +243,7 @@ public class Modulation extends Scenario {
                         
                         if (nameToCompare.equals(this.getChild("Switch").getName()))
                         {
-                            toggleModulationMode();
-                           
+                            toggleModulationMode();                          
                         }
                     }
                 }
@@ -218,7 +253,9 @@ public class Modulation extends Scenario {
 
     @Override
     public boolean simpleUpdate(float tpf) {    
+        
         trackableAngle += direction * (pi/9)* tpf;
+        
         if (trackableAngle >= 2*pi || trackableAngle <= 0)
         {
             //trackableAngle = 0;
@@ -226,7 +263,8 @@ public class Modulation extends Scenario {
         }
         
         wirePcbEmitter.simpleUpdate(tpf, this.Camera);
-        carrierEmitter.simpleUpdate(tpf, null);   
+        carrierEmitter.simpleUpdate(tpf, null);
+        pcbAmpEmitter.simpleUpdate(tpf, null);
         
         checkTrackableAngle(trackableAngle);
         checkModulationMode(tpf);
@@ -241,7 +279,7 @@ public class Modulation extends Scenario {
 
     @Override
     public void onAudioEvent() {
-
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override
@@ -251,8 +289,9 @@ public class Modulation extends Scenario {
 
     @Override
     public void sendSignalToEmitter(Geometry newSignal, float magnitude) {
-        if (wirePcbEmitter != null){
+        if (wirePcbEmitter != null) {
             // We have a new material out there! Since the Signal is now becoming "Electrical", we set the Electrical material to it
+
             wirePcbEmitter.prepareEmitParticles(newSignal, magnitude);
         }
     }
@@ -266,7 +305,7 @@ public class Modulation extends Scenario {
             float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
             if(currAngle >= initAngleSwitch && currAngle <= (2*pi - initAngleSwitch)){
                 switchIsToggled = false;
-                tpfCumul =0;
+                tpfCumul = 0;
             }
         }
     }
@@ -306,7 +345,7 @@ public class Modulation extends Scenario {
     
     private void initParticlesEmitter(SignalEmitter signalEmitter, Spatial handle, Geometry path) {
         
-        this.attachChild(signalEmitter);
+        scene.attachChild(signalEmitter);
         signalEmitter.setLocalTranslation(handle.getWorldTranslation()); // TO DO: utiliser le object handle blender pour position
         signalEmitter.setWaves(path.getMesh(), 0.25f, 3.5f);
     }
@@ -471,6 +510,15 @@ public class Modulation extends Scenario {
             }
         return resultat;
      }
+
+    @Override
+    public void collision(PhysicsCollisionEvent event) {
+        
+        if (pcbAmpEmitter != null) {
+            
+            pcbAmpEmitter.prepareEmitParticles(cubeCarrier, 0.25f);
+        }
+    }
    
 }
 

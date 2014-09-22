@@ -10,6 +10,7 @@ import com.galimatias.teslaradio.world.observer.Observer;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.galimatias.teslaradio.world.observer.SignalObserver;
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -22,7 +23,7 @@ import com.jme3.scene.Node;
  * Abstract class that regroup a scenario.
  * @author Alexandre Hamel
  */
-public abstract class Scenario extends Node implements SignalObserver{
+public abstract class Scenario extends Node implements SignalObserver, PhysicsCollisionListener{
 
     private final static String TAG = "Scenario";
     ParticleEmitReceiveLinker particleLinker;

@@ -9,6 +9,7 @@ import com.galimatias.teslaradio.world.effects.*;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
@@ -326,5 +327,10 @@ public final class SoundCapture extends Scenario {
             newSignal.setMaterial(electricParticleMat);
             MicWireEmitter.prepareEmitParticles(newSignal, magnitude);
         }
+    }
+
+    @Override
+    public void collision(PhysicsCollisionEvent event) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

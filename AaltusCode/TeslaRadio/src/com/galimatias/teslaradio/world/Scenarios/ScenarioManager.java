@@ -4,6 +4,7 @@ import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -107,6 +108,25 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
             RenderManager renderManager,
             InputManager inputManager)
     {
+        this(applicationType,
+            node,
+            assetManager,
+            cam,
+            appListener,
+            renderManager,
+            inputManager,
+            null);
+    }
+    
+    public ScenarioManager(ApplicationType applicationType,
+            List<Node> node,
+            AssetManager assetManager,
+            Camera cam,
+            AppListener appListener,
+            RenderManager renderManager,
+            InputManager inputManager,
+            BulletAppState bulletAppState)
+    {   
         this.appListener = appListener;
         
         //This a list of all the scenario that we will rotate/scale according
@@ -119,7 +139,7 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
         scenarios.add(soundCapture);
         
         //Init SoundCapture scenario
-        Modulation modulation = new Modulation(assetManager, cam, this);
+        Modulation modulation = new Modulation(assetManager, cam, this, bulletAppState.getPhysicsSpace());
         scenarios.add(modulation);
         SoundEmission soundEmission = new SoundEmission(assetManager, cam, this);
         scenarios.add(soundEmission);
@@ -146,6 +166,10 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
         scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
         scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
 
+        if (bulletAppState != null) {
+            bulletAppState.getPhysicsSpace().addCollisionListener(modulation);
+        }
+        
         //setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));
         setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDCAPTURE));
 

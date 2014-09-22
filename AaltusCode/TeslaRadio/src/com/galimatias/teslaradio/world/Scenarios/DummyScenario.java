@@ -3,6 +3,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.galimatias.teslaradio.world.effects.Signal;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -93,5 +94,10 @@ public class DummyScenario extends Scenario {
     @Override
     public void signalEndOfPath(Geometry caller, float magnitude) {
 
+    }
+
+    @Override
+    public void collision(PhysicsCollisionEvent event) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

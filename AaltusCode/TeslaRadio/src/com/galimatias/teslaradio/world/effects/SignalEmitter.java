@@ -5,7 +5,12 @@
 package com.galimatias.teslaradio.world.effects;
 
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
+import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.galimatias.teslaradio.world.observer.SignalObserver;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
@@ -16,7 +21,12 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 import java.util.ArrayList;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 
 /**
  *
@@ -24,10 +34,9 @@ import java.util.Vector;
  */
 public class SignalEmitter extends Node
 {
-    private float airPropagationDistance = 30;
-    private Vector3f receiverHandlePosition = new Vector3f();
     
-    private Vector<Vector3f> paths = new Vector<Vector3f>();
+    private ArrayList<Vector3f> paths;
+    private LinkedList<Node> waveNodeQ;
     private Geometry plainParticle;
     private Geometry translucentParticle;
     private float particlesSpeed;
@@ -39,21 +48,38 @@ public class SignalEmitter extends Node
     private float wavePeriod;
     private float cumulatedPeriod = 0;
     private int waveIndex;
+    private int waveAttachIndex;
     private boolean readyForEmission = false;
     private boolean areWavesEnabled = false;
-    
     private Spline curveSpline;
+    
+    /*
+     * TODO: The executor should be in the AppStateInit and
+     * all controls should have a certain access to it.
+     * Proof of concept here.
+     */
+    static private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(3);
+    private LinkedList<Future> futureListQ;
+    
+    private PhysicsSpace space;
+
+    public void setSpace(PhysicsSpace space) {
+        this.space = space;
+    }
 
     /**
      * New constructor
      * @param observer
      */
     public SignalEmitter(SignalObserver observer) {
+        this.paths = new ArrayList<Vector3f>();
+        this.futureListQ = new LinkedList<Future>();
 
         if (observer != null){
             this.signalObserver = observer;
         }
         this.waveMagnitudes = new ArrayList<Float>();
+      
     }
 
     /**
@@ -63,27 +89,37 @@ public class SignalEmitter extends Node
      */
     public void simpleUpdate(float tpf, Camera cam) {
         
-        Signal liveSignal;
-        
         for (Spatial waveNode : (this.getChildren())) {
             for (Spatial signal : ((Node)waveNode).getChildren()) {
-                liveSignal = (Signal)signal;
-                liveSignal.updatePosition(tpf, cam);
+                ((Signal)signal).updatePosition(tpf, cam);
             }
         } 
-        
+       
         if (areWavesEnabled) {
-            if (readyForEmission) {
-                float magnitude = waveMagnitudes.get((waveIndex++)%waveMagnitudes.size());
-                emitParticles( magnitude );
-                readyForEmission=false;
+             if(this.parent.getClass() == SoundCapture.class)
+             {
+                System.out.println("test");
+             }
+            if(readyForEmission && this.futureListQ.size() > 0){
+                Future future = this.futureListQ.getFirst();
+                if(future.isDone()){
+                   try{
+                       this.attachChild(((Spatial)future.get()));
+                       this.futureListQ.remove(future);
+                       readyForEmission = false;
+                   }catch(Exception e)
+                   {
+                       //TOODO add handling
+                   }
+                }    
             }
-                
+                       
             cumulatedPeriod += tpf;
-            readyForEmission = (cumulatedPeriod>wavePeriod && waveIndex<waveMagnitudes.size());// ? true:false;
-            cumulatedPeriod %= wavePeriod;
+            readyForEmission = (cumulatedPeriod>wavePeriod && waveAttachIndex++<waveMagnitudes.size());// ? true:false;
+            cumulatedPeriod %= wavePeriod;      
             
         }
+       
     }
 
     /**
@@ -102,22 +138,27 @@ public class SignalEmitter extends Node
         Quaternion worldInverseTranslation = this.getWorldRotation().inverse();
         direction = worldInverseTranslation.toRotationMatrix().mult(direction);
         // THIS IS REALLY IMPORTANT! DO NOT FORGET
-        direction = direction.divide(ScenarioManager.WORLD_SCALE_DEFAULT);
-        this.capturePathLength = direction.length();
+        direction.divideLocal(ScenarioManager.WORLD_SCALE_DEFAULT);
 
         // Signal Trajectory call to create all the paths
         int totalNbDirections = 10;
         int nbXYDirections = 2;
         SignalTrajectories directionFactory = new SignalTrajectories(totalNbDirections, nbXYDirections);
-        directionFactory.setTrajectories(direction, airPropagationDistance);
-        this.paths = directionFactory.getTrajectories();  
+        directionFactory.setTrajectories(direction, direction.length());
+        this.paths = directionFactory.getTrajectories();
 
         // Enabling Wave emission! Shhhhrroroohhhhh!
         this.waveIndex = 0;
+        this.waveAttachIndex = 0;
         this.areWavesEnabled = true;
+        Future future = this.executor.submit(emitParticles);
+        this.futureListQ.add(future);
+       
+   
+            
     }
 
-    
+
     /**
      * Method that prepares the emitter to send a signal to the receiver handle.
      * @param newSignal
@@ -135,22 +176,29 @@ public class SignalEmitter extends Node
         this.waveMagnitudes.clear();
         this.waveMagnitudes.add(magnitude);
         this.waveIndex = 0;
+        this.waveAttachIndex = 0;
 
         // We need to remove it from the other scenario before binding it to the new one
         newSignal.removeFromParent();
 
         // Enabling Wave emission! Shhhhrroroohhhhh!
         this.areWavesEnabled = true;
+        Future future = this.executor.submit(emitParticles);
+        this.futureListQ.add(future);
+      
     }
 
     /**
      * Deprecated
      * @param magnitude
      */
-    private void emitParticles(float magnitude) {
+    private Callable<Node> emitParticles =  new Callable<Node>(){
+        private int index = 0;
+        @Override
+        public Node call() {
         
         Node waveNode = new Node();
-        
+        float magnitude = waveMagnitudes.get((waveIndex++)%waveMagnitudes.size());
         if(signalType == SignalType.Air)
         {
             emitAirParticles(waveNode, magnitude);
@@ -159,8 +207,11 @@ public class SignalEmitter extends Node
         {
             emitCurWireParticles(waveNode, magnitude);
         }
-
-    }
+        
+        return waveNode;
+      
+        }
+    };
 
     /**
      * This method is for when you know in advance what kind of signal geom you're going to send
@@ -222,36 +273,28 @@ public class SignalEmitter extends Node
             Signal mySignal;
             int a = paths.indexOf(path);
             if (paths.indexOf(path)==0)
-            {
-                mySignal = new Signal(plainParticle, path, particlesSpeed, magnitude, signalObserver);
-                mySignal.setPathLenghtNotification(this.capturePathLength);
-            }
+                mySignal = new Signal(plainParticle, path, particlesSpeed, magnitude, true, signalObserver);
             else {
-                mySignal = new Signal(translucentParticle, path, particlesSpeed, magnitude, signalObserver);
+                mySignal = new Signal(translucentParticle, path, particlesSpeed, magnitude, false, signalObserver);
             }
             
             waveNode.attachChild(mySignal);
-            this.attachChild(waveNode);
-        }        
+        } 
+        //this.attachChild(waveNode);
     }
 
     private void emitCurWireParticles(Node waveNode, float magnitude){
         
         Signal myCurvedSignal = new Signal(plainParticle, curveSpline, particlesSpeed, magnitude, signalObserver);
         waveNode.attachChild(myCurvedSignal);
-        this.attachChild(waveNode);
-    }
-    
-    public void setReceiverHandlePosition(Vector3f receiverHandlePosition)
-    {
-        this.receiverHandlePosition = receiverHandlePosition;
-       
-        // We're getting the vector between the emitter and receiver!
-        Vector3f direction = this.receiverHandlePosition.subtract(this.getWorldTranslation());
-        Quaternion worldInverseTranslation = this.getWorldRotation().inverse();
-        direction = worldInverseTranslation.toRotationMatrix().mult(direction);
-        direction = direction.divide(ScenarioManager.WORLD_SCALE_DEFAULT);
-        this.capturePathLength = direction.length();
+        //this.attachChild(waveNode);
+        
+        myCurvedSignal.addControl(new GhostControl(new BoxCollisionShape(new Vector3f(0.1f,0.1f,0.1f)))); 
+        myCurvedSignal.getControl(GhostControl.class).setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_02);
+        
+        if (space != null) {
+            space.add(myCurvedSignal);
+        }
     }
 }
 

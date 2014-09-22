@@ -6,6 +6,8 @@ import com.galimatias.teslaradio.world.Scenarios.Scenario;
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.jme3.app.SimpleApplication;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -42,6 +44,7 @@ public class Main extends SimpleApplication implements ActionListener
     private Node nodeB;
     private List<Node> nodeList;
     private IScenarioManager scenarioManager;
+    private BulletAppState bulletAppState;
     
     private static final String ScenarioB_move_X_pos = "ScenarioB_move_X_pos";
     private static final String ScenarioB_move_X_neg = "ScenarioB_move_X_neg";
@@ -56,6 +59,10 @@ public class Main extends SimpleApplication implements ActionListener
     public void simpleInitApp() 
     {
         AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ALL);
+        
+        bulletAppState = new BulletAppState();
+        stateManager.attach(bulletAppState);
+        bulletAppState.setDebugEnabled(true);
         
         //Initialized a list of nodes to attach to the scenario manager.
         nodeList = new ArrayList<Node>();
@@ -88,7 +95,7 @@ public class Main extends SimpleApplication implements ActionListener
         inputManager.addListener(this, ScenarioB_move_Z_pos);
         inputManager.addListener(this, ScenarioB_rotate_Y_pos);
         
-        scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.DESKTOP, nodeList, assetManager, cam, null, renderManager, inputManager);
+        scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.DESKTOP, nodeList, assetManager, cam, null, renderManager, inputManager, bulletAppState);
         
         flyCam.setMoveSpeed(100f);
         cam.setLocation(new Vector3f(-60,80,80));
