@@ -9,4 +9,4 @@ public enum ScenarioEnum
         SOUNDCAPTURE, AMMODULATION, FMMODULATION, TRANSMIT,
         RECEPTION, REFERENCE, ABOUTUS
 
-}
+} 

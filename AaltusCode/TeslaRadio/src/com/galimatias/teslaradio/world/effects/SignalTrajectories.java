@@ -14,8 +14,9 @@ import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.mesh.IndexBuffer;
 import com.jme3.util.BufferUtils;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Vector;
+
 
 /**
  *
@@ -25,7 +26,7 @@ public class SignalTrajectories {
     
     private int nbDirections;
     private int nbYXrotations;
-    private Vector<Vector3f> trajectories = new Vector<Vector3f>();
+    private ArrayList<Vector3f> trajectories = new ArrayList<>();
         
     public SignalTrajectories(int nbDirections, int nbYXrotations)
     {
@@ -154,7 +155,7 @@ public class SignalTrajectories {
      * Get the trajectories that were created.
      * @return trajectories
      */
-    public Vector<Vector3f> getTrajectories()
+    public ArrayList<Vector3f> getTrajectories()
     {
         return trajectories;
     }
