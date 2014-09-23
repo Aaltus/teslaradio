@@ -22,7 +22,7 @@ import com.jme3.scene.Node;
  * Abstract class that regroup a scenario.
  * @author Alexandre Hamel
  */
-public abstract class Scenario extends Node implements SignalObserver, PhysicsCollisionListener{
+public abstract class Scenario extends Node implements SignalObserver {
 
     private final static String TAG = "Scenario";
     ParticleEmitReceiveLinker particleLinker;

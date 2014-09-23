@@ -93,9 +93,4 @@ public class DummyScenario extends Scenario {
     public void signalEndOfPath(Geometry caller, float magnitude) {
 
     }
-
-    @Override
-    public void collision(PhysicsCollisionEvent event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

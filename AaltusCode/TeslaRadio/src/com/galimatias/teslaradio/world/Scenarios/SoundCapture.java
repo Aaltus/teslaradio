@@ -331,9 +331,4 @@ public final class SoundCapture extends Scenario {
             MicWireEmitter.prepareEmitParticles(newSignal, magnitude);
         }
     }
-
-    @Override
-    public void collision(PhysicsCollisionEvent event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

@@ -1,5 +1,6 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.effects.Signal;
 import com.galimatias.teslaradio.world.effects.SignalEmitter;
 import com.galimatias.teslaradio.world.effects.SignalType;
@@ -112,14 +113,10 @@ public class Modulation extends Scenario {
     private float initAngleSwitch;
     private float tpfCumul =0;
     private Quaternion rotationXSwitch = new Quaternion();
-
-    private PhysicsSpace space;
     
-    public Modulation(AssetManager assetManager, com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker, PhysicsSpace physicSpace) {
+    public Modulation(com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker) {
 
-        super(assetManager, Camera, particleLinker);
-
-        this.space = physicSpace;
+        super(Camera, particleLinker);
         
         loadUnmovableObjects();
         loadMovableObjects();
@@ -132,13 +129,13 @@ public class Modulation extends Scenario {
         scene.setName("Modulation");
         this.attachChild(scene);
         
-        wirePcbEmitter.setSpace(space);
+        //wirePcbEmitter.setSpace(space);
         
         // Get the chip entrance geometry
         chipEntry = scene.getChild("Gate.In");
         chipEntry.addControl(new GhostControl(new BoxCollisionShape(new Vector3f(0.1f,0.1f,0.1f))));
         chipEntry.getControl(GhostControl.class).setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-        space.add(chipEntry);
+        //space.add(chipEntry);
         
         WireBox wirebox = new WireBox(0.1f, 0.1f, 0.1f);
         wirebox.fromBoundingBox((BoundingBox) chipEntry.getWorldBound());
@@ -291,7 +288,6 @@ public class Modulation extends Scenario {
     public void sendSignalToEmitter(Geometry newSignal, float magnitude) {
         if (wirePcbEmitter != null) {
             // We have a new material out there! Since the Signal is now becoming "Electrical", we set the Electrical material to it
-
             wirePcbEmitter.prepareEmitParticles(newSignal, magnitude);
         }
     }
@@ -510,15 +506,5 @@ public class Modulation extends Scenario {
             }
         return resultat;
      }
-
-    @Override
-    public void collision(PhysicsCollisionEvent event) {
-        
-        if (pcbAmpEmitter != null) {
-            
-            pcbAmpEmitter.prepareEmitParticles(cubeCarrier, 0.25f);
-        }
-    }
-   
 }
 

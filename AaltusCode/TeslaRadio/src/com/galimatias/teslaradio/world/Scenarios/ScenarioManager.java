@@ -102,32 +102,14 @@ public class ScenarioManager  implements IScenarioManager,
     private static final String DRUM = "Drum";
     private static final String MICRO = "Micro";
     private static final String FREQUENCY_SWITCH = "FrequencySwitch";
-
+    
     public ScenarioManager(ApplicationType applicationType,
             List<Node> node,
             Camera cam,
             AppListener appListener)
-    {
-        this(applicationType,
-            node,
-            assetManager,
-            cam,
-            appListener,
-            renderManager,
-            inputManager,
-            null);
-    }
-    
-    public ScenarioManager(ApplicationType applicationType,
-            List<Node> node,
-            AssetManager assetManager,
-            Camera cam,
-            AppListener appListener,
-            RenderManager renderManager,
-            InputManager inputManager,
-            BulletAppState bulletAppState)
     {   
         this.appListener = appListener;
+        
         AssetManager assetManager   = AppGetter.getAssetManager();
         RenderManager renderManager = AppGetter.getRenderManager();
         InputManager inputManager   = AppGetter.getInputManager();
@@ -141,12 +123,14 @@ public class ScenarioManager  implements IScenarioManager,
         soundCapture.setName("SoundCapture");
         scenarios.add(soundCapture);
         
-        //Init SoundCapture scenario
-        Modulation modulation = new Modulation(assetManager, cam, this, bulletAppState.getPhysicsSpace());
-        scenarios.add(modulation);
         SoundEmission soundEmission = new SoundEmission(cam, this);
+        soundEmission.setName("SoundEmission");
         scenarios.add(soundEmission);
         
+        //Init SoundCapture scenario
+        Modulation modulation = new Modulation(cam, this);
+        modulation.setName("Modulation");
+        scenarios.add(modulation);
         
         adjustScenario(applicationType, scenarios, renderManager, inputManager);
         
@@ -158,8 +142,6 @@ public class ScenarioManager  implements IScenarioManager,
         
         //Add second scenario
         List<Scenario> modulationList = new ArrayList<Scenario>();
-        
-        //soundCaptureList.add(dummy);
         modulationList.add(soundCapture);
         modulationList.add(modulation);
         scenarioList.addScenario(ScenarioEnum.AMMODULATION,modulationList);
@@ -169,10 +151,6 @@ public class ScenarioManager  implements IScenarioManager,
         scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
         scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
 
-        if (bulletAppState != null) {
-            bulletAppState.getPhysicsSpace().addCollisionListener(modulation);
-        }
-        
         //setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));
         setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDCAPTURE));
 

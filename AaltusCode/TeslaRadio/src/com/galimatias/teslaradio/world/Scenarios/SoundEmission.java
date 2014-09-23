@@ -502,9 +502,4 @@ public class SoundEmission extends Scenario {
     public void sendSignalToEmitter(Geometry newSignal, float magnitude) {
         // The Sound Emission Scenario does not receive any signal for now.
     }
-
-    @Override
-    public void collision(PhysicsCollisionEvent event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }
