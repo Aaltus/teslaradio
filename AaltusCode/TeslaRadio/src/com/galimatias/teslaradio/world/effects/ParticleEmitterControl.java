@@ -5,6 +5,7 @@
 package com.galimatias.teslaradio.world.effects;
 import com.galimatias.teslaradio.world.observer.Observable;
 import com.galimatias.teslaradio.world.observer.Observer;
+import com.jme3.material.Material;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
@@ -16,6 +17,12 @@ import java.util.List;
  * @author Hugo
  */
 public abstract class ParticleEmitterControl extends AbstractControl implements Observer, Observable {
+    
+    // speed of particle
+    private float speed;
+    
+    // material of particle to send
+    private Material material;
     
     // list of particle to 
     protected List<Spatial> spatialToSendFifo;
