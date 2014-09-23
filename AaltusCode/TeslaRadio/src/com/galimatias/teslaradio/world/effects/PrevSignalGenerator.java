@@ -28,11 +28,13 @@ public class PrevSignalGenerator extends Node {
     private boolean drumGuitToggle = false;
     private AssetManager assetManager;
     private Geometry mainParticle;
+    private Camera camera;
 
 
-    public PrevSignalGenerator(AssetManager assetManager)
+    public PrevSignalGenerator(AssetManager assetManager, Camera cam)
     {
         this.assetManager = assetManager;
+        this.camera = cam;
         /**
          * TODO: Change this to be not hardcoded
          */
@@ -59,17 +61,19 @@ public class PrevSignalGenerator extends Node {
         Quad rect = new Quad(0.1f, 0.1f);
         mainParticle = new Geometry("particul",rect);
 
-
+        System.out.println(scenarioEnum);
+        System.out.println(observer);
+        
         switch (scenarioEnum){
-            case SOUNDCAPTURE:
-                emitter = null;
-                break;
             case AMMODULATION:
+            case FMMODULATION:
                 emitter = new SignalEmitter(observer);
                 Material electricParticleMat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
                 electricParticleMat.setTexture("ColorMap", assetManager.loadTexture("Textures/Electric3.png"));
                 mainParticle.setMaterial(electricParticleMat);
+                this.attachChild(emitter);
                 break;
+            case SOUNDCAPTURE:
             default:
                 emitter = null;
                 break;
@@ -82,14 +86,19 @@ public class PrevSignalGenerator extends Node {
     {
         timeElapsed += tpf;
 
-        if (delayForIntrument <= timeElapsed && emitter != null && receiverHandlePos != null){
-            this.setLocalTranslation(receiverHandlePos.getX(), receiverHandlePos.getY() - 10, receiverHandlePos.getZ());
-            ArrayList<Float> magnitudes = drumGuitToggle ? guitWaveMagn : drumWaveMagn;
-            emitter.setWaves(magnitudes, mainParticle, null, period, speed);
-            emitter.prepareEmitParticles(receiverHandlePos);
-            drumGuitToggle = !drumGuitToggle;
-            timeElapsed = 0f;
+        if (emitter != null){
+            if (delayForIntrument <= timeElapsed && receiverHandlePos != null){
+                System.out.println("Signal Generator stuff");
+                this.setLocalTranslation(receiverHandlePos.getX(), receiverHandlePos.getY() - 10, receiverHandlePos.getZ());
+                ArrayList<Float> magnitudes = drumGuitToggle ? guitWaveMagn : drumWaveMagn;
+                emitter.setWaves(magnitudes, mainParticle, null, period, speed);
+                emitter.prepareEmitParticles(receiverHandlePos);
+                drumGuitToggle = !drumGuitToggle;
+                timeElapsed = 0f;
+            }
+            emitter.simpleUpdate(tpf, this.camera);
         }
+        
     }
 
 }

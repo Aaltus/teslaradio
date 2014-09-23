@@ -80,17 +80,17 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
     private static final String MICRO = "Micro";
 
     public ScenarioManager(ApplicationType applicationType,
-            List<Node> node,
-            AssetManager assetManager,
-            Camera cam,
-            AppListener appListener,
-            RenderManager renderManager,
-            InputManager inputManager)
+                            List<Node> node,
+                            AssetManager assetManager,
+                            Camera cam,
+                            AppListener appListener,
+                            RenderManager renderManager,
+                            InputManager inputManager)
     {
         this.appListener = appListener;
 
         // This will generate signals when SoundEmission is not shown
-        signalGenerator = new PrevSignalGenerator(assetManager);
+        signalGenerator = new PrevSignalGenerator(assetManager, cam);
         
         //This a list of all the scenario that we will rotate/scale according
         //to which environment we are in. Don't forget to add scenario in it. 
@@ -327,7 +327,7 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
 
         for(Scenario scenario : getCurrentScenario().getScenarios() )
         {
-            if (scenario.simpleUpdate(tpf) && appListener != null)
+            if (scenario.simpleUpdate(tpf) && (appListener != null))
             {
                 appListener.toggleInformativeMenuCallback(scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios()));
             }
