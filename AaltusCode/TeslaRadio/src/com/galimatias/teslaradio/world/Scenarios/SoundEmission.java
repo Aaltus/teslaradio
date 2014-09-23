@@ -82,9 +82,9 @@ public class SoundEmission extends Scenario {
     private float maxTimeRefreshHint = 30f;
     private float timeLastTouch = maxTimeRefreshHint;
 
-    public SoundEmission(AssetManager assetManager, com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker)
+    public SoundEmission(com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker)
     {
-        super(assetManager,Camera, particleLinker);
+        super(Camera, particleLinker);
         
         touchable = new Node();
         touchable.setName("Touchable");

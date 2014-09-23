@@ -8,6 +8,11 @@ import com.galimatias.teslaradio.subject.ScenarioEnum;
  * Created by jimbojd72 on 9/8/14.
  */
 public interface IScenarioSwitcher {
+
+    boolean hasNextScenario();
+
+    boolean hasPreviousScenario();
+
     void setNextScenario();
 
     void setPreviousScenario();

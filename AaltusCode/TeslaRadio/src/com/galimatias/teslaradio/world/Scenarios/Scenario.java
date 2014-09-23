@@ -4,9 +4,8 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.ViewState;
-import com.galimatias.teslaradio.world.effects.Signal;
-import com.galimatias.teslaradio.world.observer.Observer;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.galimatias.teslaradio.world.observer.SignalObserver;
 import com.jme3.asset.AssetManager;
@@ -83,9 +82,9 @@ public abstract class Scenario extends Node implements SignalObserver, PhysicsCo
 
     }
 
-    public Scenario(AssetManager assetManager, com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker)
+    public Scenario(com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker)
     {
-        this.assetManager = assetManager;
+        assetManager = AppGetter.getAssetManager();
         this.Camera = Camera;
         this.particleLinker = particleLinker;
         

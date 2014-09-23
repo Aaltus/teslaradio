@@ -1,5 +1,6 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
@@ -33,7 +34,9 @@ import java.util.List;
  *
  * Created by jimbojd72 on 9/3/14.
  */
-public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLinker {
+public class ScenarioManager  implements IScenarioManager,
+        ParticleEmitReceiveLinker
+        {
 
     public static int WORLD_SCALE_DEFAULT = 100;
 
@@ -102,11 +105,8 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
 
     public ScenarioManager(ApplicationType applicationType,
             List<Node> node,
-            AssetManager assetManager,
             Camera cam,
-            AppListener appListener,
-            RenderManager renderManager,
-            InputManager inputManager)
+            AppListener appListener)
     {
         this(applicationType,
             node,
@@ -128,20 +128,23 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
             BulletAppState bulletAppState)
     {   
         this.appListener = appListener;
+        AssetManager assetManager   = AppGetter.getAssetManager();
+        RenderManager renderManager = AppGetter.getRenderManager();
+        InputManager inputManager   = AppGetter.getInputManager();
         
         //This a list of all the scenario that we will rotate/scale according
         //to which environment we are in. Don't forget to add scenario in it. 
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
         //Init SoundCapture scenario
-        Scenario soundCapture = new SoundCapture(assetManager, cam, this);
+        Scenario soundCapture = new SoundCapture(cam, this);
         soundCapture.setName("SoundCapture");
         scenarios.add(soundCapture);
         
         //Init SoundCapture scenario
         Modulation modulation = new Modulation(assetManager, cam, this, bulletAppState.getPhysicsSpace());
         scenarios.add(modulation);
-        SoundEmission soundEmission = new SoundEmission(assetManager, cam, this);
+        SoundEmission soundEmission = new SoundEmission(cam, this);
         scenarios.add(soundEmission);
         
         
@@ -305,18 +308,35 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
     //TODO: MODIFY THIS TO RECEIVE A LIST<NODE> TO ATTACH THE SCENARIO TO THE RIGHT TRACKABLE/NODE
     @Override
     public void setNextScenario() {
-        if(getCurrentScenario().getIndex()+1 < scenarioList.size())
+        if(hasNextScenario())
         {
             setCurrentScenario(scenarioList.getScenarioByIndex(getCurrentScenario().getIndex() + 1));
         }
     }
 
+
     @Override
     public void setPreviousScenario(){
-        if(getCurrentScenario().getIndex()-1 >= 0)
+        if(hasPreviousScenario())
         {
             setCurrentScenario(scenarioList.getScenarioByIndex(getCurrentScenario().getIndex() - 1));
         }
+    }
+
+
+
+    @Override
+    public boolean hasNextScenario() {
+
+        return getCurrentScenario().getIndex()+1 < scenarioList.size();
+
+    }
+
+    @Override
+    public boolean hasPreviousScenario() {
+
+        return getCurrentScenario().getIndex()-1 >= 0;
+
     }
 
     @Override
