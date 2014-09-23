@@ -1,5 +1,6 @@
 package com.galimatias.teslaradio.world.commons;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.Scenarios.DummyScenario;
 import com.galimatias.teslaradio.world.Scenarios.IScenarioManager;
 import com.galimatias.teslaradio.world.Scenarios.Scenario;
@@ -34,6 +35,7 @@ public class Main extends SimpleApplication implements ActionListener
     public static void main(String[] args) 
     {
         Main app = new Main();
+        AppGetter.setInstance(app);
         app.start();
     }
 
@@ -88,7 +90,7 @@ public class Main extends SimpleApplication implements ActionListener
         inputManager.addListener(this, ScenarioB_move_Z_pos);
         inputManager.addListener(this, ScenarioB_rotate_Y_pos);
         
-        scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.DESKTOP, nodeList, assetManager, cam, null, renderManager, inputManager);
+        scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.DESKTOP, nodeList, cam, null);
         
         flyCam.setMoveSpeed(100f);
         cam.setLocation(new Vector3f(-60,80,80));

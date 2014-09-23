@@ -1,5 +1,6 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
@@ -101,27 +102,27 @@ public class ScenarioManager  implements IScenarioManager,
 
     public ScenarioManager(ApplicationType applicationType,
             List<Node> node,
-            AssetManager assetManager,
             Camera cam,
-            AppListener appListener,
-            RenderManager renderManager,
-            InputManager inputManager)
+            AppListener appListener)
     {
         this.appListener = appListener;
+        AssetManager assetManager   = AppGetter.getAssetManager();
+        RenderManager renderManager = AppGetter.getRenderManager();
+        InputManager inputManager   = AppGetter.getInputManager();
         
         //This a list of all the scenario that we will rotate/scale according
         //to which environment we are in. Don't forget to add scenario in it. 
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
         //Init SoundCapture scenario
-        Scenario soundCapture = new SoundCapture(assetManager, cam, this);
+        Scenario soundCapture = new SoundCapture(cam, this);
         soundCapture.setName("SoundCapture");
         scenarios.add(soundCapture);
         
         //Init SoundCapture scenario
         DummyScenario dummy = new DummyScenario(assetManager, ColorRGBA.Orange);
         scenarios.add(dummy);
-        SoundEmission soundEmission = new SoundEmission(assetManager, cam, this);
+        SoundEmission soundEmission = new SoundEmission(cam, this);
         scenarios.add(soundEmission);
         
         
