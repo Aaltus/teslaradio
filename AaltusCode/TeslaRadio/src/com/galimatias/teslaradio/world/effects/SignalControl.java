@@ -62,6 +62,7 @@ public class SignalControl extends AbstractControl implements Observable{
         wayPointIndex.set(path.getWayPointIndexForDistance(distanceTraveled));
         splinePath.interpolate(wayPointIndex.y, (int) (wayPointIndex.x), this.currentPosition);
         this.spatial.setLocalTranslation(currentPosition);
+        //this.spatial.lookAt(cam.getLocation(), cam.getUp());
     }
 
     @Override

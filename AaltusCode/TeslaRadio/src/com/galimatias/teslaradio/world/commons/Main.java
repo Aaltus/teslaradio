@@ -7,7 +7,7 @@ import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.SignalControl;
-import com.galimatias.teslaradio.world.effects.WireParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.jme3.app.SimpleApplication;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.input.KeyInput;
@@ -55,6 +55,9 @@ public class Main extends SimpleApplication implements ActionListener
     private static final String ScenarioB_move_Z_neg = "ScenarioB_move_Z_neg";
     private static final String ScenarioB_rotate_Y_pos = "ScenarioB_rotate_Y_pos";
     private static final String ScenarioB_rotate_Y_neg = "ScenarioB_rotate_Y_neg";
+    
+    
+    private Node destination;
     
     @Override
     public void simpleInitApp() 
@@ -123,12 +126,14 @@ public class Main extends SimpleApplication implements ActionListener
         test.setMaterial(testMaterial);
         
         Node testEmitter = new Node();
-        Node destination = new Node();
+        destination = new Node();
         rootNode.attachChild(testEmitter);
         rootNode.attachChild(destination);
         
-        destination.setLocalTranslation(10, 10, 0);
-        testEmitter.addControl(new WireParticleEmitterControl(destination, 10));
+        destination.setLocalTranslation(100, 100, 0); // dynamic test
+        
+        
+        testEmitter.addControl(new DynamicWireParticleEmitterControl(destination, 10));
         
         testEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
         testEmitter.getControl(ParticleEmitterControl.class).emitParticle(test);
@@ -209,9 +214,10 @@ public class Main extends SimpleApplication implements ActionListener
                 nodeB.setLocalTranslation(tempPosition.x, tempPosition.y, tempPosition.z-(10));                 
             }
             else if(name.equals(ScenarioB_rotate_Y_pos)){
-                tempRotation = nodeB.getLocalRotation();
-                tempRotation.multLocal((new Quaternion()).fromAngles(0, 0.1f, 0));
-                nodeB.setLocalRotation(tempRotation);
+                this.destination.setLocalTranslation(-100, 100, 0);
+                //tempRotation = nodeB.getLocalRotation();
+                //tempRotation.multLocal((new Quaternion()).fromAngles(0, 0.1f, 0));
+                //nodeB.setLocalRotation(tempRotation);
             }
             else if(name.equals(ScenarioB_rotate_Y_neg)){
                 tempRotation = nodeB.getLocalRotation();

@@ -19,10 +19,10 @@ import java.util.List;
 public abstract class ParticleEmitterControl extends AbstractControl implements Observer, Observable {
     
     // speed of particle
-    private float speed;
+    protected float speed;
     
     // material of particle to send
-    private Material material;
+    protected Material material;
     
     // list of particle to 
     protected List<Spatial> spatialToSendFifo;

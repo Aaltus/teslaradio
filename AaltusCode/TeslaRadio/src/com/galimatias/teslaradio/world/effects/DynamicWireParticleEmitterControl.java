@@ -5,24 +5,28 @@
 package com.galimatias.teslaradio.world.effects;
 
 import com.jme3.cinematic.MotionPath;
+import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.mesh.IndexBuffer;
+import com.jme3.util.BufferUtils;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 /**
  *
  * @author Hugo
  */
-public class WireParticleEmitterControl extends ParticleEmitterControl {
+public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
     
     private MotionPath path;
     private Spatial destinationHandle;
-    private float speed;
 
-    public WireParticleEmitterControl(Spatial destinationHandle, float speed)
+    public DynamicWireParticleEmitterControl(Spatial destinationHandle, float speed)
     {
         spatialToSendFifo = new ArrayList();
         path = new MotionPath();
@@ -35,16 +39,14 @@ public class WireParticleEmitterControl extends ParticleEmitterControl {
 
     }
     
-    public WireParticleEmitterControl(Mesh wirePathMesh)
-    {
-        
-        
-    }
-
     @Override
     protected void pathUpdate() {
-        
-        
+        if(this.destinationHandle != null)
+        {
+            this.path.clearWayPoints();
+            this.path.addWayPoint(this.spatial.getLocalTranslation());
+            this.path.addWayPoint(this.destinationHandle.getLocalTranslation()); 
+        }
     }    
         
     @Override
