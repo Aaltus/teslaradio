@@ -123,9 +123,15 @@ public class Main extends SimpleApplication implements ActionListener
         test.setMaterial(testMaterial);
         
         Node testEmitter = new Node();
-        testEmitter.addControl(new WireParticleEmitterControl());
+        Node destination = new Node();
         rootNode.attachChild(testEmitter);
-        testEmitter.getControl(ParticleEmitterControl.class).prepareEmission(test);
+        rootNode.attachChild(destination);
+        
+        destination.setLocalTranslation(10, 10, 0);
+        testEmitter.addControl(new WireParticleEmitterControl(destination, 10));
+        
+        testEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+        testEmitter.getControl(ParticleEmitterControl.class).emitParticle(test);
         
         // Attaching the modules to the scene
         //dummy.scale(20);

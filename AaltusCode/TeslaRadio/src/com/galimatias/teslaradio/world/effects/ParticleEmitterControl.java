@@ -17,33 +17,32 @@ import java.util.List;
  */
 public abstract class ParticleEmitterControl extends AbstractControl implements Observer, Observable {
     
-    // 
+    // list of particle to 
     protected List<Spatial> spatialToSendFifo;
     
     // register an observer for end of path notification
     protected ArrayList<Observer> observerList = new ArrayList();
     
     // initialise particles to be send and put them in FIFO
-    public abstract void prepareEmission(Spatial spatialToSend);
+    public abstract void emitParticle(Spatial spatialToSend);
     
     // attach particle to the node and activate their control(they start moving)
-    // this should be call by simpleUpdate
+    // this is done in controlUpdate to be synch with frames
     @Override
     protected void controlUpdate(float tpf) {
-        emitParticle();
-        
-    }
-    public void emitParticle()
-    {
         for(Spatial spatialToAttach : spatialToSendFifo)
         {
             spatialToAttach.getControl(SignalControl.class).setEnabled(true);
             ((Node) this.spatial).attachChild(spatialToAttach);
         }
         spatialToSendFifo.clear();
+        
+        // update dynamic path
+        this.pathUpdate();
     }
     
-    public abstract void updatePath();
+    // this function should do nothing if the path is not a dynamic one
+    protected abstract void pathUpdate();
     
     @Override
     public void registerObserver(Observer observer) {

@@ -24,13 +24,6 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
     }
 
     @Override
-    public void prepareEmission(Spatial spatialToSend) {
-        
-        
-        
-    }
-
-    @Override
     public void observerUpdate(Spatial spatial) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -41,12 +34,17 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
     }
 
     @Override
-    public void updatePath() {
+    protected void controlRender(RenderManager rm, ViewPort vp) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    protected void controlRender(RenderManager rm, ViewPort vp) {
+    public void emitParticle(Spatial spatialToSend) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void pathUpdate() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

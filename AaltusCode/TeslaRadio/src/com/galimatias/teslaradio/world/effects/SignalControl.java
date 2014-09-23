@@ -54,6 +54,7 @@ public class SignalControl extends AbstractControl implements Observable{
         if(distanceTraveled >= path.getLength())
         {
             this.notifyObservers(this.spatial);
+            return;
         }
         
         // from distance, find new position of the signal
@@ -78,6 +79,7 @@ public class SignalControl extends AbstractControl implements Observable{
         this.observer = null;
     }
 
+    // make sure that emitter is register to each Signal send
     @Override
     public void notifyObservers(Spatial spatial) {
         this.observer.observerUpdate(spatial);

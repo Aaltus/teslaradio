@@ -5,11 +5,12 @@
 package com.galimatias.teslaradio.world.effects;
 
 import com.jme3.cinematic.MotionPath;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -18,31 +19,48 @@ import java.util.List;
 public class WireParticleEmitterControl extends ParticleEmitterControl {
     
     private MotionPath path;
+    private Spatial destinationHandle;
     private float speed;
-    private List<Spatial> spatialAliveFifo;
 
-    public WireParticleEmitterControl()
+    public WireParticleEmitterControl(Spatial destinationHandle, float speed)
     {
         spatialToSendFifo = new ArrayList();
-        spatialAliveFifo = new ArrayList();
+        path = new MotionPath();
+        
+        this.speed = speed;
+        this.destinationHandle = destinationHandle;
+        
+        this.path.addWayPoint(new Vector3f(0,0,0));
+        this.path.addWayPoint(this.destinationHandle.getLocalTranslation());
+
     }
     
-    @Override
-    public void prepareEmission(Spatial spatialToSend) {
+    public WireParticleEmitterControl(Mesh wirePathMesh)
+    {
         
-        spatialToSend.removeFromParent();
-        spatialToSend.addControl(new SignalControl(path,speed));
-        spatialToSendFifo.add(spatialToSend);
-        spatialAliveFifo.add(spatialToSend);
+        
     }
 
-    
+    @Override
+    protected void pathUpdate() {
+        
+        
+    }    
+        
+    @Override
+    public void emitParticle(Spatial spatialToSend) {
+        
+        SignalControl sigControl = new SignalControl(path,speed);
+        sigControl.registerObserver(this);
+        spatialToSend.addControl(sigControl);
+        spatialToSendFifo.add(spatialToSend);
+    }
+
     // notification from particle when they reach their goal.
     @Override
-    public void observerUpdate(Spatial spatial) {
-        Spatial toBeDeletedSpatial;
-        toBeDeletedSpatial = spatialAliveFifo.get(0);
-        spatialAliveFifo.remove(0);
+    public void observerUpdate(Spatial toBeDeletedSpatial) {
+        
+        // deconnect particle from this particle emitter
         toBeDeletedSpatial.removeControl(SignalControl.class);
         toBeDeletedSpatial.removeFromParent();
         
@@ -51,13 +69,8 @@ public class WireParticleEmitterControl extends ParticleEmitterControl {
     }
 
     @Override
-    public void updatePath() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
 }
