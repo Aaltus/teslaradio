@@ -266,6 +266,17 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     }
 
     @Override
+    public boolean hasNextScenario() {
+
+        return false;
+    }
+
+    @Override
+    public boolean hasPreviousScenario() {
+        return false;
+    }
+
+    @Override
     public void setNextScenario() {
 
     }

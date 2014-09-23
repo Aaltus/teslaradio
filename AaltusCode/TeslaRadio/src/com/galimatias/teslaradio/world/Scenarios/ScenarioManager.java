@@ -31,7 +31,9 @@ import java.util.List;
  *
  * Created by jimbojd72 on 9/3/14.
  */
-public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLinker {
+public class ScenarioManager  implements IScenarioManager,
+        ParticleEmitReceiveLinker
+        {
 
     public static int WORLD_SCALE_DEFAULT = 100;
 
@@ -276,18 +278,35 @@ public class ScenarioManager  implements IScenarioManager, ParticleEmitReceiveLi
     //TODO: MODIFY THIS TO RECEIVE A LIST<NODE> TO ATTACH THE SCENARIO TO THE RIGHT TRACKABLE/NODE
     @Override
     public void setNextScenario() {
-        if(getCurrentScenario().getIndex()+1 < scenarioList.size())
+        if(hasNextScenario())
         {
             setCurrentScenario(scenarioList.getScenarioByIndex(getCurrentScenario().getIndex() + 1));
         }
     }
 
+
     @Override
     public void setPreviousScenario(){
-        if(getCurrentScenario().getIndex()-1 >= 0)
+        if(hasPreviousScenario())
         {
             setCurrentScenario(scenarioList.getScenarioByIndex(getCurrentScenario().getIndex() - 1));
         }
+    }
+
+
+
+    @Override
+    public boolean hasNextScenario() {
+
+        return getCurrentScenario().getIndex()+1 < scenarioList.size();
+
+    }
+
+    @Override
+    public boolean hasPreviousScenario() {
+
+        return getCurrentScenario().getIndex()-1 >= 0;
+
     }
 
     @Override
