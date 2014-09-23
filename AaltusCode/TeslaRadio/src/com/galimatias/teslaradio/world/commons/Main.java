@@ -5,7 +5,11 @@ import com.galimatias.teslaradio.world.Scenarios.IScenarioManager;
 import com.galimatias.teslaradio.world.Scenarios.Scenario;
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
+import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.SignalControl;
+import com.galimatias.teslaradio.world.effects.WireParticleEmitterControl;
 import com.jme3.app.SimpleApplication;
+import com.jme3.cinematic.MotionPath;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -113,6 +117,15 @@ public class Main extends SimpleApplication implements ActionListener
         //DummyScenario dummy = new DummyScenario(assetManager, ColorRGBA.Orange);
         //rootNode.attachChild(dummy);
         
+        Geometry test = new Geometry("test", new Box (2,2,2));
+        Material testMaterial  = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        testMaterial.setColor("Color", ColorRGBA.Red);
+        test.setMaterial(testMaterial);
+        
+        Node testEmitter = new Node();
+        testEmitter.addControl(new WireParticleEmitterControl());
+        rootNode.attachChild(testEmitter);
+        testEmitter.getControl(ParticleEmitterControl.class).prepareEmission(test);
         
         // Attaching the modules to the scene
         //dummy.scale(20);

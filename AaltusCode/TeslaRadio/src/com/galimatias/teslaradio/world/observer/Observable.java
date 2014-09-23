@@ -4,6 +4,8 @@
  */
 package com.galimatias.teslaradio.world.observer;
 
+import com.jme3.scene.Spatial;
+
 /**
  *
  * @author Hugo
@@ -11,5 +13,5 @@ package com.galimatias.teslaradio.world.observer;
 public interface Observable {
     public void registerObserver(Observer observer);
     public void removeObserver(Observer observer);
-    public void notifyObservers(Object caller);
+    public void notifyObservers(Spatial spatial);
 }
