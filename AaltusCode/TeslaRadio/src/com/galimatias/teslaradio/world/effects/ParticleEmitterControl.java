@@ -25,7 +25,7 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     protected Material material;
     
     // list of particle to 
-    protected List<Spatial> spatialToSendFifo;
+    protected List<Spatial> spatialToSendBuffer;
     
     // register an observer for end of path notification
     protected ArrayList<Observer> observerList = new ArrayList();
@@ -37,12 +37,12 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     // this is done in controlUpdate to be synch with frames
     @Override
     protected void controlUpdate(float tpf) {
-        for(Spatial spatialToAttach : spatialToSendFifo)
+        for(Spatial spatialToAttach : spatialToSendBuffer)
         {
             spatialToAttach.getControl(SignalControl.class).setEnabled(true);
             ((Node) this.spatial).attachChild(spatialToAttach);
         }
-        spatialToSendFifo.clear();
+        spatialToSendBuffer.clear();
         
         // update dynamic path
         this.pathUpdate();

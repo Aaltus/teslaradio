@@ -22,7 +22,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
 
     public DynamicWireParticleEmitterControl(Spatial destinationHandle, float speed)
     {
-        spatialToSendFifo = new ArrayList();
+        spatialToSendBuffer = new ArrayList();
         path = new MotionPath();
         
         this.speed = speed;
@@ -46,11 +46,18 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         
     @Override
     public void emitParticle(Spatial spatialToSend) {
+        // if there is specific material to be use by the emitter apply it
+        // if not dont change the already in place material
+        if(this.material != null)
+        {
+            spatialToSend.setMaterial(this.material);
+        }
         
+        // create the signal control and put the signal in the send buffer
         SignalControl sigControl = new SignalControl(path,speed);
         sigControl.registerObserver(this);
         spatialToSend.addControl(sigControl);
-        spatialToSendFifo.add(spatialToSend);
+        spatialToSendBuffer.add(spatialToSend);
     }
 
     // notification from particle when they reach their goal.
