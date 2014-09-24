@@ -43,6 +43,8 @@ public class ScenarioManager  implements IScenarioManager,
         {
 
     public static int WORLD_SCALE_DEFAULT = 100;
+    private static final String TOUCH_EVENT_NAME = "Touch";
+    private static final String RIGHT_CLICK_MOUSE_EVENT_NAME = "Mouse";
     private Node guiNode;
     private Camera camera;
 
@@ -68,6 +70,42 @@ public class ScenarioManager  implements IScenarioManager,
         if (nextScenario != null){
             nextScenario.sendSignalToEmitter(newSignal, magnitude);
         }
+    }
+
+    /**
+     * Initiate an HUD on the GUI Node.
+     * @param settings
+     * @param assetManager 
+     */
+    private void initGuiNode(AppSettings settings, AssetManager assetManager) {
+        final int imageWidth = settings.getWidth() / 15;
+        final int imageHeight = settings.getHeight() / 10;
+        
+        Picture pic1 = new Picture(NEXT_SCENARIO);
+        pic1.setName(NEXT_SCENARIO);
+        pic1.setImage(assetManager, "Interface/arrow.png", true);
+        pic1.setWidth(imageWidth);
+        pic1.setHeight(imageHeight);
+        Node node1 = new Node();
+        node1.setName(NEXT_SCENARIO);
+        node1.attachChild(pic1);
+        guiNode.attachChild(node1);
+        pic1.move(-imageWidth / 2, -imageHeight / 2, 0);
+        //node2.rotate(0, 0, -(float)Math.PI);
+        node1.move(settings.getWidth()-imageWidth/2,settings.getHeight()/2, 0);
+
+        Picture pic2 = new Picture(PREVIOUS_SCENARIO);
+        pic2.setName(PREVIOUS_SCENARIO);
+        pic2.setImage(assetManager, "Interface/arrow.png", true);
+        pic2.setWidth(imageWidth);
+        pic2.setHeight(imageHeight);
+        Node node2 = new Node();
+        node2.setName(PREVIOUS_SCENARIO);
+        node2.attachChild(pic2);
+        guiNode.attachChild(node2);
+        pic2.move(-imageWidth/2, -imageHeight/2, 0);
+        node2.rotate(0, 0, -(float)Math.PI);
+        node2.move(imageWidth/2,settings.getHeight()/2, 0);
     }
 
 
@@ -164,37 +202,7 @@ public class ScenarioManager  implements IScenarioManager,
         setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDCAPTURE));
 
         setNodeList(node);
-
-        final int imageWidth = settings.getWidth() / 15;
-        final int imageHeight = settings.getHeight() / 10;
-        
-        Picture pic1 = new Picture(NEXT_SCENARIO);
-        pic1.setName(NEXT_SCENARIO);
-        pic1.setImage(assetManager, "Interface/arrow.png", true);
-        pic1.setWidth(imageWidth);
-        pic1.setHeight(imageHeight);
-        Node node1 = new Node();
-        node1.setName(NEXT_SCENARIO);
-        node1.attachChild(pic1);
-        guiNode.attachChild(node1);
-        pic1.move(-imageWidth / 2, -imageHeight / 2, 0);
-        //node2.rotate(0, 0, -(float)Math.PI);
-        node1.move(settings.getWidth()-imageWidth/2,settings.getHeight()/2, 0);
-        
-
-
-        Picture pic2 = new Picture(PREVIOUS_SCENARIO);
-        pic2.setName(PREVIOUS_SCENARIO);
-        pic2.setImage(assetManager, "Interface/arrow.png", true);
-        pic2.setWidth(imageWidth);
-        pic2.setHeight(imageHeight);
-        Node node2 = new Node();
-        node2.setName(PREVIOUS_SCENARIO);
-        node2.attachChild(pic2);
-        guiNode.attachChild(node2);
-        pic2.move(-imageWidth/2, -imageHeight/2, 0);
-        node2.rotate(0, 0, -(float)Math.PI);
-        node2.move(imageWidth/2,settings.getHeight()/2, 0);
+        initGuiNode(settings, assetManager);
 
     }
 
@@ -209,8 +217,9 @@ public class ScenarioManager  implements IScenarioManager,
         {
             case ANDROID:
 
-                inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click
-                inputManager.addListener(this, new String[]{"Touch"});
+                //Add mapping for touch input only for android device
+                inputManager.addMapping(TOUCH_EVENT_NAME, new TouchTrigger(0));
+                inputManager.addListener(this, new String[]{TOUCH_EVENT_NAME});
 
                 //This is the rotation to put a scenarion in the correct angle for VuforiaJME
                 Quaternion rot = new Quaternion();
@@ -242,7 +251,8 @@ public class ScenarioManager  implements IScenarioManager,
                         inputManager.addMapping(MICRO, new KeyTrigger(KeyInput.KEY_M));
                         inputManager.addMapping(NEXT_SCENARIO, new KeyTrigger(KeyInput.KEY_P));
                         inputManager.addMapping(PREVIOUS_SCENARIO, new KeyTrigger(KeyInput.KEY_O));
-                        inputManager.addMapping("Mouse", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+                        //We add mapping for right click because left click are already implemented.
+                        inputManager.addMapping(RIGHT_CLICK_MOUSE_EVENT_NAME, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 
                         // Add the names to the action listener.
                         inputManager.addListener(this, DRUM);
@@ -251,7 +261,7 @@ public class ScenarioManager  implements IScenarioManager,
                         inputManager.addListener(this, MICRO);
                         inputManager.addListener(this, NEXT_SCENARIO);
                         inputManager.addListener(this, PREVIOUS_SCENARIO);
-                        inputManager.addListener(this,"Mouse");
+                        inputManager.addListener(this, RIGHT_CLICK_MOUSE_EVENT_NAME);
 
 
                     }
@@ -400,23 +410,12 @@ public class ScenarioManager  implements IScenarioManager,
     public void onTouch(String name, TouchEvent touchEvent, float v)
     {
 
-        AppLogger.getInstance().i(name, "On touche dude X: " + touchEvent.getX() + " Y: " + + touchEvent.getY());
-        
+        //We check if the event is on the GUI NODE. We pass it down to scenario otherwise.
         CollisionResults results = new CollisionResults();
-
         Vector2f location = new Vector2f(touchEvent.getX(),touchEvent.getY());
-
         Vector3f origin = new Vector3f(location.x, location.y, 0);
         Vector3f dir = new Vector3f(0f, 0f, 1f);
-        // 2. Mode 1: user touch location.
-        /*Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
-        Vector3f click3d = camera.getWorldCoordinates(
-                new Vector2f(click2d.x, click2d.y), 0f).clone();
-        Vector3f dir = camera.getWorldCoordinates(
-                new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
-                */
         Ray ray = new Ray(origin, dir);
-
         // 3. Collect intersections between Ray and Shootables in results list.
         guiNode.collideWith(ray, results);
 
@@ -424,7 +423,7 @@ public class ScenarioManager  implements IScenarioManager,
         {
             String nameToCompare =
                     results.getClosestCollision().getGeometry().getParent().getName();
-            AppLogger.getInstance().i("Chat",nameToCompare);
+            //AppLogger.getInstance().i("Chat",nameToCompare);
             if(nameToCompare.equals(NEXT_SCENARIO))
             {
                 this.setNextScenario();
@@ -444,6 +443,12 @@ public class ScenarioManager  implements IScenarioManager,
 
     }
     
+    /**
+     * This event is generated by the DevFramework from keyboard key or Mouse event
+     * @param name
+     * @param keyPressed
+     * @param tpf 
+     */
     @Override
     public void onAction(String name, boolean keyPressed, float tpf) {
         
@@ -480,11 +485,15 @@ public class ScenarioManager  implements IScenarioManager,
             //soundCapture.drumTouchEffect();
             this.setPreviousScenario();
         }
-        else if(name.equals("Mouse") && !keyPressed)
+        //If it's an mouse event, we generate a touch event from it to support touch event.
+        else if(name.equals(RIGHT_CLICK_MOUSE_EVENT_NAME) && !keyPressed)
         {
-            AppLogger.getInstance().i(name, "Testing mouse input");
-            //onTouch("Touch", new TouchEvent(TouchEvent.Type.DOWN, AppGetter.getAppSettings().getWidth()/2, AppGetter.getAppSettings().getHeight()/2,0,0),tpf);
-            onTouch("Touch", new TouchEvent(TouchEvent.Type.DOWN, AppGetter.getInputManager().getCursorPosition().getX(), AppGetter.getInputManager().getCursorPosition().getY(),0,0),tpf);
+            onTouch(TOUCH_EVENT_NAME, new TouchEvent(TouchEvent.Type.DOWN,
+                    AppGetter.getInputManager().getCursorPosition().getX(),
+                    AppGetter.getInputManager().getCursorPosition().getY(),
+                    0,
+                    0),
+                    tpf);
         }
     }
 
