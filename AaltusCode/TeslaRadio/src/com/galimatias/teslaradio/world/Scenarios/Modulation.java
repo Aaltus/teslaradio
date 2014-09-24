@@ -4,6 +4,7 @@ import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.SignalEmitter;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
+import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -20,6 +21,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -30,7 +32,7 @@ import com.jme3.scene.shape.Dome;
 /**
  * Created by Batcave on 2014-09-09.
  */
-public class Modulation extends Scenario {
+public class Modulation extends Scenario implements EmitterObserver {
 
     private final static String TAG = "Modulation";
   
@@ -85,6 +87,7 @@ public class Modulation extends Scenario {
     private Geometry pyramidCarrier;
     private Geometry dodecagoneCarrier; // Really...
     private Geometry currentCarrier;
+    private Geometry outputSignal;
     
     // this is PIIIIIII! (kick persian)
     private final float pi = (float) Math.PI; 
@@ -98,10 +101,15 @@ public class Modulation extends Scenario {
     private float tpfCumul =0;
     private Quaternion rotationXSwitch = new Quaternion();
     
+    // This variable holds the last carrier spatial to hit when entering the chip
+    private Spatial presentCarrierType;
+    private String presentCarrierId;
+    
     public Modulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
 
         super(Camera, destinationHandle);
         
+        this.cam = Camera;
         this.destinationHandle = destinationHandle;
         
         loadUnmovableObjects();
@@ -132,9 +140,16 @@ public class Modulation extends Scenario {
 
         initDigitalDisplay();
         
-        initParticlesEmitter(wirePcbEmitter, pathInHandle, pathIn);
-        initParticlesEmitter(carrierEmitter, pathCarrierHandle, pathCarrier);
-        initParticlesEmitter(pcbAmpEmitter, pathOutHandle, pathOut);
+        initParticlesEmitter(wirePcbEmitter, pathInHandle, pathIn,cam);
+        initParticlesEmitter(carrierEmitter, pathCarrierHandle, pathCarrier,null);
+        initParticlesEmitter(pcbAmpEmitter, pathOutHandle, pathOut,null);
+        
+        // Set names for the emitters
+        wirePcbEmitter.setName("WirePCBEmitter");
+        carrierEmitter.setName("CarrierEmitter");
+        pcbAmpEmitter.setName("PCBAmpEmitter");
+        
+        pcbAmpEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
              
     }
 
@@ -228,6 +243,7 @@ public class Modulation extends Scenario {
         
         checkTrackableAngle(trackableAngle);
         checkModulationMode(tpf);
+        changeOuputParticles();
         
         return false;
     }
@@ -285,15 +301,16 @@ public class Modulation extends Scenario {
         
         Node dodecagone = (Node) assetManager.loadModel("Models/Modulation/Dodecahedron.j3o");
         dodecagoneCarrier = (Geometry) dodecagone.getChild("Solid.0041");
+        dodecagoneCarrier.setName("DodecagoneCarrier");
         dodecagoneCarrier.setMaterial(mat1);
                          
     }
     
-    private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path) {
+    private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
         
         scene.attachChild(signalEmitter);
         signalEmitter.setLocalTranslation(handle.getWorldTranslation()); // TO DO: utiliser le object handle blender pour position
-        signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f));
+        signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
     
@@ -341,22 +358,22 @@ public class Modulation extends Scenario {
                 case 1:
                     digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                //     System.out.println(sFM1061);
-                    changeElectricalParticles(1);
+                    changeCarrierParticles(1);
                     break;
                 case 2:
                     digitalDisplay.simpleUpdate(sFM977, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                  //   System.out.println(sFM977);
-                    changeElectricalParticles(2);
+                    changeCarrierParticles(2);
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sFM952, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                  //   System.out.println(sFM952);
-                    changeElectricalParticles(3);
+                    changeCarrierParticles(3);
                     break;
                 default:
                     digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                    // System.out.println(sFM1061);
-                    changeElectricalParticles(1);
+                    changeCarrierParticles(1);
                     break;
             }
         }
@@ -365,28 +382,46 @@ public class Modulation extends Scenario {
                 case 1:
                     digitalDisplay.simpleUpdate(sAM697, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                   //  System.out.println(sAM697);
-                    changeElectricalParticles(1);
+                    changeCarrierParticles(1);
                     break;
                 case 2:
                     digitalDisplay.simpleUpdate(sAM498, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                   //  System.out.println(sAM498);
-                    changeElectricalParticles(2);
+                    changeCarrierParticles(2);
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sAM707, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                   //  System.out.println(sAM707);
-                    changeElectricalParticles(3);
+                    changeCarrierParticles(3);
                     break;
                 default :
                     digitalDisplay.simpleUpdate(sAM697, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                   // System.out.println(sAM697);
-                    changeElectricalParticles(1);
+                    changeCarrierParticles(1);
                     break;
                 }
         }   
     }
     
-    private void changeElectricalParticles(int frequency) {
+    private void changeOuputParticles() {
+        
+        if (this.presentCarrierType != null && this.presentCarrierId.equals("CarrierEmitter")) {
+           
+            String presentCarrierTypeName = presentCarrierType.getName();
+            
+            if ("CubeCarrier".equals(presentCarrierTypeName)) {
+                outputSignal = cubeCarrier;
+            }
+            else if ("PyramidCarrier".equals(presentCarrierTypeName)) {
+                outputSignal = pyramidCarrier;
+            }
+            else if ("DodecagoneCarrier".equals(presentCarrierTypeName)) {
+                outputSignal = dodecagoneCarrier;
+            }               
+        }
+    }
+    
+    private void changeCarrierParticles(int frequency) {
         
         switch(frequency)
         {
@@ -428,6 +463,11 @@ public class Modulation extends Scenario {
         }              
     }
     
+    /**
+     * Switches the FM/AM switch dynamically
+     * @param isFM
+     * @param tpfCumul 
+     */
     private void switchRotation(boolean isFM, float tpfCumul){
         if(!isFM){
             rotationXSwitch.fromAngleAxis(angleRangeTwoPi(initAngleSwitch - tpfCumul), Vector3f.UNIT_X);
@@ -466,6 +506,24 @@ public class Modulation extends Scenario {
     @Override
     public Spatial getInputHandle() {
         return wirePcbEmitter;
+    }
+
+    /**
+     * Called when receiving an event from the observable emitter
+     * @param spatial
+     * @param notifierId 
+     */
+    @Override
+    public void emitterObserverUpdate(Spatial spatial, String notifierId) {
+        
+        System.out.println("Hello");
+        
+        this.presentCarrierType = spatial;
+        this.presentCarrierId = notifierId;
+        
+        if (pcbAmpEmitter != null) {
+            pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(outputSignal);
+        }
     }
 }
 

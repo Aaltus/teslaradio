@@ -13,6 +13,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -73,6 +74,11 @@ public abstract class Scenario extends Node implements SignalObserver {
      *
      */
     protected Node scene;
+    
+    /**
+     * The foregound camera of the scene
+     */
+    protected Camera cam;
 
     /**
      * We make the default constructor private to prevent its use.

@@ -7,6 +7,7 @@ import com.galimatias.teslaradio.world.observer.EmitterObservable;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.galimatias.teslaradio.world.observer.Observer;
 import com.jme3.material.Material;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
@@ -30,6 +31,9 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     
     // register an observer for end of path notification
     protected ArrayList<EmitterObserver> observerList = new ArrayList();
+    
+    // The foreground camera of the scenarios
+    protected Camera cam;
     
     // initialise particles to be send and put them in FIFO
     public abstract void emitParticle(Spatial spatialToSend);

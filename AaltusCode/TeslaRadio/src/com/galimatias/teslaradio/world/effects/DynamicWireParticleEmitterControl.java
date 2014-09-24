@@ -6,6 +6,7 @@ package com.galimatias.teslaradio.world.effects;
 
 import com.jme3.cinematic.MotionPath;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
@@ -22,11 +23,17 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
 
     public DynamicWireParticleEmitterControl(Spatial destinationHandle, float speed)
     {
+        this(destinationHandle, speed, null);
+    }
+    
+    public DynamicWireParticleEmitterControl(Spatial destinationHandle, float speed, Camera cam)
+    {
         spatialToSendBuffer = new ArrayList();
         path = new MotionPath();
         
         this.speed = speed;
         this.destinationHandle = destinationHandle;
+        this.cam = cam;
     }
     
     @Override
@@ -54,7 +61,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         }
         
         // create the signal control and put the signal in the send buffer
-        SignalControl sigControl = new SignalControl(path,speed);
+        SignalControl sigControl = new SignalControl(path,speed,cam);
         sigControl.registerObserver(this);
         spatialToSend.addControl(sigControl);
         spatialToSendBuffer.add(spatialToSend);
