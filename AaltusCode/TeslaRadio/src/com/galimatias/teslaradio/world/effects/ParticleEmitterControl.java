@@ -51,6 +51,18 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     // this function should do nothing if the path is not a dynamic one
     protected abstract void pathUpdate();
     
+    
+    // this method define a material to be set to each particle before emission
+    // if not define the emitter wont edit the geom material aready in place.
+    public void setDefaultMaterial(Material mat)
+    {
+        this.material = mat;
+    }
+    public void clearDefaultMaterial(Material mat)
+    {
+        this.material = null;
+    }    
+    
     @Override
     public void registerObserver(Observer observer) {
         this.observerList.add(observer);
