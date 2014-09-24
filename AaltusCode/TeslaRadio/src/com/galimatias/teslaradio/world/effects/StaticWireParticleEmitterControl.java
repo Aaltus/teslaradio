@@ -52,7 +52,7 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
         sigControl.registerObserver(this);
         spatialToSend.addControl(sigControl);
         spatialToSendBuffer.add(spatialToSend);
-    }
+    }   
 
     @Override
     protected void pathUpdate() {
