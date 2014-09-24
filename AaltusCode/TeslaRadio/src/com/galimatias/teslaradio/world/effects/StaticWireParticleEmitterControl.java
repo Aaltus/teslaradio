@@ -5,7 +5,6 @@
 package com.galimatias.teslaradio.world.effects;
 
 import com.jme3.cinematic.MotionPath;
-import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -72,7 +71,7 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
         toBeDeletedSpatial.removeFromParent();
         
         // notify Registered observers of the ParticleEmitter
-        this.notifyObservers(toBeDeletedSpatial);
+        this.notifyObservers(toBeDeletedSpatial,this.spatial.getName());
     }
     
     private void setPathFromMesh(Mesh bezier_mesh)

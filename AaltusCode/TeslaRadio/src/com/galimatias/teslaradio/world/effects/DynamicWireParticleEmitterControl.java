@@ -69,12 +69,12 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         toBeDeletedSpatial.removeFromParent();
         
         // notify Registered observers of the ParticleEmitter
-        this.notifyObservers(toBeDeletedSpatial);
+        this.notifyObservers(toBeDeletedSpatial,this.spatial.getName());
     }
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-        
+
     }
 
 }
