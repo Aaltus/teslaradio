@@ -5,6 +5,7 @@
 package com.galimatias.teslaradio.world.effects;
 
 import com.jme3.cinematic.MotionPath;
+import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -72,10 +73,11 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
         this.path.clearWayPoints();
   
         int nbVertex = bezier_mesh.getTriangleCount();
-        for(int index =0; index < (nbVertex*2); index++)
+        for(int index =0; index < (nbVertex*2); index=index+2)
         {
             this.path.addWayPoint(getControlPoint(index,bezier_mesh));
         }
+        this.path.addWayPoint(getControlPoint(nbVertex*2-1,bezier_mesh));
     }  
     
     private Vector3f getControlPoint(int index, Mesh bezier_mesh)
