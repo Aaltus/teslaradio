@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Hugo
  */
-public abstract class ParticleEmitterControl extends AbstractControl implements Observer, EmitterObservable {
+public abstract class ParticleEmitterControl extends AbstractControl implements Observer, EmitterObservable, EmitterObserver {
     
     // speed of particle
     protected float speed;
@@ -79,7 +79,14 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     public void notifyObservers(Spatial spatial, String notifierId) {
         for(EmitterObserver observer : this.observerList)
         {
-            observer.observerUpdate(spatial, notifierId);
+            observer.emitterObserverUpdate(spatial, notifierId);
         }        
     }
+    
+    // trigger an emit particle if the emitter observe another emitter
+    @Override
+    public void emitterObserverUpdate(Spatial spatial, String notifierId) {
+        this.emitParticle(spatial);
+    }
+
 }
