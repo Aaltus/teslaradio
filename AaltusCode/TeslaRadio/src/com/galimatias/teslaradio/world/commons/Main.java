@@ -6,7 +6,11 @@ import com.galimatias.teslaradio.world.Scenarios.IScenarioManager;
 import com.galimatias.teslaradio.world.Scenarios.Scenario;
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
+import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.SignalControl;
+import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.jme3.app.SimpleApplication;
+import com.jme3.cinematic.MotionPath;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -53,6 +57,9 @@ public class Main extends SimpleApplication implements ActionListener
     private static final String ScenarioB_move_Z_neg = "ScenarioB_move_Z_neg";
     private static final String ScenarioB_rotate_Y_pos = "ScenarioB_rotate_Y_pos";
     private static final String ScenarioB_rotate_Y_neg = "ScenarioB_rotate_Y_neg";
+    
+    
+    private Node destination;
     
     @Override
     public void simpleInitApp() 
@@ -117,7 +124,6 @@ public class Main extends SimpleApplication implements ActionListener
         
         //DummyScenario dummy = new DummyScenario(assetManager, ColorRGBA.Orange);
         //rootNode.attachChild(dummy);
-        
         
         // Attaching the modules to the scene
         //dummy.scale(20);
