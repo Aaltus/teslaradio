@@ -10,6 +10,7 @@ import com.jme3.cinematic.MotionPath;
 import com.jme3.math.Spline;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
@@ -27,17 +28,23 @@ public class SignalControl extends AbstractControl implements Observable{
     private float distanceTraveled;
     private float speed;
     private Vector3f currentPosition;
+    private Camera cam;
     
     // for end of path notification
     private Observer observer;
     
     public SignalControl(MotionPath path, float speed){
+        this(path, speed, null);
+    }
+    
+    public SignalControl(MotionPath path, float speed, Camera cam){
         this.path = path;
         this.speed = speed;
         this.enabled = false;
         this.splinePath = path.getSpline();
         this.distanceTraveled = 0;
         this.currentPosition = new Vector3f();
+        this.cam = cam;
     }
 
     SignalControl() {
@@ -62,7 +69,10 @@ public class SignalControl extends AbstractControl implements Observable{
         wayPointIndex.set(path.getWayPointIndexForDistance(distanceTraveled));
         splinePath.interpolate(wayPointIndex.y, (int) (wayPointIndex.x), this.currentPosition);
         this.spatial.setLocalTranslation(currentPosition);
-        //this.spatial.lookAt(cam.getLocation(), cam.getUp());
+        
+        if (cam != null) {
+            this.spatial.lookAt(cam.getLocation(), cam.getUp());
+        }
     }
 
     @Override

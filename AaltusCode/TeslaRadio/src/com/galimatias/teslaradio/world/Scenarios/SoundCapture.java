@@ -85,6 +85,7 @@ public final class SoundCapture extends Scenario {
         super(Camera, destinationHandle);
         
         this.destinationHandle = destinationHandle;
+        this.cam = Camera;
         
         loadUnmovableObjects();
         loadMovableObjects();
@@ -134,7 +135,7 @@ public final class SoundCapture extends Scenario {
         Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
         //Geometry tmpGeom = (Geometry)micWire_geom;//.scale(1/ScenarioManager.WORLD_SCALE_DEFAULT);
         
-        MicWireEmitter.addControl(new StaticWireParticleEmitterControl(micWire_geom.getMesh(), 3.5f));
+        MicWireEmitter.addControl(new StaticWireParticleEmitterControl(micWire_geom.getMesh(), 3.5f, cam));
         
         wireDestinationEmitter = new Node();
         wireDestinationEmitter.setLocalTranslation(5.0f, 0.0f, 5.0f);
@@ -142,7 +143,7 @@ public final class SoundCapture extends Scenario {
         
         System.out.println(destinationHandle.getName());
         
-        wireDestinationEmitter.addControl(new DynamicWireParticleEmitterControl(destinationHandle, 3.5f));
+        wireDestinationEmitter.addControl(new DynamicWireParticleEmitterControl(destinationHandle, 3.5f, cam));
         
         wireDestinationEmitter.getControl(ParticleEmitterControl.class).registerObserver(destinationHandle.getControl(ParticleEmitterControl.class));
         MicWireEmitter.getControl(ParticleEmitterControl.class).registerObserver(wireDestinationEmitter.getControl(ParticleEmitterControl.class));
@@ -217,7 +218,8 @@ public final class SoundCapture extends Scenario {
         
         //DrumSoundEmitter.emitParticles(1.0f);
         //DrumSoundEmitter.emitWaves();
-        MicWireEmitter.getControl(ParticleEmitterControl.class).emitParticle(micTapParticle);
+
+        MicWireEmitter.getControl(ParticleEmitterControl.class).emitParticle(micTapParticle.clone());
 
         //touchEffectEmitter.isTouched();
 
