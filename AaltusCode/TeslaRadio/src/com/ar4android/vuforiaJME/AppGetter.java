@@ -11,12 +11,15 @@ import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.utils.AppLogger;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 /**
  * Created by jimbojd72 on 9/23/14.
  */
 public class AppGetter {
     private static AppGetter instance;
     private SimpleApplication app;
+    private ScheduledThreadPoolExecutor executor;
 
     public static AppSettings getAppSettings()
     {
@@ -34,6 +37,7 @@ public class AppGetter {
     {
         return instance.app.getInputManager();
     }
+    public static ScheduledThreadPoolExecutor getThreadExecutor(){return instance.executor;}
     public static BulletAppState getBulletAppState()
     {
         return instance.app.getStateManager().getState(BulletAppState.class);
@@ -58,6 +62,7 @@ public class AppGetter {
         {
             instance = new AppGetter(app);
             AppLogger.getInstance().i(AppGetter.class.getSimpleName(),"Initialize: " + AppGetter.class.getSimpleName());
+            instance.executor = new ScheduledThreadPoolExecutor(4);
         }
         else{
             throw new RuntimeException("Can't initialized again an " + AppGetter.class.getSimpleName());
