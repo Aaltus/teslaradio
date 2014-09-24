@@ -190,10 +190,6 @@ public class VuforiaJME extends SimpleApplication {
                 fgCam,
                 appListener);
 
-
-        inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click
-        inputManager.addListener(scenarioManager, new String[]{"Touch"});
-
 	}
 
     public void initForegroundCamera(float fovY) {

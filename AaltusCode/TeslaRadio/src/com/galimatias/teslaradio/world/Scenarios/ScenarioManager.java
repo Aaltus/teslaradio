@@ -5,19 +5,22 @@ import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.BulletAppState;
+import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
-import com.jme3.input.controls.ActionListener;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.input.controls.TouchTrigger;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
+import com.jme3.math.*;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.system.AppSettings;
+import com.jme3.ui.Picture;
+import com.utils.AppLogger;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -36,11 +39,16 @@ import java.util.List;
  */
 public class ScenarioManager  implements IScenarioManager,
         ParticleEmitReceiveLinker
+
         {
 
     public static int WORLD_SCALE_DEFAULT = 100;
+    private static final String TOUCH_EVENT_NAME = "Touch";
+    private static final String RIGHT_CLICK_MOUSE_EVENT_NAME = "Mouse";
+    private Node guiNode;
+    private Camera camera;
 
-    /**
+            /**
      * Method that return the next scenario's receiver handle position
      * @param caller
      * @return the handle vector
@@ -65,6 +73,43 @@ public class ScenarioManager  implements IScenarioManager,
     }
 
     /**
+     * Initiate an HUD on the GUI Node.
+     * @param settings
+     * @param assetManager 
+     */
+    private void initGuiNode(AppSettings settings, AssetManager assetManager) {
+        final int imageWidth = settings.getWidth() / 15;
+        final int imageHeight = settings.getHeight() / 10;
+        
+        Picture pic1 = new Picture(NEXT_SCENARIO);
+        pic1.setName(NEXT_SCENARIO);
+        pic1.setImage(assetManager, "Interface/arrow.png", true);
+        pic1.setWidth(imageWidth);
+        pic1.setHeight(imageHeight);
+        Node node1 = new Node();
+        node1.setName(NEXT_SCENARIO);
+        node1.attachChild(pic1);
+        guiNode.attachChild(node1);
+        pic1.move(-imageWidth / 2, -imageHeight / 2, 0);
+        //node2.rotate(0, 0, -(float)Math.PI);
+        node1.move(settings.getWidth()-imageWidth/2,settings.getHeight()/2, 0);
+
+        Picture pic2 = new Picture(PREVIOUS_SCENARIO);
+        pic2.setName(PREVIOUS_SCENARIO);
+        pic2.setImage(assetManager, "Interface/arrow.png", true);
+        pic2.setWidth(imageWidth);
+        pic2.setHeight(imageHeight);
+        Node node2 = new Node();
+        node2.setName(PREVIOUS_SCENARIO);
+        node2.attachChild(pic2);
+        guiNode.attachChild(node2);
+        pic2.move(-imageWidth/2, -imageHeight/2, 0);
+        node2.rotate(0, 0, -(float)Math.PI);
+        node2.move(imageWidth/2,settings.getHeight()/2, 0);
+    }
+
+
+            /**
      * An enum that provide insight to the manager to which scale/rotation it must provide to the scenario
      * created to fit in to the Android app or the JMonkey SDK app.
      */
@@ -113,6 +158,10 @@ public class ScenarioManager  implements IScenarioManager,
         AssetManager assetManager   = AppGetter.getAssetManager();
         RenderManager renderManager = AppGetter.getRenderManager();
         InputManager inputManager   = AppGetter.getInputManager();
+        AppSettings settings        = AppGetter.getAppSettings();
+        this.guiNode                =  AppGetter.getGuiNode();
+        this.camera                 = cam;
+
         
         //This a list of all the scenario that we will rotate/scale according
         //to which environment we are in. Don't forget to add scenario in it. 
@@ -155,6 +204,8 @@ public class ScenarioManager  implements IScenarioManager,
         setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDCAPTURE));
 
         setNodeList(node);
+        initGuiNode(settings, assetManager);
+
     }
 
     /**
@@ -167,7 +218,11 @@ public class ScenarioManager  implements IScenarioManager,
         switch(applicationType)
         {
             case ANDROID:
-                
+
+                //Add mapping for touch input only for android device
+                inputManager.addMapping(TOUCH_EVENT_NAME, new TouchTrigger(0));
+                inputManager.addListener(this, new String[]{TOUCH_EVENT_NAME});
+
                 //This is the rotation to put a scenarion in the correct angle for VuforiaJME
                 Quaternion rot = new Quaternion();
                 rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
@@ -198,7 +253,8 @@ public class ScenarioManager  implements IScenarioManager,
                         inputManager.addMapping(MICRO, new KeyTrigger(KeyInput.KEY_M));
                         inputManager.addMapping(NEXT_SCENARIO, new KeyTrigger(KeyInput.KEY_P));
                         inputManager.addMapping(PREVIOUS_SCENARIO, new KeyTrigger(KeyInput.KEY_O));
-                        inputManager.addMapping(FREQUENCY_SWITCH, new KeyTrigger(KeyInput.KEY_F));
+                        //We add mapping for right click because left click are already implemented.
+                        inputManager.addMapping(RIGHT_CLICK_MOUSE_EVENT_NAME, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 
                         // Add the names to the action listener.
                         inputManager.addListener(this, DRUM);
@@ -207,7 +263,9 @@ public class ScenarioManager  implements IScenarioManager,
                         inputManager.addListener(this, MICRO);
                         inputManager.addListener(this, NEXT_SCENARIO);
                         inputManager.addListener(this, PREVIOUS_SCENARIO);
-                        inputManager.addListener(this, FREQUENCY_SWITCH);
+                        inputManager.addListener(this, RIGHT_CLICK_MOUSE_EVENT_NAME);
+
+
                     }
 
                 WORLD_SCALE_DEFAULT = 10;
@@ -354,12 +412,46 @@ public class ScenarioManager  implements IScenarioManager,
     @Override
     public void onTouch(String name, TouchEvent touchEvent, float v)
     {
-        for(Scenario scenario : getCurrentScenario().getScenarios() )
+
+        //We check if the event is on the GUI NODE. We pass it down to scenario otherwise.
+        CollisionResults results = new CollisionResults();
+        Vector2f location = new Vector2f(touchEvent.getX(),touchEvent.getY());
+        Vector3f origin = new Vector3f(location.x, location.y, 0);
+        Vector3f dir = new Vector3f(0f, 0f, 1f);
+        Ray ray = new Ray(origin, dir);
+        // 3. Collect intersections between Ray and Shootables in results list.
+        guiNode.collideWith(ray, results);
+
+        if(results.size() > 0 && touchEvent.getType() == TouchEvent.Type.DOWN)
         {
-            scenario.onScenarioTouch(name, touchEvent, v);
+            String nameToCompare =
+                    results.getClosestCollision().getGeometry().getParent().getName();
+            //AppLogger.getInstance().i("Chat",nameToCompare);
+            if(nameToCompare.equals(NEXT_SCENARIO))
+            {
+                this.setNextScenario();
+            }
+            else if(nameToCompare.equals(PREVIOUS_SCENARIO))
+            {
+                this.setPreviousScenario();
+            }
         }
+        else{
+            for(Scenario scenario : getCurrentScenario().getScenarios() )
+            {
+                scenario.onScenarioTouch(name, touchEvent, v);
+            }
+        }
+
+
     }
     
+    /**
+     * This event is generated by the DevFramework from keyboard key or Mouse event
+     * @param name
+     * @param keyPressed
+     * @param tpf 
+     */
     @Override
     public void onAction(String name, boolean keyPressed, float tpf) {
         
@@ -396,15 +488,15 @@ public class ScenarioManager  implements IScenarioManager,
             //soundCapture.drumTouchEffect();
             this.setPreviousScenario();
         }
-        
-        else if (name.equals(FREQUENCY_SWITCH) && !keyPressed) {
-            List<Scenario> scenarios = getCurrentScenario().getScenarios();
-            if(scenarios != null){
-                for(Scenario scenario : scenarios ){
-                    if(scenario instanceof Modulation){
-                        ((Modulation)scenario).toggleModulationMode();
-                    }
-                }
+        //If it's an mouse event, we generate a touch event from it to support touch event.
+        else if(name.equals(RIGHT_CLICK_MOUSE_EVENT_NAME) && !keyPressed)
+        {
+            onTouch(TOUCH_EVENT_NAME, new TouchEvent(TouchEvent.Type.DOWN,
+                    AppGetter.getInputManager().getCursorPosition().getX(),
+                    AppGetter.getInputManager().getCursorPosition().getY(),
+                    0,
+                    0),
+                    tpf);
             }
         }
     }

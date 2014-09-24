@@ -2,10 +2,8 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.*;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
-import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
-import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
@@ -89,7 +87,9 @@ public class SoundEmission extends Scenario {
         touchable = new Node();
         touchable.setName("Touchable");
         this.attachChild(touchable);
-        
+
+
+
         loadUnmovableObjects();
         loadMovableObjects();
     }
@@ -415,22 +415,20 @@ public class SoundEmission extends Scenario {
                     touchable.collideWith(ray, results);
 
                     // 4. Print the results
-                    for (int i = 0; i < results.size(); i++) {
+                    //for (int i = 0; i < results.size(); i++) {
                         // For each hit, we know distance, impact point, name of geometry.
-                        float dist = results.getCollision(i).getDistance();
-                        Vector3f pt = results.getCollision(i).getContactPoint();
-                        String hit = results.getCollision(i).getGeometry().getName();
-                    }
+                        //float dist = results.getCollision(i).getDistance();
+                        //Vector3f pt = results.getCollision(i).getContactPoint();
+                        //String hit = results.getCollision(i).getGeometry().getName();
+                    //}
 
                     // 5. Use the results (we mark the hit object)
                     if (results.size() > 0)
                     {
 
                         // The closest collision point is what was truly hit:
-                        CollisionResult closest = results.getClosestCollision();
-
-                        Spatial touchedGeometry = closest.getGeometry();
-                        String nameToCompare = touchedGeometry.getParent().getName();
+                        String nameToCompare =
+                                results.getClosestCollision().getGeometry().getParent().getName();
                         
                         if (nameToCompare.equals(drum.getName()))
                         {
