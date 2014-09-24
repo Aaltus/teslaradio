@@ -69,10 +69,6 @@ public class Main extends SimpleApplication implements ActionListener
     {
         AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ALL);
         
-        bulletAppState = new BulletAppState();
-        stateManager.attach(bulletAppState);
-        bulletAppState.setDebugEnabled(true);
-        
         mouseInput.setCursorVisible(true);
         flyCam.setDragToRotate(dragMouseToMove);
         

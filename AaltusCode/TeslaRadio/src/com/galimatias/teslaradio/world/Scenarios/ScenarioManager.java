@@ -124,7 +124,7 @@ public class ScenarioManager  implements IScenarioManager,
     /**
      * Where the pair of scenarios are saved and accessed
      */
-    private ScenarioList  scenarioList    = new ScenarioList();
+    private ScenarioList  scenarioList = new ScenarioList();
     /**
      * The list of node that the currentScenarios will be attached to.
      */
@@ -524,7 +524,6 @@ public class ScenarioManager  implements IScenarioManager,
                     0,
                     0),
                     tpf);
-            }
         }
     }
 
@@ -559,7 +558,6 @@ public class ScenarioManager  implements IScenarioManager,
                 return null;
             }
         }
-
     }
 
     /**
@@ -645,6 +643,4 @@ public class ScenarioManager  implements IScenarioManager,
             return currentScenatioEnum;
         }
     }
-
-
 }
