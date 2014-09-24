@@ -26,19 +26,24 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
     private MotionPath path;
    
     
-    
+    // constructor of control should be used in emitterInitialisation because we need that all object exist before
     public StaticWireParticleEmitterControl(Mesh wirePathMesh, float speed)
     {
         spatialToSendFifo = new ArrayList();
         this.path = new MotionPath();
         
+        this.speed = speed;
+        
         //set the path from the given mesh
         setPathFromMesh(wirePathMesh);
     }
-
+    
     @Override
     public void emitParticle(Spatial spatialToSend) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        SignalControl sigControl = new SignalControl(path,speed);
+        sigControl.registerObserver(this);
+        spatialToSend.addControl(sigControl);
+        spatialToSendFifo.add(spatialToSend);
     }
 
     @Override
@@ -48,12 +53,17 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     @Override
-    public void observerUpdate(Spatial spatial) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void observerUpdate(Spatial toBeDeletedSpatial) {
+        // deconnect particle from this particle emitter
+        toBeDeletedSpatial.removeControl(SignalControl.class);
+        toBeDeletedSpatial.removeFromParent();
+        
+        // notify Registered observers of the ParticleEmitter
+        this.notifyObservers(toBeDeletedSpatial);
     }
     
     private void setPathFromMesh(Mesh bezier_mesh)

@@ -120,24 +120,6 @@ public class Main extends SimpleApplication implements ActionListener
         //DummyScenario dummy = new DummyScenario(assetManager, ColorRGBA.Orange);
         //rootNode.attachChild(dummy);
         
-        Geometry test = new Geometry("test", new Box (2,2,2));
-        Material testMaterial  = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        testMaterial.setColor("Color", ColorRGBA.Red);
-        test.setMaterial(testMaterial);
-        
-        Node testEmitter = new Node();
-        destination = new Node();
-        rootNode.attachChild(testEmitter);
-        rootNode.attachChild(destination);
-        
-        destination.setLocalTranslation(100, 100, 0); // dynamic test
-        
-        
-        testEmitter.addControl(new DynamicWireParticleEmitterControl(destination, 10));
-        
-        testEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
-        testEmitter.getControl(ParticleEmitterControl.class).emitParticle(test);
-        
         // Attaching the modules to the scene
         //dummy.scale(20);
         
@@ -214,10 +196,9 @@ public class Main extends SimpleApplication implements ActionListener
                 nodeB.setLocalTranslation(tempPosition.x, tempPosition.y, tempPosition.z-(10));                 
             }
             else if(name.equals(ScenarioB_rotate_Y_pos)){
-                this.destination.setLocalTranslation(-100, 100, 0);
-                //tempRotation = nodeB.getLocalRotation();
-                //tempRotation.multLocal((new Quaternion()).fromAngles(0, 0.1f, 0));
-                //nodeB.setLocalRotation(tempRotation);
+                tempRotation = nodeB.getLocalRotation();
+                tempRotation.multLocal((new Quaternion()).fromAngles(0, 0.1f, 0));
+                nodeB.setLocalRotation(tempRotation);
             }
             else if(name.equals(ScenarioB_rotate_Y_neg)){
                 tempRotation = nodeB.getLocalRotation();
