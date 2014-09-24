@@ -1,21 +1,14 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.ar4android.vuforiaJME.AppGetter;
-import com.galimatias.teslaradio.world.effects.Signal;
+import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.SignalEmitter;
-import com.galimatias.teslaradio.world.effects.SignalType;
+import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
-import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
-import com.jme3.bounding.BoundingVolume;
-import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.control.GhostControl;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
@@ -23,22 +16,16 @@ import com.jme3.input.event.TouchEvent;
 import static com.jme3.input.event.TouchEvent.Type.DOWN;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
-import com.jme3.math.Triangle;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Dome;
-import com.jme3.scene.shape.PQTorus;
-import com.jme3.scene.shape.Quad;
 
 /**
  * Created by Batcave on 2014-09-09.
@@ -73,9 +60,11 @@ public class Modulation extends Scenario {
     private ColorRGBA defaultTextColor = ColorRGBA.Green;
     
     // Signals emitters 
-    private SignalEmitter wirePcbEmitter = new SignalEmitter(this);
-    private SignalEmitter carrierEmitter = new SignalEmitter(this);
-    private SignalEmitter pcbAmpEmitter = new SignalEmitter(this);
+    private Node wirePcbEmitter = new Node();
+    private Node carrierEmitter = new Node();
+    private Node pcbAmpEmitter = new Node();
+    
+    private Spatial destinationHandle;
     
     // The entry of the chip
     private Spatial chipEntry;
@@ -97,11 +86,6 @@ public class Modulation extends Scenario {
     private Geometry dodecagoneCarrier; // Really...
     private Geometry currentCarrier;
     
-    //CHANGE THIS VALUE CHANGE THE PARTICULE BEHAVIOUR 
-    //Setting the direction norms and the speed displacement to the trajectories
-    private float VecDirectionNorms = 80f;
-    private float SoundParticles_Speed = 50f;
-    
     // this is PIIIIIII! (kick persian)
     private final float pi = (float) Math.PI; 
 
@@ -114,9 +98,11 @@ public class Modulation extends Scenario {
     private float tpfCumul =0;
     private Quaternion rotationXSwitch = new Quaternion();
     
-    public Modulation(com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker) {
+    public Modulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
 
-        super(Camera, particleLinker);
+        super(Camera, destinationHandle);
+        
+        this.destinationHandle = destinationHandle;
         
         loadUnmovableObjects();
         loadMovableObjects();
@@ -130,23 +116,6 @@ public class Modulation extends Scenario {
         this.attachChild(scene);
         
         //wirePcbEmitter.setSpace(space);
-        
-        // Get the chip entrance geometry
-        chipEntry = scene.getChild("Gate.In");
-        chipEntry.addControl(new GhostControl(new BoxCollisionShape(new Vector3f(0.1f,0.1f,0.1f))));
-        chipEntry.getControl(GhostControl.class).setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-        //space.add(chipEntry);
-        
-        WireBox wirebox = new WireBox(0.1f, 0.1f, 0.1f);
-        wirebox.fromBoundingBox((BoundingBox) chipEntry.getWorldBound());
-        
-        Geometry bx = new Geometry("TheMesh", wirebox);
-        Material mat_box = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat_box.setColor("Color", ColorRGBA.Blue);
-        bx.setMaterial(mat_box);
-        bx.updateModelBound();
-        bx.setLocalTranslation(chipEntry.getWorldTranslation().addLocal(0.0f, 1.0f, 0.0f)); 
-        scene.attachChild(bx);
         
         // Get the handles of the emitters
         pathInHandle = scene.getChild("Handle.In");
@@ -163,12 +132,10 @@ public class Modulation extends Scenario {
 
         initDigitalDisplay();
         
-        // Initialize the emitters
         initParticlesEmitter(wirePcbEmitter, pathInHandle, pathIn);
         initParticlesEmitter(carrierEmitter, pathCarrierHandle, pathCarrier);
         initParticlesEmitter(pcbAmpEmitter, pathOutHandle, pathOut);
-        
-        
+             
     }
 
     @Override
@@ -259,10 +226,6 @@ public class Modulation extends Scenario {
             direction *= -1;
         }
         
-        wirePcbEmitter.simpleUpdate(tpf, this.Camera);
-        carrierEmitter.simpleUpdate(tpf, null);
-        pcbAmpEmitter.simpleUpdate(tpf, null);
-        
         checkTrackableAngle(trackableAngle);
         checkModulationMode(tpf);
         
@@ -277,19 +240,6 @@ public class Modulation extends Scenario {
     @Override
     public void onAudioEvent() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    @Override
-    public Vector3f getParticleReceiverHandle() {
-        return pathInHandle.getWorldTranslation();
-    }
-
-    @Override
-    public void sendSignalToEmitter(Geometry newSignal, float magnitude) {
-        if (wirePcbEmitter != null) {
-            // We have a new material out there! Since the Signal is now becoming "Electrical", we set the Electrical material to it
-            wirePcbEmitter.prepareEmitParticles(newSignal, magnitude);
-        }
     }
     
     //Dynamic move
@@ -321,14 +271,14 @@ public class Modulation extends Scenario {
     
     private void initCarrierGeometries() {
         
-        Box cube = new Box(1,1,1);
+        Box cube = new Box(0.25f,0.25f,0.25f);
         cubeCarrier = new Geometry("CubeCarrier", cube);
         Material mat1 = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setColor("Color", ColorRGBA.Blue);
         cubeCarrier.setMaterial(mat1);
 
-        Dome pyramid = new Dome(2, 4, 1.0f);
+        Dome pyramid = new Dome(2, 4, 0.25f);
         pyramidCarrier = new Geometry("PyramidCarrier", pyramid);
         mat1.setColor("Color", ColorRGBA.Green);
         pyramidCarrier.setMaterial(mat1);
@@ -339,11 +289,12 @@ public class Modulation extends Scenario {
                          
     }
     
-    private void initParticlesEmitter(SignalEmitter signalEmitter, Spatial handle, Geometry path) {
+    private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path) {
         
         scene.attachChild(signalEmitter);
         signalEmitter.setLocalTranslation(handle.getWorldTranslation()); // TO DO: utiliser le object handle blender pour position
-        signalEmitter.setWaves(path.getMesh(), 0.25f, 3.5f);
+        signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f));
+        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
     
     private void initDigitalDisplay() {
@@ -451,7 +402,7 @@ public class Modulation extends Scenario {
         }
         
         if (carrierEmitter != null) {
-            carrierEmitter.prepareEmitParticles(currentCarrier, 0.25f);
+            carrierEmitter.getControl(ParticleEmitterControl.class).emitParticle(currentCarrier);
         }
         
     }
@@ -506,5 +457,15 @@ public class Modulation extends Scenario {
             }
         return resultat;
      }
+
+    @Override
+    public void signalEndOfPath(Geometry caller, float magnitude) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Spatial getInputHandle() {
+        return wirePcbEmitter;
+    }
 }
 

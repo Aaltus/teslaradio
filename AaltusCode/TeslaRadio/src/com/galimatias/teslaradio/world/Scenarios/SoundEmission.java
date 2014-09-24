@@ -35,6 +35,7 @@ public class SoundEmission extends Scenario {
 
     private Spatial drumHandleOut;
     private Spatial guitarHandleOut;
+    private Spatial destinationHandle;
 
     private Halo halo_drum, halo_guitar;
 
@@ -80,15 +81,15 @@ public class SoundEmission extends Scenario {
     private float maxTimeRefreshHint = 30f;
     private float timeLastTouch = maxTimeRefreshHint;
 
-    public SoundEmission(com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker)
+    public SoundEmission(com.jme3.renderer.Camera Camera, Spatial destinationHandle)
     {
-        super(Camera, particleLinker);
+        super(Camera, destinationHandle);
         
         touchable = new Node();
         touchable.setName("Touchable");
         this.attachChild(touchable);
 
-
+        this.destinationHandle = destinationHandle;
 
         loadUnmovableObjects();
         loadMovableObjects();
@@ -325,8 +326,8 @@ public class SoundEmission extends Scenario {
         this.removeHintImages();
 
         // Here, we need to get the vector to the mic handle
-        Vector3f receiverHandleVector = particleLinker.GetEmitterDestinationPaths(this);
-        DrumSoundEmitter.prepareEmitParticles(receiverHandleVector);
+        //Vector3f receiverHandleVector = particleLinker.GetEmitterDestinationPaths(this);
+        //DrumSoundEmitter.prepareEmitParticles(receiverHandleVector);
 
         touchEffectEmitter.isTouched();
         drum_sound.playInstance();
@@ -338,8 +339,8 @@ public class SoundEmission extends Scenario {
         this.removeHintImages();
 
         // Here, we need to get the vector to the mic handle
-        Vector3f receiverHandleVector = particleLinker.GetEmitterDestinationPaths(this);
-        GuitarSoundEmitter.prepareEmitParticles(receiverHandleVector);
+        //Vector3f receiverHandleVector = particleLinker.GetEmitterDestinationPaths(this);
+        //GuitarSoundEmitter.prepareEmitParticles(receiverHandleVector);
 
         guitar_sound.playInstance();
     }
@@ -491,13 +492,12 @@ public class SoundEmission extends Scenario {
     }
 
     @Override
-    public Vector3f getParticleReceiverHandle(){
-        // Since the Sound Emission is the first module, it doesn't receive anything.
-        return null;
+    public void signalEndOfPath(Geometry caller, float magnitude) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void sendSignalToEmitter(Geometry newSignal, float magnitude) {
-        // The Sound Emission Scenario does not receive any signal for now.
+    public Spatial getInputHandle() {
+        return null;
     }
 }

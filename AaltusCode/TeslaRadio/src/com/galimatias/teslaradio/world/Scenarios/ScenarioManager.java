@@ -36,40 +36,14 @@ import java.util.List;
  *
  * Created by jimbojd72 on 9/3/14.
  */
-public class ScenarioManager  implements IScenarioManager,
-        ParticleEmitReceiveLinker
-
-        {
+public class ScenarioManager  implements IScenarioManager
+{
 
     public static int WORLD_SCALE_DEFAULT = 100;
     private static final String TOUCH_EVENT_NAME = "Touch";
     private static final String RIGHT_CLICK_MOUSE_EVENT_NAME = "Mouse";
     private Node guiNode;
     private Camera camera;
-
-            /**
-     * Method that return the next scenario's receiver handle position
-     * @param caller
-     * @return the handle vector
-     */
-    @Override
-    public Vector3f GetEmitterDestinationPaths(Scenario caller) {
-        Scenario nextScenario = currentScenario.getNextScenarioInGroup(caller);
-        if (nextScenario != null){
-            return nextScenario.getParticleReceiverHandle();
-        }
-        else{
-            return null;
-        }
-    }
-
-    @Override
-    public void sendSignalToNextScenario(Scenario caller, Geometry newSignal, float magnitude) {
-        Scenario nextScenario = currentScenario.getNextScenarioInGroup(caller);
-        if (nextScenario != null){
-            nextScenario.sendSignalToEmitter(newSignal, magnitude);
-        }
-    }
 
     /**
      * Initiate an HUD on the GUI Node.
@@ -166,19 +140,20 @@ public class ScenarioManager  implements IScenarioManager,
         //to which environment we are in. Don't forget to add scenario in it. 
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
+        //Init Modulation scenario
+        Modulation modulation = new Modulation(cam, null);
+        modulation.setName("Modulation");
+        scenarios.add(modulation);
+        
         //Init SoundCapture scenario
-        Scenario soundCapture = new SoundCapture(cam, this);
+        Scenario soundCapture = new SoundCapture(cam, modulation.getInputHandle());
         soundCapture.setName("SoundCapture");
         scenarios.add(soundCapture);
         
-        SoundEmission soundEmission = new SoundEmission(cam, this);
+        // Init SoundEmission scenario
+        SoundEmission soundEmission = new SoundEmission(cam, soundCapture.getInputHandle());
         soundEmission.setName("SoundEmission");
         scenarios.add(soundEmission);
-        
-        //Init SoundCapture scenario
-        Modulation modulation = new Modulation(cam, this);
-        modulation.setName("Modulation");
-        scenarios.add(modulation);
         
         adjustScenario(applicationType, scenarios, renderManager, inputManager);
         
