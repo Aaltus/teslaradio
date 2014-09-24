@@ -31,11 +31,16 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
     
     @Override
     protected void pathUpdate() {
+        // validate that the handle is valid
         if(this.destinationHandle != null)
         {
             this.path.clearWayPoints();
-            this.path.addWayPoint(this.spatial.getLocalTranslation());
-            this.path.addWayPoint(this.destinationHandle.getLocalTranslation()); 
+            this.path.addWayPoint(new Vector3f(0,0,0));
+            this.path.addWayPoint((this.destinationHandle.getWorldTranslation().subtract(this.spatial.getWorldTranslation())).divide(this.spatial.getWorldScale())); 
+        }
+        else
+        {
+            throw new UnsupportedOperationException("destinationHandle is Null!!");
         }
     }    
         
