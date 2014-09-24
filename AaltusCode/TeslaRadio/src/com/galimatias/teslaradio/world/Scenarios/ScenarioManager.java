@@ -20,7 +20,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
-import com.utils.AppLogger;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
