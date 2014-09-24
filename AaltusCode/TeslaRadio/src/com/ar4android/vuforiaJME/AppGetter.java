@@ -7,6 +7,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
+import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.utils.AppLogger;
 
@@ -41,9 +42,14 @@ public class AppGetter {
     {
         return instance.app.getRenderManager();
     }
-    public static Camera getCameraInstance() {
-        
+    public static Camera getCameraInstance() 
+    {
         return instance.app.getCamera();
+    }
+        
+    public static Node getGuiNode()
+    {
+        return instance.app.getGuiNode();
     }
 
     public static void setInstance(SimpleApplication app) {

@@ -5,17 +5,22 @@ import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
+import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.input.controls.TouchTrigger;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
+import com.jme3.math.*;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.system.AppSettings;
+import com.jme3.ui.Picture;
+import com.utils.AppLogger;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -34,11 +39,14 @@ import java.util.List;
  */
 public class ScenarioManager  implements IScenarioManager,
         ParticleEmitReceiveLinker
+
         {
 
     public static int WORLD_SCALE_DEFAULT = 100;
+    private Node guiNode;
+    private Camera camera;
 
-    /**
+            /**
      * Method that return the next scenario's receiver handle position
      * @param caller
      * @return the handle vector
@@ -62,7 +70,8 @@ public class ScenarioManager  implements IScenarioManager,
         }
     }
 
-    /**
+
+            /**
      * An enum that provide insight to the manager to which scale/rotation it must provide to the scenario
      * created to fit in to the Android app or the JMonkey SDK app.
      */
@@ -109,6 +118,10 @@ public class ScenarioManager  implements IScenarioManager,
         AssetManager assetManager   = AppGetter.getAssetManager();
         RenderManager renderManager = AppGetter.getRenderManager();
         InputManager inputManager   = AppGetter.getInputManager();
+        AppSettings settings        = AppGetter.getAppSettings();
+        this.guiNode                =  AppGetter.getGuiNode();
+        this.camera                 = cam;
+
         
         //This a list of all the scenario that we will rotate/scale according
         //to which environment we are in. Don't forget to add scenario in it. 
@@ -151,6 +164,38 @@ public class ScenarioManager  implements IScenarioManager,
         setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDCAPTURE));
 
         setNodeList(node);
+
+        final int imageWidth = settings.getWidth() / 15;
+        final int imageHeight = settings.getHeight() / 10;
+        
+        Picture pic1 = new Picture(NEXT_SCENARIO);
+        pic1.setName(NEXT_SCENARIO);
+        pic1.setImage(assetManager, "Interface/arrow.png", true);
+        pic1.setWidth(imageWidth);
+        pic1.setHeight(imageHeight);
+        Node node1 = new Node();
+        node1.setName(NEXT_SCENARIO);
+        node1.attachChild(pic1);
+        guiNode.attachChild(node1);
+        pic1.move(-imageWidth / 2, -imageHeight / 2, 0);
+        //node2.rotate(0, 0, -(float)Math.PI);
+        node1.move(settings.getWidth()-imageWidth/2,settings.getHeight()/2, 0);
+        
+
+
+        Picture pic2 = new Picture(PREVIOUS_SCENARIO);
+        pic2.setName(PREVIOUS_SCENARIO);
+        pic2.setImage(assetManager, "Interface/arrow.png", true);
+        pic2.setWidth(imageWidth);
+        pic2.setHeight(imageHeight);
+        Node node2 = new Node();
+        node2.setName(PREVIOUS_SCENARIO);
+        node2.attachChild(pic2);
+        guiNode.attachChild(node2);
+        pic2.move(-imageWidth/2, -imageHeight/2, 0);
+        node2.rotate(0, 0, -(float)Math.PI);
+        node2.move(imageWidth/2,settings.getHeight()/2, 0);
+
     }
 
     /**
@@ -163,7 +208,10 @@ public class ScenarioManager  implements IScenarioManager,
         switch(applicationType)
         {
             case ANDROID:
-                
+
+                inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click
+                inputManager.addListener(this, new String[]{"Touch"});
+
                 //This is the rotation to put a scenarion in the correct angle for VuforiaJME
                 Quaternion rot = new Quaternion();
                 rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
@@ -194,6 +242,7 @@ public class ScenarioManager  implements IScenarioManager,
                         inputManager.addMapping(MICRO, new KeyTrigger(KeyInput.KEY_M));
                         inputManager.addMapping(NEXT_SCENARIO, new KeyTrigger(KeyInput.KEY_P));
                         inputManager.addMapping(PREVIOUS_SCENARIO, new KeyTrigger(KeyInput.KEY_O));
+                        inputManager.addMapping("Mouse", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 
                         // Add the names to the action listener.
                         inputManager.addListener(this, DRUM);
@@ -202,6 +251,9 @@ public class ScenarioManager  implements IScenarioManager,
                         inputManager.addListener(this, MICRO);
                         inputManager.addListener(this, NEXT_SCENARIO);
                         inputManager.addListener(this, PREVIOUS_SCENARIO);
+                        inputManager.addListener(this,"Mouse");
+
+
                     }
                 
                 for(Scenario scenario : scenarios)
@@ -347,10 +399,49 @@ public class ScenarioManager  implements IScenarioManager,
     @Override
     public void onTouch(String name, TouchEvent touchEvent, float v)
     {
-        for(Scenario scenario : getCurrentScenario().getScenarios() )
+
+        AppLogger.getInstance().i(name, "On touche dude X: " + touchEvent.getX() + " Y: " + + touchEvent.getY());
+        
+        CollisionResults results = new CollisionResults();
+
+        Vector2f location = new Vector2f(touchEvent.getX(),touchEvent.getY());
+
+        Vector3f origin = new Vector3f(location.x, location.y, 0);
+        Vector3f dir = new Vector3f(0f, 0f, 1f);
+        // 2. Mode 1: user touch location.
+        /*Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
+        Vector3f click3d = camera.getWorldCoordinates(
+                new Vector2f(click2d.x, click2d.y), 0f).clone();
+        Vector3f dir = camera.getWorldCoordinates(
+                new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+                */
+        Ray ray = new Ray(origin, dir);
+
+        // 3. Collect intersections between Ray and Shootables in results list.
+        guiNode.collideWith(ray, results);
+
+        if(results.size() > 0 && touchEvent.getType() == TouchEvent.Type.DOWN)
         {
-            scenario.onScenarioTouch(name, touchEvent, v);
+            String nameToCompare =
+                    results.getClosestCollision().getGeometry().getParent().getName();
+            AppLogger.getInstance().i("Chat",nameToCompare);
+            if(nameToCompare.equals(NEXT_SCENARIO))
+            {
+                this.setNextScenario();
+            }
+            else if(nameToCompare.equals(PREVIOUS_SCENARIO))
+            {
+                this.setPreviousScenario();
+            }
         }
+        else{
+            for(Scenario scenario : getCurrentScenario().getScenarios() )
+            {
+                scenario.onScenarioTouch(name, touchEvent, v);
+            }
+        }
+
+
     }
     
     @Override
@@ -388,6 +479,12 @@ public class ScenarioManager  implements IScenarioManager,
             //soundCapture.drumTouchEffect();
             //soundCapture.drumTouchEffect();
             this.setPreviousScenario();
+        }
+        else if(name.equals("Mouse") && !keyPressed)
+        {
+            AppLogger.getInstance().i(name, "Testing mouse input");
+            //onTouch("Touch", new TouchEvent(TouchEvent.Type.DOWN, AppGetter.getAppSettings().getWidth()/2, AppGetter.getAppSettings().getHeight()/2,0,0),tpf);
+            onTouch("Touch", new TouchEvent(TouchEvent.Type.DOWN, AppGetter.getInputManager().getCursorPosition().getX(), AppGetter.getInputManager().getCursorPosition().getY(),0,0),tpf);
         }
     }
 

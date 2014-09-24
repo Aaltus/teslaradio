@@ -59,6 +59,9 @@ public class Main extends SimpleApplication implements ActionListener
     {
         AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ALL);
         
+        mouseInput.setCursorVisible(true);
+        flyCam.setDragToRotate(true);
+        
         //Initialized a list of nodes to attach to the scenario manager.
         nodeList = new ArrayList<Node>();
         nodeA = new Node();
