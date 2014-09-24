@@ -3,7 +3,8 @@
  * and open the template in the editor.
  */
 package com.galimatias.teslaradio.world.effects;
-import com.galimatias.teslaradio.world.observer.Observable;
+import com.galimatias.teslaradio.world.observer.EmitterObservable;
+import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.galimatias.teslaradio.world.observer.Observer;
 import com.jme3.material.Material;
 import com.jme3.scene.Node;
@@ -16,7 +17,7 @@ import java.util.List;
  *
  * @author Hugo
  */
-public abstract class ParticleEmitterControl extends AbstractControl implements Observer, Observable {
+public abstract class ParticleEmitterControl extends AbstractControl implements Observer, EmitterObservable {
     
     // speed of particle
     protected float speed;
@@ -28,7 +29,7 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     protected List<Spatial> spatialToSendBuffer;
     
     // register an observer for end of path notification
-    protected ArrayList<Observer> observerList = new ArrayList();
+    protected ArrayList<EmitterObserver> observerList = new ArrayList();
     
     // initialise particles to be send and put them in FIFO
     public abstract void emitParticle(Spatial spatialToSend);
@@ -64,21 +65,21 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     }    
     
     @Override
-    public void registerObserver(Observer observer) {
+    public void registerObserver(EmitterObserver observer) {
         this.observerList.add(observer);
     }
 
     @Override
-    public void removeObserver(Observer observer) {
+    public void removeObserver(EmitterObserver observer) {
         this.observerList.remove(observer);
     }
     
     // observable method to notify whoever wants to know that a particle as ended his path
     @Override
-    public void notifyObservers(Spatial spatial) {
-        for(Observer observer : this.observerList)
+    public void notifyObservers(Spatial spatial, String notifierId) {
+        for(EmitterObserver observer : this.observerList)
         {
-            observer.observerUpdate(spatial);
-        }
+            observer.observerUpdate(spatial, notifierId);
+        }        
     }
 }

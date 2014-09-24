@@ -20,7 +20,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
-import com.utils.AppLogger;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -412,34 +411,62 @@ public class ScenarioManager  implements IScenarioManager,
     @Override
     public void onTouch(String name, TouchEvent touchEvent, float v)
     {
-
-        //We check if the event is on the GUI NODE. We pass it down to scenario otherwise.
-        CollisionResults results = new CollisionResults();
-        Vector2f location = new Vector2f(touchEvent.getX(),touchEvent.getY());
-        Vector3f origin = new Vector3f(location.x, location.y, 0);
-        Vector3f dir = new Vector3f(0f, 0f, 1f);
-        Ray ray = new Ray(origin, dir);
-        // 3. Collect intersections between Ray and Shootables in results list.
-        guiNode.collideWith(ray, results);
-
-        if(results.size() > 0 && touchEvent.getType() == TouchEvent.Type.DOWN)
+/*
+        AppLogger.getInstance().d("TouchEvent Name: " + name,
+                " Touch ID: " + touchEvent.getPointerId()+
+                        " Type: "+ touchEvent.getType().toString()+
+                        " X : " + touchEvent.getX() +
+                        " Y : " + touchEvent.getY() +
+                        " dX : " + touchEvent.getDeltaX() +
+                        " dY : " + touchEvent.getDeltaY());
+*/
+        //I add a way to switch scenario with 2 fingers, still experimental
+        if(touchEvent.getPointerId() == 1 &&
+                (touchEvent.getType() == TouchEvent.Type.FLING ||
+                        touchEvent.getType() == TouchEvent.Type.SCROLL ||
+                        touchEvent.getType() == TouchEvent.Type.MOVE))
         {
-            String nameToCompare =
-                    results.getClosestCollision().getGeometry().getParent().getName();
-            //AppLogger.getInstance().i("Chat",nameToCompare);
-            if(nameToCompare.equals(NEXT_SCENARIO))
+            float deltaminValueForInput = 50;
+            if(touchEvent.getDeltaX() > deltaminValueForInput)
             {
                 this.setNextScenario();
             }
-            else if(nameToCompare.equals(PREVIOUS_SCENARIO))
+            else if(touchEvent.getDeltaX() < -deltaminValueForInput)
             {
                 this.setPreviousScenario();
             }
         }
         else{
-            for(Scenario scenario : getCurrentScenario().getScenarios() )
+
+
+            //We check if the event is on the GUI NODE. We pass it down to scenario otherwise.
+            CollisionResults results = new CollisionResults();
+            Vector2f location = new Vector2f(touchEvent.getX(),touchEvent.getY());
+            Vector3f origin = new Vector3f(location.x, location.y, 0);
+            Vector3f dir = new Vector3f(0f, 0f, 1f);
+            Ray ray = new Ray(origin, dir);
+            // 3. Collect intersections between Ray and Shootables in results list.
+            guiNode.collideWith(ray, results);
+
+            if(results.size() > 0 && touchEvent.getType() == TouchEvent.Type.DOWN)
             {
-                scenario.onScenarioTouch(name, touchEvent, v);
+                String nameToCompare =
+                        results.getClosestCollision().getGeometry().getParent().getName();
+                //AppLogger.getInstance().i("Chat",nameToCompare);
+                if(nameToCompare.equals(NEXT_SCENARIO))
+                {
+                    this.setNextScenario();
+                }
+                else if(nameToCompare.equals(PREVIOUS_SCENARIO))
+                {
+                    this.setPreviousScenario();
+                }
+            }
+            else{
+                for(Scenario scenario : getCurrentScenario().getScenarios() )
+                {
+                    scenario.onScenarioTouch(name, touchEvent, v);
+                }
             }
         }
 
