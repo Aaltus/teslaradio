@@ -39,12 +39,12 @@ button on the handset.
                               android:orientation="vertical"
                               android:layout_height="wrap_content"
                               android:layout_weight="1"/>
-                <Button
+                <!--<Button
 
                         android:layout_height="50dp"
                         android:layout_width="50dp"
                         android:layout_margin="5dp"
-                        android:background="@drawable/button_bg"/>
+                        android:background="@drawable/button_bg"/>-->
 
                 <LinearLayout android:layout_width="50dp"
                               android:layout_margin="5dp"
@@ -119,13 +119,13 @@ button on the handset.
                               android:layout_weight="1"
                         android:gravity="center">
 
-                    <Button
+                    <!--<Button
 
                             android:layout_height="50dp"
                             android:layout_width="50dp"
                             android:layout_margin="5dp"
                             android:background="@drawable/button_bg"
-                            android:layout_gravity="center"/>
+                            android:layout_gravity="center"/>-->
 
                 </LinearLayout>
                 <Button

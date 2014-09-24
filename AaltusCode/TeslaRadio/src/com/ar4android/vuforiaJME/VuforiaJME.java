@@ -27,20 +27,15 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
 import com.utils.AppLogger;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class VuforiaJME extends SimpleApplication {
 
@@ -87,6 +82,7 @@ public class VuforiaJME extends SimpleApplication {
 	public static void main(String[] args) {
 
         VuforiaJME app = new VuforiaJME();
+
 		app.start();
 	}
 
@@ -103,6 +99,8 @@ public class VuforiaJME extends SimpleApplication {
 	@Override
 	public void simpleInitApp()
     {
+
+        AppGetter.setInstance(this);
         // Where the AppLogger is called for the first time and the log level is set
         AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.NONE);
 
@@ -114,7 +112,8 @@ public class VuforiaJME extends SimpleApplication {
 
 		// We use custom viewports - so the main viewport does not need to contain the rootNode
 		viewPort.detachScene(rootNode);
-		
+
+
 		initTracking(settings.getWidth(), settings.getHeight());
 		initVideoBackground(settings.getWidth(), settings.getHeight());
 		initBackgroundCamera();
@@ -188,15 +187,8 @@ public class VuforiaJME extends SimpleApplication {
 
        scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.ANDROID,
                 this.rootNode.getControl(TrackableManager.class).getScenarioNodeList(),
-                assetManager,
                 fgCam,
-                appListener,
-                renderManager,
-                inputManager);
-
-
-        inputManager.addMapping("Touch", new TouchTrigger(0)); // trigger 1: left-button click
-        inputManager.addListener(scenarioManager, new String[]{"Touch"});
+                appListener);
 
 	}
 

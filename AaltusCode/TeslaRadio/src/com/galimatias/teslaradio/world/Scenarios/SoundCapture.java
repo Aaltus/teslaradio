@@ -4,24 +4,26 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.galimatias.teslaradio.world.effects.*;
-//import com.galimatias.teslaradio.world.observer.ScenarioObserver;
+import com.galimatias.teslaradio.world.effects.SignalEmitter;
+import com.galimatias.teslaradio.world.effects.TextBox;
+import com.galimatias.teslaradio.world.effects.TouchEffectEmitter;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
-import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
-import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.material.Material;
-import com.jme3.math.*;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
+
+//import com.galimatias.teslaradio.world.observer.ScenarioObserver;
 
 //import com.galimatias.teslaradio.world.observer.ScenarioObserver;
 
@@ -70,9 +72,9 @@ public final class SoundCapture extends Scenario {
     private float maxTimeRefreshHint = 30f;
     private float timeLastTouch = maxTimeRefreshHint;
        
-    public SoundCapture(AssetManager assetManager, Camera Camera, ParticleEmitReceiveLinker particleLinker)
+    public SoundCapture(Camera Camera, ParticleEmitReceiveLinker particleLinker)
     {
-        super(assetManager,Camera, particleLinker);
+        super(Camera, particleLinker);
         
         loadUnmovableObjects();
         loadMovableObjects();
@@ -238,24 +240,22 @@ public final class SoundCapture extends Scenario {
 
                     // 4. Print the results
                     //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
-                    for (int i = 0; i < results.size(); i++) {
+                    //for (int i = 0; i < results.size(); i++) {
                         // For each hit, we know distance, impact point, name of geometry.
-                        float dist = results.getCollision(i).getDistance();
-                        Vector3f pt = results.getCollision(i).getContactPoint();
-                        String hit = results.getCollision(i).getGeometry().getName();
+                        //float dist = results.getCollision(i).getDistance();
+                        //Vector3f pt = results.getCollision(i).getContactPoint();
+                        //String hit = results.getCollision(i).getGeometry().getName();
 
                         //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
-                    }
+                    //}
 
                     // 5. Use the results (we mark the hit object)
                     if (results.size() > 0)
                     {
 
                         // The closest collision point is what was truly hit:
-                        CollisionResult closest = results.getClosestCollision();
-
-                        Spatial touchedGeometry = closest.getGeometry();
-                        String nameToCompare = touchedGeometry.getParent().getName();
+                        String nameToCompare =
+                                results.getClosestCollision().getGeometry().getParent().getName();
 
                         if (nameToCompare.equals(micro.getName()))
                         {
