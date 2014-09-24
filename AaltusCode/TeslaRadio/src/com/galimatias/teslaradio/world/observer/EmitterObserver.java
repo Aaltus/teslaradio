@@ -11,5 +11,5 @@ import com.jme3.scene.Spatial;
  * @author David
  */
 public interface EmitterObserver {
-    public void observerUpdate(Spatial spatial, String notifierId);
+    public void emitterObserverUpdate(Spatial spatial, String notifierId);
 }
