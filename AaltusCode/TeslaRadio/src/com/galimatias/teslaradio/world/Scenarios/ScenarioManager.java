@@ -141,7 +141,12 @@ public class ScenarioManager  implements IScenarioManager
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
         //Init Modulation scenario
-        Modulation modulation = new Modulation(cam, null);
+        Amplification amplification = new Amplification(cam, null);
+        amplification.setName("Amplification");
+        scenarios.add(amplification);
+        
+        //Init Modulation scenario
+        Modulation modulation = new Modulation(cam, amplification.getInputHandle());
         modulation.setName("Modulation");
         scenarios.add(modulation);
         
@@ -168,10 +173,16 @@ public class ScenarioManager  implements IScenarioManager
         modulationList.add(soundCapture);
         modulationList.add(modulation);
         scenarioList.addScenario(ScenarioEnum.AMMODULATION,modulationList);
+        
+        //Add third scenario
+        List<Scenario> amplificationList = new ArrayList<Scenario>();
+        amplificationList.add(modulation);
+        amplificationList.add(amplification);
+        scenarioList.addScenario(ScenarioEnum.TRANSMIT,amplificationList);
 
         //Only for debugging purpose deactivate it please.
         scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
-        scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
+      //  scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
         scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
 
         //setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));
