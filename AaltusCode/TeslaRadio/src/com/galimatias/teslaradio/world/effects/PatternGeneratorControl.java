@@ -113,7 +113,7 @@ public class PatternGeneratorControl extends AbstractControl {
     }
     
     /**
-     * Toggle a new emission wave;
+     * Toggle a new emission wave according to inside parameter;
      */
     public void toggleNewWave()
     {
@@ -126,6 +126,19 @@ public class PatternGeneratorControl extends AbstractControl {
         if(++this.waveIterator == this.scaleStep){
             this.waveIterator = 0;
         }
+    }
+    /**
+     * Toggle a new emission wave with the specified scale;
+     * @param scale Scale of the particle
+     */
+    public void toggleNewWave(float scale)
+    {
+        Geometry geom = this.baseParticle.clone();
+        geom.scale(scale);
+        //The Queue will always have a size of 1 or 0, we don't want to queue
+        //more than the minimum delay
+        this.geomList.clear();
+        this.geomList.addLast(geom);
     }
     @Override
     protected void controlUpdate(float tpf) {
