@@ -36,6 +36,8 @@ public final class SoundEmission extends Scenario {
 
     private Spatial drum;
     private Spatial guitar;
+    
+    private Geometry soundParticle;
 
     private Spatial drumHandleOut;
     private Spatial guitarHandleOut;
@@ -132,6 +134,18 @@ public final class SoundEmission extends Scenario {
         initHaloEffects();
         initOnTouchEffect();
         
+        
+        
+        
+    }
+
+    @Override
+    protected void loadMovableObjects() {
+
+        initDrumParticlesEmitter();
+        initGuitarParticlesEmitter();
+        
+        ParticleEmitterControl microphoneControl = this.destinationHandle.getControl(ParticleEmitterControl.class);
         Material mat1 = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.2f));
@@ -140,7 +154,9 @@ public final class SoundEmission extends Scenario {
         guitarAirParticleEmitter.setLocalTranslation(guitarHandleOutPosition);
         this.attachChild(guitarAirParticleEmitter);
         guitarAirParticleEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 2f, 8f, mat1));
+        guitarAirParticleEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
         guitarAirParticleEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+        
         
         Material mat2 = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md");
@@ -150,15 +166,8 @@ public final class SoundEmission extends Scenario {
         drumAirParticleEmitter.setLocalTranslation(drumHandleOutPosition);
         this.attachChild(drumAirParticleEmitter);
         drumAirParticleEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 2f, 8f, mat2));
+        drumAirParticleEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
         drumAirParticleEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
-        
-    }
-
-    @Override
-    protected void loadMovableObjects() {
-
-        initDrumParticlesEmitter();
-        initGuitarParticlesEmitter();
     }
 
     @Override
@@ -178,15 +187,16 @@ public final class SoundEmission extends Scenario {
     private void initDrumParticlesEmitter()
     {
         // instantiate 3d Sound particul model
-        Quad rect = new Quad(0.1f, 0.1f);
-        Geometry soundParticle = new Geometry("particul",rect);
+        Quad rect = new Quad(1f, 1f);
+        soundParticle = new Geometry("particul",rect);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         soundParticul_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
-
-        //soundParticul_mat.setColor("Color", ColorRGBA.Red);
+        soundParticul_mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         soundParticle.setMaterial(soundParticul_mat);
         Geometry soundParticleTranslucent = soundParticle.clone();
         soundParticleTranslucent.getMaterial().setTexture("ColorMap", assetManager.loadTexture("Textures/Sound_wAlpha.png"));
+        soundParticle.setQueueBucket(queueBucket.Transparent);
+        
 
         //DrumSoundEmitter = new SignalEmitter(drum_trajectories, drum2MicLength, soundParticle, soundParticleTranslucent, SoundParticleSpeed, SignalType.Air );
 
@@ -362,7 +372,7 @@ public final class SoundEmission extends Scenario {
         drum_sound.playInstance();
         
         AirParticleEmitterControl control = drumAirParticleEmitter.getControl(AirParticleEmitterControl.class);
-        control.emitParticle(null);
+        control.emitParticle(soundParticle.clone());
         
 
     }
@@ -397,7 +407,7 @@ public final class SoundEmission extends Scenario {
         
         
         AirParticleEmitterControl control = guitarAirParticleEmitter.getControl(AirParticleEmitterControl.class);
-        control.emitParticle(null);
+        control.emitParticle(soundParticle.clone());
     }
 
     public void textTouchEffect()

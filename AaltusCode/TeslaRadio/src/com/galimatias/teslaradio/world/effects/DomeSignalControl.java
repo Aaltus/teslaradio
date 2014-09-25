@@ -56,7 +56,7 @@ public class DomeSignalControl extends AbstractControl implements ParticleObserv
         if(!reachingDestination && distanceFromEdge == 0)
         {
             reachingDestination = true;
-            this.observer.onParticleReachingReceiver(spatial);
+            this.observer.onParticleReachingReceiver(this.particle);
         }
         
         // check if it is the end of the path and notify

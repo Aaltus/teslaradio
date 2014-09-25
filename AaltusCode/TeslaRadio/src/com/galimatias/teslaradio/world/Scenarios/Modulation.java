@@ -188,13 +188,16 @@ public final class Modulation extends Scenario implements EmitterObserver {
 
     // TODO Add the real output signals with a pattern generator
     private void initOutputSignals() {
-
+        
         Box cube = new Box(0.25f, 0.25f, 0.25f);
         cubeOutputSignal = new Geometry("CubeCarrier", cube);
         Material mat1 = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setColor("Color", ColorRGBA.Blue);
         cubeOutputSignal.setMaterial(mat1);
+        
+        // Default value of the outputSignal
+        this.outputSignal = cubeOutputSignal;
 
         Dome pyramid = new Dome(2, 4, 0.25f);
         pyramidOutputSignal = new Geometry("PyramidCarrier", pyramid);
