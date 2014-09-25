@@ -13,11 +13,15 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.Control;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
+import com.jme3.scene.shape.Sphere;
+import com.jme3.texture.Texture;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -36,6 +40,9 @@ public final class SoundEmission extends Scenario {
     private Spatial drumHandleOut;
     private Spatial guitarHandleOut;
     private Spatial destinationHandle;
+    
+    private Spatial guitarAirParticleEmitter;
+    private Spatial drumAirParticleEmitter;
 
     private Halo halo_drum, halo_guitar;
 
@@ -124,6 +131,27 @@ public final class SoundEmission extends Scenario {
         initImageBoxes();
         initHaloEffects();
         initOnTouchEffect();
+        
+        Material mat1 = new Material(assetManager, 
+                "Common/MatDefs/Misc/Unshaded.j3md");
+        mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.2f));
+        mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        guitarAirParticleEmitter = new Node();
+        guitarAirParticleEmitter.setLocalTranslation(guitarHandleOutPosition);
+        this.attachChild(guitarAirParticleEmitter);
+        guitarAirParticleEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 2f, 8f, mat1));
+        guitarAirParticleEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+        
+        Material mat2 = new Material(assetManager, 
+                "Common/MatDefs/Misc/Unshaded.j3md");
+        mat2.setColor("Color", new ColorRGBA(0, 1, 1, 0.2f));
+        mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        drumAirParticleEmitter = new Node();
+        drumAirParticleEmitter.setLocalTranslation(drumHandleOutPosition);
+        this.attachChild(drumAirParticleEmitter);
+        drumAirParticleEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 2f, 8f, mat2));
+        drumAirParticleEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+        
     }
 
     @Override
@@ -176,7 +204,8 @@ public final class SoundEmission extends Scenario {
 
         DrumSoundEmitter.setWaves(waveMagnitudes, soundParticle, soundParticleTranslucent, SoundParticlePeriod, SoundParticleSpeed);
     }
-
+    
+    
     /**
      * Initialisation of the drum effects
      */
@@ -331,6 +360,10 @@ public final class SoundEmission extends Scenario {
 
         touchEffectEmitter.isTouched();
         drum_sound.playInstance();
+        
+        AirParticleEmitterControl control = drumAirParticleEmitter.getControl(AirParticleEmitterControl.class);
+        control.emitParticle(null);
+        
 
     }
 
@@ -343,6 +376,28 @@ public final class SoundEmission extends Scenario {
         //GuitarSoundEmitter.prepareEmitParticles(receiverHandleVector);
 
         guitar_sound.playInstance();
+        /*
+        Sphere sphere1Mesh = new Sphere();
+        Geometry sphere1Geo = new Geometry("My Textured Box", sphere1Mesh);
+        sphere1Geo.setLocalTranslation(new Vector3f(-3f,1.1f,0f));
+        Material cube1Mat = new Material(assetManager, 
+            "Common/MatDefs/Misc/Unshaded.j3md");
+        Texture cube1Tex = assetManager.loadTexture(
+            "Interface/Logo/Monkey.jpg");
+        cube1Mat.setTexture("ColorMap", cube1Tex);
+        sphere1Geo.setMaterial(cube1Mat);
+        */
+        /*
+         Material cube1Mat = new Material(assetManager, 
+            "Common/MatDefs/Misc/Unshaded.j3md");
+        Texture cube1Tex = assetManager.loadTexture(
+            "Interface/Logo/Monkey.jpg");
+        cube1Mat.setTexture("ColorMap", cube1Tex);
+        * */
+        
+        
+        AirParticleEmitterControl control = guitarAirParticleEmitter.getControl(AirParticleEmitterControl.class);
+        control.emitParticle(null);
     }
 
     public void textTouchEffect()

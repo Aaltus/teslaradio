@@ -72,9 +72,10 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
     }
 
     @Override
-    public void observerUpdate(Spatial toBeDeletedSpatial) {
+    public void onParticleEndOfLife(Spatial toBeDeletedSpatial) {
         // deconnect particle from this particle emitter
         toBeDeletedSpatial.removeControl(SignalControl.class);
+        toBeDeletedSpatial.removeControl(DomeSignalControl.class);
         toBeDeletedSpatial.removeFromParent();
         
         // notify Registered observers of the ParticleEmitter
@@ -118,4 +119,9 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
 
         return pathVector;
     }    
+
+    @Override
+    public void onParticleReachingReceiver(Spatial spatial) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

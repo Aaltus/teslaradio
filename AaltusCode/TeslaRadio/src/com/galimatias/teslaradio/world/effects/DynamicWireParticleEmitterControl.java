@@ -69,7 +69,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
 
     // notification from particle when they reach their goal.
     @Override
-    public void observerUpdate(Spatial toBeDeletedSpatial) {
+    public void onParticleEndOfLife(Spatial toBeDeletedSpatial) {
         
         // deconnect particle from this particle emitter
         toBeDeletedSpatial.removeControl(SignalControl.class);
@@ -82,6 +82,11 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
 
+    }
+
+    @Override
+    public void onParticleReachingReceiver(Spatial spatial) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

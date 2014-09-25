@@ -4,8 +4,8 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
-import com.galimatias.teslaradio.world.observer.Observable;
-import com.galimatias.teslaradio.world.observer.Observer;
+import com.galimatias.teslaradio.world.observer.ParticleObservable;
+import com.galimatias.teslaradio.world.observer.ParticleObserver;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.math.Spline;
 import com.jme3.math.Vector2f;
@@ -20,7 +20,7 @@ import com.jme3.scene.control.AbstractControl;
  *
  * @author Hugo
  */
-public class SignalControl extends AbstractControl implements Observable{
+public class SignalControl extends AbstractControl implements ParticleObservable{
 
     // moving data
     private MotionPath path;
@@ -31,7 +31,7 @@ public class SignalControl extends AbstractControl implements Observable{
     private Camera cam;
     
     // for end of path notification
-    private Observer observer;
+    private ParticleObserver observer;
     
     public SignalControl(MotionPath path, float speed){
         this(path, speed, null);
@@ -60,7 +60,7 @@ public class SignalControl extends AbstractControl implements Observable{
         // check if it is the end of the path and notify
         if(distanceTraveled >= path.getLength())
         {
-            this.notifyObservers(this.spatial);
+            this.observer.onParticleEndOfLife(this.spatial);
             return;
         }
         
@@ -81,19 +81,14 @@ public class SignalControl extends AbstractControl implements Observable{
     }
 
     @Override
-    public void registerObserver(Observer observer) {
+    public void registerObserver(ParticleObserver observer) {
         this.observer = observer;
     }
 
     @Override
-    public void removeObserver(Observer observer) {
+    public void removeObserver(ParticleObserver observer) {
         this.observer = null;
     }
 
-    // make sure that emitter is register to each Signal send
-    @Override
-    public void notifyObservers(Spatial spatial) {
-        this.observer.observerUpdate(spatial);
-    }
     
 }
