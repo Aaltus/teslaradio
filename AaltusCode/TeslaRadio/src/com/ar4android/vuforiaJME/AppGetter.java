@@ -51,7 +51,12 @@ public class AppGetter {
     {
         return instance.app.getGuiNode();
     }
-
+    
+    public static Node getRootNode()
+    {
+        return instance.app.getRootNode();
+    }
+    
     public static void setInstance(SimpleApplication app) {
 
         if(instance == null)

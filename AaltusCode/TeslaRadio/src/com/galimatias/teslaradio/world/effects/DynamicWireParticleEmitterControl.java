@@ -4,6 +4,7 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -39,7 +40,8 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
     @Override
     protected void pathUpdate() {
         // validate that the handle is valid
-        if(this.destinationHandle != null)
+        //TODO: Maybe do something more bulletproof than getting the rootnode from AppGetter
+        if(this.destinationHandle.hasAncestor(AppGetter.getRootNode()))
         {
             this.path.clearWayPoints();
             this.path.addWayPoint(new Vector3f(0,0,0));
@@ -47,7 +49,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         }
         else
         {
-            throw new UnsupportedOperationException("destinationHandle is Null!!");
+            this.path.clearWayPoints();
         }
     }    
         
