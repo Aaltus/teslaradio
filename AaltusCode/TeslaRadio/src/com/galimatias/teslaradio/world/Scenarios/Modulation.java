@@ -27,7 +27,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
      * TODO Remove this bool and associated code in simpleUpdate when it works
      * on Android. Only for debug purposes.
      */
-    private final static boolean DEBUG_ANGLE = false;
+    private final static boolean DEBUG_ANGLE = true;
 
     // Values displayed on the digital screen of the PCB 3D object
     private final String sFM1061 = "106.1 FM";
@@ -565,7 +565,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
             Vector3f scale = spatial.getLocalScale();
 
             if (pcbAmpEmitter != null) {
-                outputSignal.setLocalScale(scale);
+                //outputSignal.setLocalScale(scale);
                 pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(outputSignal.clone());
             }
 
