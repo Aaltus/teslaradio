@@ -2,7 +2,6 @@ package com.ar4android.vuforiaJME;
 
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
-import com.jme3.math.FastMath;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -11,7 +10,6 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.utils.AppLogger;
 
 import java.io.IOException;
 
@@ -59,7 +57,7 @@ public class TrackableControl extends AbstractControl {
         {
             angleX += 2*Math.PI;
         }
-        this.mChildRotation.fromAngleAxis((float)-angleX + FastMath.PI, new Vector3f(0,0,1));
+        this.mChildRotation.fromAngleAxis((float)-angleX, new Vector3f(0,0,1));
 
         for(Spatial spatial : this.mFixedAngleChild.getChildren())
         {
