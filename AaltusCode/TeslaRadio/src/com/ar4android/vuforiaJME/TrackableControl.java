@@ -2,6 +2,7 @@ package com.ar4android.vuforiaJME;
 
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
+import com.jme3.math.FastMath;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -44,15 +45,21 @@ public class TrackableControl extends AbstractControl {
         this.mVx.set(newVx);
 
     }
-    public void updateDistance(Vector3f distance)
+    public void updateDistance(Vector3f distance, boolean vectorIsInverted)
     {
-        Vector3f vectorAB = new Vector3f(this.mPosition.subtract(distance));
+        Vector3f vectorAB;
+        if(vectorIsInverted) {
+            vectorAB = new Vector3f(distance.subtract(this.mPosition));
+        }else {
+            vectorAB = new Vector3f(this.mPosition.subtract(distance));
+        }
+
         double angleX = Math.atan2(vectorAB.normalize().y,vectorAB.normalize().x) - Math.atan2(this.mVx.normalize().y,this.mVx.normalize().x);
         if(angleX < 0)
         {
             angleX += 2*Math.PI;
         }
-        this.mChildRotation.fromAngleAxis((float)-angleX, new Vector3f(0,0,1));
+        this.mChildRotation.fromAngleAxis((float)-angleX + FastMath.PI, new Vector3f(0,0,1));
 
         for(Spatial spatial : this.mFixedAngleChild.getChildren())
         {
