@@ -46,10 +46,6 @@ public class AppGetter {
     {
         return instance.app.getRenderManager();
     }
-    public static Camera getCameraInstance() 
-    {
-        return instance.app.getCamera();
-    }
         
     public static Node getGuiNode()
     {

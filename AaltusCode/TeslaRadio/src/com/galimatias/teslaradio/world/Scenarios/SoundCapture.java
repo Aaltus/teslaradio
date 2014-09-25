@@ -98,7 +98,7 @@ public final class SoundCapture extends Scenario {
     @Override
     protected void loadUnmovableObjects()
     {
-        scene = (Node) assetManager.loadModel("Models/SoundCapture/micro.j3o");
+        scene = (Node) assetManager.loadModel("Models/SoundCapture/Micro.j3o");
         scene.setName("SoundCapture");
         this.attachChild(scene);
         
@@ -129,17 +129,18 @@ public final class SoundCapture extends Scenario {
     {
         MicWireEmitter = new Node();
         MicWireEmitter.setLocalTranslation(micPosition.x, micPosition.y,micPosition.z); // TO DO: utiliser le object handle blender pour position
-        this.attachChild(MicWireEmitter);
+        scene.attachChild(MicWireEmitter);
         
         Node micWire_node = (Node) scene.getParent().getChild("WirePath");
-        Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
+        Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve.002");
         //Geometry tmpGeom = (Geometry)micWire_geom;//.scale(1/ScenarioManager.WORLD_SCALE_DEFAULT);
         
         MicWireEmitter.addControl(new StaticWireParticleEmitterControl(micWire_geom.getMesh(), 3.5f, cam));
         
         wireDestinationEmitter = new Node();
-        wireDestinationEmitter.setLocalTranslation(5.0f, 0.0f, 5.0f);
-        this.attachChild(wireDestinationEmitter);
+        Spatial moduleHandleOut_node = scene.getParent().getChild("Module.Handle.Out");
+        wireDestinationEmitter.setLocalTranslation(moduleHandleOut_node.getLocalTranslation());
+        scene.attachChild(wireDestinationEmitter);
         
         System.out.println(destinationHandle.getName());
         
