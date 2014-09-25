@@ -41,7 +41,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
     protected void pathUpdate() {
         // validate that the handle is valid
         //TODO: Maybe do something more bulletproof than getting the rootnode from AppGetter
-        if(this.destinationHandle.hasAncestor(AppGetter.getRootNode()))
+        if(AppGetter.hasRootNodeAsAncestor(this.destinationHandle))
         {
             this.path.clearWayPoints();
             this.path.addWayPoint(new Vector3f(0,0,0));
