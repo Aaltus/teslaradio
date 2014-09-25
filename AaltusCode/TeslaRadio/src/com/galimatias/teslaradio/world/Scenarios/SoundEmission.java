@@ -25,7 +25,7 @@ import java.util.Vector;
 /**
  * Created by Greenwood0 on 2014-09-08.
  */
-public class SoundEmission extends Scenario {
+public final class SoundEmission extends Scenario {
 
     private AudioNode drum_sound;
     private AudioNode guitar_sound;
@@ -98,8 +98,8 @@ public class SoundEmission extends Scenario {
     @Override
     protected void loadUnmovableObjects() {
 
-        Node sceneDrum = (Node) assetManager.loadModel("Models/SoundCapture/Tambour_v2.j3o");
-        Node sceneGuit = (Node) assetManager.loadModel("Models/SoundCapture/Guitare_v2.j3o");
+        Node sceneDrum = (Node) assetManager.loadModel("Models/SoundCapture/Tambour.j3o");
+        Node sceneGuit = (Node) assetManager.loadModel("Models/SoundCapture/Guitare.j3o");
         
         float movementValue  = 2.5f;
 
