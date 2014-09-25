@@ -10,6 +10,7 @@ import com.jme3.scene.Spatial;
  *
  * @author Hugo
  */
-public interface Observer {
-	public void observerUpdate(Spatial spatial);
+public interface ParticleObservable {
+    public void registerObserver(ParticleObserver observer);
+    public void removeObserver(ParticleObserver observer);
 }
