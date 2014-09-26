@@ -50,7 +50,7 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
                 control.setEnabled(true);
             }
             
-            control = spatialToAttach.getControl(DomeSignalControl.class);
+            control = spatialToAttach.getControl(ScalingSignalControl.class);
             if(control != null){
                 control.setEnabled(true);
             }

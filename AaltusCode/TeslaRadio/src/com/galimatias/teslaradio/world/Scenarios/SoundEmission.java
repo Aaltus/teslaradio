@@ -152,7 +152,7 @@ public final class SoundEmission extends Scenario {
         guitarAirParticleEmitter = new Node();
         guitarAirParticleEmitter.setLocalTranslation(guitarHandleOutPosition);
         this.attachChild(guitarAirParticleEmitter);
-        guitarAirParticleEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 2f, 8f, mat1));
+        guitarAirParticleEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 2f, 13f, mat1));
         guitarAirParticleEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
         guitarAirParticleEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
         
@@ -164,7 +164,7 @@ public final class SoundEmission extends Scenario {
         drumAirParticleEmitter = new Node();
         drumAirParticleEmitter.setLocalTranslation(drumHandleOutPosition);
         this.attachChild(drumAirParticleEmitter);
-        drumAirParticleEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 2f, 8f, mat2));
+        drumAirParticleEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 2f, 13f, mat2));
         drumAirParticleEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
         drumAirParticleEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
@@ -567,7 +567,7 @@ public final class SoundEmission extends Scenario {
     @Override
     public void onAudioEvent()
     {
-        drumTouchEffect();
+        //drumTouchEffect();
     }
 
     @Override

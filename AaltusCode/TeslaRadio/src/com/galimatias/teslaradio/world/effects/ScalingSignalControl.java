@@ -18,7 +18,7 @@ import com.jme3.scene.control.AbstractControl;
  *
  * @author jimbojd72
  */
-public class DomeSignalControl extends AbstractControl implements ParticleObservable{
+public class ScalingSignalControl extends AbstractControl implements ParticleObservable{
     
     private float currentTotalScale;
     private float speed;
@@ -33,11 +33,11 @@ public class DomeSignalControl extends AbstractControl implements ParticleObserv
     private Material material;
     private float    originalColorAlphaValue;
     
-    public DomeSignalControl(float speed, Spatial particle, Spatial destinationSpatial){
+    public ScalingSignalControl(float speed, Spatial particle, Spatial destinationSpatial){
         this(speed, particle, destinationSpatial, null);
     }
     
-    public DomeSignalControl(float speed, Spatial particle, Spatial destinationSpatial, Material material){
+    public ScalingSignalControl(float speed, Spatial particle, Spatial destinationSpatial, Material material){
         this.speed = speed;
         this.enabled = false;
         this.particle = particle;

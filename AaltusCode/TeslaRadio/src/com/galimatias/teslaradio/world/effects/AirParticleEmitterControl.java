@@ -19,6 +19,7 @@ import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Dome;
 import com.jme3.util.SkyFactory;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -47,7 +48,7 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
     public void onParticleEndOfLife(Spatial toBeDeletedSpatial) {
         
         // deconnect particle from this particle emitter
-        toBeDeletedSpatial.removeControl(DomeSignalControl.class);
+        toBeDeletedSpatial.removeControl(ScalingSignalControl.class);
         toBeDeletedSpatial.removeFromParent();
         
         
@@ -68,28 +69,37 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
     @Override
     public void emitParticle(Spatial spatialToSend) {
         
-        Dome box1 = new Dome( new Vector3f(), 32, 32, this.maxScale, false);
-        Geometry geom1 = new Geometry("Test", box1);
-        Dome box2 = new Dome( new Vector3f(), 32, 32, this.maxScale, true);
-        Geometry geom2 = new Geometry("Test", box2);
-        Material materialClone = this.material.clone();
-        geom1.setMaterial(materialClone);
-        geom2.setMaterial(materialClone);
-        Spatial particle = geom1;
-        DomeSignalControl sigControl = new DomeSignalControl(speed,spatialToSend,destinationHandle,materialClone);
+        emitParticle(spatialToSend, this.maxScale);
+    }
+    
+    private void emitParticle(Spatial spatialToSend, float scale) {
+        //if this value is bigger the dome will be more precise but will require more triangles to draw
+        final int numberOrRadialAndPlanes = 12;
         
+        //We have two dome, one that can be seen from inner and one that can be seen from outise of the dome.
+        Dome outsideDome = new Dome( new Vector3f(), numberOrRadialAndPlanes, numberOrRadialAndPlanes, scale, false);
+        Geometry outsideDomeGeom = new Geometry("Test", outsideDome);
+        Dome insideDome = new Dome( new Vector3f(), numberOrRadialAndPlanes, numberOrRadialAndPlanes, scale, true);
+        Geometry insideDomeGeom = new Geometry("Test", insideDome);
+        Material materialClone = this.material.clone();
+        outsideDomeGeom.setMaterial(materialClone);
+        insideDomeGeom.setMaterial(materialClone);
+        Spatial particle = outsideDomeGeom;
+        ScalingSignalControl sigControl = new ScalingSignalControl(speed,spatialToSend,destinationHandle,materialClone);
+        
+        //Both node are attached to the same node that is in the transparent bucket
         Node testNode = new Node();
-        testNode.attachChild(geom1);
-        testNode.attachChild(geom2);
+        testNode.attachChild(outsideDomeGeom);
+        testNode.attachChild(insideDomeGeom);
         testNode.setQueueBucket(RenderQueue.Bucket.Transparent);
         
+        //We register our emitter to receive update and we add our DomeSignalControl
         sigControl.registerObserver(this);
-        //sigControl2.registerObserver(this);
         testNode.addControl(sigControl);
-        //geom2.addControl(sigControl2);
         spatialToSendBuffer.add(testNode);
-        //spatialToSendBuffer.add(geom2);
     }
+    
+    
 
     @Override
     protected void pathUpdate() {
