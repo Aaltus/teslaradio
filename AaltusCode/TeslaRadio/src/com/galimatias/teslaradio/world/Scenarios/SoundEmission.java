@@ -86,8 +86,9 @@ public final class SoundEmission extends Scenario {
     private ColorRGBA defaultTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
 
     // Refresh hint values
-    private float maxTimeRefreshHint = 30f;
+    private float maxTimeRefreshHint = 10f;
     private float timeLastTouch = maxTimeRefreshHint;
+    private final float hintFadingTime = 1.5f;
 
     public SoundEmission(com.jme3.renderer.Camera Camera, Spatial destinationHandle)
     {
@@ -358,17 +359,21 @@ public final class SoundEmission extends Scenario {
     {
         
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
+        FadeControl fadeControl1     = new FadeControl(hintFadingTime);
         Vector3f imageHintDrumPosition = /*drumHandleOut.getLocalTranslation()*/drumHandleOutPosition;/*.add(new Vector3f(0, 0.65f, 0f));*/
         imageHintDrum = new ImageBox(0.4f, 0.75f, assetManager, "Drum Touch Hint", "Textures/Selection_Hand.png", 1f);
         imageHintDrum.move(imageHintDrumPosition);
         imageHintDrum.addControl(control1);
+        imageHintDrum.addControl(fadeControl1);
         this.attachChild(imageHintDrum);
         
         LookAtCameraControl control2 = new LookAtCameraControl(Camera);
+        FadeControl fadeControl2     = new FadeControl(hintFadingTime);
         Vector3f imageHintGuitarPosition = guitarHandleOutPosition;//guitarHandleOut.getLocalTranslation().add(new Vector3f(0, 0.6f, 0f));
-        imageHintGuitar = new ImageBox(0.4f, 0.75f, assetManager, "Guitar Touch Hint", "Textures/Selection_Hand.png", 1f);
+        imageHintGuitar = new ImageBox(0.4f, 0.75f, assetManager, "Guitar Touch Hint", "Textures/Selection_Hand.png", 6f);
         imageHintGuitar.move(imageHintGuitarPosition);
         imageHintGuitar.addControl(control2);
+        imageHintGuitar.addControl(fadeControl2);
         this.attachChild(imageHintGuitar);
     }
 
@@ -437,8 +442,11 @@ public final class SoundEmission extends Scenario {
     public void removeHintImages()
     {
         timeLastTouch = 0f;
-        imageHintDrum.setShowImage(false);
-        imageHintGuitar.setShowImage(false);
+        
+        imageHintDrum.getControl(FadeControl.class).setShowImage(false);
+        imageHintGuitar.getControl(FadeControl.class).setShowImage(false);
+        //imageHintDrum.setShowImage(false);
+        //imageHintGuitar.setShowImage(false);
     }
 
     /**
@@ -446,8 +454,10 @@ public final class SoundEmission extends Scenario {
      */
     public void ShowHintImages()
     {
-        imageHintDrum.setShowImage(true);
-        imageHintGuitar.setShowImage(true);
+        imageHintDrum.getControl(FadeControl.class).setShowImage(true);
+        imageHintGuitar.getControl(FadeControl.class).setShowImage(true);
+        //imageHintDrum.setShowImage(true);
+        //imageHintGuitar.setShowImage(true);
     }
 
     /**
