@@ -72,10 +72,11 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
         Geometry geom1 = new Geometry("Test", box1);
         Dome box2 = new Dome( new Vector3f(), 32, 32, this.maxScale, true);
         Geometry geom2 = new Geometry("Test", box2);
-        geom1.setMaterial(this.material);
-        geom2.setMaterial(this.material);
+        Material materialClone = this.material.clone();
+        geom1.setMaterial(materialClone);
+        geom2.setMaterial(materialClone);
         Spatial particle = geom1;
-        DomeSignalControl sigControl = new DomeSignalControl(speed,spatialToSend,destinationHandle,this.maxScale);
+        DomeSignalControl sigControl = new DomeSignalControl(speed,spatialToSend,destinationHandle,materialClone);
         
         Node testNode = new Node();
         testNode.attachChild(geom1);

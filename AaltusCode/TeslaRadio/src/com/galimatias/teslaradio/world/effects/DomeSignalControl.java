@@ -7,6 +7,8 @@ package com.galimatias.teslaradio.world.effects;
 import com.galimatias.teslaradio.world.observer.ParticleObservable;
 import com.galimatias.teslaradio.world.observer.ParticleObserver;
 import com.jme3.cinematic.MotionPath;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
@@ -20,7 +22,6 @@ public class DomeSignalControl extends AbstractControl implements ParticleObserv
     
     private float currentTotalScale;
     private float speed;
-    private float maxScale;
     private Spatial particle;
     private Spatial destinationSpatial;
     private boolean reachingDestination = false;
@@ -28,13 +29,26 @@ public class DomeSignalControl extends AbstractControl implements ParticleObserv
     private ParticleObserver observer;
     private boolean startScaling = false;
     
-    public DomeSignalControl(float speed, Spatial particle, Spatial destinationSpatial, float maxScale){
+    //We work on the material here
+    private Material material;
+    private float    originalColorAlphaValue;
+    
+    public DomeSignalControl(float speed, Spatial particle, Spatial destinationSpatial){
+        this(speed, particle, destinationSpatial, null);
+    }
+    
+    public DomeSignalControl(float speed, Spatial particle, Spatial destinationSpatial, Material material){
         this.speed = speed;
         this.enabled = false;
         this.particle = particle;
         this.destinationSpatial = destinationSpatial;
-        this.maxScale = maxScale;
         this.currentTotalScale = 0;
+        this.material = material;
+        
+        if(this.material != null){
+            ColorRGBA beginningColor = (ColorRGBA)this.material.getParam("Color").getValue();
+            originalColorAlphaValue = beginningColor.getAlpha();
+        }
     }
     
     
@@ -45,11 +59,22 @@ public class DomeSignalControl extends AbstractControl implements ParticleObserv
         if(!startScaling){
             this.spatial.setLocalScale(0);
             startScaling = true;
+            
         }
+        
+        
         
         float deltaScale = tpf*speed;
         currentTotalScale += deltaScale;
         this.spatial.setLocalScale(currentTotalScale);
+        
+        //If we have a material, we make it scale to become transparent with the deltascale.
+        if(this.material != null){
+        
+            ColorRGBA color = (ColorRGBA)this.material.getParam("Color").getValue();
+            ColorRGBA newColor = color.add(new ColorRGBA(0,0,0,-deltaScale*originalColorAlphaValue));
+            this.material.setColor("Color", newColor);
+        }
         
         //When the distance == 0, we know we are inside the dome because there is no distance between both.
         float distanceFromEdge = this.spatial.getWorldBound().distanceToEdge(destinationSpatial.getWorldTranslation());

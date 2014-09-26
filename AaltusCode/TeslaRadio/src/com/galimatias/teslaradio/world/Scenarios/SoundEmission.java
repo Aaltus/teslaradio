@@ -46,10 +46,9 @@ public final class SoundEmission extends Scenario {
     private Spatial guitarAirParticleEmitter;
     private Spatial drumAirParticleEmitter;
 
-    private Halo halo_drum, halo_guitar;
-
-    private SignalEmitter DrumSoundEmitter;
-    private SignalEmitter GuitarSoundEmitter;
+    //private Halo halo_drum, halo_guitar;
+    //private SignalEmitter DrumSoundEmitter;
+    //private SignalEmitter GuitarSoundEmitter;
 
     private TouchEffectEmitter touchEffectEmitter;
 
@@ -148,7 +147,7 @@ public final class SoundEmission extends Scenario {
         ParticleEmitterControl microphoneControl = this.destinationHandle.getControl(ParticleEmitterControl.class);
         Material mat1 = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.2f));
+        mat1.setColor("Color", new ColorRGBA(1, 0, 1, 1f));
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         guitarAirParticleEmitter = new Node();
         guitarAirParticleEmitter.setLocalTranslation(guitarHandleOutPosition);
@@ -160,7 +159,7 @@ public final class SoundEmission extends Scenario {
         
         Material mat2 = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md");
-        mat2.setColor("Color", new ColorRGBA(0, 1, 1, 0.2f));
+        mat2.setColor("Color", new ColorRGBA(0, 1, 1, 1f));
         mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         drumAirParticleEmitter = new Node();
         drumAirParticleEmitter.setLocalTranslation(drumHandleOutPosition);
@@ -201,10 +200,11 @@ public final class SoundEmission extends Scenario {
         //DrumSoundEmitter = new SignalEmitter(drum_trajectories, drum2MicLength, soundParticle, soundParticleTranslucent, SoundParticleSpeed, SignalType.Air );
 
         // Initializing the new Signal Emitter
+        /*
         DrumSoundEmitter = new SignalEmitter(this);
         this.attachChild(DrumSoundEmitter);
         DrumSoundEmitter.setLocalTranslation(drumHandleOutPosition);
-
+       
         //Set the impulsional response of the emitter
         ArrayList<Float> waveMagnitudes = new ArrayList(3);
 
@@ -213,6 +213,7 @@ public final class SoundEmission extends Scenario {
         waveMagnitudes.add(1f);
 
         DrumSoundEmitter.setWaves(waveMagnitudes, soundParticle, soundParticleTranslucent, SoundParticlePeriod, SoundParticleSpeed);
+        * */
     }
     
     
@@ -231,6 +232,7 @@ public final class SoundEmission extends Scenario {
         Geometry soundParticleTranslucent = soundParticle.clone();
         soundParticleTranslucent.getMaterial().setTexture("ColorMap", assetManager.loadTexture("Textures/Sound_wAlpha.png"));
 
+        /*
         GuitarSoundEmitter = new SignalEmitter(this);
         this.attachChild(GuitarSoundEmitter);
         GuitarSoundEmitter.setLocalTranslation(guitarHandleOutPosition); // TO DO: utiliser le object handle blender pour position
@@ -247,11 +249,13 @@ public final class SoundEmission extends Scenario {
         waveMagnitudes.add(0.8f);
 
         GuitarSoundEmitter.setWaves(waveMagnitudes, soundParticle, soundParticleTranslucent, SoundParticlePeriod, SoundParticleSpeed);
+        * */
 
     }
 
     private void initOnTouchEffect() {
 
+        /*
         Material effect_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         effect_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
         effect_mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
@@ -262,11 +266,13 @@ public final class SoundEmission extends Scenario {
         touchEffectEmitter = new TouchEffectEmitter("DrumEffect", drumMinScale, drumMaxScale, drumScaleGradient, drumTouchEffect, new Vector3f(1.0f,0.0f,1.0f));
         this.attachChild(touchEffectEmitter);
         touchEffectEmitter.setLocalTranslation(drumHandleOutPosition.add(new Vector3f(0.0f,0.1f,0.0f)));
+        * */
     }
 
     private void initHaloEffects()
     {
         //Add the halo effects under the interactive objects
+        /*
         Box rect = new Box(2f, Float.MIN_VALUE, 2f);
 
         Material halo_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
@@ -281,6 +287,7 @@ public final class SoundEmission extends Scenario {
 
         halo_drum.setLocalTranslation(drumPosition);
         halo_guitar.setLocalTranslation(guitarPosition);
+        * */
     }
 
     private void initAudio()
@@ -349,14 +356,19 @@ public final class SoundEmission extends Scenario {
 
     public void initImageBoxes()
     {
+        
+        LookAtCameraControl control1 = new LookAtCameraControl(Camera);
         Vector3f imageHintDrumPosition = /*drumHandleOut.getLocalTranslation()*/drumHandleOutPosition;/*.add(new Vector3f(0, 0.65f, 0f));*/
         imageHintDrum = new ImageBox(0.4f, 0.75f, assetManager, "Drum Touch Hint", "Textures/Selection_Hand.png", 1f);
         imageHintDrum.move(imageHintDrumPosition);
+        imageHintDrum.addControl(control1);
         this.attachChild(imageHintDrum);
-
+        
+        LookAtCameraControl control2 = new LookAtCameraControl(Camera);
         Vector3f imageHintGuitarPosition = guitarHandleOutPosition;//guitarHandleOut.getLocalTranslation().add(new Vector3f(0, 0.6f, 0f));
         imageHintGuitar = new ImageBox(0.4f, 0.75f, assetManager, "Guitar Touch Hint", "Textures/Selection_Hand.png", 1f);
         imageHintGuitar.move(imageHintGuitarPosition);
+        imageHintGuitar.addControl(control2);
         this.attachChild(imageHintGuitar);
     }
 
@@ -368,7 +380,7 @@ public final class SoundEmission extends Scenario {
         //Vector3f receiverHandleVector = particleLinker.GetEmitterDestinationPaths(this);
         //DrumSoundEmitter.prepareEmitParticles(receiverHandleVector);
 
-        touchEffectEmitter.isTouched();
+        //touchEffectEmitter.isTouched();
         drum_sound.playInstance();
         
         AirParticleEmitterControl control = drumAirParticleEmitter.getControl(AirParticleEmitterControl.class);
@@ -445,8 +457,8 @@ public final class SoundEmission extends Scenario {
      */
     public void hintsUpdate(float tpf, Vector3f upVector)
     {
-        imageHintDrum.simpleUpdate(tpf, this.Camera, upVector);
-        imageHintGuitar.simpleUpdate(tpf, this.Camera, upVector);
+        //imageHintDrum.simpleUpdate(tpf, this.Camera, upVector);
+        //imageHintGuitar.simpleUpdate(tpf, this.Camera, upVector);
     }
 
     public void textBoxesUpdate(Vector3f upVector)
@@ -527,7 +539,8 @@ public final class SoundEmission extends Scenario {
         {
             ShowHintImages();
         }
-
+        
+        /*
         DrumSoundEmitter.simpleUpdate(tpf, this.Camera);
         GuitarSoundEmitter.simpleUpdate(tpf, this.Camera);
         touchEffectEmitter.simpleUpdate(tpf);
@@ -539,6 +552,7 @@ public final class SoundEmission extends Scenario {
             textBoxesUpdate(upVector);
             hintsUpdate(tpf, upVector);
         }
+        * */
 
         if (showInformativeMenu)
         {

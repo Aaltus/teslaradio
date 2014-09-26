@@ -84,6 +84,7 @@ public class ImageBox extends Node{
      * @param cam
      * @param scenarioUpVector
      */
+    /*
     public void simpleUpdate(float tpf, Camera cam, Vector3f scenarioUpVector)
     {
         this.lookAt(cam.getLocation(), scenarioUpVector);
@@ -102,6 +103,7 @@ public class ImageBox extends Node{
         }
         
     }
+    * */
     
 }
 
