@@ -144,6 +144,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         scene.attachChild(outputEmitter);
         outputEmitter.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        System.out.println("translation " + outputHandle.getLocalTranslation());
         outputEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
         outputEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
 

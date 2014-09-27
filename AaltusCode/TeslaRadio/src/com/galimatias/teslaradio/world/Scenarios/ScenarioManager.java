@@ -139,9 +139,14 @@ public class ScenarioManager  implements IScenarioManager
         //This a list of all the scenario that we will rotate/scale according
         //to which environment we are in. Don't forget to add scenario in it. 
         List<Scenario> scenarios = new ArrayList<Scenario>();
-        
-        //Init Modulation scenario
-        Amplification amplification = new Amplification(cam, null);
+        /*
+        //Init Reception scenario
+        Reception reception = new Reception(cam, null);
+        reception.setName("Reception");
+        scenarios.add(reception);
+        */
+        //Init Amplification scenario
+        Amplification amplification = new Amplification(cam,null);
         amplification.setName("Amplification");
         scenarios.add(amplification);
         
@@ -179,7 +184,13 @@ public class ScenarioManager  implements IScenarioManager
         amplificationList.add(modulation);
         amplificationList.add(amplification);
         scenarioList.addScenario(ScenarioEnum.TRANSMIT,amplificationList);
-
+        /*
+        //Add four scenario
+        List<Scenario> receptionList = new ArrayList<Scenario>();
+        receptionList.add(amplification);
+        receptionList.add(reception);
+        scenarioList.addScenario(ScenarioEnum.RECEPTION,receptionList);
+*/
         //Only for debugging purpose deactivate it please.
         scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
       //  scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());

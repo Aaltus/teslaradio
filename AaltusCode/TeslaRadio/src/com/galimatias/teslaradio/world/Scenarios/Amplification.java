@@ -46,7 +46,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
     // Signals emitters 
     private Node inputWireAmpli = new Node();
     private Node outputWireAmpli = new Node();
-    private Node AntenneTx = new Node();
+    private Node outputModule = new Node();
     private Node AntenneRx = new Node();
    
     
@@ -99,23 +99,24 @@ public final class Amplification extends Scenario implements EmitterObserver{
         // Get the handles of the emitters
         pathInputAmpli = scene.getChild("Handle.In");
         pathOutputAmpli = scene.getChild("Ampli.Handle");
+        pathAntenneTx = scene.getChild("Module.Handle.out");
+   
         
           // Get the different paths
         Node wireInAmpli_node = (Node) scene.getChild("Path.In.Amp.Object");
-        inputAmpPath = (Geometry) wireInAmpli_node.getChild("Path.In.Amp.Nurbs");
+        inputAmpPath = (Geometry) wireInAmpli_node.getChild("Path.In.Amp.Nurbs2");
         Node wireOutAmpli_node = (Node) scene.getChild("Path.Out.Amp.Object");
         outputAmpPath = (Geometry) wireOutAmpli_node.getChild("Path.Out.Amp.Nurbs");
-      
      
         initParticlesEmitter(inputWireAmpli, pathInputAmpli, inputAmpPath, cam);
         initParticlesEmitter(outputWireAmpli, pathOutputAmpli, outputAmpPath, null);
-        
+     
         // Set names for the emitters  // VOir si utile dans ce module
         inputWireAmpli.setName("InputWireAmpli");
         outputWireAmpli.setName("OutputWireAmpli");
       
-        inputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
         outputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
+        inputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(outputWireAmpli.getControl(ParticleEmitterControl.class));
     }
 
     @Override
