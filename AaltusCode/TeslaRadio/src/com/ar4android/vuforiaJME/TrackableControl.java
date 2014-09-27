@@ -10,7 +10,6 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.utils.AppLogger;
 
 import java.io.IOException;
 
@@ -44,9 +43,15 @@ public class TrackableControl extends AbstractControl {
         this.mVx.set(newVx);
 
     }
-    public void updateDistance(Vector3f distance)
+    public void updateDistance(Vector3f distance, boolean vectorIsInverted)
     {
-        Vector3f vectorAB = new Vector3f(this.mPosition.subtract(distance));
+        Vector3f vectorAB;
+        if(vectorIsInverted) {
+            vectorAB = new Vector3f(distance.subtract(this.mPosition));
+        }else {
+            vectorAB = new Vector3f(this.mPosition.subtract(distance));
+        }
+
         double angleX = Math.atan2(vectorAB.normalize().y,vectorAB.normalize().x) - Math.atan2(this.mVx.normalize().y,this.mVx.normalize().x);
         if(angleX < 0)
         {

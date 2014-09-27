@@ -5,8 +5,9 @@
 package com.galimatias.teslaradio.world.effects;
 import com.galimatias.teslaradio.world.observer.EmitterObservable;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
-import com.galimatias.teslaradio.world.observer.Observer;
+import com.galimatias.teslaradio.world.observer.ParticleObserver;
 import com.jme3.material.Material;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
@@ -17,7 +18,7 @@ import java.util.List;
  *
  * @author Hugo
  */
-public abstract class ParticleEmitterControl extends AbstractControl implements Observer, EmitterObservable, EmitterObserver {
+public abstract class ParticleEmitterControl extends AbstractControl implements ParticleObserver, EmitterObservable, EmitterObserver {
     
     // speed of particle
     protected float speed;
@@ -31,6 +32,9 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     // register an observer for end of path notification
     protected ArrayList<EmitterObserver> observerList = new ArrayList();
     
+    // The foreground camera of the scenarios
+    protected Camera cam;
+    
     // initialise particles to be send and put them in FIFO
     public abstract void emitParticle(Spatial spatialToSend);
     
@@ -40,7 +44,17 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     protected void controlUpdate(float tpf) {
         for(Spatial spatialToAttach : spatialToSendBuffer)
         {
-            spatialToAttach.getControl(SignalControl.class).setEnabled(true);
+            
+            AbstractControl control = spatialToAttach.getControl(SignalControl.class);
+            if(control != null){
+                control.setEnabled(true);
+            }
+            
+            control = spatialToAttach.getControl(ScalingSignalControl.class);
+            if(control != null){
+                control.setEnabled(true);
+            }
+            
             ((Node) this.spatial).attachChild(spatialToAttach);
         }
         spatialToSendBuffer.clear();

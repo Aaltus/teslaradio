@@ -3,7 +3,6 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.ar4android.vuforiaJME.AppGetter;
 import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
-import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
@@ -13,10 +12,12 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.input.controls.TouchTrigger;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.math.*;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
@@ -36,40 +37,14 @@ import java.util.List;
  *
  * Created by jimbojd72 on 9/3/14.
  */
-public class ScenarioManager  implements IScenarioManager,
-        ParticleEmitReceiveLinker
-
-        {
+public class ScenarioManager  implements IScenarioManager
+{
 
     public static int WORLD_SCALE_DEFAULT = 100;
     private static final String TOUCH_EVENT_NAME = "Touch";
     private static final String RIGHT_CLICK_MOUSE_EVENT_NAME = "Mouse";
     private Node guiNode;
     private Camera camera;
-
-            /**
-     * Method that return the next scenario's receiver handle position
-     * @param caller
-     * @return the handle vector
-     */
-    @Override
-    public Vector3f GetEmitterDestinationPaths(Scenario caller) {
-        Scenario nextScenario = currentScenario.getNextScenarioInGroup(caller);
-        if (nextScenario != null){
-            return nextScenario.getParticleReceiverHandle();
-        }
-        else{
-            return null;
-        }
-    }
-
-    @Override
-    public void sendSignalToNextScenario(Scenario caller, Geometry newSignal, float magnitude) {
-        Scenario nextScenario = currentScenario.getNextScenarioInGroup(caller);
-        if (nextScenario != null){
-            nextScenario.sendSignalToEmitter(newSignal, magnitude);
-        }
-    }
 
     /**
      * Initiate an HUD on the GUI Node.
@@ -124,7 +99,7 @@ public class ScenarioManager  implements IScenarioManager,
     /**
      * Where the pair of scenarios are saved and accessed
      */
-    private ScenarioList  scenarioList    = new ScenarioList();
+    private ScenarioList  scenarioList = new ScenarioList();
     /**
      * The list of node that the currentScenarios will be attached to.
      */
@@ -145,13 +120,15 @@ public class ScenarioManager  implements IScenarioManager,
     private static final String GUITAR = "Guitar";
     private static final String DRUM = "Drum";
     private static final String MICRO = "Micro";
-
+    private static final String FREQUENCY_SWITCH = "FrequencySwitch";
+    
     public ScenarioManager(ApplicationType applicationType,
             List<Node> node,
             Camera cam,
             AppListener appListener)
-    {
+    {   
         this.appListener = appListener;
+        
         AssetManager assetManager   = AppGetter.getAssetManager();
         RenderManager renderManager = AppGetter.getRenderManager();
         InputManager inputManager   = AppGetter.getInputManager();
@@ -164,17 +141,20 @@ public class ScenarioManager  implements IScenarioManager,
         //to which environment we are in. Don't forget to add scenario in it. 
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
+        //Init Modulation scenario
+        Modulation modulation = new Modulation(cam, null);
+        modulation.setName("Modulation");
+        scenarios.add(modulation);
+        
         //Init SoundCapture scenario
-        Scenario soundCapture = new SoundCapture(cam, this);
+        Scenario soundCapture = new SoundCapture(cam, modulation.getInputHandle());
         soundCapture.setName("SoundCapture");
         scenarios.add(soundCapture);
         
-        //Init SoundCapture scenario
-        DummyScenario dummy = new DummyScenario(assetManager, ColorRGBA.Orange);
-        scenarios.add(dummy);
-        SoundEmission soundEmission = new SoundEmission(cam, this);
+        // Init SoundEmission scenario
+        SoundEmission soundEmission = new SoundEmission(cam, soundCapture.getInputHandle());
+        soundEmission.setName("SoundEmission");
         scenarios.add(soundEmission);
-        
         
         adjustScenario(applicationType, scenarios, renderManager, inputManager);
         
@@ -186,10 +166,8 @@ public class ScenarioManager  implements IScenarioManager,
         
         //Add second scenario
         List<Scenario> modulationList = new ArrayList<Scenario>();
-        
-        //soundCaptureList.add(dummy);
         modulationList.add(soundCapture);
-        modulationList.add(dummy);
+        modulationList.add(modulation);
         scenarioList.addScenario(ScenarioEnum.AMMODULATION,modulationList);
 
         //Only for debugging purpose deactivate it please.
@@ -235,7 +213,7 @@ public class ScenarioManager  implements IScenarioManager,
                     }
                     scenario.rotate(rot);
 
-                    WORLD_SCALE_DEFAULT = 100;
+                    //WORLD_SCALE_DEFAULT = 100;
                     scenario.scale(WORLD_SCALE_DEFAULT);
                 }
                 
@@ -264,10 +242,11 @@ public class ScenarioManager  implements IScenarioManager,
 
 
                     }
+
+                WORLD_SCALE_DEFAULT = 10;
                 
-                for(Scenario scenario : scenarios)
-                {
-                    WORLD_SCALE_DEFAULT = 10;
+                for (Scenario scenario : scenarios) {
+                    
                     scenario.scale(WORLD_SCALE_DEFAULT);
                 }
                 
@@ -555,7 +534,6 @@ public class ScenarioManager  implements IScenarioManager,
                 return null;
             }
         }
-
     }
 
     /**
@@ -641,6 +619,4 @@ public class ScenarioManager  implements IScenarioManager,
             return currentScenatioEnum;
         }
     }
-
-
 }

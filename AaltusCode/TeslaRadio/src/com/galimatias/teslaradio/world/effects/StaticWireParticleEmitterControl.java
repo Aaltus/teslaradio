@@ -6,6 +6,7 @@ package com.galimatias.teslaradio.world.effects;
 
 import com.jme3.cinematic.MotionPath;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Mesh;
@@ -29,10 +30,16 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
     // constructor of control should be used in emitterInitialisation because we need that all object exist before
     public StaticWireParticleEmitterControl(Mesh wirePathMesh, float speed)
     {
+        this(wirePathMesh, speed, null);
+    }
+    
+    public StaticWireParticleEmitterControl(Mesh wirePathMesh, float speed, Camera cam)
+    {
         spatialToSendBuffer = new ArrayList();
         this.path = new MotionPath();
         
         this.speed = speed;
+        this.cam = cam;
         
         //set the path from the given mesh
         setPathFromMesh(wirePathMesh);
@@ -48,7 +55,7 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
         }
         
         // create the signal control and put the signal in the send buffer
-        SignalControl sigControl = new SignalControl(path,speed);
+        SignalControl sigControl = new SignalControl(path,speed,cam);
         sigControl.registerObserver(this);
         spatialToSend.addControl(sigControl);
         spatialToSendBuffer.add(spatialToSend);
@@ -65,9 +72,10 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
     }
 
     @Override
-    public void observerUpdate(Spatial toBeDeletedSpatial) {
+    public void onParticleEndOfLife(Spatial toBeDeletedSpatial) {
         // deconnect particle from this particle emitter
         toBeDeletedSpatial.removeControl(SignalControl.class);
+        toBeDeletedSpatial.removeControl(ScalingSignalControl.class);
         toBeDeletedSpatial.removeFromParent();
         
         // notify Registered observers of the ParticleEmitter
@@ -111,4 +119,9 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
 
         return pathVector;
     }    
+
+    @Override
+    public void onParticleReachingReceiver(Spatial spatial) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

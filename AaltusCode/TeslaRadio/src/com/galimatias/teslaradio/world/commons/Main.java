@@ -11,6 +11,7 @@ import com.galimatias.teslaradio.world.effects.SignalControl;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.jme3.app.SimpleApplication;
 import com.jme3.cinematic.MotionPath;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
