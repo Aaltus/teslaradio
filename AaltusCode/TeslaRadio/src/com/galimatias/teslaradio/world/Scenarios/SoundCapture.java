@@ -132,7 +132,7 @@ public final class SoundCapture extends Scenario {
         scene.attachChild(MicWireEmitter);
         
         Node micWire_node = (Node) scene.getParent().getChild("WirePath");
-        Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve.002");
+        Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
         //Geometry tmpGeom = (Geometry)micWire_geom;//.scale(1/ScenarioManager.WORLD_SCALE_DEFAULT);
         
         MicWireEmitter.addControl(new StaticWireParticleEmitterControl(micWire_geom.getMesh(), 3.5f, cam));
