@@ -4,6 +4,7 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -39,7 +40,8 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
     @Override
     protected void pathUpdate() {
         // validate that the handle is valid
-        if(this.destinationHandle != null)
+        //TODO: Maybe do something more bulletproof than getting the rootnode from AppGetter
+        if(AppGetter.hasRootNodeAsAncestor(this.destinationHandle))
         {
             this.path.clearWayPoints();
             this.path.addWayPoint(new Vector3f(0,0,0));
@@ -47,7 +49,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         }
         else
         {
-            throw new UnsupportedOperationException("destinationHandle is Null!!");
+            this.path.clearWayPoints();
         }
     }    
         
@@ -69,7 +71,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
 
     // notification from particle when they reach their goal.
     @Override
-    public void observerUpdate(Spatial toBeDeletedSpatial) {
+    public void onParticleEndOfLife(Spatial toBeDeletedSpatial) {
         
         // deconnect particle from this particle emitter
         toBeDeletedSpatial.removeControl(SignalControl.class);
@@ -82,6 +84,11 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
 
+    }
+
+    @Override
+    public void onParticleReachingReceiver(Spatial spatial) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

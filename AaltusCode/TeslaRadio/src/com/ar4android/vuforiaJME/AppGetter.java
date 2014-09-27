@@ -8,6 +8,7 @@ import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 import com.utils.AppLogger;
 
@@ -51,7 +52,13 @@ public class AppGetter {
     {
         return instance.app.getGuiNode();
     }
-
+    public static boolean hasRootNodeAsAncestor(Spatial node)
+    {
+        return node.hasAncestor(instance.app.getRootNode());
+    }
+    
+    
+    
     public static void setInstance(SimpleApplication app) {
 
         if(instance == null)

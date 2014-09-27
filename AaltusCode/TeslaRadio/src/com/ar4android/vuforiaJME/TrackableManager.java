@@ -60,10 +60,12 @@ public class TrackableManager extends AbstractControl {
     private void updateDistance()
     {
         this.mTrackableA.getControl(TrackableControl.class).updateDistance(
-                this.mTrackableB.getControl(TrackableControl.class).getPosition());
+                this.mTrackableB.getControl(TrackableControl.class).getPosition(),
+                false); //is inverse? (false)
 
         this.mTrackableB.getControl(TrackableControl.class).updateDistance(
-                this.mTrackableA.getControl(TrackableControl.class).getPosition());
+                this.mTrackableA.getControl(TrackableControl.class).getPosition(),
+                true); // is inverse? (true)
 
     }
 
