@@ -3,6 +3,7 @@
  * and open the template in the editor.
  */
 package com.galimatias.teslaradio.world.effects;
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.observer.EmitterObservable;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.galimatias.teslaradio.world.observer.ParticleObserver;
@@ -41,34 +42,14 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     // attach particle to the node and activate their control(they start moving)
     // this is done in controlUpdate to be synch with frames
     @Override
-    protected void controlUpdate(float tpf) {
-        for(Spatial spatialToAttach : spatialToSendBuffer)
-        {
-            
-            AbstractControl control = spatialToAttach.getControl(SignalControl.class);
-            if(control != null){
-                control.setEnabled(true);
-            }
-            
-            control = spatialToAttach.getControl(ScalingSignalControl.class);
-            if(control != null){
-                control.setEnabled(true);
-            }
-            
-            ((Node) this.spatial).attachChild(spatialToAttach);
-        }
-        spatialToSendBuffer.clear();
-        
-        // update dynamic path
-        this.pathUpdate();
-    }
+    protected abstract void controlUpdate(float tpf);
     
     // this function should do nothing if the path is not a dynamic one
     protected abstract void pathUpdate();
     
     
     // this method define a material to be set to each particle before emission
-    // if not define the emitter wont edit the geom material aready in place.
+    // if not define the emitter wont edit the geom material already in place.
     public void setDefaultMaterial(Material mat)
     {
         this.material = mat;
@@ -99,7 +80,8 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     
     // trigger an emit particle if the emitter observe another emitter
     @Override
-    public void emitterObserverUpdate(Spatial spatial, String notifierId) {
+    public void emitterObserverUpdate(Spatial spatial, String notifierId)
+    {
         this.emitParticle(spatial);
     }
 
