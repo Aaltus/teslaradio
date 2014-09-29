@@ -157,6 +157,9 @@ public final class Modulation extends Scenario implements EmitterObserver {
         wirePcbEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
         outputEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
         pcbAmpEmitter.getControl(ParticleEmitterControl.class).registerObserver(outputEmitter.getControl(ParticleEmitterControl.class));
+  
+
+    
     }
 
     @Override

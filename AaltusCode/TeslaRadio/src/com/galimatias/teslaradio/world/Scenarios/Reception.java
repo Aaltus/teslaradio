@@ -5,6 +5,7 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.math.Quaternion;
@@ -23,12 +24,18 @@ public class Reception extends Scenario implements EmitterObserver  {
     private Camera cam;
     private Spatial destinationHandle;
     
+     // this is PIIIIIII! (kick persian)
+    private final float pi = (float) Math.PI;
     
     // Signals emitters 
     private Node inputAntenneRx = new Node();
     
+    // Handles for the emitter positions
+    private Spatial pathAntenneRx;
     
     
+    // Paths
+    private Geometry antenneRxPath;
     
     
     public Reception(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
@@ -38,43 +45,41 @@ public class Reception extends Scenario implements EmitterObserver  {
         this.destinationHandle = destinationHandle;
 
         loadUnmovableObjects();
-        loadMovableObjects();
+      //  loadMovableObjects();
     }
 
     @Override
     protected void loadUnmovableObjects() {
-        scene = (Node) assetManager.loadModel("Models/Amplification/Antenne_Rx.j3o");
+        scene = (Node) assetManager.loadModel("Models/Reception/Antenne_Rx.j3o");
         scene.setName("Reception");
         this.attachChild(scene);
         
         //implement touchable
-     /*   
+    
+        
+        
         //scene rotation
-        scene.setLocalTranslation(new Vector3f(0.5f, 0.0f, 1.7f));
         Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(-pi / 2, Vector3f.UNIT_Y);
+        rot.fromAngleAxis(-pi, Vector3f.UNIT_Y);
         scene.setLocalRotation(rot);
         
-        */
-        // Get the handles of the emitters
-        inputAntenneRx = scene.getChild("Handle.In");
-   /*
+        pathAntenneRx = scene.getChild("Antenna.Handle.In");
         
-          // Get the different paths
-        Node wireInAmpli_node = (Node) scene.getChild("Path.In.Amp.Object");
-        inputAmpPath = (Geometry) wireInAmpli_node.getChild("Path.In.Amp.Nurbs2");
-        Node wireOutAmpli_node = (Node) scene.getChild("Path.Out.Amp.Object");
-        outputAmpPath = (Geometry) wireOutAmpli_node.getChild("Path.Out.Amp.Nurbs");
-     
-        initParticlesEmitter(inputWireAmpli, pathInputAmpli, inputAmpPath, cam);
-        initParticlesEmitter(outputWireAmpli, pathOutputAmpli, outputAmpPath, null);
-     
+         // Get the different paths
+        Node wireAntenneRx_node = (Node) scene.getChild("Path.Sortie.001");
+        antenneRxPath = (Geometry) wireAntenneRx_node.getChild("NurbsPath.005");
+        
+       
+        initParticlesEmitter(inputAntenneRx, pathAntenneRx, antenneRxPath, null);
+        
         // Set names for the emitters  // VOir si utile dans ce module
-        inputWireAmpli.setName("InputWireAmpli");
-        outputWireAmpli.setName("OutputWireAmpli");
-      
-        outputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
-        inputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(outputWireAmpli.getControl(ParticleEmitterControl.class));
+        inputAntenneRx.setName("InputAntenneRx");
+        
+        
+        inputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
+        
+        
+        // Get the handles of the emitters
     }
 
     @Override
@@ -89,12 +94,12 @@ public class Reception extends Scenario implements EmitterObserver  {
 
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      
     }
 
     @Override
     public boolean simpleUpdate(float tpf) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return false;
     }
 
     @Override
@@ -109,7 +114,7 @@ public class Reception extends Scenario implements EmitterObserver  {
 
     @Override
     public Spatial getInputHandle() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return inputAntenneRx;
     }
 
     @Override
@@ -120,5 +125,13 @@ public class Reception extends Scenario implements EmitterObserver  {
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
+        scene.attachChild(signalEmitter);
+        System.out.println(signalEmitter);
+        signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
+        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
     }
 }
