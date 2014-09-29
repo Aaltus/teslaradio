@@ -4,6 +4,7 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.galimatias.teslaradio.world.observer.SignalObserver;
@@ -138,7 +139,7 @@ public class SignalEmitter extends Node
         Quaternion worldInverseTranslation = this.getWorldRotation().inverse();
         direction = worldInverseTranslation.toRotationMatrix().mult(direction);
         // THIS IS REALLY IMPORTANT! DO NOT FORGET
-        direction.divideLocal(ScenarioManager.WORLD_SCALE_DEFAULT);
+        direction.divideLocal(AppGetter.getWorldScalingDefault());
 
         // Signal Trajectory call to create all the paths
         int totalNbDirections = 10;

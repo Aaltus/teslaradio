@@ -15,6 +15,7 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Dome;
 import com.jme3.util.SkyFactory;
@@ -104,6 +105,30 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
     @Override
     protected void pathUpdate() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void controlUpdate(float tpf) {
+
+        for(Spatial spatialToAttach : spatialToSendBuffer)
+        {
+            
+            AbstractControl control = spatialToAttach.getControl(SignalControl.class);
+            if(control != null){
+                control.setEnabled(true);
+            }
+            
+            control = spatialToAttach.getControl(ScalingSignalControl.class);
+            if(control != null){
+                control.setEnabled(true);
+            }
+            
+            ((Node) this.spatial).attachChild(spatialToAttach);
+        }
+        spatialToSendBuffer.clear();
+        
+        // update dynamic path
+        this.pathUpdate();
     }
 
     

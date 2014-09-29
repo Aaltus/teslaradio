@@ -21,6 +21,9 @@ public class AppGetter {
     private static AppGetter instance;
     private SimpleApplication app;
     private ScheduledThreadPoolExecutor executor;
+    
+    //world scalling
+    private static float worldScaling = 10;
 
     public static AppSettings getAppSettings()
     {
@@ -56,8 +59,19 @@ public class AppGetter {
     {
         return node.hasAncestor(instance.app.getRootNode());
     }
+    public static void attachToRootNode(Spatial spatial)
+    {
+        instance.app.getRootNode().attachChild(spatial);
+    }
     
-    
+    public static float getWorldScalingDefault()
+    {
+        return worldScaling;
+    }
+    public static void setWorldScaleDefault(float scale)
+    {
+        worldScaling = scale;
+    }
     
     public static void setInstance(SimpleApplication app) {
 

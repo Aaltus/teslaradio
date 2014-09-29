@@ -40,7 +40,6 @@ import java.util.List;
 public class ScenarioManager  implements IScenarioManager
 {
 
-    public static int WORLD_SCALE_DEFAULT = 100;
     private static final String TOUCH_EVENT_NAME = "Touch";
     private static final String RIGHT_CLICK_MOUSE_EVENT_NAME = "Mouse";
     private Node guiNode;
@@ -129,6 +128,7 @@ public class ScenarioManager  implements IScenarioManager
     {   
         this.appListener = appListener;
         
+        AppGetter.setWorldScaleDefault(applicationType == ApplicationType.DESKTOP ? 10 : 100);
         AssetManager assetManager   = AppGetter.getAssetManager();
         RenderManager renderManager = AppGetter.getRenderManager();
         InputManager inputManager   = AppGetter.getInputManager();
@@ -236,7 +236,7 @@ public class ScenarioManager  implements IScenarioManager
                     scenario.rotate(rot);
 
                     //WORLD_SCALE_DEFAULT = 100;
-                    scenario.scale(WORLD_SCALE_DEFAULT);
+                    scenario.scale(AppGetter.getWorldScalingDefault());
                 }
                 
                 
@@ -264,12 +264,10 @@ public class ScenarioManager  implements IScenarioManager
 
 
                     }
-
-                WORLD_SCALE_DEFAULT = 10;
                 
                 for (Scenario scenario : scenarios) {
                     
-                    scenario.scale(WORLD_SCALE_DEFAULT);
+                    scenario.scale(AppGetter.getWorldScalingDefault());
                 }
                 
                 break;

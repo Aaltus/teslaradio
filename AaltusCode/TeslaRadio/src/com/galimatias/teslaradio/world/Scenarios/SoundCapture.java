@@ -138,6 +138,7 @@ public final class SoundCapture extends Scenario {
         MicWireEmitter.addControl(new StaticWireParticleEmitterControl(micWire_geom.getMesh(), 3.5f, cam));
         
         wireDestinationEmitter = new Node();
+        wireDestinationEmitter.setName("WireDestinationEmitter");
         Spatial moduleHandleOut_node = scene.getParent().getChild("Module.Handle.Out");
         wireDestinationEmitter.setLocalTranslation(moduleHandleOut_node.getLocalTranslation());
         scene.attachChild(wireDestinationEmitter);
