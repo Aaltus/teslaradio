@@ -25,6 +25,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
 
 
 /**
@@ -38,6 +39,11 @@ public final class Amplification extends Scenario implements EmitterObserver{
       // 3D objects of the scene
     private Spatial turnAmpliButton;
 
+    //Test 
+    private Spatial generateParticle;
+    private Geometry cubeTestParticle;
+    
+    
     // TextBox of the scene
 
     // Default text to be seen when scenario starts
@@ -81,6 +87,8 @@ public final class Amplification extends Scenario implements EmitterObserver{
         this.cam = Camera;
         loadUnmovableObjects();
         loadMovableObjects();
+        
+        
     }
     
     @Override
@@ -132,13 +140,22 @@ public final class Amplification extends Scenario implements EmitterObserver{
         outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
         
         inputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
-        outputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(outputModule.getControl(ParticleEmitterControl.class));
+        outputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
         
     }
 
     @Override
     protected void loadMovableObjects() {
          turnAmpliButton = scene.getChild("Button.001");
+         
+         //Test
+        //implement touchable
+        touchable = new Node();
+        touchable.setName("Touchable");
+        scene.attachChild(touchable);
+        
+        //Test Board
+        generateParticle = scene.getChild("Board.001");
     }
     
     
@@ -215,7 +232,8 @@ public final class Amplification extends Scenario implements EmitterObserver{
 
                     //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
                 }
-
+                //Generate test particle
+                inputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(newTestParticle());  
                 // 5. Use the results (we mark the hit object)
                 if (results.size() > 0)
                 {
@@ -266,14 +284,12 @@ public final class Amplification extends Scenario implements EmitterObserver{
 
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
-        System.out.println(notifierId);
          if (notifierId.equals("InputWireAmpli")) {
-
           //Change Scale
              outputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
              System.out.println(spatial.getLocalScale());
          } else if(notifierId.equals("OutputWireAmpli")){
-             destinationHandle.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
+             outputModule.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
              System.out.println("transmis");
          }
         
@@ -289,4 +305,14 @@ public final class Amplification extends Scenario implements EmitterObserver{
         return inputWireAmpli;
     }
     
+    public Geometry newTestParticle(){
+        //Test generate particle
+        Box cube = new Box(0.25f, 0.25f, 0.25f);
+        Geometry particle = new Geometry("CubeCarrier", cube);
+        Material mat1 = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
+        mat1.setColor("Color", ColorRGBA.Blue);
+        particle.setMaterial(mat1);
+        return particle;
+    }
 }
