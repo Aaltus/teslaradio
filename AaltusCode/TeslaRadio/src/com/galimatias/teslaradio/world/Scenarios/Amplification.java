@@ -8,9 +8,11 @@ import com.galimatias.teslaradio.world.effects.AirParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 
 import com.jme3.collision.CollisionResults;
+import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
 import static com.jme3.input.event.TouchEvent.Type.DOWN;
 import com.jme3.material.Material;
@@ -43,9 +45,16 @@ public final class Amplification extends Scenario implements EmitterObserver{
     private Spatial generateParticle;
     private Geometry cubeTestParticle;
     
+     /**
+     * TODO Remove this bool and associated code in simpleUpdate when it works
+     * on Android. Only for debug purposes.
+     */
+    private final static boolean DEBUG_ANGLE = false;
+    
     
     // TextBox of the scene
-
+    private TextBox titleTextBox;
+    
     // Default text to be seen when scenario starts
     private String titleText = "L'Amplification";
     private float titleTextSize = 0.5f;
@@ -66,11 +75,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
     // Paths
     private Geometry inputAmpPath;
     private Geometry outputAmpPath;
-    private Geometry antenneTxPath;
-    private Geometry antenneRxPath;
 
-    // Geometry of the particles
-    private Geometry particle;
     
     // this is PIIIIIII! (kick persian)
     private final float pi = (float) Math.PI;
@@ -87,8 +92,6 @@ public final class Amplification extends Scenario implements EmitterObserver{
         this.cam = Camera;
         loadUnmovableObjects();
         loadMovableObjects();
-        
-        
     }
     
     @Override
@@ -96,29 +99,27 @@ public final class Amplification extends Scenario implements EmitterObserver{
         scene = (Node) assetManager.loadModel("Models/Amplification/Antenne_Tx.j3o");
         scene.setName("Amplification");
         this.attachChild(scene);
-        
-        //implement touchable
-        
+
         //scene rotation
         scene.setLocalTranslation(new Vector3f(0.5f, 0.0f, 1.7f));
         Quaternion rot = new Quaternion();
         rot.fromAngleAxis(-pi / 2, Vector3f.UNIT_Y);
         scene.setLocalRotation(rot);
-        
+
+        initTitleBox();
         
         // Get the handles of the emitters
         pathInputAmpli = scene.getChild("Module.Handle.In");
         pathOutputAmpli = scene.getChild("Ampli.Handle");
         pathAntenneTx = scene.getChild("Module.Handle.Out");
    
-        
         // Get the different paths
         Node wireInAmpli_node = (Node) scene.getChild("Path.Entree");
         inputAmpPath = (Geometry) wireInAmpli_node.getChild("NurbsPath.000");
         Node wireOutAmpli_node = (Node) scene.getChild("Path.PostAmpli");
         outputAmpPath = (Geometry) wireOutAmpli_node.getChild("NurbsPath.005");
      
-        initParticlesEmitter(inputWireAmpli, pathInputAmpli, inputAmpPath, cam);
+        initParticlesEmitter(inputWireAmpli, pathInputAmpli, inputAmpPath, null);
         initParticlesEmitter(outputWireAmpli, pathOutputAmpli, outputAmpPath, null);
      
         // Set names for the emitters  // VOir si utile dans ce module
@@ -127,17 +128,18 @@ public final class Amplification extends Scenario implements EmitterObserver{
         outputModule.setName("OutputModule");
         
         
-        //AirParticleEmitterControl
+   //-------------------------------AirParticleEmitterControl------------------
         Material mat2 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         mat2.setColor("Color", new ColorRGBA(0, 1, 1, 1f));
         mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        
         
         scene.attachChild(outputModule);
         outputModule.setLocalTranslation(pathAntenneTx.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
         outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 2, 13, mat2));
         outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
         outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
+        
+  //-------------------------------AirParticleEmitterControl------------------
         
         inputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
         outputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
@@ -146,10 +148,8 @@ public final class Amplification extends Scenario implements EmitterObserver{
 
     @Override
     protected void loadMovableObjects() {
-         turnAmpliButton = scene.getChild("Button.001");
-         
+         turnAmpliButton = scene.getChild("Button.001");      
          //Test
-        //implement touchable
         touchable = new Node();
         touchable.setName("Touchable");
         scene.attachChild(touchable);
@@ -161,23 +161,20 @@ public final class Amplification extends Scenario implements EmitterObserver{
     
     
     private void ampliButtonRotation(float ZXangle) {
-
         Quaternion rot = new Quaternion();
         rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
         turnAmpliButton.setLocalRotation(rot);
     }
-    
+    //Scale handle of the particle
     private Spatial particleAmplification(Spatial particle){
         float angle = turnAmpliButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
         float ampliScale = 1+ angle/(2*pi);
         particle.setLocalScale(ampliScale, ampliScale, ampliScale);
-        System.out.println(ampliScale);
         return particle;
     }
     
      private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
         scene.attachChild(signalEmitter);
-        System.out.println(signalEmitter);
         signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
@@ -219,8 +216,8 @@ public final class Amplification extends Scenario implements EmitterObserver{
                 Ray ray = new Ray(click3d, dir);
 
                 // 3. Collect intersections between Ray and Shootables in results list.
-                //focusableObjects.collideWith(ray, results);
-//                touchable.collideWith(ray, results);
+              //  focusableObjects.collideWith(ray, results);
+                touchable.collideWith(ray, results);
 
                 // 4. Print the results
                 //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
@@ -232,15 +229,16 @@ public final class Amplification extends Scenario implements EmitterObserver{
 
                     //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
                 }
+                
                 //Generate test particle
                 inputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(newTestParticle());  
+                
                 // 5. Use the results (we mark the hit object)
                 if (results.size() > 0)
                 {
 
                     // The closest collision point is what was truly hit:
-                    String nameToCompare =
-                            results.getClosestCollision().getGeometry().getParent().getName();
+                    String nameToCompare = results.getClosestCollision().getGeometry().getParent().getName();
 
                  /*   if (nameToCompare.equals(micro.getName()))
                     {
@@ -257,9 +255,12 @@ public final class Amplification extends Scenario implements EmitterObserver{
 
     @Override
     public boolean simpleUpdate(float tpf) {
-        tpfCumul = tpf+ tpfCumul;
-        ampliButtonRotation(tpfCumul);
- 
+        if (DEBUG_ANGLE) {
+            tpfCumul = tpf+ tpfCumul;
+            ampliButtonRotation(3*pi/2);
+        } else {
+            ampliButtonRotation((Float)this.getUserData("angleX"));
+        }
         return false;
     }
 
@@ -287,10 +288,8 @@ public final class Amplification extends Scenario implements EmitterObserver{
          if (notifierId.equals("InputWireAmpli")) {
           //Change Scale
              outputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
-             System.out.println(spatial.getLocalScale());
          } else if(notifierId.equals("OutputWireAmpli")){
              outputModule.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
-             System.out.println("transmis");
          }
         
     }
@@ -315,4 +314,34 @@ public final class Amplification extends Scenario implements EmitterObserver{
         particle.setMaterial(mat1);
         return particle;
     }
+    
+    private void initTitleBox() {
+
+        boolean lookAtCamera = false;
+        boolean showDebugBox = false;
+        float textBoxWidth = 5.2f;
+        float textBoxHeight = 0.8f;
+
+        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
+        titleTextBox = new TextBox(assetManager,
+                titleText,
+                titleTextSize,
+                titleTextColor,
+                titleBackColor,
+                textBoxWidth,
+                textBoxHeight,
+                "titleText",
+                BitmapFont.Align.Center.Center,
+                showDebugBox,
+                lookAtCamera);
+
+        //move the text on the ground without moving
+        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
+        titleTextBox.rotate((float) -Math.PI / 2, 0, 0);
+
+        titleTextBox.move(titleTextPosition);
+        this.attachChild(titleTextBox);
+    }
+    
 }

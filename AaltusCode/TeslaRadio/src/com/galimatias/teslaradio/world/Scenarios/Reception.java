@@ -6,9 +6,11 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
 import static com.jme3.input.event.TouchEvent.Type.DOWN;
 import com.jme3.material.Material;
@@ -32,6 +34,14 @@ public class Reception extends Scenario implements EmitterObserver  {
     private Camera cam;
     private Spatial destinationHandle;
     
+    // TextBox of the scene
+    private TextBox titleTextBox;
+    
+    // Default text to be seen when scenario starts
+    private String titleText = "La Réception";
+    private float titleTextSize = 0.5f;
+    private ColorRGBA defaultTextColor = ColorRGBA.Green;
+
     //Test 
     private Spatial antenne;
     
@@ -49,14 +59,12 @@ public class Reception extends Scenario implements EmitterObserver  {
     // Output signals
     private Geometry cubeOutputSignal;
     
-    
     // Paths
     private Geometry antenneRxPath;
     
     
     public Reception(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         super(Camera, destinationHandle);
-   
 
         this.cam = Camera;
         this.destinationHandle = destinationHandle;
@@ -81,18 +89,18 @@ public class Reception extends Scenario implements EmitterObserver  {
         scene.setName("Reception");
         this.attachChild(scene);
         
-        
         //scene rotation
         Quaternion rot = new Quaternion();
         rot.fromAngleAxis(-pi, Vector3f.UNIT_Y);
         scene.setLocalRotation(rot);
         
+        initTitleBox();
+                
         pathAntenneRx = scene.getChild("Path.Sortie.001");
         
          // Get the different paths
         Node wireAntenneRx_node = (Node) scene.getChild("Path.Sortie.001");
         antenneRxPath = (Geometry) wireAntenneRx_node.getChild("NurbsPath.005");
-        
        
         initParticlesEmitter(outputAntenneRx, pathAntenneRx, antenneRxPath, null);
         
@@ -103,14 +111,11 @@ public class Reception extends Scenario implements EmitterObserver  {
         
        // inputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
         outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
-        
-        
-        // Get the handles of the emitters
+
     }
 
     @Override
     protected void loadMovableObjects() {
-    
         //implement touchable
         touchable = new Node();
         touchable.setName("Touchable");
@@ -160,9 +165,11 @@ public class Reception extends Scenario implements EmitterObserver  {
 
                         //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
                     }
+                    
                     //Test generate particle
-    outputAntenneRx.getControl(ParticleEmitterControl.class).emitParticle(cubeOutputSignal);
-                    // 5. Use the results (we mark the hit object)
+                    outputAntenneRx.getControl(ParticleEmitterControl.class).emitParticle(cubeOutputSignal);
+                   
+                 /*   // 5. Use the results (we mark the hit object)
                     if (results.size() > 0) {
                         // The closest collision point is what was truly hit:
                         CollisionResult closest = results.getClosestCollision();
@@ -171,10 +178,10 @@ public class Reception extends Scenario implements EmitterObserver  {
                         String nameToCompare = touchedGeometry.getParent().getName();
     
                         if (nameToCompare.equals(this.getChild("Board.001").getName())) {
-                            System.out.println("Particule emise");
-                           outputAntenneRx.getControl(ParticleEmitterControl.class).emitParticle(cubeOutputSignal);
+                         
+                            
                         }
-                    }
+                    }*/
                 }
                 break;
         }
@@ -209,7 +216,6 @@ public class Reception extends Scenario implements EmitterObserver  {
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
         System.out.println("aaaa"+ notifierId);
         if (notifierId.equals("OutputModule")) {
-
           //Change Scale
              outputAntenneRx.getControl(ParticleEmitterControl.class).emitParticle(spatial);
              System.out.println(spatial.getLocalScale());
@@ -223,4 +229,33 @@ public class Reception extends Scenario implements EmitterObserver  {
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
     }
+
+    private void initTitleBox() {
+
+       boolean lookAtCamera = false;
+       boolean showDebugBox = false;
+       float textBoxWidth = 5.2f;
+       float textBoxHeight = 0.8f;
+
+       ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+       ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
+       titleTextBox = new TextBox(assetManager,
+               titleText,
+               titleTextSize,
+               titleTextColor,
+               titleBackColor,
+               textBoxWidth,
+               textBoxHeight,
+               "titleText",
+               BitmapFont.Align.Center.Center,
+               showDebugBox,
+               lookAtCamera);
+
+       //move the text on the ground without moving
+       Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
+       titleTextBox.rotate((float) -Math.PI / 2, 0, 0);
+
+       titleTextBox.move(titleTextPosition);
+       this.attachChild(titleTextBox);
+   }
 }
