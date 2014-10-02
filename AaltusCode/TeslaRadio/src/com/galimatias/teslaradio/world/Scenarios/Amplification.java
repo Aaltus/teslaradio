@@ -49,7 +49,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
      * TODO Remove this bool and associated code in simpleUpdate when it works
      * on Android. Only for debug purposes.
      */
-    private final static boolean DEBUG_ANGLE = false;
+    private final static boolean DEBUG_ANGLE = true;
     
     
     // TextBox of the scene

@@ -214,17 +214,14 @@ public class Reception extends Scenario implements EmitterObserver  {
 
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
-        System.out.println("aaaa"+ notifierId);
         if (notifierId.equals("OutputModule")) {
           //Change Scale
              outputAntenneRx.getControl(ParticleEmitterControl.class).emitParticle(spatial);
-             System.out.println(spatial.getLocalScale());
          }
     }
     
      private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
         scene.attachChild(signalEmitter);
-        System.out.println(signalEmitter);
         signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
