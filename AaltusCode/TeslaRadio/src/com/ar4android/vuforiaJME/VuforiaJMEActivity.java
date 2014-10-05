@@ -924,7 +924,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         AppLogger.getInstance().d(TAG, "Dismiss splashscreen dialog");
         FragmentManager fm = getSupportFragmentManager();//getSupportFragmentManager();
         SplashscreenDialogFragment splashscreenDialogFragment = (SplashscreenDialogFragment) fm.findFragmentByTag(ITEM_SPLASHSCREEN_FRAGMENT_TAG);
-        splashscreenDialogFragment.dismiss();
+        if(splashscreenDialogFragment != null){
+            splashscreenDialogFragment.dismiss();
+        }
     }
 
 
