@@ -255,7 +255,7 @@ public class AndroidHarnessFragmentActivity extends FragmentActivity implements 
 
         setRequestedOrientation(screenOrientation);
 
-        final DataObject data = (DataObject) getLastNonConfigurationInstance();
+        final DataObject data = (DataObject) getLastCustomNonConfigurationInstance();
         if (data != null) {
             logger.log(Level.FINE, "Using Retained App");
             this.app = data.app;
@@ -375,7 +375,7 @@ public class AndroidHarnessFragmentActivity extends FragmentActivity implements 
     @Override
     protected void onDestroy() {
         logger.fine("onDestroy");
-        final DataObject data = (DataObject) getLastNonConfigurationInstance();
+        final DataObject data = (DataObject) getLastCustomNonConfigurationInstance();
         if (data != null || inConfigChange) {
             logger.fine("In Config Change, not stopping app.");
         } else {
