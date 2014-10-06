@@ -141,8 +141,18 @@ public class ScenarioManager  implements IScenarioManager
         //to which environment we are in. Don't forget to add scenario in it. 
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
+        //Init Reception scenario
+        Reception reception = new Reception(cam, null);
+        reception.setName("Reception");
+        scenarios.add(reception);
+        
+        //Init Amplification scenario
+        Amplification amplification = new Amplification(cam,reception.getInputHandle());
+        amplification.setName("Amplification");
+        scenarios.add(amplification);
+        
         //Init Modulation scenario
-        Modulation modulation = new Modulation(cam, null);
+        Modulation modulation = new Modulation(cam, amplification.getInputHandle());
         modulation.setName("Modulation");
         scenarios.add(modulation);
         
@@ -169,11 +179,23 @@ public class ScenarioManager  implements IScenarioManager
         modulationList.add(soundCapture);
         modulationList.add(modulation);
         scenarioList.addScenario(ScenarioEnum.AMMODULATION,modulationList);
+        
+        //Add third scenario
+        List<Scenario> amplificationList = new ArrayList<Scenario>();
+        amplificationList.add(modulation);
+        amplificationList.add(amplification);
+        scenarioList.addScenario(ScenarioEnum.TRANSMIT,amplificationList);
+        
+        //Add four scenario
+        List<Scenario> receptionList = new ArrayList<Scenario>();
+        receptionList.add(amplification);
+        receptionList.add(reception);
+        scenarioList.addScenario(ScenarioEnum.RECEPTION,receptionList);
 
         //Only for debugging purpose deactivate it please.
         scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
-        scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
-        scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
+      //  scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
+    //    scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
 
         //setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));
         setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDCAPTURE));

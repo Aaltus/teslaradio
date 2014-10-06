@@ -1,5 +1,6 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
@@ -56,13 +57,15 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private Node wirePcbEmitter = new Node();
     private Node carrierEmitter = new Node();
     private Node pcbAmpEmitter = new Node();
+    private Node outputEmitter = new Node();
 
     private Spatial destinationHandle;
 
     // Handles for the emitter positions
     private Spatial pathInHandle;
     private Spatial pathCarrierHandle;
-    private Spatial pathOutHandle;
+    private Spatial pathOutChipHandle;
+    private Spatial outputHandle;
 
     // Paths
     private Geometry pathIn;
@@ -112,7 +115,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         scene = (Node) assetManager.loadModel("Models/Modulation/modulation.j3o");
         scene.setName("Modulation");
         this.attachChild(scene);
-
+        
         scene.setLocalTranslation(new Vector3f(2.5f, 0.0f, 0.5f));
         Quaternion rot = new Quaternion();
         rot.fromAngleAxis(-pi / 2, Vector3f.UNIT_Y);
@@ -121,7 +124,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
         // Get the handles of the emitters
         pathInHandle = scene.getChild("Handle.In");
         pathCarrierHandle = scene.getChild("Handle.Generator");
-        pathOutHandle = scene.getChild("Handle.Chip.Out");
+        pathOutChipHandle = scene.getChild("Handle.Chip.Out");
+        outputHandle = scene.getChild("Handle.Out");
 
         // Get the different paths
         Node wirePcb_node = (Node) scene.getChild("Path.In.Object");
@@ -129,14 +133,20 @@ public final class Modulation extends Scenario implements EmitterObserver {
         Node carrier_node = (Node) scene.getChild("Path.Generator.Object");
         pathCarrier = (Geometry) carrier_node.getChild("Path.Generator.Nurbs");
         Node pcbAmp_node = (Node) scene.getChild("Path.Out.Object");
-        pathOut = (Geometry) pcbAmp_node.getChild("Path.Out.Nurbs");
+        pathOut = (Geometry) pcbAmp_node.getChild("Path.Out.Nurbs"); 
 
         initDigitalDisplay();
         initTitleBox();
 
         initParticlesEmitter(wirePcbEmitter, pathInHandle, pathIn, cam);
         initParticlesEmitter(carrierEmitter, pathCarrierHandle, pathCarrier, null);
-        initParticlesEmitter(pcbAmpEmitter, pathOutHandle, pathOut, null);
+        initParticlesEmitter(pcbAmpEmitter, pathOutChipHandle, pathOut, null);
+        
+        scene.attachChild(outputEmitter);
+        outputEmitter.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        System.out.println("translation " + outputHandle.getLocalTranslation());
+        outputEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
+        outputEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
 
         // Set names for the emitters
         wirePcbEmitter.setName("WirePCBEmitter");
@@ -145,7 +155,11 @@ public final class Modulation extends Scenario implements EmitterObserver {
 
         carrierEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
         wirePcbEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
+        outputEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
+        pcbAmpEmitter.getControl(ParticleEmitterControl.class).registerObserver(outputEmitter.getControl(ParticleEmitterControl.class));
+  
 
+    
     }
 
     @Override
