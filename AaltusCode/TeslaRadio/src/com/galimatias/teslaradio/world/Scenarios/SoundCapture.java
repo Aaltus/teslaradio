@@ -147,10 +147,9 @@ public final class SoundCapture extends Scenario {
         micTapParticle.setMaterial(mat1);
         micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
         
-        MicWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 5, 0.25f, 0.5f));
+        MicWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 25, 0.25f, 0.75f, true));
         MicWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
         
-
     }
     
     private void initOnTouchEffect() {
@@ -213,7 +212,8 @@ public final class SoundCapture extends Scenario {
         //DrumSoundEmitter.emitParticles(1.0f);
         //DrumSoundEmitter.emitWaves();
 
-        MicWireEmitter.getControl(PatternGeneratorControl.class).toggleNewWave();
+        int wavesPerTap = 4;
+        MicWireEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(wavesPerTap);
 
         //touchEffectEmitter.isTouched();
 

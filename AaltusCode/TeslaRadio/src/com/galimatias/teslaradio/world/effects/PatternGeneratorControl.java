@@ -125,19 +125,40 @@ public class PatternGeneratorControl extends AbstractControl {
     }
     
     /**
-     * Toggle a new emission wave according to inside parameter;
+     * Toggle a new wave with only one object. Used by the autoplayer.
      */
-    public void toggleNewWave()
-    {
-        float scale = this.scaleList.get(this.waveIterator);
-        if(++this.waveIterator == this.scaleStep){
-            this.waveIterator = 0;
-            if(this.isRandom){
-               Collections.shuffle(this.scaleList);
-            }
-        }
+    public void toggleNewWave() {
         
-        this.toggleNewWave(scale);
+        this.geomList.clear();
+        
+        float scale = this.scaleList.get(this.waveIterator);
+            if(++this.waveIterator == this.scaleStep){
+                this.waveIterator = 0;
+                if(this.isRandom){
+                   Collections.shuffle(this.scaleList);
+                }
+            }
+
+            this.toggleNewWave(scale);
+    }
+    
+    /**
+     * Toggle a new waveform with the inside parameter and wavesPerToggle objects
+     * @param wavesPerToggle 
+     */
+    public void toggleNewWave(int wavesPerToggle)
+    {
+        for (int i=0; i<wavesPerToggle; i++) {
+            float scale = this.scaleList.get(this.waveIterator);
+            if(++this.waveIterator == this.scaleStep){
+                this.waveIterator = 0;
+                if(this.isRandom){
+                   Collections.shuffle(this.scaleList);
+                }
+            }
+
+            this.toggleNewWave(scale);
+        }
     }
     /**
      * Toggle a new emission wave with the specified scale;
@@ -149,7 +170,6 @@ public class PatternGeneratorControl extends AbstractControl {
         geom.scale(scale);
         //The Queue will always have a size of 1 or 0, we don't want to queue
         //more than the minimum delay
-        this.geomList.clear();
         this.geomList.addLast(geom);
     }
     @Override
