@@ -42,7 +42,6 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         this.cam = cam;
     }
     
-    @Override
     protected void pathUpdate() {
 
         // validate that the handle is valid

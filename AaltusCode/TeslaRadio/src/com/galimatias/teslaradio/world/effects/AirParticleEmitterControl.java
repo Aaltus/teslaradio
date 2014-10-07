@@ -8,6 +8,7 @@ import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.observer.ParticleObserver;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.material.Material;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -71,6 +72,7 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
         
         // deconnect particle from this particle emitter
         toBeDeletedSpatial.removeControl(ScalingSignalControl.class);
+        toBeDeletedSpatial.removeControl(SignalControl.class);
         toBeDeletedSpatial.removeFromParent();
         
         
@@ -112,15 +114,43 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
         
         
         
-        
         //Configure a scaling signal control
-        ScalingSignalControl sigControl = new ScalingSignalControl(speed,spatialToSend,destinationHandle,materialClone);
+        ScalingSignalControl sigControl = new ScalingSignalControl(speed/scale,spatialToSend,destinationHandle,materialClone);
         //We register our emitter to receive update and we add our DomeSignalControl
         sigControl.registerObserver(this);
         scalingSignalNode.addControl(sigControl);
-        
-        
+     
         spatialToSendBuffer.add(scalingSignalNode);
+        
+        
+        // Generate little flying particles
+        // TODO: put all this in thread !!!
+        float[] temp2 = {0, 0, 0.31416f};
+        Quaternion rotQuat2 = new Quaternion(temp2);
+        Vector3f path_vector_flat = new Vector3f(this.radius,0,0);
+        for(int axe_flat = 0; axe_flat < 5; axe_flat++)
+        {        
+            
+            float[] temp = {0, 6.2832f/(10-axe_flat), 0};
+            Quaternion rotQuat = new Quaternion(temp);
+            
+            Vector3f path_vector = path_vector_flat.clone();
+            for(int axe_a = 0; axe_a < 10-axe_flat; axe_a++)
+            {
+               Spatial spatial_clone = spatialToSend.clone();
+               MotionPath path = new MotionPath();
+               path.addWayPoint(Vector3f.ZERO);
+               path.addWayPoint(path_vector);
+               path_vector = rotQuat.mult(path_vector);
+               SignalControl sigControl2 = new SignalControl(path,speed,cam);
+               sigControl2.registerObserver(this);
+               spatial_clone.addControl(sigControl2);
+               //spatial_clone.addControl(new LookAtCameraControl(Camera));
+               spatialToSendBuffer.add(spatial_clone);
+            }
+            
+            path_vector_flat = rotQuat2.mult(path_vector_flat);
+        }
     }
     
     private Spatial factoryScalingDome(Material material, float scaleAndRadius){
@@ -169,12 +199,6 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
         
     }
     
-    
-
-    @Override
-    protected void pathUpdate() {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -195,9 +219,6 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
             ((Node) this.spatial).attachChild(spatialToAttach);
         }
         spatialToSendBuffer.clear();
-        
-        // update dynamic path
-        this.pathUpdate();
     }
 
     

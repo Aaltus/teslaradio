@@ -63,7 +63,6 @@ public class ScalingSignalControl extends AbstractControl implements ParticleObs
         }
         
         
-        
         float deltaScale = tpf*speed;
         currentTotalScale += deltaScale;
         this.spatial.setLocalScale(currentTotalScale);
@@ -81,7 +80,9 @@ public class ScalingSignalControl extends AbstractControl implements ParticleObs
         if(!reachingDestination && distanceFromEdge == 0)
         {
             reachingDestination = true;
-            this.observer.onParticleReachingReceiver(this.particle);
+            Spatial temp = this.particle;
+            this.particle = null;
+            this.observer.onParticleReachingReceiver(temp);
         }
         
         // check if it is the end of the path and notify
