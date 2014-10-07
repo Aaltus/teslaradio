@@ -40,7 +40,6 @@ public class Main extends SimpleApplication implements ActionListener
     public static void main(String[] args) 
     {
         Main app = new Main();
-        AppGetter.setInstance(app);
         app.start();
     }
 
@@ -68,6 +67,7 @@ public class Main extends SimpleApplication implements ActionListener
     public void simpleInitApp() 
     {
         AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ALL);
+        AppGetter.setInstance(this);
         
         mouseInput.setCursorVisible(true);
         flyCam.setDragToRotate(dragMouseToMove);
@@ -105,7 +105,7 @@ public class Main extends SimpleApplication implements ActionListener
         inputManager.addListener(this, ScenarioB_rotate_Y_pos);
         inputManager.addListener(this, TOGGLE_DRAG_FLYBY_CAMERA);
         
-        scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.DESKTOP, nodeList, cam, null);
+        scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.ANDROID_DEV_FRAMEWORK, nodeList, cam, null);
         
         flyCam.setMoveSpeed(100f);
         cam.setLocation(new Vector3f(-60,80,80));

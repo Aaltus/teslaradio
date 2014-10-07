@@ -87,7 +87,7 @@ public class ScenarioManager  implements IScenarioManager
      * created to fit in to the Android app or the JMonkey SDK app.
      */
     public enum ApplicationType {
-        ANDROID, DESKTOP
+        ANDROID, DESKTOP, ANDROID_DEV_FRAMEWORK
     }
 
     /**
@@ -128,7 +128,7 @@ public class ScenarioManager  implements IScenarioManager
     {   
         this.appListener = appListener;
         
-        AppGetter.setWorldScaleDefault(applicationType == ApplicationType.DESKTOP ? 10 : 100);
+        AppGetter.setWorldScaleDefault(applicationType == ApplicationType.DESKTOP || applicationType == ApplicationType.ANDROID_DEV_FRAMEWORK ? 10 : 100);
         AssetManager assetManager   = AppGetter.getAssetManager();
         RenderManager renderManager = AppGetter.getRenderManager();
         InputManager inputManager   = AppGetter.getInputManager();
@@ -216,8 +216,31 @@ public class ScenarioManager  implements IScenarioManager
                     //WORLD_SCALE_DEFAULT = 100;
                     scenario.scale(AppGetter.getWorldScalingDefault());
                 }
+            case ANDROID_DEV_FRAMEWORK:
+
+                //Add mapping for touch input only for android device
+                inputManager.addMapping(TOUCH_EVENT_NAME, new TouchTrigger(0));
+                inputManager.addListener(this, new String[]{TOUCH_EVENT_NAME});
+
+                //This is the rotation to put a scenarion in the correct angle for VuforiaJME
+                //Quaternion rot = new Quaternion();
+                //rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
+                //float scale = 10.0f;
                 
-                
+                for(Scenario scenario : scenarios)
+                {
+                    //Correction for BUG TR-176
+                    //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
+                    //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
+                    if(renderManager != null){
+                        renderManager.preloadScene(scenario);
+                    }
+                    //scenario.rotate(rot);
+
+                    //WORLD_SCALE_DEFAULT = 100;
+                    scenario.scale(AppGetter.getWorldScalingDefault());
+                }
+
                 break;
             case DESKTOP:
                 if(inputManager != null){

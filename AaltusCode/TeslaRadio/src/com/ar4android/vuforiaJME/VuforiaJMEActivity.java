@@ -670,7 +670,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
      */
 	public void initializeImageBuffer(int width,int height)
 	{
-        AppLogger.getInstance().d(TAG, "initializeImageBuffer");
+        AppLogger.getInstance().d(TAG, "initializeImageBuffer with width: " + width + " and height: " + height);
 
 		int bufferSizeRGB565 = width * height * 2;
 
