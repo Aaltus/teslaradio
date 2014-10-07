@@ -1,9 +1,7 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.*;
-import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.audio.AudioNode;
-import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
@@ -13,17 +11,12 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.Control;
-import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
-import com.jme3.texture.Texture;
-
-import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -50,7 +43,7 @@ public final class SoundEmission extends Scenario {
     //private SignalEmitter DrumSoundEmitter;
     //private SignalEmitter GuitarSoundEmitter;
 
-    private TouchEffectEmitter touchEffectEmitter;
+    //private TouchEffectEmitter touchEffectEmitter;
 
     private TextBox titleTextBox;
     private TextBox instrumentTextBox;
@@ -187,15 +180,15 @@ public final class SoundEmission extends Scenario {
     private void initDrumParticlesEmitter()
     {
         // instantiate 3d Sound particul model
-        Quad rect = new Quad(1f, 1f);
-        soundParticle = new Geometry("particul",rect);
+        Sphere sphere = new Sphere(10, 10, 0.4f);
+        soundParticle = new Geometry("particul",sphere);
         Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        soundParticul_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
+        soundParticul_mat.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
         soundParticul_mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         soundParticle.setMaterial(soundParticul_mat);
         Geometry soundParticleTranslucent = soundParticle.clone();
         soundParticleTranslucent.getMaterial().setTexture("ColorMap", assetManager.loadTexture("Textures/Sound_wAlpha.png"));
-        soundParticle.setQueueBucket(queueBucket.Transparent);
+        soundParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
         
 
         //DrumSoundEmitter = new SignalEmitter(drum_trajectories, drum2MicLength, soundParticle, soundParticleTranslucent, SoundParticleSpeed, SignalType.Air );
@@ -390,8 +383,6 @@ public final class SoundEmission extends Scenario {
         
         AirParticleEmitterControl control = drumAirParticleEmitter.getControl(AirParticleEmitterControl.class);
         control.emitParticle(soundParticle.clone());
-        
-
     }
 
     public void guitarTouchEffect()
