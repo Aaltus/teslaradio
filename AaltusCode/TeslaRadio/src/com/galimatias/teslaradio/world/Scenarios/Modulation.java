@@ -69,9 +69,13 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private Geometry pyramidCarrier;
     private Geometry dodecagoneCarrier; // Really...
     
+    // Output signals
+    private Geometry cubeOutputSignal;
+    private Geometry pyramidOutputSignal;
+    private Geometry dodecagoneOutputSignal;
+    
     // Current carrier signal and his associated output
     private Geometry selectedCarrier;
-    private Geometry currentCarrier;
     private Node outputSignal;
     
     // this is PIIIIIII! (kick persian)
@@ -191,35 +195,14 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         this.outputSignal = new Node();
         
-        /*Box cube = new Box(0.25f, 0.25f, 0.25f);
-        cubeOutputSignal = new Geometry("CubeOutputSignal", cube);
-        Material mat1 = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.25f));
-        mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        cubeOutputSignal.setMaterial(mat1);
-        cubeOutputSignal.setQueueBucket(RenderQueue.Bucket.Translucent);*/
+        cubeOutputSignal = cubeCarrier.clone();
         
         // Default value of the outputSignal
-        this.outputSignal.attachChild(cubeCarrier);
-        
-        /*Dome pyramid = new Dome(2, 4, 0.25f);
-        pyramidOutputSignal = new Geometry("PyramidOutputSignal", pyramid);
-        pyramidOutputSignal.setMaterial(mat1);
-        pyramidOutputSignal.setQueueBucket(RenderQueue.Bucket.Translucent);
-        
-        Node dodecagone = (Node) assetManager.loadModel("Models/Modulation/Dodecahedron.j3o");
-        dodecagoneOutputSignal = (Geometry) dodecagone.getChild("Solid.0041");
-        dodecagoneOutputSignal.setName("DodecagoneOutputSignal");
-        dodecagoneOutputSignal.setMaterial(mat1);
-        dodecagoneOutputSignal.setQueueBucket(RenderQueue.Bucket.Translucent);
-        
-        Material mat2 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        mat2.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
-        mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        Sphere sphere = new Sphere(5, 5, 0.25f);
-        outSpatial = new Geometry("ModulationOutput",sphere);
-        outSpatial.setMaterial(mat2);*/
+        this.outputSignal.attachChild(cubeCarrier.clone());
+
+        pyramidOutputSignal = pyramidCarrier.clone();
+
+        dodecagoneOutputSignal = dodecagoneCarrier.clone();
     }
     
     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
@@ -397,15 +380,15 @@ public final class Modulation extends Scenario implements EmitterObserver {
             
             if (presentCarrierTypeName.equals("CubeCarrier")) {
                 //outputSignal = cubeOutputSignal;
-                currentCarrier = (Geometry)spatial;
+                outputSignal.attachChild(cubeOutputSignal);
                 
             } else if (presentCarrierTypeName.equals("PyramidCarrier")) {
                 //outputSignal = pyramidOutputSignal;
-                currentCarrier = (Geometry)spatial;
+                outputSignal.attachChild(pyramidOutputSignal);
                 
             } else if (presentCarrierTypeName.equals("DodecagoneCarrier")) {
                 //outputSignal = dodecagoneOutputSignal;
-                currentCarrier = (Geometry)spatial;   
+                outputSignal.attachChild(dodecagoneOutputSignal);
             }
         }
     }
@@ -583,8 +566,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
             
             if (pcbAmpEmitter != null && spatial != null) {
                 Node clone = (Node)outputSignal.clone();
-                clone.attachChild(spatial);          
-                //clone.attachChild(currentCarrier.clone());
+                clone.attachChild(spatial);
                 clone.setLocalScale(spatial.getLocalScale());
                 pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(clone);
             }
