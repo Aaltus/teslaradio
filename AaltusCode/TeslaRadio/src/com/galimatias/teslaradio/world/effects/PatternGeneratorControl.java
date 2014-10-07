@@ -69,6 +69,9 @@ public class PatternGeneratorControl extends AbstractControl {
         {
             this.scaleList.add(this.minScale + i * step);
         }
+        if(this.isRandom){
+            Collections.shuffle(this.scaleList);
+        }
     }
     
    /**
@@ -87,6 +90,9 @@ public class PatternGeneratorControl extends AbstractControl {
         this.scaleList = magnitudes;
         this.scaleStep = magnitudes.size();
         this.isRandom = isRandom;
+         if(this.isRandom){
+            Collections.shuffle(this.scaleList);
+        }
     }
    
     /**
