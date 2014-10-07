@@ -3,9 +3,12 @@
  * and open the template in the editor.
  */
 package com.galimatias.teslaradio.world.effects;
-import com.galimatias.teslaradio.world.observer.Observable;
-import com.galimatias.teslaradio.world.observer.Observer;
+import com.ar4android.vuforiaJME.AppGetter;
+import com.galimatias.teslaradio.world.observer.EmitterObservable;
+import com.galimatias.teslaradio.world.observer.EmitterObserver;
+import com.galimatias.teslaradio.world.observer.ParticleObserver;
 import com.jme3.material.Material;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
@@ -16,7 +19,7 @@ import java.util.List;
  *
  * @author Hugo
  */
-public abstract class ParticleEmitterControl extends AbstractControl implements Observer, Observable {
+public abstract class ParticleEmitterControl extends AbstractControl implements ParticleObserver, EmitterObservable, EmitterObserver {
     
     // speed of particle
     protected float speed;
@@ -28,7 +31,10 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     protected List<Spatial> spatialToSendBuffer;
     
     // register an observer for end of path notification
-    protected ArrayList<Observer> observerList = new ArrayList();
+    protected ArrayList<EmitterObserver> observerList = new ArrayList();
+    
+    // The foreground camera of the scenarios
+    protected Camera cam;
     
     // initialise particles to be send and put them in FIFO
     public abstract void emitParticle(Spatial spatialToSend);
@@ -36,24 +42,14 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     // attach particle to the node and activate their control(they start moving)
     // this is done in controlUpdate to be synch with frames
     @Override
-    protected void controlUpdate(float tpf) {
-        for(Spatial spatialToAttach : spatialToSendBuffer)
-        {
-            spatialToAttach.getControl(SignalControl.class).setEnabled(true);
-            ((Node) this.spatial).attachChild(spatialToAttach);
-        }
-        spatialToSendBuffer.clear();
-        
-        // update dynamic path
-        this.pathUpdate();
-    }
+    protected abstract void controlUpdate(float tpf);
     
     // this function should do nothing if the path is not a dynamic one
     protected abstract void pathUpdate();
     
     
     // this method define a material to be set to each particle before emission
-    // if not define the emitter wont edit the geom material aready in place.
+    // if not define the emitter wont edit the geom material already in place.
     public void setDefaultMaterial(Material mat)
     {
         this.material = mat;
@@ -64,21 +60,29 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     }    
     
     @Override
-    public void registerObserver(Observer observer) {
+    public void registerObserver(EmitterObserver observer) {
         this.observerList.add(observer);
     }
 
     @Override
-    public void removeObserver(Observer observer) {
+    public void removeObserver(EmitterObserver observer) {
         this.observerList.remove(observer);
     }
     
     // observable method to notify whoever wants to know that a particle as ended his path
     @Override
-    public void notifyObservers(Spatial spatial) {
-        for(Observer observer : this.observerList)
+    public void notifyObservers(Spatial spatial, String notifierId) {
+        for(EmitterObserver observer : this.observerList)
         {
-            observer.observerUpdate(spatial);
-        }
+            observer.emitterObserverUpdate(spatial, notifierId);
+        }        
     }
+    
+    // trigger an emit particle if the emitter observe another emitter
+    @Override
+    public void emitterObserverUpdate(Spatial spatial, String notifierId)
+    {
+        this.emitParticle(spatial);
+    }
+
 }

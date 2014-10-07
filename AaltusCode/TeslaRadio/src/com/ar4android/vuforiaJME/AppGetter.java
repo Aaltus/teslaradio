@@ -8,8 +8,11 @@ import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 import com.utils.AppLogger;
+
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * Created by jimbojd72 on 9/23/14.
@@ -17,6 +20,10 @@ import com.utils.AppLogger;
 public class AppGetter {
     private static AppGetter instance;
     private SimpleApplication app;
+    private ScheduledThreadPoolExecutor executor;
+    
+    //world scalling
+    private static float worldScaling = 10;
 
     public static AppSettings getAppSettings()
     {
@@ -34,6 +41,7 @@ public class AppGetter {
     {
         return instance.app.getInputManager();
     }
+    public static ScheduledThreadPoolExecutor getThreadExecutor(){return instance.executor;}
     public static BulletAppState getBulletAppState()
     {
         return instance.app.getStateManager().getState(BulletAppState.class);
@@ -42,22 +50,36 @@ public class AppGetter {
     {
         return instance.app.getRenderManager();
     }
-    public static Camera getCameraInstance() 
-    {
-        return instance.app.getCamera();
-    }
         
     public static Node getGuiNode()
     {
         return instance.app.getGuiNode();
     }
-
+    public static boolean hasRootNodeAsAncestor(Spatial node)
+    {
+        return node.hasAncestor(instance.app.getRootNode());
+    }
+    public static void attachToRootNode(Spatial spatial)
+    {
+        instance.app.getRootNode().attachChild(spatial);
+    }
+    
+    public static float getWorldScalingDefault()
+    {
+        return worldScaling;
+    }
+    public static void setWorldScaleDefault(float scale)
+    {
+        worldScaling = scale;
+    }
+    
     public static void setInstance(SimpleApplication app) {
 
         if(instance == null)
         {
             instance = new AppGetter(app);
             AppLogger.getInstance().i(AppGetter.class.getSimpleName(),"Initialize: " + AppGetter.class.getSimpleName());
+            instance.executor = new ScheduledThreadPoolExecutor(4);
         }
         else{
             throw new RuntimeException("Can't initialized again an " + AppGetter.class.getSimpleName());

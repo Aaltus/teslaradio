@@ -11,6 +11,7 @@ import com.galimatias.teslaradio.world.effects.SignalControl;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.jme3.app.SimpleApplication;
 import com.jme3.cinematic.MotionPath;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -48,6 +49,7 @@ public class Main extends SimpleApplication implements ActionListener
     private Node nodeB;
     private List<Node> nodeList;
     private IScenarioManager scenarioManager;
+    boolean dragMouseToMove = true;
     
     private static final String ScenarioB_move_X_pos = "ScenarioB_move_X_pos";
     private static final String ScenarioB_move_X_neg = "ScenarioB_move_X_neg";
@@ -57,6 +59,7 @@ public class Main extends SimpleApplication implements ActionListener
     private static final String ScenarioB_move_Z_neg = "ScenarioB_move_Z_neg";
     private static final String ScenarioB_rotate_Y_pos = "ScenarioB_rotate_Y_pos";
     private static final String ScenarioB_rotate_Y_neg = "ScenarioB_rotate_Y_neg";
+    private static final String TOGGLE_DRAG_FLYBY_CAMERA = "toggle_cam";
     
     
     private Node destination;
@@ -67,7 +70,7 @@ public class Main extends SimpleApplication implements ActionListener
         AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ALL);
         
         mouseInput.setCursorVisible(true);
-        flyCam.setDragToRotate(true);
+        flyCam.setDragToRotate(dragMouseToMove);
         
         //Initialized a list of nodes to attach to the scenario manager.
         nodeList = new ArrayList<Node>();
@@ -89,6 +92,7 @@ public class Main extends SimpleApplication implements ActionListener
         inputManager.addMapping(ScenarioB_rotate_Y_neg, new KeyTrigger(KeyInput.KEY_NUMPAD6));
         inputManager.addMapping(ScenarioB_move_Y_pos, new KeyTrigger(KeyInput.KEY_NUMPAD7));
         inputManager.addMapping(ScenarioB_rotate_Y_pos, new KeyTrigger(KeyInput.KEY_NUMPAD9));
+        inputManager.addMapping(TOGGLE_DRAG_FLYBY_CAMERA, new KeyTrigger(KeyInput.KEY_TAB));
 
         // Add the names to the action listener.
         inputManager.addListener(this, ScenarioB_move_X_neg);
@@ -99,6 +103,7 @@ public class Main extends SimpleApplication implements ActionListener
         inputManager.addListener(this, ScenarioB_rotate_Y_neg);
         inputManager.addListener(this, ScenarioB_move_Z_pos);
         inputManager.addListener(this, ScenarioB_rotate_Y_pos);
+        inputManager.addListener(this, TOGGLE_DRAG_FLYBY_CAMERA);
         
         scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.DESKTOP, nodeList, cam, null);
         
@@ -209,7 +214,11 @@ public class Main extends SimpleApplication implements ActionListener
                 tempRotation = nodeB.getLocalRotation();
                 tempRotation.multLocal((new Quaternion()).fromAngles(0, -0.1f, 0));
                 nodeB.setLocalRotation(tempRotation);          
-            }            
+            }
+            else if(name.equals(TOGGLE_DRAG_FLYBY_CAMERA)){
+                dragMouseToMove =! dragMouseToMove;
+                flyCam.setDragToRotate(dragMouseToMove);
+            }
         }  
     }
     

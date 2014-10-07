@@ -555,7 +555,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 //
                 // NOTE: This is only a hint. There is no guarantee that the
                 // garbage collector will actually be run.
-                System.gc();
+                //Jonathan: I commented this see reason why here:
+                //https://stackoverflow.com/questions/2414105/why-is-it-bad-practice-to-call-system-gc
+                //System.gc();
 
                 // Native post initialization:
                 onQCARInitializedNative(AppLogger.getInstance().getLogLvl().ordinal());
@@ -838,8 +840,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             // Deinitialize QCAR SDK:
             QCAR.deinit();
         }
-
-        System.gc();
+        //Jonathan: I commented this see reason why here:
+        //https://stackoverflow.com/questions/2414105/why-is-it-bad-practice-to-call-system-gc
+        //System.gc();
         
     }
 
@@ -924,7 +927,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         AppLogger.getInstance().d(TAG, "Dismiss splashscreen dialog");
         FragmentManager fm = getSupportFragmentManager();//getSupportFragmentManager();
         SplashscreenDialogFragment splashscreenDialogFragment = (SplashscreenDialogFragment) fm.findFragmentByTag(ITEM_SPLASHSCREEN_FRAGMENT_TAG);
-        splashscreenDialogFragment.dismiss();
+        if(splashscreenDialogFragment != null){
+            splashscreenDialogFragment.dismiss();
+        }
     }
 
 

@@ -4,14 +4,17 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.jme3.cinematic.MotionPath;
-import com.jme3.math.Spline;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.mesh.IndexBuffer;
 import com.jme3.util.BufferUtils;
 import java.nio.FloatBuffer;
@@ -30,10 +33,16 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
     // constructor of control should be used in emitterInitialisation because we need that all object exist before
     public StaticWireParticleEmitterControl(Mesh wirePathMesh, float speed)
     {
+        this(wirePathMesh, speed, null);
+    }
+    
+    public StaticWireParticleEmitterControl(Mesh wirePathMesh, float speed, Camera cam)
+    {
         spatialToSendBuffer = new ArrayList();
         this.path = new MotionPath();
         
         this.speed = speed;
+        this.cam = cam;
         
         //set the path from the given mesh
         setPathFromMesh(wirePathMesh);
@@ -49,11 +58,11 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
         }
         
         // create the signal control and put the signal in the send buffer
-        SignalControl sigControl = new SignalControl(path,speed);
+        SignalControl sigControl = new SignalControl(path,speed,cam);
         sigControl.registerObserver(this);
         spatialToSend.addControl(sigControl);
         spatialToSendBuffer.add(spatialToSend);
-    }
+    }   
 
     @Override
     protected void pathUpdate() {
@@ -66,13 +75,14 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
     }
 
     @Override
-    public void observerUpdate(Spatial toBeDeletedSpatial) {
+    public void onParticleEndOfLife(Spatial toBeDeletedSpatial) {
         // deconnect particle from this particle emitter
         toBeDeletedSpatial.removeControl(SignalControl.class);
+        toBeDeletedSpatial.removeControl(ScalingSignalControl.class);
         toBeDeletedSpatial.removeFromParent();
         
         // notify Registered observers of the ParticleEmitter
-        this.notifyObservers(toBeDeletedSpatial);
+        this.notifyObservers(toBeDeletedSpatial,this.spatial.getName());
     }
     
     private void setPathFromMesh(Mesh bezier_mesh)
@@ -112,4 +122,34 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
 
         return pathVector;
     }    
+
+    @Override
+    public void onParticleReachingReceiver(Spatial spatial) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void controlUpdate(float tpf) {
+       
+        for(Spatial spatialToAttach : spatialToSendBuffer)
+        {
+            
+            AbstractControl control = spatialToAttach.getControl(SignalControl.class);
+            if(control != null){
+                control.setEnabled(true);
+            }
+            
+            control = spatialToAttach.getControl(ScalingSignalControl.class);
+            if(control != null){
+                control.setEnabled(true);
+            }
+            
+            //AppGetter.attachToRootNode(spatialToAttach);
+            ((Node) this.spatial).attachChild(spatialToAttach);
+        }
+        spatialToSendBuffer.clear();
+        
+        // update dynamic path
+        this.pathUpdate();
+    }
 }

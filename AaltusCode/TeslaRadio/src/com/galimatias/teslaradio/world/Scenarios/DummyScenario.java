@@ -1,12 +1,15 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 
 /**
@@ -17,31 +20,16 @@ public class DummyScenario extends Scenario {
     ColorRGBA color;
     Geometry box;
 
-    public DummyScenario(com.jme3.renderer.Camera Camera, ParticleEmitReceiveLinker particleLinker) {
-        super(Camera, particleLinker);
+    public DummyScenario(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
+        super(Camera, destinationHandle);
     }
 
-    @Override
-    public Vector3f getParticleReceiverHandle() {
-        return null;
-    }
-
-    @Override
-    public void sendSignalToEmitter(Geometry newSignal, float magnitude) {
-        
-    }
-
-    public DummyScenario(AssetManager assetManager, com.jme3.renderer.Camera Camera, ColorRGBA color)
+    public DummyScenario(AssetManager assetManager, com.jme3.renderer.Camera Camera, Spatial destinationHandle, ColorRGBA color)
     {
-        super(Camera, null);
+        super(Camera, destinationHandle);
         this.color = color;
         loadUnmovableObjects();
         loadMovableObjects();
-    }
-
-    public DummyScenario(AssetManager assetManager, ColorRGBA color)
-    {
-        this(assetManager, null, color);
     }
 
     @Override
@@ -91,5 +79,10 @@ public class DummyScenario extends Scenario {
     @Override
     public void signalEndOfPath(Geometry caller, float magnitude) {
 
+    }
+
+    @Override
+    public Spatial getInputHandle() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -3,7 +3,6 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.ar4android.vuforiaJME.AppGetter;
 import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
-import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.asset.AssetManager;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
@@ -13,14 +12,15 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.input.controls.TouchTrigger;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.math.*;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
-import com.utils.AppLogger;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -37,40 +37,13 @@ import java.util.List;
  *
  * Created by jimbojd72 on 9/3/14.
  */
-public class ScenarioManager  implements IScenarioManager,
-        ParticleEmitReceiveLinker
+public class ScenarioManager  implements IScenarioManager
+{
 
-        {
-
-    public static int WORLD_SCALE_DEFAULT = 100;
     private static final String TOUCH_EVENT_NAME = "Touch";
     private static final String RIGHT_CLICK_MOUSE_EVENT_NAME = "Mouse";
     private Node guiNode;
     private Camera camera;
-
-            /**
-     * Method that return the next scenario's receiver handle position
-     * @param caller
-     * @return the handle vector
-     */
-    @Override
-    public Vector3f GetEmitterDestinationPaths(Scenario caller) {
-        Scenario nextScenario = currentScenario.getNextScenarioInGroup(caller);
-        if (nextScenario != null){
-            return nextScenario.getParticleReceiverHandle();
-        }
-        else{
-            return null;
-        }
-    }
-
-    @Override
-    public void sendSignalToNextScenario(Scenario caller, Geometry newSignal, float magnitude) {
-        Scenario nextScenario = currentScenario.getNextScenarioInGroup(caller);
-        if (nextScenario != null){
-            nextScenario.sendSignalToEmitter(newSignal, magnitude);
-        }
-    }
 
     /**
      * Initiate an HUD on the GUI Node.
@@ -125,7 +98,7 @@ public class ScenarioManager  implements IScenarioManager,
     /**
      * Where the pair of scenarios are saved and accessed
      */
-    private ScenarioList  scenarioList    = new ScenarioList();
+    private ScenarioList  scenarioList = new ScenarioList();
     /**
      * The list of node that the currentScenarios will be attached to.
      */
@@ -146,13 +119,16 @@ public class ScenarioManager  implements IScenarioManager,
     private static final String GUITAR = "Guitar";
     private static final String DRUM = "Drum";
     private static final String MICRO = "Micro";
-
+    private static final String FREQUENCY_SWITCH = "FrequencySwitch";
+    
     public ScenarioManager(ApplicationType applicationType,
             List<Node> node,
             Camera cam,
             AppListener appListener)
-    {
+    {   
         this.appListener = appListener;
+        
+        AppGetter.setWorldScaleDefault(applicationType == ApplicationType.DESKTOP ? 10 : 100);
         AssetManager assetManager   = AppGetter.getAssetManager();
         RenderManager renderManager = AppGetter.getRenderManager();
         InputManager inputManager   = AppGetter.getInputManager();
@@ -165,17 +141,30 @@ public class ScenarioManager  implements IScenarioManager,
         //to which environment we are in. Don't forget to add scenario in it. 
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
+        //Init Reception scenario
+        Reception reception = new Reception(cam, null);
+        reception.setName("Reception");
+        scenarios.add(reception);
+        
+        //Init Amplification scenario
+        Amplification amplification = new Amplification(cam,reception.getInputHandle());
+        amplification.setName("Amplification");
+        scenarios.add(amplification);
+        
+        //Init Modulation scenario
+        Modulation modulation = new Modulation(cam, amplification.getInputHandle());
+        modulation.setName("Modulation");
+        scenarios.add(modulation);
+        
         //Init SoundCapture scenario
-        Scenario soundCapture = new SoundCapture(cam, this);
+        Scenario soundCapture = new SoundCapture(cam, modulation.getInputHandle());
         soundCapture.setName("SoundCapture");
         scenarios.add(soundCapture);
         
-        //Init SoundCapture scenario
-        DummyScenario dummy = new DummyScenario(assetManager, ColorRGBA.Orange);
-        scenarios.add(dummy);
-        SoundEmission soundEmission = new SoundEmission(cam, this);
+        // Init SoundEmission scenario
+        SoundEmission soundEmission = new SoundEmission(cam, soundCapture.getInputHandle());
+        soundEmission.setName("SoundEmission");
         scenarios.add(soundEmission);
-        
         
         adjustScenario(applicationType, scenarios, renderManager, inputManager);
         
@@ -187,16 +176,26 @@ public class ScenarioManager  implements IScenarioManager,
         
         //Add second scenario
         List<Scenario> modulationList = new ArrayList<Scenario>();
-        
-        //soundCaptureList.add(dummy);
         modulationList.add(soundCapture);
-        modulationList.add(dummy);
+        modulationList.add(modulation);
         scenarioList.addScenario(ScenarioEnum.AMMODULATION,modulationList);
+        
+        //Add third scenario
+        List<Scenario> amplificationList = new ArrayList<Scenario>();
+        amplificationList.add(modulation);
+        amplificationList.add(amplification);
+        scenarioList.addScenario(ScenarioEnum.TRANSMIT,amplificationList);
+        
+        //Add four scenario
+        List<Scenario> receptionList = new ArrayList<Scenario>();
+        receptionList.add(amplification);
+        receptionList.add(reception);
+        scenarioList.addScenario(ScenarioEnum.RECEPTION,receptionList);
 
         //Only for debugging purpose deactivate it please.
         scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
-        scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
-        scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
+      //  scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
+    //    scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
 
         //setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));
         setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDCAPTURE));
@@ -236,8 +235,8 @@ public class ScenarioManager  implements IScenarioManager,
                     }
                     scenario.rotate(rot);
 
-                    WORLD_SCALE_DEFAULT = 100;
-                    scenario.scale(WORLD_SCALE_DEFAULT);
+                    //WORLD_SCALE_DEFAULT = 100;
+                    scenario.scale(AppGetter.getWorldScalingDefault());
                 }
                 
                 
@@ -266,10 +265,9 @@ public class ScenarioManager  implements IScenarioManager,
 
                     }
                 
-                for(Scenario scenario : scenarios)
-                {
-                    WORLD_SCALE_DEFAULT = 10;
-                    scenario.scale(WORLD_SCALE_DEFAULT);
+                for (Scenario scenario : scenarios) {
+                    
+                    scenario.scale(AppGetter.getWorldScalingDefault());
                 }
                 
                 break;
@@ -409,34 +407,62 @@ public class ScenarioManager  implements IScenarioManager,
     @Override
     public void onTouch(String name, TouchEvent touchEvent, float v)
     {
-
-        //We check if the event is on the GUI NODE. We pass it down to scenario otherwise.
-        CollisionResults results = new CollisionResults();
-        Vector2f location = new Vector2f(touchEvent.getX(),touchEvent.getY());
-        Vector3f origin = new Vector3f(location.x, location.y, 0);
-        Vector3f dir = new Vector3f(0f, 0f, 1f);
-        Ray ray = new Ray(origin, dir);
-        // 3. Collect intersections between Ray and Shootables in results list.
-        guiNode.collideWith(ray, results);
-
-        if(results.size() > 0 && touchEvent.getType() == TouchEvent.Type.DOWN)
+/*
+        AppLogger.getInstance().d("TouchEvent Name: " + name,
+                " Touch ID: " + touchEvent.getPointerId()+
+                        " Type: "+ touchEvent.getType().toString()+
+                        " X : " + touchEvent.getX() +
+                        " Y : " + touchEvent.getY() +
+                        " dX : " + touchEvent.getDeltaX() +
+                        " dY : " + touchEvent.getDeltaY());
+*/
+        //I add a way to switch scenario with 2 fingers, still experimental
+        if(touchEvent.getPointerId() == 1 &&
+                (touchEvent.getType() == TouchEvent.Type.FLING ||
+                        touchEvent.getType() == TouchEvent.Type.SCROLL ||
+                        touchEvent.getType() == TouchEvent.Type.MOVE))
         {
-            String nameToCompare =
-                    results.getClosestCollision().getGeometry().getParent().getName();
-            //AppLogger.getInstance().i("Chat",nameToCompare);
-            if(nameToCompare.equals(NEXT_SCENARIO))
+            float deltaminValueForInput = 50;
+            if(touchEvent.getDeltaX() > deltaminValueForInput)
             {
                 this.setNextScenario();
             }
-            else if(nameToCompare.equals(PREVIOUS_SCENARIO))
+            else if(touchEvent.getDeltaX() < -deltaminValueForInput)
             {
                 this.setPreviousScenario();
             }
         }
         else{
-            for(Scenario scenario : getCurrentScenario().getScenarios() )
+
+
+            //We check if the event is on the GUI NODE. We pass it down to scenario otherwise.
+            CollisionResults results = new CollisionResults();
+            Vector2f location = new Vector2f(touchEvent.getX(),touchEvent.getY());
+            Vector3f origin = new Vector3f(location.x, location.y, 0);
+            Vector3f dir = new Vector3f(0f, 0f, 1f);
+            Ray ray = new Ray(origin, dir);
+            // 3. Collect intersections between Ray and Shootables in results list.
+            guiNode.collideWith(ray, results);
+
+            if(results.size() > 0 && touchEvent.getType() == TouchEvent.Type.DOWN)
             {
-                scenario.onScenarioTouch(name, touchEvent, v);
+                String nameToCompare =
+                        results.getClosestCollision().getGeometry().getParent().getName();
+                //AppLogger.getInstance().i("Chat",nameToCompare);
+                if(nameToCompare.equals(NEXT_SCENARIO))
+                {
+                    this.setNextScenario();
+                }
+                else if(nameToCompare.equals(PREVIOUS_SCENARIO))
+                {
+                    this.setPreviousScenario();
+                }
+            }
+            else{
+                for(Scenario scenario : getCurrentScenario().getScenarios() )
+                {
+                    scenario.onScenarioTouch(name, touchEvent, v);
+                }
             }
         }
 
@@ -528,7 +554,6 @@ public class ScenarioManager  implements IScenarioManager,
                 return null;
             }
         }
-
     }
 
     /**
@@ -614,6 +639,4 @@ public class ScenarioManager  implements IScenarioManager,
             return currentScenatioEnum;
         }
     }
-
-
 }
