@@ -4,14 +4,17 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.mesh.IndexBuffer;
 import com.jme3.util.BufferUtils;
 import java.nio.FloatBuffer;
@@ -123,5 +126,30 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
     @Override
     public void onParticleReachingReceiver(Spatial spatial) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void controlUpdate(float tpf) {
+       
+        for(Spatial spatialToAttach : spatialToSendBuffer)
+        {
+            
+            AbstractControl control = spatialToAttach.getControl(SignalControl.class);
+            if(control != null){
+                control.setEnabled(true);
+            }
+            
+            control = spatialToAttach.getControl(ScalingSignalControl.class);
+            if(control != null){
+                control.setEnabled(true);
+            }
+            
+            //AppGetter.attachToRootNode(spatialToAttach);
+            ((Node) this.spatial).attachChild(spatialToAttach);
+        }
+        spatialToSendBuffer.clear();
+        
+        // update dynamic path
+        this.pathUpdate();
     }
 }

@@ -47,9 +47,9 @@ public class TrackableControl extends AbstractControl {
     {
         Vector3f vectorAB;
         if(vectorIsInverted) {
-            vectorAB = new Vector3f(distance.subtract(this.mPosition));
-        }else {
             vectorAB = new Vector3f(this.mPosition.subtract(distance));
+        }else {
+            vectorAB = new Vector3f(distance.subtract(this.mPosition));
         }
 
         double angleX = Math.atan2(vectorAB.normalize().y,vectorAB.normalize().x) - Math.atan2(this.mVx.normalize().y,this.mVx.normalize().x);
@@ -57,7 +57,7 @@ public class TrackableControl extends AbstractControl {
         {
             angleX += 2*Math.PI;
         }
-        this.mChildRotation.fromAngleAxis((float)-angleX, new Vector3f(0,0,1));
+        this.mChildRotation.fromAngleAxis((float) (-angleX), new Vector3f(0,0,1));
 
         for(Spatial spatial : this.mFixedAngleChild.getChildren())
         {
@@ -86,7 +86,7 @@ public class TrackableControl extends AbstractControl {
         this.spatial.setLocalRotation(this.mRotationMatrix);
         this.spatial.setLocalTranslation(this.mPosition);
 
-        this.mFixedAngleChild.setLocalRotation(this.mChildRotation);
+        //this.mFixedAngleChild.setLocalRotation(this.mChildRotation);
     }
 
     @Override

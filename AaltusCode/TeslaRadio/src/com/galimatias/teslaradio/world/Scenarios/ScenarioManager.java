@@ -40,7 +40,6 @@ import java.util.List;
 public class ScenarioManager  implements IScenarioManager
 {
 
-    public static int WORLD_SCALE_DEFAULT = 100;
     private static final String TOUCH_EVENT_NAME = "Touch";
     private static final String RIGHT_CLICK_MOUSE_EVENT_NAME = "Mouse";
     private Node guiNode;
@@ -129,6 +128,7 @@ public class ScenarioManager  implements IScenarioManager
     {   
         this.appListener = appListener;
         
+        AppGetter.setWorldScaleDefault(applicationType == ApplicationType.DESKTOP ? 10 : 100);
         AssetManager assetManager   = AppGetter.getAssetManager();
         RenderManager renderManager = AppGetter.getRenderManager();
         InputManager inputManager   = AppGetter.getInputManager();
@@ -141,8 +141,18 @@ public class ScenarioManager  implements IScenarioManager
         //to which environment we are in. Don't forget to add scenario in it. 
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
+        //Init Reception scenario
+        Reception reception = new Reception(cam, null);
+        reception.setName("Reception");
+        scenarios.add(reception);
+        
+        //Init Amplification scenario
+        Amplification amplification = new Amplification(cam,reception.getInputHandle());
+        amplification.setName("Amplification");
+        scenarios.add(amplification);
+        
         //Init Modulation scenario
-        Modulation modulation = new Modulation(cam, null);
+        Modulation modulation = new Modulation(cam, amplification.getInputHandle());
         modulation.setName("Modulation");
         scenarios.add(modulation);
         
@@ -169,11 +179,23 @@ public class ScenarioManager  implements IScenarioManager
         modulationList.add(soundCapture);
         modulationList.add(modulation);
         scenarioList.addScenario(ScenarioEnum.AMMODULATION,modulationList);
+        
+        //Add third scenario
+        List<Scenario> amplificationList = new ArrayList<Scenario>();
+        amplificationList.add(modulation);
+        amplificationList.add(amplification);
+        scenarioList.addScenario(ScenarioEnum.TRANSMIT,amplificationList);
+        
+        //Add four scenario
+        List<Scenario> receptionList = new ArrayList<Scenario>();
+        receptionList.add(amplification);
+        receptionList.add(reception);
+        scenarioList.addScenario(ScenarioEnum.RECEPTION,receptionList);
 
         //Only for debugging purpose deactivate it please.
         scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
-        scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
-        scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
+      //  scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
+    //    scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
 
         //setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));
         setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDCAPTURE));
@@ -214,7 +236,7 @@ public class ScenarioManager  implements IScenarioManager
                     scenario.rotate(rot);
 
                     //WORLD_SCALE_DEFAULT = 100;
-                    scenario.scale(WORLD_SCALE_DEFAULT);
+                    scenario.scale(AppGetter.getWorldScalingDefault());
                 }
                 
                 
@@ -242,12 +264,10 @@ public class ScenarioManager  implements IScenarioManager
 
 
                     }
-
-                WORLD_SCALE_DEFAULT = 10;
                 
                 for (Scenario scenario : scenarios) {
                     
-                    scenario.scale(WORLD_SCALE_DEFAULT);
+                    scenario.scale(AppGetter.getWorldScalingDefault());
                 }
                 
                 break;

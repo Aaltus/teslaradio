@@ -34,6 +34,7 @@ import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.system.android.JmeAndroidSystem;
 import com.jme3.system.android.OGLESContext;
 import com.jme3.util.AndroidLogHandler;
+import com.utils.AppLogger;
 import org.acra.ACRA;
 
 import java.io.PrintWriter;
@@ -48,6 +49,8 @@ import java.util.logging.Logger;
  * Android.
  * Aaltus: We have modified this class to extend from FragmentActivity
  * instead of Activity to be able to manage fragments
+ *
+ * On 10 october 2014, this file is still the same as r11111 of JmonkeyEngine 3
  *
  * @author Kirill modified by Jonathan Desmarais
  * @author larynx
@@ -220,16 +223,17 @@ public class AndroidHarnessFragmentActivity extends FragmentActivity implements 
     }
 
 
-    //TODO Really need to check about this function if it's break anything...
-//    @Override
-//    public Object onRetainNonConfigurationInstance() {
-//        logger.log(Level.FINE, "onRetainNonConfigurationInstance");
-//        final DataObject data = new DataObject();
-//        data.app = this.app;
-//        inConfigChange = true;
-//
-//        return data;
-//    }
+    //Has suggested by Android API, I replace onRetainNonConfigurationInstance() by onRetainCustomNonConfigurationInstance
+    //In fragmentActivity
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        logger.log(Level.FINE, "onRetainNonConfigurationInstance");
+        final DataObject data = new DataObject();
+        data.app = this.app;
+        inConfigChange = true;
+
+        return data;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -251,7 +255,7 @@ public class AndroidHarnessFragmentActivity extends FragmentActivity implements 
 
         setRequestedOrientation(screenOrientation);
 
-        final DataObject data = (DataObject) getLastNonConfigurationInstance();
+        final DataObject data = (DataObject) getLastCustomNonConfigurationInstance();
         if (data != null) {
             logger.log(Level.FINE, "Using Retained App");
             this.app = data.app;
@@ -371,7 +375,7 @@ public class AndroidHarnessFragmentActivity extends FragmentActivity implements 
     @Override
     protected void onDestroy() {
         logger.fine("onDestroy");
-        final DataObject data = (DataObject) getLastNonConfigurationInstance();
+        final DataObject data = (DataObject) getLastCustomNonConfigurationInstance();
         if (data != null || inConfigChange) {
             logger.fine("In Config Change, not stopping app.");
         } else {
@@ -563,6 +567,7 @@ public class AndroidHarnessFragmentActivity extends FragmentActivity implements 
     }
 
     public void reshape(int width, int height) {
+        AppLogger.getInstance().i(AndroidHarnessFragmentActivity.class.getName(),"Reshape app window size with width : "+width + " and height: " + height);
         app.reshape(width, height);
     }
 
