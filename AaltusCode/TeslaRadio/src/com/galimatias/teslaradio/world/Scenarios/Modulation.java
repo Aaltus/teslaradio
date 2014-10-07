@@ -219,7 +219,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         Sphere sphere = new Sphere(5, 5, 0.25f);
         outSpatial = new Geometry("ModulationOutput",sphere);
-        outSpatial.setMaterial(mat2);
+        outSpatial.setMaterial(mat2);*/
     }
     
     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
