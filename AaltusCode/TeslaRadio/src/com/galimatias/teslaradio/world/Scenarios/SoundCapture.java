@@ -6,6 +6,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.audio.AudioNode;
@@ -145,6 +146,10 @@ public final class SoundCapture extends Scenario {
         micTapParticle = new Geometry("MicTapParticle", sphere);
         micTapParticle.setMaterial(mat1);
         micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
+        
+        MicWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 5, 0.25f, 0.5f));
+        MicWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
+        
 
     }
     
@@ -208,7 +213,7 @@ public final class SoundCapture extends Scenario {
         //DrumSoundEmitter.emitParticles(1.0f);
         //DrumSoundEmitter.emitWaves();
 
-        MicWireEmitter.getControl(ParticleEmitterControl.class).emitParticle(micTapParticle.clone());
+        MicWireEmitter.getControl(PatternGeneratorControl.class).toggleNewWave();
 
         //touchEffectEmitter.isTouched();
 
