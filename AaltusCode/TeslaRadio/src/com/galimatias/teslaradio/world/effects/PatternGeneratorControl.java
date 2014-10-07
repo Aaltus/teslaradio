@@ -11,6 +11,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.control.AbstractControl;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +35,7 @@ public class PatternGeneratorControl extends AbstractControl {
     protected int   scaleStep;
     protected int   waveIterator;
     protected Future autoPlayThread;
+    private final boolean isRandom;
     
    /**
     * 
@@ -42,14 +44,16 @@ public class PatternGeneratorControl extends AbstractControl {
     * @param scaleStep The number of particles to go over the scale
     * @param minScale The smallest particle scacle
     * @param maxScale The biggest particle scale
+    * @param isRandom If set to true, the scale will be randomly taken from the list
     */
     public PatternGeneratorControl(float waveMinDelay, Geometry baseGeom,
-            int scaleStep, float minScale, float maxScale){
+            int scaleStep, float minScale, float maxScale, boolean isRandom){
         
         this.minWaveDelay = waveMinDelay;
         this.waveIterator = 0;
         this.lastCall = 0;
         this.baseParticle = baseGeom;
+        this.isRandom = isRandom;
         
         this.scaleStep = scaleStep == 1 ? 1: scaleStep * 2 - 2;
         this.maxScale = maxScale;
@@ -65,6 +69,9 @@ public class PatternGeneratorControl extends AbstractControl {
         {
             this.scaleList.add(this.minScale + i * step);
         }
+        if(this.isRandom){
+            Collections.shuffle(this.scaleList);
+        }
     }
     
    /**
@@ -72,15 +79,20 @@ public class PatternGeneratorControl extends AbstractControl {
     * @param waveMinDelay the minimum delay accepted before sending a wave
     * @param baseGeom The base particle
     * @param magnitudes The List of Magnitudes of the particles
+    * @param isRandom If set to true, the scale will be randomly taken from the list
     */
     public PatternGeneratorControl(float waveMinDelay,Geometry baseGeom,
-            List<Float> magnitudes){
+            List<Float> magnitudes, boolean isRandom){
         this.minWaveDelay = waveMinDelay;
         this.waveIterator = 0;
         this.lastCall = 0;
         this.baseParticle = baseGeom;
         this.scaleList = magnitudes;
         this.scaleStep = magnitudes.size();
+        this.isRandom = isRandom;
+         if(this.isRandom){
+            Collections.shuffle(this.scaleList);
+        }
     }
    
     /**
@@ -117,15 +129,15 @@ public class PatternGeneratorControl extends AbstractControl {
      */
     public void toggleNewWave()
     {
-        Geometry geom = this.baseParticle.clone();
-        geom.scale(this.scaleList.get(this.waveIterator));
-        //The Queue will always have a size of 1 or 0, we don't want to queue
-        //more than the minimum delay
-        this.geomList.clear();
-        this.geomList.addLast(geom);
+        float scale = this.scaleList.get(this.waveIterator);
         if(++this.waveIterator == this.scaleStep){
             this.waveIterator = 0;
+            if(this.isRandom){
+               Collections.shuffle(this.scaleList);
+            }
         }
+        
+        this.toggleNewWave(scale);
     }
     /**
      * Toggle a new emission wave with the specified scale;
