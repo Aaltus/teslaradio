@@ -84,8 +84,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private Geometry pyramidOutputSignal;
     private Geometry dodecagoneOutputSignal;
     private Geometry outSpatial;
-    private Material electricParticleMat;
-    private Vector3f presentSpatialScale;
     
     // Current carrier signal and his associated output
     private Geometry currentCarrier;
@@ -149,7 +147,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         scene.attachChild(outputEmitter);
         outputEmitter.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-        System.out.println("translation " + outputHandle.getLocalTranslation());
+        //System.out.println("translation " + outputHandle.getLocalTranslation());
         outputEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
         outputEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
 
@@ -231,11 +229,12 @@ public final class Modulation extends Scenario implements EmitterObserver {
         dodecagoneOutputSignal.setMaterial(mat1);
         dodecagoneOutputSignal.setQueueBucket(RenderQueue.Bucket.Translucent);
         
-        electricParticleMat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        electricParticleMat.setTexture("ColorMap", assetManager.loadTexture("Textures/Electric3.png"));
+        Material mat2 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        mat2.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
+        mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         Sphere sphere = new Sphere(5, 5, 0.25f);
-        outSpatial = new Geometry("particul",sphere);
-        outSpatial.setMaterial(electricParticleMat);
+        outSpatial = new Geometry("ModulationOutput",sphere);
+        outSpatial.setMaterial(mat2);
     }
     
     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
@@ -358,17 +357,17 @@ public final class Modulation extends Scenario implements EmitterObserver {
             switch (frequency) {
                 case 1:
                     digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    //     System.out.println(sFM1061);
+                    // System.out.println(sFM1061);
                     changeCarrierParticles(1);
                     break;
                 case 2:
                     digitalDisplay.simpleUpdate(sFM977, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    //   System.out.println(sFM977);
+                    // System.out.println(sFM977);
                     changeCarrierParticles(2);
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sFM952, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    //   System.out.println(sFM952);
+                    // System.out.println(sFM952);
                     changeCarrierParticles(3);
                     break;
                 default:
@@ -602,6 +601,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
             
             if (pcbAmpEmitter != null && spatial != null) {
                 outputSignal.setLocalScale(spatial.getLocalScale());
+                //System.out.println("The spatial scale : " + spatial.getWorldScale().toString());
                 pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(outputSignal.clone());
             }
             
