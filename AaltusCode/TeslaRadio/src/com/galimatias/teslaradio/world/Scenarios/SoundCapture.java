@@ -17,6 +17,7 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
@@ -143,7 +144,7 @@ public final class SoundCapture extends Scenario {
         wireDestinationEmitter.setLocalTranslation(moduleHandleOut_node.getLocalTranslation());
         scene.attachChild(wireDestinationEmitter);
         
-        System.out.println(destinationHandle.getName());
+        //System.out.println(destinationHandle.getName());
         
         wireDestinationEmitter.addControl(new DynamicWireParticleEmitterControl(destinationHandle, 3.5f, cam));
         
@@ -153,11 +154,12 @@ public final class SoundCapture extends Scenario {
         wireDestinationEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
         MicWireEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
         
-        electricParticleMat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        electricParticleMat.setTexture("ColorMap", assetManager.loadTexture("Textures/Electric3.png"));
-        Quad rect = new Quad(0.5f, 0.5f);
-        micTapParticle = new Geometry("particul",rect);
-        micTapParticle.setMaterial(electricParticleMat);
+        Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+        mat1.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
+        mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        Quad rect = new Quad(1f, 1f);
+        micTapParticle = new Geometry("MicTapParticle", rect);
+        micTapParticle.setMaterial(mat1);
 
     }
     
