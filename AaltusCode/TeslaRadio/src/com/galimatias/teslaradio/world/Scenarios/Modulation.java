@@ -1,7 +1,9 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.SignalControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
@@ -48,7 +50,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private Spatial actionSwitch;
     
     // TextBox of the scene
-    private TextBox titleTextBox;
     private TextBox digitalDisplay;
     
     // Default text to be seen when scenario starts
@@ -63,31 +64,13 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private Node outputEmitter = new Node();
     private Spatial destinationHandle;
     
-    // Handles for the emitter positions
-    private Spatial pathInHandle;
-    private Spatial pathCarrierHandle;
-    private Spatial pathOutChipHandle;
-    private Spatial outputHandle;
-    
-    // Paths
-    private Geometry pathIn;
-    private Geometry pathCarrier;
-    private Geometry pathOut;
-    
     // Geometry of the carrier signals
     private Geometry cubeCarrier;
     private Geometry pyramidCarrier;
     private Geometry dodecagoneCarrier; // Really...
     
-    // Output signals
-    private Geometry cubeOutputSignal;
-    private Geometry pyramidOutputSignal;
-    private Geometry dodecagoneOutputSignal;
-    private Geometry outSpatial;
-    private Material electricParticleMat;
-    private Vector3f presentSpatialScale;
-    
     // Current carrier signal and his associated output
+    private Geometry selectedCarrier;
     private Geometry currentCarrier;
     private Node outputSignal;
     
@@ -127,18 +110,18 @@ public final class Modulation extends Scenario implements EmitterObserver {
         scene.setLocalRotation(rot);
 
         // Get the handles of the emitters
-        pathInHandle = scene.getChild("Handle.In");
-        pathCarrierHandle = scene.getChild("Handle.Generator");
-        pathOutChipHandle = scene.getChild("Handle.Chip.Out");
-        outputHandle = scene.getChild("Handle.Out");
+        Spatial pathInHandle = scene.getChild("Handle.In");
+        Spatial pathCarrierHandle = scene.getChild("Handle.Generator");
+        Spatial pathOutChipHandle = scene.getChild("Handle.Chip.Out");
+        Spatial outputHandle = scene.getChild("Handle.Out");
 
         // Get the different paths
         Node wirePcb_node = (Node) scene.getChild("Path.In.Object");
-        pathIn = (Geometry) wirePcb_node.getChild("Path.In.Nurbs");
+        Geometry pathIn = (Geometry) wirePcb_node.getChild("Path.In.Nurbs");
         Node carrier_node = (Node) scene.getChild("Path.Generator.Object");
-        pathCarrier = (Geometry) carrier_node.getChild("Path.Generator.Nurbs");
+        Geometry pathCarrier = (Geometry) carrier_node.getChild("Path.Generator.Nurbs");
         Node pcbAmp_node = (Node) scene.getChild("Path.Out.Object");
-        pathOut = (Geometry) pcbAmp_node.getChild("Path.Out.Nurbs");        
+        Geometry pathOut = (Geometry) pcbAmp_node.getChild("Path.Out.Nurbs");        
         
         initDigitalDisplay();
         initTitleBox();
@@ -194,13 +177,13 @@ public final class Modulation extends Scenario implements EmitterObserver {
         Dome pyramid = new Dome(2, 4, 0.25f);
         pyramidCarrier = new Geometry("PyramidCarrier", pyramid);
         pyramidCarrier.setMaterial(mat1);
-        pyramidCarrier.setQueueBucket(queueBucket.Translucent);
+        pyramidCarrier.setQueueBucket(RenderQueue.Bucket.Translucent);
         
         Node dodecagone = (Node) assetManager.loadModel("Models/Modulation/Dodecahedron.j3o");
         dodecagoneCarrier = (Geometry) dodecagone.getChild("Solid.0041");
         dodecagoneCarrier.setName("DodecagoneCarrier");
         dodecagoneCarrier.setMaterial(mat1);
-        dodecagoneCarrier.setQueueBucket(queueBucket.Translucent);
+        dodecagoneCarrier.setQueueBucket(RenderQueue.Bucket.Translucent);
     }
 
     // TODO Add the real output signals with a pattern generator
@@ -208,19 +191,19 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         this.outputSignal = new Node();
         
-        Box cube = new Box(0.25f, 0.25f, 0.25f);
+        /*Box cube = new Box(0.25f, 0.25f, 0.25f);
         cubeOutputSignal = new Geometry("CubeOutputSignal", cube);
         Material mat1 = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.25f));
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         cubeOutputSignal.setMaterial(mat1);
-        cubeOutputSignal.setQueueBucket(RenderQueue.Bucket.Translucent);
+        cubeOutputSignal.setQueueBucket(RenderQueue.Bucket.Translucent);*/
         
         // Default value of the outputSignal
-        this.outputSignal.attachChild(cubeOutputSignal);
+        this.outputSignal.attachChild(cubeCarrier);
         
-        Dome pyramid = new Dome(2, 4, 0.25f);
+        /*Dome pyramid = new Dome(2, 4, 0.25f);
         pyramidOutputSignal = new Geometry("PyramidOutputSignal", pyramid);
         pyramidOutputSignal.setMaterial(mat1);
         pyramidOutputSignal.setQueueBucket(RenderQueue.Bucket.Translucent);
@@ -235,7 +218,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         electricParticleMat.setTexture("ColorMap", assetManager.loadTexture("Textures/Electric3.png"));
         Sphere sphere = new Sphere(5, 5, 0.25f);
         outSpatial = new Geometry("particul",sphere);
-        outSpatial.setMaterial(electricParticleMat);
+        outSpatial.setMaterial(electricParticleMat);*/
     }
     
     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
@@ -255,7 +238,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
         ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
-        titleTextBox = new TextBox(assetManager,
+        TextBox titleTextBox = new TextBox(assetManager,
                 titleText,
                 titleTextSize,
                 titleTextColor,
@@ -408,23 +391,20 @@ public final class Modulation extends Scenario implements EmitterObserver {
         if (spatial != null && emitterId.equals("CarrierEmitter")) {
             
             String presentCarrierTypeName = spatial.getName();
-            
-            outputSignal.detachAllChildren();
                     
+            outputSignal.detachAllChildren();
+            
             if (presentCarrierTypeName.equals("CubeCarrier")) {
                 //outputSignal = cubeOutputSignal;
-                outputSignal.attachChild(cubeOutputSignal);
-                outputSignal.attachChild(outSpatial);
+                currentCarrier = (Geometry)spatial;
                 
             } else if (presentCarrierTypeName.equals("PyramidCarrier")) {
                 //outputSignal = pyramidOutputSignal;
-                outputSignal.attachChild(pyramidOutputSignal);
-                outputSignal.attachChild(outSpatial);
+                currentCarrier = (Geometry)spatial;
                 
             } else if (presentCarrierTypeName.equals("DodecagoneCarrier")) {
                 //outputSignal = dodecagoneOutputSignal;
-                outputSignal.attachChild(dodecagoneOutputSignal);
-                outputSignal.attachChild(outSpatial);     
+                currentCarrier = (Geometry)spatial;   
             }
         }
     }
@@ -433,18 +413,18 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         switch (frequency) {
             case 1:
-                currentCarrier = cubeCarrier;
+                selectedCarrier = cubeCarrier;
                 break;
             case 2:
-                currentCarrier = pyramidCarrier;
+                selectedCarrier = pyramidCarrier;
                 break;
             case 3:
-                currentCarrier = dodecagoneCarrier;
+                selectedCarrier = dodecagoneCarrier;
                 break;
         }
         
         if (carrierEmitter != null) {
-            carrierEmitter.getControl(ParticleEmitterControl.class).emitParticle(currentCarrier);
+            carrierEmitter.getControl(ParticleEmitterControl.class).emitParticle(selectedCarrier);
         }
         
     }
@@ -601,8 +581,11 @@ public final class Modulation extends Scenario implements EmitterObserver {
             //System.out.println("I am in " + notifierId);
             
             if (pcbAmpEmitter != null && spatial != null) {
-                outputSignal.setLocalScale(spatial.getLocalScale());
-                pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(outputSignal.clone());
+                Node clone = (Node)outputSignal.clone();
+                clone.attachChild(spatial);          
+                //clone.attachChild(currentCarrier.clone());
+                clone.setLocalScale(spatial.getLocalScale());
+                pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(clone);
             }
             
         }
