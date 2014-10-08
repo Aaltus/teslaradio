@@ -333,14 +333,14 @@ void configureVideoBackground()
     
     if (isActivityInPortraitMode)
     {
-        //LOG("configureVideoBackground PORTRAIT");
+        LOGI("configureVideoBackground PORTRAIT");
         config.mSize.data[0] = videoMode.mHeight
                                 * (screenHeight / (float)videoMode.mWidth);
         config.mSize.data[1] = screenHeight;
 
         if(config.mSize.data[0] < screenWidth)
         {
-            LOGI("Correcting rendering background size to handle missmatch between screen and video aspect ratios.");
+            LOGI("Correcting rendering background size to handle mismatch between screen and video aspect ratios.");
             config.mSize.data[0] = screenWidth;
             config.mSize.data[1] = screenWidth * 
                               (videoMode.mWidth / (float)videoMode.mHeight);
@@ -348,7 +348,7 @@ void configureVideoBackground()
     }
     else
     {
-        //LOG("configureVideoBackground LANDSCAPE");
+        LOGI("configureVideoBackground LANDSCAPE");
         config.mSize.data[0] = screenWidth;
         config.mSize.data[1] = videoMode.mHeight
                             * (screenWidth / (float)videoMode.mWidth);
@@ -375,7 +375,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative(
                             JNIEnv* env, jobject obj, jint width, jint height)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative");
-    
+
     // Store screen dimensions
     screenWidth = width;
     screenHeight = height;
