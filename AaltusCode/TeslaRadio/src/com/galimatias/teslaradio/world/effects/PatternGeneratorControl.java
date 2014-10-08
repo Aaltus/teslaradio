@@ -130,6 +130,8 @@ public class PatternGeneratorControl extends AbstractControl {
     public void toggleNewWave()
     {
         float scale = this.scaleList.get(this.waveIterator);
+        this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, true);
+        this.spatial.setUserData(AppGetter.USR_NEXT_WAVE_SCALE, scale/this.maxScale);
         if(++this.waveIterator == this.scaleStep){
             this.waveIterator = 0;
             if(this.isRandom){
