@@ -127,7 +127,7 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
         // TODO: put all this in thread !!!
         float[] temp2 = {0, 0, 0.31416f};
         Quaternion rotQuat2 = new Quaternion(temp2);
-        Vector3f path_vector_flat = new Vector3f(this.radius,0,0);
+        Vector3f path_vector_flat = new Vector3f(scale,0,0);
         for(int axe_flat = 0; axe_flat < 5; axe_flat++)
         {        
             
@@ -138,6 +138,7 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
             for(int axe_a = 0; axe_a < 10-axe_flat; axe_a++)
             {
                Spatial spatial_clone = spatialToSend.clone();
+               spatial_clone.setMaterial(materialClone);
                MotionPath path = new MotionPath();
                path.addWayPoint(Vector3f.ZERO);
                path.addWayPoint(path_vector);
