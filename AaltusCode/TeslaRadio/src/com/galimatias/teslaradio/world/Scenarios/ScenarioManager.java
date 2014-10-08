@@ -238,6 +238,7 @@ public class ScenarioManager  implements IScenarioManager
                     //WORLD_SCALE_DEFAULT = 100;
                     scenario.scale(AppGetter.getWorldScalingDefault());
                 }
+                break;
             case ANDROID_DEV_FRAMEWORK:
 
                 //Add mapping for touch input only for android device

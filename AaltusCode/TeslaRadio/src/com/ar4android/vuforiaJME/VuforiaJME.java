@@ -21,7 +21,6 @@ package com.ar4android.vuforiaJME;
 import com.galimatias.teslaradio.world.Scenarios.IScenarioManager;
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.jme3.app.SimpleApplication;
-import com.jme3.input.controls.TouchTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
