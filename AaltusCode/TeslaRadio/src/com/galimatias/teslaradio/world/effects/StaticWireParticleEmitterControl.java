@@ -78,8 +78,8 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
     public void onParticleEndOfLife(Spatial toBeDeletedSpatial) {
         // deconnect particle from this particle emitter
         toBeDeletedSpatial.removeControl(SignalControl.class);
-        toBeDeletedSpatial.removeControl(ScalingSignalControl.class);
         toBeDeletedSpatial.removeFromParent();
+        toBeDeletedSpatial.setLocalTranslation(0, 0, 0);
         
         // notify Registered observers of the ParticleEmitter
         this.notifyObservers(toBeDeletedSpatial,this.spatial.getName());
