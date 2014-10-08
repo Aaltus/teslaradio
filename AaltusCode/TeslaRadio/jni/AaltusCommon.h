@@ -17,12 +17,12 @@
 
 static int logLevel = LOG_NONE;
 
-inline void LOGI(const char* text ...)
+inline void LOGI(const char *text ...)
 {
     va_list va_args;
     va_start( va_args, text );
 
-    if (logLevel >= LOG_INFO) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, text, va_args);
+    if (logLevel >= LOG_INFO) __android_log_vprint(ANDROID_LOG_INFO, LOG_TAG, text, va_args);
 
     va_end(va_args);
 }
@@ -32,7 +32,7 @@ inline void LOGW(const char* text ...)
     va_list va_args;
     va_start( va_args, text );
 
-    if (logLevel >= LOG_WARNING) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, text, va_args);
+    if (logLevel >= LOG_WARNING) __android_log_vprint(ANDROID_LOG_WARN, LOG_TAG, text, va_args);
 
     va_end(va_args);
 }
@@ -41,7 +41,7 @@ inline void LOGE(const char* text ...)
     va_list va_args;
     va_start( va_args, text );
 
-    if (logLevel >= LOG_ERROR) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, text, va_args);
+    if (logLevel >= LOG_ERROR) __android_log_vprint(ANDROID_LOG_ERROR, LOG_TAG, text, va_args);
 
     va_end(va_args);
 }
@@ -50,7 +50,7 @@ inline void LOGD(const char* text ...)
     va_list va_args;
     va_start( va_args, text );
 
-    if (logLevel >= LOG_DEBUG) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, text, va_args);
+    if (logLevel >= LOG_DEBUG) __android_log_vprint(ANDROID_LOG_DEBUG, LOG_TAG, text, va_args);
 
     va_end(va_args);
 }

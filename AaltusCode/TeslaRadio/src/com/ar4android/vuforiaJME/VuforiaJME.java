@@ -21,7 +21,6 @@ package com.ar4android.vuforiaJME;
 import com.galimatias.teslaradio.world.Scenarios.IScenarioManager;
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.jme3.app.SimpleApplication;
-import com.jme3.input.controls.TouchTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
@@ -136,12 +135,13 @@ public class VuforiaJME extends SimpleApplication {
 		Quad videoBGQuad = new Quad(1, 1, true);
 		// Create a Geometry with the Quad shape
 		mVideoBGGeom = new Geometry("quad", videoBGQuad);
-		float newWidth = 1.f * screenWidth / screenHeight;
+		//float newWidth = 1.f * screenWidth / screenHeight;
 		// Center the Geometry in the middle of the screen.
-		mVideoBGGeom.setLocalTranslation(-0.5f * newWidth, -0.5f, 0.f);//
+		//
+        mVideoBGGeom.setLocalTranslation(-0.5f, -0.5f, 0.f);//
 		// Scale (stretch) the width of the Geometry to cover the whole screen
 		// width.
-		mVideoBGGeom.setLocalScale(1.f * newWidth, 1.f, 1);
+		//mVideoBGGeom.setLocalScale(1.f * newWidth, 1.f, 1);
 		// Apply a unshaded material which we will use for texturing.
 		mvideoBGMat = new Material(assetManager,
 				"Common/MatDefs/Misc/Unshaded.j3md");
@@ -249,48 +249,56 @@ public class VuforiaJME extends SimpleApplication {
 	public void setCameraViewportNative(float viewport_w,float viewport_h,float size_x,float size_y) {
 		 //Log.d(TAG,"Update Camera Viewport..");
 
-        AppLogger.getInstance().d(TAG, "setCameraViewportNative with viewport_w : " + Float.toString(viewport_w) + " viewport_h: " + Float.toString(viewport_h));
-		float newWidth = 1.f;
-		float newHeight = 1.f;
-		
-		if (viewport_h != settings.getHeight())
-		{
-			newWidth = viewport_w/viewport_h;
-			newHeight = 1.0f;
-			videoBGCam.resize((int)viewport_w,(int)viewport_h,true);
-			videoBGCam.setParallelProjection(true);
-		}
+        AppLogger.getInstance().d(TAG, "setCameraViewportNative : ");
 
-		//exercise: find the similar transformation 
-		//when viewport_w != settings.getWidth
-		
-		//Adjusting viewport: from BackgroundTextureAccess example in Qualcomm Vuforia
-	    float viewportPosition_x =  (((int)(settings.getWidth()  - viewport_w)) / 2);//+0
-	    float viewportPosition_y =  (((int)(settings.getHeight() - viewport_h)) / 2);//+0
-	    //float viewportSize_x = viewport_w;//2560
-	    //float viewportSize_y = viewport_h;//1920
+       // if(!isViewportAdjust)
+        //{
+            AppLogger.getInstance().d(TAG, "setCameraViewportNative with viewport_w : " + Float.toString(viewport_w) + " viewport_h: " + Float.toString(viewport_h));
+            float newWidth = 1.f;
+            float newHeight = 1.f;
 
-	    //transform in normalized coordinate
-	    viewportPosition_x =  viewportPosition_x/viewport_w;
-	    viewportPosition_y =  viewportPosition_y/viewport_h;
-	    //viewportSize_x = viewportSize_x/viewport_w;
-	    //viewportSize_y = viewportSize_y/viewport_h;
-	       
-		//adjust for viewport start (modify video quad)
-		mVideoBGGeom.setLocalTranslation(-0.5f*newWidth+viewportPosition_x,-0.5f*newHeight+viewportPosition_y,0.f);
-		//adust for viewport size (modify video quad)
-		mVideoBGGeom.setLocalScale(newWidth, newHeight, 1.f);
+
+            //if (viewport_h != settings.getHeight())
+            //{
+
+            newWidth = viewport_w/viewport_h;
+            newHeight = 1.0f;
+            videoBGCam.resize((int)viewport_w,(int)viewport_h,true);
+            videoBGCam.setParallelProjection(true);
+            AppLogger.getInstance().d(TAG,"viewport_h != settings.getHeight()");
+            //}
+
+
+
+            //exercise: find the similar transformation
+            //when viewport_w != settings.getWidth
+
+            //Adjusting viewport: from BackgroundTextureAccess example in Qualcomm Vuforia
+            float viewportPosition_x =  (((int)(settings.getWidth()  - viewport_w)) / 2);//+0
+            float viewportPosition_y =  (((int)(settings.getHeight() - viewport_h)) / 2);//+0
+            //float viewportSize_x = viewport_w;//2560
+            //float viewportSize_y = viewport_h;//1920
+
+            //transform in normalized coordinate
+            viewportPosition_x =  viewportPosition_x/viewport_w;
+            viewportPosition_y =  viewportPosition_y/viewport_h;
+            //viewportSize_x = viewportSize_x/viewport_w;
+            //viewportSize_y = viewportSize_y/viewport_h;
+
+            //adjust for viewport start (modify video quad)
+            mVideoBGGeom.setLocalTranslation(-0.5f*newWidth+viewportPosition_x,-0.5f*newHeight+viewportPosition_y,0.f);
+            //adust for viewport size (modify video quad)
+            mVideoBGGeom.setLocalScale(newWidth, newHeight, 1.f);
+            AppLogger.getInstance().d(TAG,"setCameraViewportNative newWidth=" + newWidth + " newHeight="+newHeight);
+
+
 	}
 	
 
 	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z, int id) {
          AppLogger.getInstance().d(TAG, "Update Camera Pose..");
 
-
             this.rootNode.getControl(TrackableManager.class).updatePosition(id, new Vector3f(-cam_x, -cam_y, cam_z));
-
-
-
 
 	}
 	

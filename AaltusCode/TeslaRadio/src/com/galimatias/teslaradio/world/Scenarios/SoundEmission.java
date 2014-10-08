@@ -43,7 +43,7 @@ public final class SoundEmission extends Scenario {
     //private SignalEmitter DrumSoundEmitter;
     //private SignalEmitter GuitarSoundEmitter;
 
-    private TouchEffectEmitter touchEffectEmitter;
+    //private TouchEffectEmitter touchEffectEmitter;
 
     private TextBox titleTextBox;
     private TextBox instrumentTextBox;

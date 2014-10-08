@@ -40,7 +40,6 @@ public class Main extends SimpleApplication implements ActionListener
     public static void main(String[] args) 
     {
         Main app = new Main();
-        AppGetter.setInstance(app);
         app.start();
     }
 
@@ -68,6 +67,7 @@ public class Main extends SimpleApplication implements ActionListener
     public void simpleInitApp() 
     {
         AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ALL);
+        AppGetter.setInstance(this);
         
         mouseInput.setCursorVisible(true);
         flyCam.setDragToRotate(dragMouseToMove);

@@ -125,21 +125,28 @@ public class PatternGeneratorControl extends AbstractControl {
     }
     
     /**
-     * Toggle a new emission wave according to inside parameter;
+     * Toggle a new waveform with the inside parameter and wavesPerToggle objects
+     * @param wavesPerToggle 
      */
-    public void toggleNewWave()
+    public void toggleNewWave(int wavesPerToggle)
     {
-        float scale = this.scaleList.get(this.waveIterator);
-        this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, true);
-        this.spatial.setUserData(AppGetter.USR_NEXT_WAVE_SCALE, scale/this.maxScale);
-        if(++this.waveIterator == this.scaleStep){
-            this.waveIterator = 0;
-            if(this.isRandom){
-               Collections.shuffle(this.scaleList);
-            }
+        {
+            this.geomList.clear();
+            float scale = this.scaleList.get(this.waveIterator);
+            this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, true);
+            this.spatial.setUserData(AppGetter.USR_NEXT_WAVE_SCALE, scale/this.maxScale);
         }
-        
-        this.toggleNewWave(scale);
+        for (int i=0; i<wavesPerToggle; i++) {
+            float scale = this.scaleList.get(this.waveIterator);
+            if(++this.waveIterator == this.scaleStep){
+                this.waveIterator = 0;
+                if(this.isRandom){
+                   Collections.shuffle(this.scaleList);
+                }
+            }
+
+            this.toggleNewWave(scale);
+        }
     }
     /**
      * Toggle a new emission wave with the specified scale;
@@ -151,7 +158,6 @@ public class PatternGeneratorControl extends AbstractControl {
         geom.scale(scale);
         //The Queue will always have a size of 1 or 0, we don't want to queue
         //more than the minimum delay
-        this.geomList.clear();
         this.geomList.addLast(geom);
     }
     @Override
@@ -185,7 +191,7 @@ public class PatternGeneratorControl extends AbstractControl {
         @Override
         
         public void run() {
-                toggleNewWave();
+                toggleNewWave(1);
             }
           
     };
