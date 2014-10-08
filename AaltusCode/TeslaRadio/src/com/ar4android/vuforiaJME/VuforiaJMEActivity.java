@@ -256,7 +256,11 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             public void run() {
                 dismissSplashscreenDialog();
                 //TODO it should be a better idea to create a scenario manager in the activity and then pass it to vuforia jme.
-                getInformativeMenuFragment().setScenarioSwitcher(scenarioSwitcher);
+                InformativeMenuFragment informativeMenuFragment = getInformativeMenuFragment();
+                if(informativeMenuFragment != null)
+                {
+                    getInformativeMenuFragment().setScenarioSwitcher(scenarioSwitcher);
+                }
             }
         }
 
@@ -522,27 +526,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             case APPSTATUS_INIT_LAYOUT:
 
                 AppLogger.getInstance().i(TAG, "In APPSTATUS_INIT_LAYOUT");
-
-                //create the layout on top of the jmonkey view to add button and fragments
-                //initTopLayout();
-                ViewGroup rootView        = (ViewGroup) findViewById(android.R.id.content);
-                LayoutInflater factory    = LayoutInflater.from(this);
-                FrameLayout frameLayout1  = new FrameLayout(this);
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                frameLayout1.setLayoutParams(layoutParams);
-
-                frameLayout1.setId(4);
-                rootView.addView(frameLayout1);
-
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                Fragment fragment = new InformativeMenuFragment();
-                ft.replace(frameLayout1.getId(), fragment, INFORMATIVE_MENU_FRAGMENT_TAG);
-                ft.commit();
-                fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
-
-                //Add the fragment with frangment transaction with framwlayoyt
-
+                initTopInformativeMenuFragment();
                 updateApplicationStatus(APPSTATUS_INITED);
 
                 break;
@@ -603,6 +587,26 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 AppLogger.getInstance().e(TAG, errorMesasge);
                 throw new RuntimeException(errorMesasge);
         }
+    }
+
+    private void initTopInformativeMenuFragment() {
+        //create the layout on top of the jmonkey view to add button and fragments
+        //initTopLayout();
+        ViewGroup rootView        = (ViewGroup) findViewById(android.R.id.content);
+        LayoutInflater factory    = LayoutInflater.from(this);
+        FrameLayout frameLayout1  = new FrameLayout(this);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        frameLayout1.setLayoutParams(layoutParams);
+
+        frameLayout1.setId(4);
+        rootView.addView(frameLayout1);
+
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        Fragment fragment = new InformativeMenuFragment();
+        ft.replace(frameLayout1.getId(), fragment, INFORMATIVE_MENU_FRAGMENT_TAG);
+        ft.commit();
+        fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
     }
 
     /** Initialize application GUI elements that are not related to AR. */
