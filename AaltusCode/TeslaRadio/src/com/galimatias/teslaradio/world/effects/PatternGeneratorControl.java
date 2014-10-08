@@ -59,16 +59,18 @@ public class PatternGeneratorControl extends AbstractControl {
         this.maxScale = maxScale;
         this.minScale = minScale;
         
-        this.scaleList = new ArrayList<Float>();
+        this.scaleList = new ArrayList<Float>(); 
         float step = (maxScale - minScale) / scaleStep;
+        for(int i = scaleStep - 1; i > 0;i--)
+        {
+            this.scaleList.add(this.minScale + i * step);
+        }
         for(int i = 0; i < scaleStep;i++)
         {
             this.scaleList.add(this.minScale + i * step);
         }
-        for(int i = scaleStep - 2; i > 0;i--)
-        {
-            this.scaleList.add(this.minScale + i * step);
-        }
+        
+        
         if(this.isRandom){
             Collections.shuffle(this.scaleList);
         }

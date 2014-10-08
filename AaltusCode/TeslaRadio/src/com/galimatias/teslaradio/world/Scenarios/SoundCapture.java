@@ -7,6 +7,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
+import com.galimatias.teslaradio.world.effects.SoundControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.audio.AudioNode;
@@ -41,7 +42,6 @@ public final class SoundCapture extends Scenario {
 
     private final static String TAG = "SoundCapture";
 
-    private AudioNode micro_sound;
     
     private Spatial micro;
     private Spatial micHandleIn;
@@ -96,7 +96,6 @@ public final class SoundCapture extends Scenario {
         touchable.attachChild(micro);
         scene.attachChild(touchable);
         
-        initAudio();
         initTextBox();
 
     }
@@ -122,6 +121,7 @@ public final class SoundCapture extends Scenario {
         //Geometry tmpGeom = (Geometry)micWire_geom;//.scale(1/ScenarioManager.WORLD_SCALE_DEFAULT);
         
         MicWireEmitter.addControl(new StaticWireParticleEmitterControl(micWire_geom.getMesh(), 3.5f, cam));
+        MicWireEmitter.addControl(new SoundControl("Sounds/micro_sound.wav", false, 2));
         
         wireDestinationEmitter = new Node();
         wireDestinationEmitter.setName("WireDestinationEmitter");
@@ -146,9 +146,11 @@ public final class SoundCapture extends Scenario {
         micTapParticle = new Geometry("MicTapParticle", sphere);
         micTapParticle.setMaterial(mat1);
         micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
-        
         MicWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 25, 0.25f, 0.75f, true));
         MicWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
+        
+        
+      
         
     }
     
@@ -159,19 +161,7 @@ public final class SoundCapture extends Scenario {
     }
 
 
-    private void initAudio()
-    {
-        /**
-         * Will be used for the mic touch effect
-         */
-        
-        micro_sound = new AudioNode(assetManager, "Sounds/micro_sound.wav", false);
-        micro_sound.setPositional(false);
-        micro_sound.setLooping(false);
-        micro_sound.setVolume(2);
-        this.attachChild(micro_sound);
 
-    }
 
     public void initTextBox()
     {
@@ -217,7 +207,6 @@ public final class SoundCapture extends Scenario {
 
         //touchEffectEmitter.isTouched();
 
-        micro_sound.playInstance();
 
     }
     
