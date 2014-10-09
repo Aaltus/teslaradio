@@ -141,24 +141,24 @@ public final class SoundEmission extends Scenario {
         ParticleEmitterControl microphoneControl = this.destinationHandle.getControl(ParticleEmitterControl.class);
         Material mat1 = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", new ColorRGBA(1, 0, 1, 1f));
+        mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.5f));
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         guitarAirParticleEmitter = new Node();
         guitarAirParticleEmitter.setLocalTranslation(guitarHandleOutPosition);
         this.attachChild(guitarAirParticleEmitter);
-        guitarAirParticleEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 2f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
+        guitarAirParticleEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 20f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
         guitarAirParticleEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
         guitarAirParticleEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
         
         
         Material mat2 = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md");
-        mat2.setColor("Color", new ColorRGBA(0, 1, 1, 1f));
+        mat2.setColor("Color", new ColorRGBA(0, 1, 1, 0.5f));
         mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         drumAirParticleEmitter = new Node();
         drumAirParticleEmitter.setLocalTranslation(drumHandleOutPosition);
         this.attachChild(drumAirParticleEmitter);
-        drumAirParticleEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 2f, 13f, mat2, AirParticleEmitterControl.AreaType.DOME));
+        drumAirParticleEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 20f, 13f, mat2, AirParticleEmitterControl.AreaType.DOME));
         drumAirParticleEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
         drumAirParticleEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }

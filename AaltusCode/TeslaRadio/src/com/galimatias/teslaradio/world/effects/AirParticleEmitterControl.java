@@ -143,7 +143,7 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
                path.addWayPoint(Vector3f.ZERO);
                path.addWayPoint(path_vector);
                path_vector = rotQuat.mult(path_vector);
-               SignalControl sigControl2 = new SignalControl(path,speed,cam);
+               SignalControl sigControl2 = new SignalControl(path,speed,cam,0);
                sigControl2.registerObserver(this);
                spatial_clone.addControl(sigControl2);
                //spatial_clone.addControl(new LookAtCameraControl(Camera));
