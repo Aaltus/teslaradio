@@ -125,17 +125,18 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
         
         // Generate little flying particles
         // TODO: put all this in thread !!!
-        float[] temp2 = {0, 0, 0.31416f};
+        int nbDirection = 6;
+        float[] temp2 = {0, 0, 3.1416f/nbDirection};
         Quaternion rotQuat2 = new Quaternion(temp2);
         Vector3f path_vector_flat = new Vector3f(scale,0,0);
-        for(int axe_flat = 0; axe_flat < 5; axe_flat++)
+        for(int axe_flat = 0; axe_flat < (nbDirection/2); axe_flat++)
         {        
             
-            float[] temp = {0, 6.2832f/(10-axe_flat), 0};
+            float[] temp = {0, 6.2832f/(nbDirection-axe_flat), 0};
             Quaternion rotQuat = new Quaternion(temp);
             
             Vector3f path_vector = path_vector_flat.clone();
-            for(int axe_a = 0; axe_a < 10-axe_flat; axe_a++)
+            for(int axe_a = 0; axe_a < nbDirection-axe_flat; axe_a++)
             {
                Spatial spatial_clone = spatialToSend.clone();
                spatial_clone.setMaterial(materialClone);
