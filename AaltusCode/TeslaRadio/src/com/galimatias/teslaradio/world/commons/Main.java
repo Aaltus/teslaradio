@@ -47,7 +47,7 @@ public class Main extends SimpleApplication implements ActionListener
     private Node nodeA;
     private Node nodeB;
     private List<Node> nodeList;
-    private IScenarioManager scenarioManager;
+    private IScenarioManager iScenarioManager;
     boolean dragMouseToMove = true;
     
     private static final String ScenarioB_move_X_pos = "ScenarioB_move_X_pos";
@@ -62,6 +62,7 @@ public class Main extends SimpleApplication implements ActionListener
     
     
     private Node destination;
+    private ScenarioManager scenarioManager;
     
     @Override
     public void simpleInitApp() 
@@ -105,7 +106,10 @@ public class Main extends SimpleApplication implements ActionListener
         inputManager.addListener(this, ScenarioB_rotate_Y_pos);
         inputManager.addListener(this, TOGGLE_DRAG_FLYBY_CAMERA);
         
-        scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.DESKTOP, nodeList, cam, null);
+        scenarioManager = new ScenarioManager(this,ScenarioManager.ApplicationType.DESKTOP, nodeList, cam, null);
+        iScenarioManager = scenarioManager;
+        this.getStateManager().attach(scenarioManager);
+        //this.getStateManager().detach(scenarioManager);
         
         flyCam.setMoveSpeed(100f);
         cam.setLocation(new Vector3f(-60,80,80));
@@ -142,7 +146,7 @@ public class Main extends SimpleApplication implements ActionListener
     public void simpleUpdate(float tpf) 
     {
         //TODO: add update code
-        scenarioManager.simpleUpdate(tpf);
+        //scenarioManager.simpleUpdate(tpf);
     }
 
     @Override

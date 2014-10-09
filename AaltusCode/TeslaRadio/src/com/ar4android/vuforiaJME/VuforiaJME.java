@@ -43,9 +43,10 @@ public class VuforiaJME extends SimpleApplication {
     // Enable this value to get multiple trackables
     private static final int DEBUG_NTargets = 1;
 
-    private IScenarioManager scenarioManager;
-    public IScenarioManager getScenarioManager() {
-        return scenarioManager;
+    private IScenarioManager iScenarioManager;
+    private ScenarioManager scenarioManager;
+    public IScenarioManager getiScenarioManager() {
+        return iScenarioManager;
     }
 
 	// The geometry which will represent the video background
@@ -104,6 +105,9 @@ public class VuforiaJME extends SimpleApplication {
         AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.NONE);
 
         AppLogger.getInstance().i(TAG, "simpleInitApp");
+
+        /*settings.setFrameRate(20);
+        setSettings(settings);*/
 
 		// Do not display statistics or frames per second	
 		setDisplayStatView(true);
@@ -185,10 +189,13 @@ public class VuforiaJME extends SimpleApplication {
 
         this.rootNode.addControl(new TrackableManager());
 
-       scenarioManager = new ScenarioManager(ScenarioManager.ApplicationType.ANDROID,
+        scenarioManager = new ScenarioManager(this,
+                ScenarioManager.ApplicationType.ANDROID,
                 this.rootNode.getControl(TrackableManager.class).getScenarioNodeList(),
                 fgCam,
                 appListener);
+        iScenarioManager = scenarioManager;
+        this.getStateManager().attach(scenarioManager);
 
 	}
 
@@ -249,11 +256,11 @@ public class VuforiaJME extends SimpleApplication {
 	public void setCameraViewportNative(float viewport_w,float viewport_h,float size_x,float size_y) {
 		 //Log.d(TAG,"Update Camera Viewport..");
 
-        AppLogger.getInstance().d(TAG, "setCameraViewportNative : ");
+        //AppLogger.getInstance().d(TAG, "setCameraViewportNative : ");
 
        // if(!isViewportAdjust)
         //{
-            AppLogger.getInstance().d(TAG, "setCameraViewportNative with viewport_w : " + Float.toString(viewport_w) + " viewport_h: " + Float.toString(viewport_h));
+            //AppLogger.getInstance().d(TAG, "setCameraViewportNative with viewport_w : " + viewport_w + " viewport_h: " + viewport_h);
             float newWidth = 1.f;
             float newHeight = 1.f;
 
@@ -265,7 +272,7 @@ public class VuforiaJME extends SimpleApplication {
             newHeight = 1.0f;
             videoBGCam.resize((int)viewport_w,(int)viewport_h,true);
             videoBGCam.setParallelProjection(true);
-            AppLogger.getInstance().d(TAG,"viewport_h != settings.getHeight()");
+            //AppLogger.getInstance().d(TAG,"viewport_h != settings.getHeight()");
             //}
 
 
@@ -289,14 +296,14 @@ public class VuforiaJME extends SimpleApplication {
             mVideoBGGeom.setLocalTranslation(-0.5f*newWidth+viewportPosition_x,-0.5f*newHeight+viewportPosition_y,0.f);
             //adust for viewport size (modify video quad)
             mVideoBGGeom.setLocalScale(newWidth, newHeight, 1.f);
-            AppLogger.getInstance().d(TAG,"setCameraViewportNative newWidth=" + newWidth + " newHeight="+newHeight);
+            //AppLogger.getInstance().d(TAG,"setCameraViewportNative newWidth=" + newWidth + " newHeight="+newHeight);
 
 
 	}
 	
 
 	public void setCameraPoseNative(float cam_x,float cam_y,float cam_z, int id) {
-         AppLogger.getInstance().d(TAG, "Update Camera Pose..");
+         //AppLogger.getInstance().d(TAG, "Update Camera Pose..");
 
             this.rootNode.getControl(TrackableManager.class).updatePosition(id, new Vector3f(-cam_x, -cam_y, cam_z));
 
@@ -368,7 +375,7 @@ public class VuforiaJME extends SimpleApplication {
 
 
 
-        scenarioManager.simpleUpdate(tpf);
+        //iScenarioManager.simpleUpdate(tpf);
 
 
         // Update the world depending on what is in focus

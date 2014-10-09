@@ -3,6 +3,10 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.ar4android.vuforiaJME.AppGetter;
 import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
+import com.jme3.app.Application;
+import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AbstractAppState;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
@@ -37,52 +41,22 @@ import java.util.List;
  *
  * Created by jimbojd72 on 9/3/14.
  */
-public class ScenarioManager  implements IScenarioManager
+public class ScenarioManager  extends AbstractAppState implements IScenarioManager
 {
 
+    private SimpleApplication app;
+    
     private static final String TOUCH_EVENT_NAME = "Touch";
     private static final String RIGHT_CLICK_MOUSE_EVENT_NAME = "Mouse";
     private Node guiNode;
     private Camera camera;
+    private AssetManager assetManager;
+    private RenderManager renderManager;
+    private InputManager inputManager;
+    private AppSettings settings;
+    private ApplicationType applicationType;
 
-    /**
-     * Initiate an HUD on the GUI Node.
-     * @param settings
-     * @param assetManager 
-     */
-    private void initGuiNode(AppSettings settings, AssetManager assetManager) {
-        final int imageWidth = settings.getWidth() / 15;
-        final int imageHeight = settings.getHeight() / 10;
-        
-        Picture pic1 = new Picture(NEXT_SCENARIO);
-        pic1.setName(NEXT_SCENARIO);
-        pic1.setImage(assetManager, "Interface/arrow.png", true);
-        pic1.setWidth(imageWidth);
-        pic1.setHeight(imageHeight);
-        Node node1 = new Node();
-        node1.setName(NEXT_SCENARIO);
-        node1.attachChild(pic1);
-        guiNode.attachChild(node1);
-        pic1.move(-imageWidth / 2, -imageHeight / 2, 0);
-        //node2.rotate(0, 0, -(float)Math.PI);
-        node1.move(settings.getWidth()-imageWidth/2,settings.getHeight()/2, 0);
-
-        Picture pic2 = new Picture(PREVIOUS_SCENARIO);
-        pic2.setName(PREVIOUS_SCENARIO);
-        pic2.setImage(assetManager, "Interface/arrow.png", true);
-        pic2.setWidth(imageWidth);
-        pic2.setHeight(imageHeight);
-        Node node2 = new Node();
-        node2.setName(PREVIOUS_SCENARIO);
-        node2.attachChild(pic2);
-        guiNode.attachChild(node2);
-        pic2.move(-imageWidth/2, -imageHeight/2, 0);
-        node2.rotate(0, 0, -(float)Math.PI);
-        node2.move(imageWidth/2,settings.getHeight()/2, 0);
-    }
-
-
-            /**
+   /**
      * An enum that provide insight to the manager to which scale/rotation it must provide to the scenario
      * created to fit in to the Android app or the JMonkey SDK app.
      */
@@ -121,21 +95,30 @@ public class ScenarioManager  implements IScenarioManager
     private static final String MICRO = "Micro";
     private static final String FREQUENCY_SWITCH = "FrequencySwitch";
     
-    public ScenarioManager(ApplicationType applicationType,
+    public ScenarioManager(SimpleApplication app,
+            ApplicationType applicationType,
+            List<Node> node,
+            Camera cam,
+            AppListener appListener)
+    {
+        this.app = app;
+        this.nodeList = node;
+        this.appListener = appListener;
+        this.applicationType = applicationType;
+        this.assetManager  = this.app.getAssetManager();//AppGetter.getAssetManager();
+        this.renderManager = this.app.getRenderManager();
+        this.inputManager  = this.app.getInputManager();
+        this.settings      = this.app.getContext().getSettings();
+        this.guiNode       = this.app.getGuiNode();
+        this.camera        = cam;
+        AppGetter.setWorldScaleDefault(this.applicationType == ApplicationType.DESKTOP || this.applicationType == ApplicationType.ANDROID_DEV_FRAMEWORK ? 10 : 100);
+    }
+    
+    private void init(ApplicationType applicationType,
             List<Node> node,
             Camera cam,
             AppListener appListener)
     {   
-        this.appListener = appListener;
-        
-        AppGetter.setWorldScaleDefault(applicationType == ApplicationType.DESKTOP || applicationType == ApplicationType.ANDROID_DEV_FRAMEWORK ? 10 : 100);
-        AssetManager assetManager   = AppGetter.getAssetManager();
-        RenderManager renderManager = AppGetter.getRenderManager();
-        InputManager inputManager   = AppGetter.getInputManager();
-        AppSettings settings        = AppGetter.getAppSettings();
-        this.guiNode                =  AppGetter.getGuiNode();
-        this.camera                 = cam;
-
         
         //This a list of all the scenario that we will rotate/scale according
         //to which environment we are in. Don't forget to add scenario in it. 
@@ -166,7 +149,7 @@ public class ScenarioManager  implements IScenarioManager
         soundEmission.setName("SoundEmission");
         scenarios.add(soundEmission);
         
-        adjustScenario(applicationType, scenarios, renderManager, inputManager);
+        adjustScenario(this.applicationType, scenarios, renderManager, inputManager);
         
         //Add first scenario
         List<Scenario> soundCaptureList = new ArrayList<Scenario>();
@@ -205,6 +188,42 @@ public class ScenarioManager  implements IScenarioManager
 
     }
 
+    /**
+     * Initiate an HUD on the GUI Node.
+     * @param settings
+     * @param assetManager 
+     */
+    private void initGuiNode(AppSettings settings, AssetManager assetManager) {
+        final int imageWidth = settings.getWidth() / 15;
+        final int imageHeight = settings.getHeight() / 10;
+        
+        Picture pic1 = new Picture(NEXT_SCENARIO);
+        pic1.setName(NEXT_SCENARIO);
+        pic1.setImage(assetManager, "Interface/arrow.png", true);
+        pic1.setWidth(imageWidth);
+        pic1.setHeight(imageHeight);
+        Node node1 = new Node();
+        node1.setName(NEXT_SCENARIO);
+        node1.attachChild(pic1);
+        guiNode.attachChild(node1);
+        pic1.move(-imageWidth / 2, -imageHeight / 2, 0);
+        //node2.rotate(0, 0, -(float)Math.PI);
+        node1.move(settings.getWidth()-imageWidth/2,settings.getHeight()/2, 0);
+
+        Picture pic2 = new Picture(PREVIOUS_SCENARIO);
+        pic2.setName(PREVIOUS_SCENARIO);
+        pic2.setImage(assetManager, "Interface/arrow.png", true);
+        pic2.setWidth(imageWidth);
+        pic2.setHeight(imageHeight);
+        Node node2 = new Node();
+        node2.setName(PREVIOUS_SCENARIO);
+        node2.attachChild(pic2);
+        guiNode.attachChild(node2);
+        pic2.move(-imageWidth/2, -imageHeight/2, 0);
+        node2.rotate(0, 0, -(float)Math.PI);
+        node2.move(imageWidth/2,settings.getHeight()/2, 0);
+    }
+    
     /**
      * Make transformation to the scenario according to the application type.
      * @param applicationType
@@ -360,6 +379,34 @@ public class ScenarioManager  implements IScenarioManager
         }
     }
 
+    @Override
+    public void initialize(AppStateManager stateManager, Application app) {
+      super.initialize(stateManager, app); 
+      init(applicationType, nodeList, camera, appListener);
+      // init stuff that is independent of whether state is PAUSED or RUNNING
+      
+   }
+     
+   @Override
+    public void cleanup() {
+      super.cleanup();
+      // unregister all my listeners, detach all my nodes, etc.../*
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+      // Pause and unpause
+      super.setEnabled(enabled);
+      /*if(enabled){
+        // init stuff that is in use while this state is RUNNING
+        this.app.getRootNode().attachChild(getX()); // modify scene graph...
+        this.app.doSomethingElse();                 // call custom methods...
+      } else {
+        // take away everything not needed while this state is PAUSED
+        ...
+      }*/
+    }
+    
     //TODO: MODIFY THIS TO RECEIVE A LIST<NODE> TO ATTACH THE SCENARIO TO THE RIGHT TRACKABLE/NODE
     @Override
     public void setNextScenario() {
@@ -411,7 +458,8 @@ public class ScenarioManager  implements IScenarioManager
      * To be call to update the scenario
      * @param tpf
      */
-    public void simpleUpdate(float tpf){
+    @Override
+    public void update(float tpf){
 
         for(Scenario scenario : getCurrentScenario().getScenarios() )
         {
