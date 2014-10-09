@@ -1,0 +1,350 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.galimatias.teslaradio.world.Scenarios;
+
+import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.TextBox;
+import com.galimatias.teslaradio.world.observer.EmitterObserver;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
+import com.jme3.font.BitmapFont;
+import com.jme3.input.event.TouchEvent;
+import static com.jme3.input.event.TouchEvent.Type.DOWN;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+
+/**
+ *
+ * @author Barliber
+ */
+
+public class Demodulation extends Scenario implements EmitterObserver  {
+
+    private final static boolean DEBUG_ANGLE = true;
+    
+    private Camera cam;
+    private Spatial destinationHandle;
+    
+    // 3D objects of the scene
+    private Spatial demodulationButton;
+    private Spatial actionSwitch;
+    private Spatial peg;
+    
+    // TextBox of the scene
+    private TextBox titleTextBox;
+
+    // Default text to be seen when scenario starts
+    private String titleText = "La Démodulation";
+    private float titleTextSize = 0.5f;
+    private ColorRGBA defaultTextColor = ColorRGBA.Green;
+    
+     //Variable for switch
+    private float initAngleSwitch;
+    private float tpfCumul = 0;
+    private float tpfCumulButton = 0;
+    private Quaternion rotationXSwitch = new Quaternion();
+    
+    private Boolean isFM = true;
+    private Boolean switchIsToggled = false;
+    
+    //-----------------Particles----------------------------------------------
+     // Signals emitters 
+    private Node inputModule = new Node();
+    private Node inputDemodulation = new Node();
+    private Node outputAntenneRx = new Node();
+    
+    // Handles for the emitter positions
+    private Spatial pathInputPeg;
+    private Spatial pathOutputPeg; // and Input demodulateur
+    
+    //Test
+    // Output signals
+    private Geometry cubeOutputSignal;
+    
+    // Paths
+    private Geometry inputPegPath;
+    private Geometry outputPegPath;
+    
+    
+    // this is PIIIIIII! (kick persian)
+    private final float pi = (float) Math.PI;
+    
+    //Angle for test purposes
+    private float trackableAngle = 0;
+    private int direction = 1;
+    
+    public Demodulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle){
+        super(Camera, destinationHandle);
+
+        this.cam = Camera;
+        this.destinationHandle = destinationHandle;
+
+        loadUnmovableObjects();
+        loadMovableObjects();   
+        
+    }
+    
+    
+    @Override
+    protected void loadUnmovableObjects() {
+        scene = (Node) assetManager.loadModel("Models/Demodulation/Demodulation.j3o");
+        scene.setName("Demodulation");
+        this.attachChild(scene);
+        
+        //scene rotation
+        scene.setLocalTranslation(new Vector3f(1.2f, 0.0f, 1.3f));
+        Quaternion rot = new Quaternion();
+        rot.fromAngleAxis(-pi/2, Vector3f.UNIT_Y);
+        scene.setLocalRotation(rot);
+        
+        initTitleBox();
+                
+        pathInputPeg = scene.getChild("Handle.In");
+        
+         // Get the different paths
+        Node wireInputPeg_node = (Node) scene.getChild("Path.In.Object");
+        inputPegPath = (Geometry) wireInputPeg_node.getChild("Path.In.Nurbs");
+        Node wireOutputPeg_node = (Node) scene.getChild("Cube.005");
+        outputPegPath = (Geometry) wireOutputPeg_node.getChild("Cube.0181");
+       
+        initParticlesEmitter(inputModule, pathInputPeg, inputPegPath, null);
+        
+        // Set names for the emitters  // VOir si utile dans ce module
+        inputModule.setName("InputModule");
+
+        inputModule.getControl(ParticleEmitterControl.class).registerObserver(this);
+        
+    }
+
+    @Override
+    protected void loadMovableObjects() {
+        demodulationButton = scene.getChild("Button");
+        actionSwitch = scene.getChild("Switch");
+        peg = scene.getChild("Circle");
+        initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
+       
+        //Assign touchable
+        touchable = new Node();//(Node) scene.getParent().getChild("Touchable")
+        touchable.attachChild(actionSwitch);
+        scene.attachChild(touchable);
+    }
+    
+    //Dynamic move
+    private void checkModulationMode(float tpf) {
+        if (switchIsToggled) {
+            tpfCumul = tpfCumul + 3 * tpf;
+            switchRotation(isFM, tpfCumul);
+            float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
+            if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
+                switchIsToggled = false;
+                tpfCumul = 0;
+            }
+        }
+    }
+    
+    private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
+        scene.attachChild(signalEmitter);
+        signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
+        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
+    }
+    
+    private void switchRotation(boolean isFM, float tpfCumul) {
+        if (!isFM) {
+            System.out.println("!isFM");
+            rotationXSwitch.fromAngleAxis(angleRangeTwoPi(initAngleSwitch - tpfCumul), Vector3f.UNIT_X);
+            actionSwitch.setLocalRotation(rotationXSwitch);
+        } else {
+            System.out.println("isFM");
+            rotationXSwitch.fromAngleAxis(angleRangeTwoPi(-initAngleSwitch + tpfCumul), Vector3f.UNIT_X);
+            actionSwitch.setLocalRotation(rotationXSwitch);
+        }
+    }
+    
+    //convert angle for range [0 ; 2pi]
+    private float angleRangeTwoPi(float angle) {
+        float resultat = 0;
+        if (angle >= 0) {
+            resultat = angle;
+        } else {
+            resultat = 2 * pi + angle;
+        }
+        return resultat;
+    }
+
+    public void toggleModulationMode() {
+        if (!switchIsToggled) {
+            isFM = !isFM;
+            switchIsToggled = true;
+        }
+    }
+
+    @Override
+    public void restartScenario() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
+         switch (touchEvent.getType()) {
+
+            //Checking for down event is very responsive
+            case DOWN:
+
+                //case TAP:
+                if (name.equals("Touch")) {
+                    // 1. Reset results list.
+                    CollisionResults results = new CollisionResults();
+
+                    // 2. Mode 1: user touch location.
+                    //Vector2f click2d = inputManager.getCursorPosition();
+
+                    Vector2f click2d = new Vector2f(touchEvent.getX(), touchEvent.getY());
+                    Vector3f click3d = Camera.getWorldCoordinates(
+                            new Vector2f(click2d.x, click2d.y), 0f).clone();
+                    Vector3f dir = Camera.getWorldCoordinates(
+                            new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+                    Ray ray = new Ray(click3d, dir);
+
+                    // 3. Collect intersections between Ray and Shootables in results list.
+                    touchable.collideWith(ray, results);
+
+                    // 4. Print the results
+                    //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
+                    for (int i = 0; i < results.size(); i++) {
+                        // For each hit, we know distance, impact point, name of geometry.
+                        float dist = results.getCollision(i).getDistance();
+                        Vector3f pt = results.getCollision(i).getContactPoint();
+                        String hit = results.getCollision(i).getGeometry().getName();
+
+                        //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+                    }
+
+                    // 5. Use the results (we mark the hit object)
+                    if (results.size() > 0) {
+
+                        // The closest collision point is what was truly hit:
+                        CollisionResult closest = results.getClosestCollision();
+
+                        Spatial touchedGeometry = closest.getGeometry();
+                        String nameToCompare = touchedGeometry.getParent().getName();
+
+                        if (nameToCompare.equals(this.getChild("Switch").getName())) {
+                            toggleModulationMode();
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    @Override
+    public boolean simpleUpdate(float tpf) {
+       checkModulationMode(tpf);
+        if (DEBUG_ANGLE) {
+            tpfCumulButton = tpf+ tpfCumulButton;
+            rotationAxeY(tpfCumulButton, demodulationButton);
+            if(tpfCumulButton > 2*pi){
+                tpfCumulButton = 0;
+            }
+            checkTrackableAngle(tpfCumulButton);
+        } else {
+            trackableAngle = this.getUserData("angleX");
+            rotationAxeY(trackableAngle, demodulationButton);
+            checkTrackableAngle(trackableAngle);
+        }
+     
+        return false;
+    }
+
+    @Override
+    public void setGlobalSpeed(float speed) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onAudioEvent() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Spatial getInputHandle() {
+        return inputModule;
+    }
+
+    @Override
+    public void signalEndOfPath(Geometry caller, float magnitude) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void emitterObserverUpdate(Spatial spatial, String notifierId) {
+    }
+    
+    private void rotationAxeY(float ZXangle, Spatial object) { 
+        Quaternion rot = new Quaternion();
+        rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
+        object.setLocalRotation(rot);
+        float[] angle = new float[3];
+        object.getLocalRotation().toAngles(angle);
+        System.out.println("object" + object +"zz"+ angle[1]);
+    }
+    
+    private void checkTrackableAngle(float trackableAngle) {
+        float stepRange = 2 * pi / 3;
+        float stepPeg = 0;
+
+        if (trackableAngle >= 0 && trackableAngle < stepRange) {
+            //changeModulation(1, isFM);
+        } else if (trackableAngle >= stepRange && trackableAngle < 2 * stepRange) {
+            //changeModulation(2, isFM);
+            System.out.println("stepRange");
+            stepPeg = stepRange;
+        } else if (trackableAngle >= 2 * stepRange && trackableAngle < 3 * stepRange) {
+            //changeModulation(3, isFM);
+            stepPeg = 2 * stepRange;
+        }
+        System.out.println("aazzae" + stepPeg);
+        rotationAxeY(stepPeg, peg);
+    }
+    
+    private void initTitleBox() {
+
+        boolean lookAtCamera = false;
+        boolean showDebugBox = false;
+        float textBoxWidth = 5.2f;
+        float textBoxHeight = 0.8f;
+
+        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
+        titleTextBox = new TextBox(assetManager,
+               titleText,
+               titleTextSize,
+               titleTextColor,
+               titleBackColor,
+               textBoxWidth,
+               textBoxHeight,
+               "titleText",
+               BitmapFont.Align.Center.Center,
+               showDebugBox,
+               lookAtCamera);
+
+        //move the text on the ground without moving
+        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
+        titleTextBox.rotate((float) -Math.PI / 2, 0, 0);
+
+        titleTextBox.move(titleTextPosition);
+        this.attachChild(titleTextBox);
+    }
+    
+}
