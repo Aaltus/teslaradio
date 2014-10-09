@@ -52,7 +52,7 @@ public class SoundControl extends AbstractControl {
            }
        }catch(Exception e){
            /*Empty except, called if a user data is non existant*/
-           System.out.println(e);
+           
        }
         
     }
