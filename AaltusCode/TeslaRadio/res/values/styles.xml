@@ -1,0 +1,60 @@
+<resources>
+
+
+    <!--Change this color if you want to change the action bar color-->
+    <drawable name="global_app_color">#FAC9D6</drawable>
+    <drawable name="button_pressed_app_color">#E5BEC8</drawable>
+    <drawable name="GreyTransparent">#CC212121</drawable>
+
+    <!--For splashscreen-->
+    <style name="Theme.NoBackground" parent="android:Theme">
+        <item name="android:windowBackground">@null</item>
+    </style>
+
+    <!--Informative menu style-->
+    <style name="InformativeMenuTextStyle">
+        <item name="android:gravity">left</item>
+        <item name="android:layout_gravity">center_vertical|right</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <!--<item name="android:textSize">10sp</item>-->
+
+    </style>
+    <style name="InformativeMenuImageViewStyle">
+        <item name="android:background">@drawable/imageview_bg</item>
+    </style>
+
+    <style name="MyDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTitleStyle">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:gravity">center</item>
+
+        <!--<item name="android:windowIsTranslucent">true</item>-->
+        <!--<item name="android:backgroundDimEnabled">false</item>-->
+        <!--<item name="android:windowBackground">@drawable/window_layout_bg</item>-->
+
+    </style>
+
+    <style name="LanguageMenuTextStyle">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center_vertical|center_horizontal</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+
+    </style>
+    <style name="ListFragmentPadding">
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+    </style>
+    <style name="SeekBarLinearLayoutStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+
+</resources>

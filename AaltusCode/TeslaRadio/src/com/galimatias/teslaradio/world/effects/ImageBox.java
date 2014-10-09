@@ -14,7 +14,7 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
-
+import com.utils.AppLogger;
 
 /**
  * This class provides a floating 2D image for the 3D world. 

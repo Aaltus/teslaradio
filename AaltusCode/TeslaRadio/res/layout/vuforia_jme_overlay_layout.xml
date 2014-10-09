@@ -1,0 +1,175 @@
+<!--
+Jonathan Desmarais 3/18/2014
+
+This layout is inflated on top of the jMonkey view
+to superpose list and detail fragment and put some
+button on the handset.
+-->
+
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/activity_item_twopane_2_rootview"
+        android:clickable="false"
+        >
+
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:showDividers="middle"
+                android:layout_weight="1"
+             >
+
+            <LinearLayout android:layout_width="wrap_content"
+                          android:layout_height="fill_parent"
+                          android:orientation="vertical"
+                          android:gravity="top"
+                    >
+                <LinearLayout android:layout_width="50dp"
+                              android:layout_margin="5dp"
+                              android:orientation="vertical"
+                              android:layout_height="wrap_content"
+                              android:layout_weight="1"/>
+                <!--<Button
+
+                        android:layout_height="50dp"
+                        android:layout_width="50dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/button_bg"/>-->
+
+                <LinearLayout android:layout_width="50dp"
+                              android:layout_margin="5dp"
+                              android:orientation="vertical"
+                              android:layout_height="wrap_content"
+                              android:layout_weight="1"/>
+                <!--<Button
+
+                        android:layout_height="50dp"
+                        android:layout_width="50dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/button_bg"
+
+                        />-->
+
+            </LinearLayout>
+
+            <include layout="@layout/item_detail_fragment_container"/>
+
+            <LinearLayout android:layout_width="wrap_content"
+                          android:layout_height="fill_parent"
+                          android:orientation="vertical"
+                          android:id="@+id/linear_layout_global_buttons"
+                          android:gravity="top"
+                    >
+                <!--<Button-->
+                        <!--android:id="@+id/camera_toggle_refresh_button"-->
+                        <!--android:layout_height="50dp"-->
+                        <!--android:layout_width="50dp"-->
+                        <!--android:layout_margin="5dp"-->
+                        <!--android:background="@drawable/layer_list_refresh"/>-->
+                <Button
+                        android:id="@+id/camera_toggle_info_button"
+                        android:layout_height="50dp"
+                        android:layout_width="50dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/layer_list_info"/>
+                <!--android:background="@drawable/browser"-->
+                <!-- This is the vertical seek bar
+                <LinearLayout android:layout_width="50dp"
+                              android:layout_margin="5dp"
+                              android:orientation="vertical"
+
+                              style="@style/SeekBarLinearLayoutStyle">
+
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_gravity="center"
+                              android:text="Speed"
+                              android:textColor="@color/white"/>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:id="@+id/seekbar_value_text"
+                              android:layout_gravity="center"
+                              android:text="50%"
+                              android:textColor="@color/white"/>
+                    <com.utils.VerticalSeekBar
+                            android:id="@+id/seekBar1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"
+                            android:progressDrawable="@drawable/apptheme_scrubber_progress_horizontal_holo_light"
+                            android:thumb="@drawable/apptheme_scrubber_control_selector_holo_light"/>
+
+                </LinearLayout>
+                -->
+                <LinearLayout android:layout_width="50dp"
+                              android:layout_margin="5dp"
+                              android:orientation="vertical"
+                              android:layout_height="wrap_content"
+                              android:layout_weight="1"
+                        android:gravity="center">
+
+                    <!--<Button
+
+                            android:layout_height="50dp"
+                            android:layout_width="50dp"
+                            android:layout_margin="5dp"
+                            android:background="@drawable/button_bg"
+                            android:layout_gravity="center"/>-->
+
+                </LinearLayout>
+                <Button
+                        android:id="@+id/camera_toggle_language_button"
+                        android:layout_height="50dp"
+                        android:layout_width="50dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/layer_list_language"
+
+                        />
+            </LinearLayout>
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+        <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:showDividers="middle"
+                android:layout_weight="1"
+                >
+
+            <FrameLayout
+                    android:id="@+id/item_list_fragment_vuforia"
+                    android:layout_height="fill_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    style="@style/ListFragmentPadding"/>
+
+            <FrameLayout
+                    android:layout_height="fill_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
+                    android:layout_gravity="center_vertical"
+                    />
+
+        </LinearLayout>
+    </FrameLayout>
+</FrameLayout>
