@@ -41,7 +41,7 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
     }
     
     private Spatial destinationHandle;
-    private float radius;
+    private float maxScale;
     private Material material;
     private AreaType areaType = AreaType.SPHERE;
     
@@ -58,7 +58,7 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
         //path = new MotionPath();
         
         this.speed = speed;
-        this.radius = maxScale;
+        this.maxScale = maxScale;
         this.destinationHandle = destinationHandle;
         this.material = material;
         setAreaType(areaType);
@@ -91,7 +91,7 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
     @Override
     public void emitParticle(Spatial spatialToSend) {
         
-        emitParticle(spatialToSend, this.radius*spatialToSend.getLocalScale().length());
+        emitParticle(spatialToSend, this.maxScale);
     }
     
     private void emitParticle(Spatial spatialToSend, float scale) {

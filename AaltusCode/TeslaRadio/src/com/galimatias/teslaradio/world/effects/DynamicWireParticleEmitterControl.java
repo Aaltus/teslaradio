@@ -85,7 +85,6 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         // disconnect particle from this particle emitter
         toBeDeletedSpatial.removeControl(SignalControl.class);
         toBeDeletedSpatial.removeFromParent();
-        toBeDeletedSpatial.setLocalTranslation(0, 0, 0);
         
         // notify Registered observers of the ParticleEmitter
         this.notifyObservers(toBeDeletedSpatial, this.spatial.getName());
