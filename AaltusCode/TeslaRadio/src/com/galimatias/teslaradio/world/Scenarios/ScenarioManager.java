@@ -44,10 +44,12 @@ import java.util.List;
 public class ScenarioManager  extends AbstractAppState implements IScenarioManager
 {
 
-    private SimpleApplication app;
+    
     
     private static final String TOUCH_EVENT_NAME = "Touch";
     private static final String RIGHT_CLICK_MOUSE_EVENT_NAME = "Mouse";
+    
+    private SimpleApplication app;
     private Node guiNode;
     private Camera camera;
     private AssetManager assetManager;
@@ -112,6 +114,8 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
         this.guiNode       = this.app.getGuiNode();
         this.camera        = cam;
         AppGetter.setWorldScaleDefault(this.applicationType == ApplicationType.DESKTOP || this.applicationType == ApplicationType.ANDROID_DEV_FRAMEWORK ? 10 : 100);
+        init(applicationType, nodeList, camera, appListener);
+        
     }
     
     private void init(ApplicationType applicationType,
@@ -149,7 +153,8 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
         soundEmission.setName("SoundEmission");
         scenarios.add(soundEmission);
         
-        adjustScenario(this.applicationType, scenarios, renderManager, inputManager);
+        addInputMapping(this.applicationType);
+        adjustScenario(this.applicationType, scenarios, renderManager);
         
         //Add first scenario
         List<Scenario> soundCaptureList = new ArrayList<Scenario>();
@@ -229,15 +234,11 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
      * @param applicationType
      * @param scenarios
      */
-    private void adjustScenario(ApplicationType applicationType, List<Scenario> scenarios, RenderManager renderManager, InputManager inputManager)
+    private void adjustScenario(ApplicationType applicationType, List<Scenario> scenarios, RenderManager renderManager)
     {
         switch(applicationType)
         {
             case ANDROID:
-
-                //Add mapping for touch input only for android device
-                inputManager.addMapping(TOUCH_EVENT_NAME, new TouchTrigger(0));
-                inputManager.addListener(this, new String[]{TOUCH_EVENT_NAME});
 
                 //This is the rotation to put a scenarion in the correct angle for VuforiaJME
                 Quaternion rot = new Quaternion();
@@ -259,10 +260,7 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
                 }
                 break;
             case ANDROID_DEV_FRAMEWORK:
-
-                //Add mapping for touch input only for android device
-                inputManager.addMapping(TOUCH_EVENT_NAME, new TouchTrigger(0));
-                inputManager.addListener(this, new String[]{TOUCH_EVENT_NAME});
+                
 
                 //This is the rotation to put a scenarion in the correct angle for VuforiaJME
                 //Quaternion rot = new Quaternion();
@@ -285,42 +283,53 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
 
                 break;
             case DESKTOP:
-                if(inputManager != null){
-                        // You can map one or several inputs to one named action
-                        inputManager.addMapping(DRUM, new KeyTrigger(KeyInput.KEY_T));
-                        inputManager.addMapping(GUITAR, new KeyTrigger(KeyInput.KEY_G));
-                        inputManager.addMapping(TEXT, new KeyTrigger(KeyInput.KEY_H));
-                        inputManager.addMapping(MICRO, new KeyTrigger(KeyInput.KEY_M));
-                        inputManager.addMapping(NEXT_SCENARIO, new KeyTrigger(KeyInput.KEY_P));
-                        inputManager.addMapping(PREVIOUS_SCENARIO, new KeyTrigger(KeyInput.KEY_O));
-                        //We add mapping for right click because left click are already implemented.
-                        inputManager.addMapping(RIGHT_CLICK_MOUSE_EVENT_NAME, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-
-                        // Add the names to the action listener.
-                        inputManager.addListener(this, DRUM);
-                        inputManager.addListener(this, GUITAR);
-                        inputManager.addListener(this, TEXT);
-                        inputManager.addListener(this, MICRO);
-                        inputManager.addListener(this, NEXT_SCENARIO);
-                        inputManager.addListener(this, PREVIOUS_SCENARIO);
-                        inputManager.addListener(this, RIGHT_CLICK_MOUSE_EVENT_NAME);
-
-
-                    }
-                
                 for (Scenario scenario : scenarios) {
-                    
                     scenario.scale(AppGetter.getWorldScalingDefault());
                 }
-                
-                break;
-                
-            default:
                 
                 break;
         }
     }
 
+    private void addInputMapping(ApplicationType applicationType)
+    {
+        switch(applicationType)
+        {
+            case ANDROID:
+            case ANDROID_DEV_FRAMEWORK:
+                //Add mapping for touch input only for android device
+                inputManager.addMapping(TOUCH_EVENT_NAME, new TouchTrigger(0));
+                inputManager.addListener(this, new String[]{TOUCH_EVENT_NAME});
+                break;
+            case DESKTOP:
+
+                // You can map one or several inputs to one named action
+                inputManager.addMapping(DRUM, new KeyTrigger(KeyInput.KEY_T));
+                inputManager.addMapping(GUITAR, new KeyTrigger(KeyInput.KEY_G));
+                inputManager.addMapping(TEXT, new KeyTrigger(KeyInput.KEY_H));
+                inputManager.addMapping(MICRO, new KeyTrigger(KeyInput.KEY_M));
+                inputManager.addMapping(NEXT_SCENARIO, new KeyTrigger(KeyInput.KEY_P));
+                inputManager.addMapping(PREVIOUS_SCENARIO, new KeyTrigger(KeyInput.KEY_O));
+                //We add mapping for right click because left click are already implemented.
+                inputManager.addMapping(RIGHT_CLICK_MOUSE_EVENT_NAME, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+                
+                // Add the names to the action listener.
+                inputManager.addListener(this, DRUM);
+                inputManager.addListener(this, GUITAR);
+                inputManager.addListener(this, TEXT);
+                inputManager.addListener(this, MICRO);
+                inputManager.addListener(this, NEXT_SCENARIO);
+                inputManager.addListener(this, PREVIOUS_SCENARIO);
+                inputManager.addListener(this, RIGHT_CLICK_MOUSE_EVENT_NAME);
+                break;
+        }
+    }
+    
+    private void removeInputMapping(ApplicationType applicationType)
+    {
+        this.inputManager.removeListener(this);
+    }
+    
 
     private ScenarioGroup getCurrentScenario() {
         return currentScenario;
@@ -382,7 +391,7 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
       super.initialize(stateManager, app); 
-      init(applicationType, nodeList, camera, appListener);
+      attachCurrentScenario();
       // init stuff that is independent of whether state is PAUSED or RUNNING
       
    }
@@ -390,7 +399,12 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
    @Override
     public void cleanup() {
       super.cleanup();
+      detachCurrentScenario();
+      removeInputMapping(this.applicationType);
+      
       // unregister all my listeners, detach all my nodes, etc.../*
+      
+      
     }
 
     @Override
