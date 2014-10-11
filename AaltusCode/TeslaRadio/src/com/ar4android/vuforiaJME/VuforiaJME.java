@@ -88,10 +88,12 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
         initForegroundCamera(mForegroundCamFOVY); // stay here
 
         //initBackgroundScene();                    //Init the background tracking
-        //initForegroundScene(this.rootNode.getControl(TrackableManager.class).getScenarioNodeList(),, ScenarioManager.ApplicationType.ANDROID);
+        //initForegroundScene(this.rootNode.getControl(TrackableManager.class).getScenarioNodeList(), ScenarioManager.ApplicationType.ANDROID, fgCam);
 
         initBackgroundSceneDemo();
-		initForegroundScene(mainState.getNodeList(), ScenarioManager.ApplicationType.ANDROID_DEV_FRAMEWORK);                    // replace in the state
+		initForegroundScene(mainState.getNodeList(), ScenarioManager.ApplicationType.ANDROID_DEV_FRAMEWORK, this.getCamera());                    // replace in the state
+
+
 
         appListener.onFinishSimpleInit();
 	}
@@ -99,7 +101,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
 
 
 
-    public void initForegroundScene(List<Node> nodeList, ScenarioManager.ApplicationType appType) {
+    public void initForegroundScene(List<Node> nodeList, ScenarioManager.ApplicationType appType, Camera cam) {
 
         AppLogger.getInstance().d(TAG, "initForegroundScene");
 
@@ -108,7 +110,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
         scenarioManager = new ScenarioManager(this,
                 appType,
                 nodeList,
-                fgCam,
+                cam,
                 appListener);
         this.getStateManager().attach(scenarioManager);
 
