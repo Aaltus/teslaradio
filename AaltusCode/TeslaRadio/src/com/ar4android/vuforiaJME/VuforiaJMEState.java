@@ -31,6 +31,9 @@ public class VuforiaJMEState extends AbstractAppState
     private RenderManager renderManager;
     private Node rootNode;
     private Camera fgCam;
+    public void setCamera(Camera cam){
+        fgCam = cam;
+    }
 
     private Camera videoBGCam;
     // The geometry which will represent the video background
@@ -79,7 +82,7 @@ public class VuforiaJMEState extends AbstractAppState
     // graph
     public void initVideoBackground(int screenWidth, int screenHeight) {
 
-        AppLogger.getInstance().d(TAG, "* initVideoBackground with width : " + Integer.toString(screenWidth) + " height: " + Integer.toString(screenHeight));
+        AppLogger.getInstance().d(TAG, "initVideoBackground with width : " + Integer.toString(screenWidth) + " height: " + Integer.toString(screenHeight));
 
         // Create a Quad shape.
         Quad videoBGQuad = new Quad(1, 1, true);
@@ -131,7 +134,9 @@ public class VuforiaJMEState extends AbstractAppState
         // Log.d(TAG,"Update Camera Perspective..");
 
         //Log.d(TAG,"setCameraPerspectiveNative with fovY : " + Float.toString(fovY) + " aspectRatio: " + Float.toString(aspectRatio) );
-        fgCam.setFrustumPerspective(fovY,aspectRatio, 1.f, 100000.f);
+        if(fgCam != null){
+            fgCam.setFrustumPerspective(fovY,aspectRatio, 1.f, 100000.f);
+        }
     }
 
     public void setCameraViewportNative(float viewport_w,float viewport_h,float size_x,float size_y) {

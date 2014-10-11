@@ -84,19 +84,41 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
 		setDisplayFps(true);
 
 
+        /*
+        Node for Jimbo, old way of initializing vuforiaJME
+        // We use custom viewports - so the main viewport does not need to contain the rootNode
+		viewPort.detachScene(rootNode);
+
+
+		initTracking(settings.getWidth(), settings.getHeight());
+		initVideoBackground(settings.getWidth(), settings.getHeight());
+		initBackgroundCamera();
+
+        initForegroundCamera(mForegroundCamFOVY);
+
+		initForegroundScene();
+         */
+
+
+
         initLights();
-        initForegroundCamera(mForegroundCamFOVY); // stay here
 
-        //initBackgroundScene();                    //Init the background tracking
-        //initForegroundScene(this.rootNode.getControl(TrackableManager.class).getScenarioNodeList(), ScenarioManager.ApplicationType.ANDROID, fgCam);
+        //WARNING: IT IS IMPORTANT TO SETUP THE fgCam After the Background scene.
+        //Otherwise the camera background will be OVER the 3d models.
+        initBackgroundScene(null);                    //Init the background tracking
+        initForegroundCamera(mForegroundCamFOVY);
+        vuforiaJMEState.setCamera(fgCam);
+        initForegroundScene(this.rootNode.getControl(TrackableManager.class).getScenarioNodeList(), ScenarioManager.ApplicationType.ANDROID, this.fgCam);
 
+        //To test only our 3d model
+        /*
         initBackgroundSceneDemo();
 		initForegroundScene(mainState.getNodeList(), ScenarioManager.ApplicationType.ANDROID_DEV_FRAMEWORK, this.getCamera());                    // replace in the state
         if(androidActivityListener != null){
             androidActivityListener.pauseTracking();
             //androidActivityListener.startTracking();
-        }
-        
+        }*/
+
 
         androidActivityListener.onFinishSimpleInit();
 	}
@@ -108,8 +130,6 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
 
         AppLogger.getInstance().d(TAG, "initForegroundScene");
 
-        this.rootNode.addControl(new TrackableManager());
-
         scenarioManager = new ScenarioManager(this,
                 appType,
                 nodeList,
@@ -119,14 +139,16 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
 
 	}
 
-    public void initBackgroundScene() {
+    public void initBackgroundScene(Camera camera) {
 
-
-        AppLogger.getInstance().d(TAG, "initBackgroundScene");
         // We use custom viewports - so the main viewport does not need to contain the rootNode
         viewPort.detachScene(rootNode);
+        this.rootNode.addControl(new TrackableManager());
+
+        AppLogger.getInstance().d(TAG, "initBackgroundScene");
+
         vuforiaJMEState = new VuforiaJMEState(this,
-                fgCam);
+                camera);
         this.getStateManager().attach(vuforiaJMEState);
 
 

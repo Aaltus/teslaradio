@@ -56,7 +56,11 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
     private AppSettings settings;
     private ApplicationType applicationType;
 
-   /**
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+    }
+
+    /**
      * An enum that provide insight to the manager to which scale/rotation it must provide to the scenario
      * created to fit in to the Android app or the JMonkey SDK app.
      */
@@ -110,16 +114,15 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
         this.inputManager  = this.app.getInputManager();
         this.settings      = this.app.getContext().getSettings();
         this.guiNode       = this.app.getGuiNode();
-        this.camera        = cam;
+        this.setCamera(cam);
         AppGetter.setWorldScaleDefault(this.applicationType == ApplicationType.DESKTOP || this.applicationType == ApplicationType.ANDROID_DEV_FRAMEWORK ? 10 : 100);
-        init(applicationType, nodeList, camera, androidActivityListener);
+        init(nodeList, this.camera);
         
     }
     
-    private void init(ApplicationType applicationType,
+    private void init(
             List<Node> node,
-            Camera cam,
-            AndroidActivityListener androidActivityListener)
+            Camera cam)
     {   
         
         //This a list of all the scenario that we will rotate/scale according
@@ -323,7 +326,7 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
         }
     }
     
-    private void removeInputMapping(ApplicationType applicationType)
+    private void removeInputMapping()
     {
         this.inputManager.removeListener(this);
     }
@@ -398,7 +401,7 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
     public void cleanup() {
       super.cleanup();
       detachCurrentScenario();
-      removeInputMapping(this.applicationType);
+      removeInputMapping();
       
       // unregister all my listeners, detach all my nodes, etc.../*
       
