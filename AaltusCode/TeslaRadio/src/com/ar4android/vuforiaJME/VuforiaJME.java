@@ -56,13 +56,13 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
 	}
 
     //A Applistener that we will be using for callback
-    private AppListener appListener;
+    private AndroidActivityListener androidActivityListener;
 
-    //A way to register to the appListener
+    //A way to register to the androidActivityListener
     @Override
-    public void setAppListener(AppListener appListener)
+    public void setAndroidActivityListener(AndroidActivityListener androidActivityListener)
     {
-        this.appListener = appListener;
+        this.androidActivityListener = androidActivityListener;
     }
 
 	// The default method used to initialize your JME application.
@@ -92,10 +92,13 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
 
         initBackgroundSceneDemo();
 		initForegroundScene(mainState.getNodeList(), ScenarioManager.ApplicationType.ANDROID_DEV_FRAMEWORK, this.getCamera());                    // replace in the state
+        if(androidActivityListener != null){
+            androidActivityListener.pauseTracking();
+            //androidActivityListener.startTracking();
+        }
+        
 
-
-
-        appListener.onFinishSimpleInit();
+        androidActivityListener.onFinishSimpleInit();
 	}
 
 
@@ -111,7 +114,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
                 appType,
                 nodeList,
                 cam,
-                appListener);
+                androidActivityListener);
         this.getStateManager().attach(scenarioManager);
 
 	}

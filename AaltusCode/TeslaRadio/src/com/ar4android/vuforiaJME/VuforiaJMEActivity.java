@@ -54,7 +54,7 @@ import java.util.concurrent.Callable;
  * Center of the Android side of the application. All Android view and specific thing are here.
  * It also initialize vuforia library and jme app.
  */
-public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements AppListener, IScenarioSwitcher {
+public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements AndroidActivityListener, IScenarioSwitcher {
 
     // Boolean to use the profiler. If it's set to true, you can get the tracefile on your phone /sdcard/traceFile.trace
     private static final boolean UseProfiler = false;
@@ -107,7 +107,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     private Object mShutdownLock = new Object();
 
     // QCAR initialization flags:
-    private int mQCARFlags = 0;
+    private int mQCARFlags = QCAR.GL_20;
 
     // Contextual Menu Options for Camera Flash - Autofocus
     private boolean mFlash = false;
@@ -235,6 +235,30 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
             }
         });
+    }
+
+    @Override
+    public void pauseTracking() {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pauseQCARandTasks(false);
+            }
+        });
+
+    }
+
+    @Override
+    public void startTracking() {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                resumeQCARandTasks();
+            }
+        });
+
     }
 
     public InformativeMenuFragment getInformativeMenuFragment()
@@ -752,8 +776,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             Debug.startMethodTracing("traceFile");
         }
 
-        //Set an AppListener to receive callbacks from VuforiaJME e.g. to show informative menu
-        ((VuforiaJME) app).setAppListener(this);
+        //Set an AndroidActivityListener to receive callbacks from VuforiaJME e.g. to show informative menu
+        ((VuforiaJME) app).setAndroidActivityListener(this);
 
         showSplashscreenDialog();
 
@@ -774,7 +798,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     }
 
-    public void resumeQCARandTasks() {
+    private void resumeQCARandTasks() {
         // QCAR-specific resume operation
         QCAR.onResume();
 
@@ -795,10 +819,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         AppLogger.getInstance().i(TAG, "onPause");
 		super.onPause();
 
-        pauseQCARandTasks();
+        pauseQCARandTasks(true);
 	}
 
-    public void pauseQCARandTasks() {
+    private void pauseQCARandTasks(boolean isQCARPause) {
         if (mAppStatus == APPSTATUS_CAMERA_RUNNING)
         {
             updateApplicationStatus(APPSTATUS_CAMERA_STOPPED);
@@ -812,7 +836,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         }
 
         // QCAR-specific pause operation
-        QCAR.onPause();
+        if(isQCARPause){
+            QCAR.onPause();
+        }
 
         firstTimeGetImage=true;
     }

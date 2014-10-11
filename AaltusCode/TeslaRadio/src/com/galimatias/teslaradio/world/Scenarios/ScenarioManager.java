@@ -1,7 +1,7 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.ar4android.vuforiaJME.AndroidActivityListener;
 import com.ar4android.vuforiaJME.AppGetter;
-import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -85,7 +85,7 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
     /**
      * Callback interface to open the informativeMenu.
      */
-    private AppListener appListener;
+    private AndroidActivityListener androidActivityListener;
     
     private static final String NEXT_SCENARIO = "NextScenario";
     private static final String PREVIOUS_SCENARIO = "PreviousScenario";
@@ -99,11 +99,11 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
             ApplicationType applicationType,
             List<Node> node,
             Camera cam,
-            AppListener appListener)
+            AndroidActivityListener androidActivityListener)
     {
         this.app = app;
         this.nodeList = node;
-        this.appListener = appListener;
+        this.androidActivityListener = androidActivityListener;
         this.applicationType = applicationType;
         this.assetManager  = this.app.getAssetManager();//AppGetter.getAssetManager();
         this.renderManager = this.app.getRenderManager();
@@ -112,14 +112,14 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
         this.guiNode       = this.app.getGuiNode();
         this.camera        = cam;
         AppGetter.setWorldScaleDefault(this.applicationType == ApplicationType.DESKTOP || this.applicationType == ApplicationType.ANDROID_DEV_FRAMEWORK ? 10 : 100);
-        init(applicationType, nodeList, camera, appListener);
+        init(applicationType, nodeList, camera, androidActivityListener);
         
     }
     
     private void init(ApplicationType applicationType,
             List<Node> node,
             Camera cam,
-            AppListener appListener)
+            AndroidActivityListener androidActivityListener)
     {   
         
         //This a list of all the scenario that we will rotate/scale according
@@ -475,9 +475,9 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
 
         for(Scenario scenario : getCurrentScenario().getScenarios() )
         {
-            if (scenario.simpleUpdate(tpf) && appListener != null)
+            if (scenario.simpleUpdate(tpf) && androidActivityListener != null)
             {
-                appListener.toggleInformativeMenuCallback(scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios()));
+                androidActivityListener.toggleInformativeMenuCallback(scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios()));
             }
         }
     };
