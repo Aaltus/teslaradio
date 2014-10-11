@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.galimatias.teslaradio.world.commons;
+package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
@@ -66,10 +66,7 @@ public class DevFrameworkMainState extends AbstractAppState implements ActionLis
     private Geometry floor;
     private Geometry floor2;
     
-    private DirectionalLight sun;
-    private DirectionalLight back;
-    private DirectionalLight front;
-    private AmbientLight ambient;
+    
 
     public List<Node> getNodeList() {
         return nodeList;
@@ -116,20 +113,7 @@ public class DevFrameworkMainState extends AbstractAppState implements ActionLis
         floorMaterial2.setColor("Color", ColorRGBA.Yellow);
         floor2.setMaterial(floorMaterial2);
 
-        // You must add a light to make the model visible
-        sun = new DirectionalLight();
-        sun.setDirection(new Vector3f(0.f, 0.f, -1.0f));
-
-        // You must add a light to make the model visible
-        back = new DirectionalLight();
-        back.setDirection(new Vector3f(0.f, -1.f, 1.0f));
-
-        front = new DirectionalLight();
-        front.setDirection(new Vector3f(0.f, 1.f, 1.0f));
-
-        /** A white ambient light source. */
-        ambient = new AmbientLight();
-        ambient.setColor(ColorRGBA.White);
+        
         
     }
     
@@ -145,10 +129,6 @@ public class DevFrameworkMainState extends AbstractAppState implements ActionLis
         rootNode.attachChild(nodeB);
         nodeB.attachChild(floor2);
         nodeA.attachChild(floor);
-        rootNode.addLight(sun);
-        rootNode.addLight(back);
-        rootNode.addLight(front);
-        rootNode.addLight(ambient);
         addInputMapping();
         
       

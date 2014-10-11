@@ -5,16 +5,10 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppGetter;
-import com.galimatias.teslaradio.world.ViewState;
-import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
-import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.galimatias.teslaradio.world.observer.SignalObserver;
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
@@ -48,11 +42,6 @@ public abstract class Scenario extends Node implements SignalObserver {
      */
     protected boolean showInformativeMenu = false;
 
-    /**
-     * Internal state of the scenario to know if it's in focus, in stand by,...
-     *
-     */
-    protected ViewState mViewState;
 
     /**
      * REMOVED THIS AFTER ALEX CHANGES TO CIRCLE EFFECT

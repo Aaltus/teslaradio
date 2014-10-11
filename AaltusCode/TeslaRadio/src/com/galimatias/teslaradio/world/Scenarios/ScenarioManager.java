@@ -43,8 +43,6 @@ import java.util.List;
  */
 public class ScenarioManager  extends AbstractAppState implements IScenarioManager
 {
-
-    
     
     private static final String TOUCH_EVENT_NAME = "Touch";
     private static final String RIGHT_CLICK_MOUSE_EVENT_NAME = "Mouse";
@@ -725,4 +723,6 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
             return currentScenatioEnum;
         }
     }
+    
+    
 }

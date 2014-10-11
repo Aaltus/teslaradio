@@ -38,6 +38,7 @@ import com.galimatias.teslaradio.SplashscreenDialogFragment;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.galimatias.teslaradio.world.Scenarios.IScenarioSwitcher;
+import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
@@ -296,9 +297,14 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     @Override
     public void setScenarioByEnum(final ScenarioEnum scenarioEnum) {
-        ((VuforiaJME)app).enqueue(new Callable<Object>() {
+        (app).enqueue(new Callable<Object>() {
                     public Object call() throws Exception {
-                        ((VuforiaJME)app).getiScenarioManager().setScenarioByEnum(scenarioEnum);
+                        //((VuforiaJME)app).getiScenarioManager().setScenarioByEnum(scenarioEnum);
+                        ScenarioManager state = app.getStateManager().getState(ScenarioManager.class);
+                        if(state != null)
+                        {
+                            state.setScenarioByEnum(scenarioEnum);
+                        }
                         return null;
                     }});
     }
@@ -717,10 +723,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 			cameraJMEImageRGB565.setData(mPreviewByteBufferRGB565);
 
             // Set our camera image as the JME background
-			if (app != null) {
-				((com.ar4android.vuforiaJME.VuforiaJME) app)
-						.setVideoBGTexture(cameraJMEImageRGB565);
-			}	
+            VuforiaJMEState state = app.getStateManager().getState(VuforiaJMEState.class);
+			if (state != null) {
+				state.setVideoBGTexture(cameraJMEImageRGB565);
+			}
 		}
 
 
@@ -763,7 +769,12 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     	// make sure the AndroidGLSurfaceView view is on top of the view
 		// hierarchy
 		//view.setZOrderOnTop(true);
-		
+        resumeQCARandTasks();
+
+
+    }
+
+    public void resumeQCARandTasks() {
         // QCAR-specific resume operation
         QCAR.onResume();
 
@@ -773,16 +784,21 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         {
             updateApplicationStatus(APPSTATUS_CAMERA_RUNNING);
         }
-        
-        firstTimeGetImage=true;
-	}
 
-	@Override
+        firstTimeGetImage=true;
+    }
+
+
+    @Override
 	protected void onPause() {
 
         AppLogger.getInstance().i(TAG, "onPause");
-		super.onPause();		
-	
+		super.onPause();
+
+        pauseQCARandTasks();
+	}
+
+    public void pauseQCARandTasks() {
         if (mAppStatus == APPSTATUS_CAMERA_RUNNING)
         {
             updateApplicationStatus(APPSTATUS_CAMERA_STOPPED);
@@ -797,9 +813,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         // QCAR-specific pause operation
         QCAR.onPause();
-        
+
         firstTimeGetImage=true;
-	}
+    }
 
     @Override
     protected void onStop()
@@ -817,7 +833,12 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     {
         AppLogger.getInstance().i(TAG, "onDestroy");
         super.onDestroy();
-        
+        destroyQCARCameraAndTasks();
+
+
+    }
+
+    private void destroyQCARCameraAndTasks() {
         // Cancel potentially running tasks
         if (mInitQCARTask != null &&
             mInitQCARTask.getStatus() != InitQCARTask.Status.FINISHED)
@@ -853,7 +874,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         //Jonathan: I commented this see reason why here:
         //https://stackoverflow.com/questions/2414105/why-is-it-bad-practice-to-call-system-gc
         //System.gc();
-        
     }
 
     //jdesmarais: I override this because from AndroidHarness because I want to provide a way to use the back button to dismiss the UI
