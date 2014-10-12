@@ -24,11 +24,9 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Debug;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -46,6 +44,7 @@ import com.jme3.texture.Image;
 import com.qualcomm.QCAR.QCAR;
 import com.utils.AppLogger;
 import com.utils.LanguageLocaleChanger;
+
 import java.nio.ByteBuffer;
 import java.util.concurrent.Callable;
 
@@ -176,6 +175,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         mouseEventsInvertX = true;
         // Invert the MouseEvents Y (default = true)
         mouseEventsInvertY = true;
+
+
     }
 
     Image cameraJMEImageRGB565;
@@ -249,22 +250,25 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     public void onFinishSimpleInit()
     {
 
-
         class OneShotTask implements Runnable {
-            IScenarioSwitcher scenarioSwitcher;
-            OneShotTask(IScenarioSwitcher s) { scenarioSwitcher = s; }
+            //IScenarioSwitcher scenarioSwitcher;
+            //OneShotTask(IScenarioSwitcher s) { scenarioSwitcher = s; }
+            //IScenarioSwitcher scenarioSwitcher;
+            //OneShotTask() { scenarioSwitcher = s; }
             public void run() {
                 dismissSplashscreenDialog();
                 //TODO it should be a better idea to create a scenario manager in the activity and then pass it to vuforia jme.
-                InformativeMenuFragment informativeMenuFragment = getInformativeMenuFragment();
-                if(informativeMenuFragment != null)
-                {
-                    getInformativeMenuFragment().setScenarioSwitcher(scenarioSwitcher);
-                }
+                //InformativeMenuFragment informativeMenuFragment = getInformativeMenuFragment();
+                //if(informativeMenuFragment != null)
+                //{
+                //    getInformativeMenuFragment().setScenarioSwitcher(scenarioSwitcher);
+                //}
             }
         }
 
-        OneShotTask oneShotTask = new OneShotTask(this);
+        //OneShotTask oneShotTask = new OneShotTask(this);
+        //runOnUiThread(oneShotTask);
+        OneShotTask oneShotTask = new OneShotTask();
         runOnUiThread(oneShotTask);
 
     }
@@ -294,7 +298,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     public void setScenarioByEnum(final ScenarioEnum scenarioEnum) {
         ((VuforiaJME)app).enqueue(new Callable<Object>() {
                     public Object call() throws Exception {
-                        ((VuforiaJME)app).getScenarioManager().setScenarioByEnum(scenarioEnum);
+                        ((VuforiaJME)app).getiScenarioManager().setScenarioByEnum(scenarioEnum);
                         return null;
                     }});
     }
@@ -593,7 +597,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         //create the layout on top of the jmonkey view to add button and fragments
         //initTopLayout();
         ViewGroup rootView        = (ViewGroup) findViewById(android.R.id.content);
-        LayoutInflater factory    = LayoutInflater.from(this);
+        //LayoutInflater factory    = LayoutInflater.from(this);
         FrameLayout frameLayout1  = new FrameLayout(this);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         frameLayout1.setLayoutParams(layoutParams);
@@ -603,7 +607,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        Fragment fragment = new InformativeMenuFragment();
+        InformativeMenuFragment fragment = new InformativeMenuFragment();
+        fragment.setScenarioSwitcher(this);
+
         ft.replace(frameLayout1.getId(), fragment, INFORMATIVE_MENU_FRAGMENT_TAG);
         ft.commit();
         fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
