@@ -48,6 +48,7 @@ public class DevFrameworkMainState extends AbstractAppState implements ActionLis
     private static final String ScenarioB_rotate_Y_pos = "ScenarioB_rotate_Y_pos";
     private static final String ScenarioB_rotate_Y_neg = "ScenarioB_rotate_Y_neg";
     private static final String TOGGLE_DRAG_FLYBY_CAMERA = "toggle_cam";
+    private static final String RETURN_TO_MENU = "RETURN_TO_MENU";
     
     private SimpleApplication app;
     private Node guiNode;
@@ -65,6 +66,7 @@ public class DevFrameworkMainState extends AbstractAppState implements ActionLis
     private Node nodeB;
     private Geometry floor;
     private Geometry floor2;
+    private StateSwitcher stateSwitcher;
     
     
 
@@ -72,9 +74,11 @@ public class DevFrameworkMainState extends AbstractAppState implements ActionLis
         return nodeList;
     }
     
-    public DevFrameworkMainState(SimpleApplication app, FlyByCamera flyByCam)
+    
+    public DevFrameworkMainState(SimpleApplication app, StateSwitcher stateSwitcher)
     {
         this.app = app;
+        this.stateSwitcher = stateSwitcher;
         this.assetManager  = this.app.getAssetManager();//AppGetter.getAssetManager();
         this.renderManager = this.app.getRenderManager();
         this.inputManager  = this.app.getInputManager();
@@ -82,7 +86,7 @@ public class DevFrameworkMainState extends AbstractAppState implements ActionLis
         this.guiNode       = this.app.getGuiNode();
         this.rootNode      = this.app.getRootNode();
         this.camera        = this.app.getCamera();
-        this.flyCam        = flyByCam;
+        this.flyCam        = this.app.getFlyByCamera();
         
         inputManager.setCursorVisible(true);
         //mouseInput.setCursorVisible(true);
@@ -139,6 +143,8 @@ public class DevFrameworkMainState extends AbstractAppState implements ActionLis
       super.cleanup();
       // unregister all my listeners, detach all my nodes, etc.../*
       removeInputMapping();
+      rootNode.detachChild(nodeA);
+      rootNode.detachChild(nodeB);
     }
 
     @Override
@@ -167,6 +173,7 @@ public class DevFrameworkMainState extends AbstractAppState implements ActionLis
         inputManager.addMapping(ScenarioB_move_Y_pos, new KeyTrigger(KeyInput.KEY_NUMPAD7));
         inputManager.addMapping(ScenarioB_rotate_Y_pos, new KeyTrigger(KeyInput.KEY_NUMPAD9));
         inputManager.addMapping(TOGGLE_DRAG_FLYBY_CAMERA, new KeyTrigger(KeyInput.KEY_TAB));
+        inputManager.addMapping(RETURN_TO_MENU, new KeyTrigger(KeyInput.KEY_SPACE));
 
         // Add the names to the action listener.
         inputManager.addListener(this, ScenarioB_move_X_neg);
@@ -178,6 +185,7 @@ public class DevFrameworkMainState extends AbstractAppState implements ActionLis
         inputManager.addListener(this, ScenarioB_move_Z_pos);
         inputManager.addListener(this, ScenarioB_rotate_Y_pos);
         inputManager.addListener(this, TOGGLE_DRAG_FLYBY_CAMERA);
+        inputManager.addListener(this, RETURN_TO_MENU);
     
     }
     
@@ -232,6 +240,9 @@ public class DevFrameworkMainState extends AbstractAppState implements ActionLis
             else if(name.equals(TOGGLE_DRAG_FLYBY_CAMERA)){
                 dragMouseToMove =! dragMouseToMove;
                 flyCam.setDragToRotate(dragMouseToMove);
+            }
+            else if(name.equals(RETURN_TO_MENU)){
+                stateSwitcher.openStartScreen();
             }
         }
     }

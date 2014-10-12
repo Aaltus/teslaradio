@@ -1,5 +1,6 @@
 package com.galimatias.teslaradio.world.commons;
 
+import com.galimatias.teslaradio.world.Scenarios.ScreenState;
 import com.galimatias.teslaradio.world.Scenarios.DevFrameworkMainState;
 import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.Scenarios.DummyScenario;
@@ -7,6 +8,7 @@ import com.galimatias.teslaradio.world.Scenarios.IScenarioManager;
 import com.galimatias.teslaradio.world.Scenarios.Scenario;
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
+import com.galimatias.teslaradio.world.Scenarios.StateSwitcher;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.SignalControl;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
@@ -32,11 +34,7 @@ import com.utils.AppLogger;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * test
- * @author normenhansen
- */
-public class Main extends SimpleApplication
+public class Main extends SimpleApplication implements StateSwitcher
 {
     
     private ScenarioManager scenarioManager;
@@ -51,8 +49,7 @@ public class Main extends SimpleApplication
         Main app = new Main();
         app.start();
     }
-
-    
+    private ScreenState startScreenState;
     
     @Override
     public void simpleInitApp() 
@@ -61,14 +58,16 @@ public class Main extends SimpleApplication
         AppGetter.setInstance(this);
         
         initLights();
-        mainState = new DevFrameworkMainState(this, flyCam);
-        this.getStateManager().attach(mainState);
-        scenarioManager = new ScenarioManager(this,ScenarioManager.ApplicationType.DESKTOP, mainState.getNodeList(), cam, null);
-        this.getStateManager().attach(scenarioManager);
-        //this.getStateManager().detach(mainState);
-        //this.getStateManager().detach(mainState);
-        //this.getStateManager().detach(scenarioManager);
-        //this.getStateManager().attach(scenarioManager);
+        
+        mainState = new DevFrameworkMainState(this, this);        
+        scenarioManager = new ScenarioManager(this,
+                ScenarioManager.ApplicationType.DESKTOP,
+                mainState.getNodeList(),
+                cam,
+                null);
+        
+        startScreenState = new ScreenState(this, this);
+        
         
         
     }
@@ -85,6 +84,46 @@ public class Main extends SimpleApplication
         //TODO: add render code
     }
     
+    
+
+    @Override
+    public void startGame() {
+        
+    }
+
+    @Override
+    public void startTutorial() {
+        
+        startScreenState.closeStartMenu();
+        
+        this.getStateManager().attach(scenarioManager);
+        this.getStateManager().attach(mainState);
+        
+    }
+
+    @Override
+    public void startCredits() {
+        
+    }
+
+    @Override
+    public void endGame() {
+        this.stop();
+    }
+
+    @Override
+    public void openStartScreen() {
+        
+        if(this.getStateManager().hasState(mainState)){
+            this.getStateManager().detach(mainState);
+        }
+        if(this.getStateManager().hasState(scenarioManager)){
+           this.getStateManager().detach(scenarioManager);
+        }
+        startScreenState.openStartMenu();
+    }
+    
+    //Remove screen.
     public void initLights()        
     {
         // You must add a light to make the model visible

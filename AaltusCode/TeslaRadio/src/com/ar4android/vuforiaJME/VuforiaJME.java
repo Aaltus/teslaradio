@@ -117,7 +117,8 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
         if(androidActivityListener != null){
             androidActivityListener.pauseTracking();
             //androidActivityListener.startTracking();
-        }*/
+        }
+        */
 
 
         androidActivityListener.onFinishSimpleInit();
@@ -159,7 +160,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
 
         AppLogger.getInstance().d(TAG, "initBackgroundScene");
 
-        mainState = new DevFrameworkMainState(this, flyCam);
+        mainState = new DevFrameworkMainState(this);
         this.getStateManager().attach(mainState);
 
 
