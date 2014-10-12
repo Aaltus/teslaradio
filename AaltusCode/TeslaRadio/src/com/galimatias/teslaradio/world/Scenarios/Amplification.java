@@ -64,9 +64,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
     private Node inputWireAmpli = new Node();
     private Node outputWireAmpli = new Node();
     private Node outputModule = new Node();
-   
-    
-    
+
     // Handles for the emitter positions
     private Spatial pathInputAmpli;
     private Spatial pathOutputAmpli;
@@ -79,9 +77,6 @@ public final class Amplification extends Scenario implements EmitterObserver{
     
     // this is PIIIIIII! (kick persian)
     private final float pi = (float) Math.PI;
-    
-    private Spatial destinationHandle;
-    private Camera cam;
     
     private float tpfCumul = 0;
     
@@ -300,7 +295,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
     }
 
     @Override
-    public Spatial getInputHandle() {
+    protected Spatial getInputHandle() {
         return inputWireAmpli;
     }
     
@@ -315,7 +310,8 @@ public final class Amplification extends Scenario implements EmitterObserver{
         return particle;
     }
     
-    private void initTitleBox() {
+    @Override
+    protected void initTitleBox() {
 
         boolean lookAtCamera = false;
         boolean showDebugBox = false;

@@ -144,7 +144,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
     }
     
     @Override
-    public void loadMovableObjects() {
+    protected void loadMovableObjects() {
         turnButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
         initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
@@ -209,7 +209,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
     
-    private void initTitleBox() {
+    @Override
+    protected void initTitleBox() {
         
         boolean lookAtCamera = false;
         boolean showDebugBox = false;
@@ -575,7 +576,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
     }
     
     @Override
-    public Spatial getInputHandle() {
+    protected Spatial getInputHandle() {
         return wirePcbEmitter;
     }
 

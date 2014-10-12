@@ -56,7 +56,7 @@ public class Main extends SimpleApplication
         AppGetter.setInstance(this);
         
         
-//        mainState = new DevFrameworkMainState(this, flyCam);
+        mainState = new DevFrameworkMainState(this, flyCam);
         this.getStateManager().attach(mainState);
         scenarioManager = new ScenarioManager(this,ScenarioManager.ApplicationType.DESKTOP, mainState.getNodeList(), cam, null);
         this.getStateManager().attach(scenarioManager);

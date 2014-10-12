@@ -32,9 +32,6 @@ public class Demodulation extends Scenario implements EmitterObserver  {
 
     private final static boolean DEBUG_ANGLE = true;
     
-    private Camera cam;
-    private Spatial destinationHandle;
-    
     // 3D objects of the scene
     private Spatial demodulationButton;
     private Spatial actionSwitch;
@@ -278,7 +275,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     }
 
     @Override
-    public Spatial getInputHandle() {
+    protected Spatial getInputHandle() {
         return inputModule;
     }
 
@@ -318,7 +315,8 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         rotationAxeY(stepPeg, peg);
     }
     
-    private void initTitleBox() {
+    @Override
+    protected void initTitleBox() {
 
         boolean lookAtCamera = false;
         boolean showDebugBox = false;

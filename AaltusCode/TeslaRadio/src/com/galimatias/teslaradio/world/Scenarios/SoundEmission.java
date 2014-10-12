@@ -34,7 +34,6 @@ public final class SoundEmission extends Scenario {
 
     private Spatial drumHandleOut;
     private Spatial guitarHandleOut;
-    private Spatial destinationHandle;
     
     private Spatial guitarAirParticleEmitter;
     private Spatial drumAirParticleEmitter;
@@ -122,14 +121,10 @@ public final class SoundEmission extends Scenario {
         guitarHandleOutPosition = guitarHandleOut.getLocalTranslation().add(sceneGuit.getLocalTranslation());
 
         initAudio();
-        initTextBox();
+        initTitleBox();
         initImageBoxes();
-        initHaloEffects();
         initOnTouchEffect();
-        
-        
-        
-        
+  
     }
 
     @Override
@@ -189,25 +184,7 @@ public final class SoundEmission extends Scenario {
         Geometry soundParticleTranslucent = soundParticle.clone();
         soundParticleTranslucent.getMaterial().setTexture("ColorMap", assetManager.loadTexture("Textures/Sound_wAlpha.png"));
         soundParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
-        
 
-        //DrumSoundEmitter = new SignalEmitter(drum_trajectories, drum2MicLength, soundParticle, soundParticleTranslucent, SoundParticleSpeed, SignalType.Air );
-
-        // Initializing the new Signal Emitter
-        /*
-        DrumSoundEmitter = new SignalEmitter(this);
-        this.attachChild(DrumSoundEmitter);
-        DrumSoundEmitter.setLocalTranslation(drumHandleOutPosition);
-       
-        //Set the impulsional response of the emitter
-        ArrayList<Float> waveMagnitudes = new ArrayList(3);
-
-        waveMagnitudes.add(5f);
-        waveMagnitudes.add(3f);
-        waveMagnitudes.add(1f);
-
-        DrumSoundEmitter.setWaves(waveMagnitudes, soundParticle, soundParticleTranslucent, SoundParticlePeriod, SoundParticleSpeed);
-        * */
     }
     
     
@@ -226,25 +203,6 @@ public final class SoundEmission extends Scenario {
         Geometry soundParticleTranslucent = soundParticle.clone();
         soundParticleTranslucent.getMaterial().setTexture("ColorMap", assetManager.loadTexture("Textures/Sound_wAlpha.png"));
 
-        /*
-        GuitarSoundEmitter = new SignalEmitter(this);
-        this.attachChild(GuitarSoundEmitter);
-        GuitarSoundEmitter.setLocalTranslation(guitarHandleOutPosition); // TO DO: utiliser le object handle blender pour position
-
-        //Set the impulsional response of the emitter
-        ArrayList<Float> waveMagnitudes = new ArrayList(7);
-
-        waveMagnitudes.add(5f);
-        waveMagnitudes.add(2f);
-        waveMagnitudes.add(3f);
-        waveMagnitudes.add(1.5f);
-        waveMagnitudes.add(1.2f);
-        waveMagnitudes.add(1.0f);
-        waveMagnitudes.add(0.8f);
-
-        GuitarSoundEmitter.setWaves(waveMagnitudes, soundParticle, soundParticleTranslucent, SoundParticlePeriod, SoundParticleSpeed);
-        * */
-
     }
 
     private void initOnTouchEffect() {
@@ -260,27 +218,6 @@ public final class SoundEmission extends Scenario {
         touchEffectEmitter = new TouchEffectEmitter("DrumEffect", drumMinScale, drumMaxScale, drumScaleGradient, drumTouchEffect, new Vector3f(1.0f,0.0f,1.0f));
         this.attachChild(touchEffectEmitter);
         touchEffectEmitter.setLocalTranslation(drumHandleOutPosition.add(new Vector3f(0.0f,0.1f,0.0f)));
-        * */
-    }
-
-    private void initHaloEffects()
-    {
-        //Add the halo effects under the interactive objects
-        /*
-        Box rect = new Box(2f, Float.MIN_VALUE, 2f);
-
-        Material halo_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        halo_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
-        halo_mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-
-        halo_drum = new Halo("halo",rect,halo_mat,0.85f);
-        halo_guitar = new Halo("halo",rect,halo_mat,1.30f);
-
-        this.attachChild(halo_drum);
-        this.attachChild(halo_guitar);
-
-        halo_drum.setLocalTranslation(drumPosition);
-        halo_guitar.setLocalTranslation(guitarPosition);
         * */
     }
 
@@ -301,7 +238,9 @@ public final class SoundEmission extends Scenario {
 
     }
 
-    public void initTextBox()
+    
+    @Override
+    protected void initTitleBox()
     {
         boolean lookAtCamera = false;
         boolean showDebugBox = false;
@@ -577,7 +516,7 @@ public final class SoundEmission extends Scenario {
     }
 
     @Override
-    public Spatial getInputHandle() {
+    protected Spatial getInputHandle() {
         return null;
     }
 }
