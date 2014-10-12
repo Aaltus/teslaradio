@@ -65,11 +65,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private Geometry pyramidCarrier;
     private Geometry dodecagoneCarrier; // Really...
     
-    // Output signals
-    private Geometry cubeOutputSignal;
-    private Geometry pyramidOutputSignal;
-    private Geometry dodecagoneOutputSignal;
-    
     // Current carrier signal and his associated output
     private Geometry selectedCarrier;
     private Node outputSignal;
@@ -437,7 +432,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
     
     private void modulateFMorAM(Node clone, Spatial spatial) {
         if (!isFM) {
-            clone.getChild(0).setLocalScale(spatial.getLocalScale());
+            float scale = 1.5f;
+            clone.getChild(0).setLocalScale(spatial.getLocalScale().mult(scale));
         } else {
             float scaleFactor = 1.5f;
             Vector3f midScale = new Vector3f(0.5f,0.5f,0.5f);
@@ -603,9 +599,10 @@ public final class Modulation extends Scenario implements EmitterObserver {
             
             if (pcbAmpEmitter != null && spatial != null) {
                 Node clone = (Node)outputSignal.clone();
-                clone.attachChild(spatial);
                 
                 modulateFMorAM(clone, spatial);
+                
+                clone.attachChild(spatial);
                 
                 //System.out.println("Scaling : " + spatial.getLocalScale().toString());
                 pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(clone);
