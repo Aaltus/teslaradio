@@ -20,24 +20,24 @@ package com.ar4android.vuforiaJME;
 
 import com.galimatias.teslaradio.world.Scenarios.DevFrameworkMainState;
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
+import com.galimatias.teslaradio.world.Scenarios.ScreenState;
+import com.galimatias.teslaradio.world.Scenarios.StateSwitcher;
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
-import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Node;
 import com.utils.AppLogger;
 
-import java.util.List;
-
-public class VuforiaJME extends SimpleApplication implements AppObservable {
+public class VuforiaJME extends SimpleApplication implements AppObservable, StateSwitcher {
 
 	private static final String TAG = VuforiaJME.class.getName();
     private float mForegroundCamFOVY = 30;
     private Camera fgCam;
+
+    private ScreenState startScreenState;
 
     private ScenarioManager scenarioManager;
     private VuforiaJMEState vuforiaJMEState;
@@ -47,6 +47,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
     private DirectionalLight back;
     private DirectionalLight front;
     private AmbientLight ambient;
+
 
 
     public static void main(String[] args) {
@@ -84,6 +85,15 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
 		setDisplayFps(true);
 
 
+        //To uncomments
+        startScreenState = new ScreenState(this, this);
+        this.getStateManager().attach(startScreenState);
+        this.getFlyByCamera().setDragToRotate(true);
+
+        //openStartScreen();
+
+
+
         /*
         Node for Jimbo, old way of initializing vuforiaJME
         // We use custom viewports - so the main viewport does not need to contain the rootNode
@@ -99,16 +109,34 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
 		initForegroundScene();
          */
 
-
-
         initLights();
 
         //WARNING: IT IS IMPORTANT TO SETUP THE fgCam After the Background scene.
         //Otherwise the camera background will be OVER the 3d models.
-        initBackgroundScene(null);                    //Init the background tracking
+
+        // We use custom viewports - so the main viewport does not need to contain the rootNode
+
+        this.rootNode.addControl(new TrackableManager());
+        vuforiaJMEState = new VuforiaJMEState(this,null);
+        //this.getStateManager().attach(vuforiaJMEState);
         initForegroundCamera(mForegroundCamFOVY);
         vuforiaJMEState.setCamera(fgCam);
-        initForegroundScene(this.rootNode.getControl(TrackableManager.class).getScenarioNodeList(), ScenarioManager.ApplicationType.ANDROID, this.fgCam);
+        this.getStateManager().attach(vuforiaJMEState);
+        vuforiaJMEState.setEnabled(true);
+        //this.getStateManager().attach(vuforiaJMEState);
+        scenarioManager = new ScenarioManager(this,
+                ScenarioManager.ApplicationType.ANDROID,
+                null,
+                null,
+                androidActivityListener);
+
+        vuforiaJMEState.setEnabled(false);
+        this.getStateManager().detach(vuforiaJMEState);
+        androidActivityListener.pauseTracking();
+
+        inputManager.setSimulateMouse(false);
+
+
 
         //To test only our 3d model
         /*
@@ -123,48 +151,6 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
 
         androidActivityListener.onFinishSimpleInit();
 	}
-
-
-
-
-    public void initForegroundScene(List<Node> nodeList, ScenarioManager.ApplicationType appType, Camera cam) {
-
-        AppLogger.getInstance().d(TAG, "initForegroundScene");
-
-        scenarioManager = new ScenarioManager(this,
-                appType,
-                nodeList,
-                cam,
-                androidActivityListener);
-        this.getStateManager().attach(scenarioManager);
-
-	}
-
-    public void initBackgroundScene(Camera camera) {
-
-        // We use custom viewports - so the main viewport does not need to contain the rootNode
-        viewPort.detachScene(rootNode);
-        this.rootNode.addControl(new TrackableManager());
-
-        AppLogger.getInstance().d(TAG, "initBackgroundScene");
-
-        vuforiaJMEState = new VuforiaJMEState(this,
-                camera);
-        this.getStateManager().attach(vuforiaJMEState);
-
-
-
-    }
-
-    public void initBackgroundSceneDemo() {
-
-        AppLogger.getInstance().d(TAG, "initBackgroundScene");
-
-        mainState = new DevFrameworkMainState(this);
-        this.getStateManager().attach(mainState);
-
-
-    }
 
     public void initForegroundCamera(float fovY) {
 
@@ -218,8 +204,76 @@ public class VuforiaJME extends SimpleApplication implements AppObservable {
     }
 
     @Override
-    public void simpleRender(RenderManager rm) {
-        // TODO: add render code
+    public void startGame() {
+
+
+        startScreenState.closeStartMenu();
+        viewPort.detachScene(rootNode);
+        mainState = null;
+
+        // scenarioManager.setApplicationType(ScenarioManager.ApplicationType.ANDROID);
+        //scenarioManager.setNodeList(this.rootNode.getControl(TrackableManager.class).getScenarioNodeList());
+        //scenarioManager.setCamera(fgCam);
+        this.getStateManager().detach(mainState);
+        //this.getStateManager().attach(scenarioManager);
+
+        androidActivityListener.startTracking();
+        this.getStateManager().attach(vuforiaJMEState);
+        vuforiaJMEState.setEnabled(true);
+
     }
 
+    @Override
+    public void startTutorial() {
+
+        startScreenState.closeStartMenu();
+        inputManager.setSimulateMouse(true);
+        viewPort.attachScene(rootNode);
+        androidActivityListener.pauseTracking();
+        this.getStateManager().detach(vuforiaJMEState);
+        vuforiaJMEState.setEnabled(false);
+
+
+        mainState = new DevFrameworkMainState(this,this);
+        mainState.setEnabled(true);
+/*
+        scenarioManager.setApplicationType(ScenarioManager.ApplicationType.ANDROID_DEV_FRAMEWORK);
+        scenarioManager.setNodeList(mainState.getNodeList());
+        scenarioManager.setCamera(this.getCamera());
+        this.getStateManager().attach(scenarioManager);
+*/
+        this.getStateManager().attach(mainState);
+
+    }
+
+    @Override
+    public void startCredits() {
+
+    }
+
+    @Override
+    public void endGame() {
+        this.stop();
+    }
+
+    @Override
+    public void openStartScreen() {
+
+        //this.getFlyByCamera().setDragToRotate(true);
+        this.getFlyByCamera().setDragToRotate(true);
+        if(androidActivityListener != null){
+            androidActivityListener.pauseTracking();
+            //androidActivityListener.startTracking();
+        }
+        if(this.getStateManager().hasState(vuforiaJMEState)){
+            this.getStateManager().detach(vuforiaJMEState);
+        }
+        if(this.getStateManager().hasState(scenarioManager)){
+            this.getStateManager().detach(scenarioManager);
+        }
+        if(this.getStateManager().hasState(mainState)){
+            this.getStateManager().detach(mainState);
+        }
+        startScreenState.openStartMenu();
+    }
 }

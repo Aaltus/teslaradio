@@ -66,7 +66,10 @@ public class Main extends SimpleApplication implements StateSwitcher
                 cam,
                 null);
         
+        
+        inputManager.setCursorVisible(true);
         startScreenState = new ScreenState(this, this);
+        this.getStateManager().attach(startScreenState);
         
         
         

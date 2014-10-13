@@ -747,10 +747,15 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 			cameraJMEImageRGB565.setData(mPreviewByteBufferRGB565);
 
             // Set our camera image as the JME background
-            VuforiaJMEState state = app.getStateManager().getState(VuforiaJMEState.class);
-			if (state != null) {
-				state.setVideoBGTexture(cameraJMEImageRGB565);
-			}
+            (app).enqueue(new Callable<Object>() {
+             public Object call() throws Exception {
+                 VuforiaJMEState state = app.getStateManager().getState(VuforiaJMEState.class);
+                 if (state != null) {
+                     state.setVideoBGTexture(cameraJMEImageRGB565);
+                 }
+                 return null;
+             }});
+
 		}
 
 

@@ -35,6 +35,9 @@ public abstract class Scenario extends Node implements SignalObserver {
      * will use this camera.
      */
     protected com.jme3.renderer.Camera Camera = null;
+    public void setCamera(Camera cam){
+        this.Camera = cam;
+    }
 
     /**
      * Setting that to true

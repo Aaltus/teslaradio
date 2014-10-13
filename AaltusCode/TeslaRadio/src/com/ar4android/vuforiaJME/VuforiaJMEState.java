@@ -1,7 +1,9 @@
 package com.ar4android.vuforiaJME;
 
+import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.Matrix3f;
@@ -31,6 +33,9 @@ public class VuforiaJMEState extends AbstractAppState
     private RenderManager renderManager;
     private Node rootNode;
     private Camera fgCam;
+    private ViewPort videoBGVP;
+    private boolean attachedToViewPort = false;
+
     public void setCamera(Camera cam){
         fgCam = cam;
     }
@@ -68,9 +73,10 @@ public class VuforiaJMEState extends AbstractAppState
         this.fgCam    = fgCam;
 
         //Initialize a state manager
+
         initTracking(settings.getWidth(), settings.getHeight());
         initVideoBackground(settings.getWidth(), settings.getHeight());
-        initBackgroundCamera();
+        initBackgroundCamera(); //thats the problem
 
     }
 
@@ -87,7 +93,7 @@ public class VuforiaJMEState extends AbstractAppState
         // Create a Quad shape.
         Quad videoBGQuad = new Quad(1, 1, true);
         // Create a Geometry with the Quad shape
-        mVideoBGGeom = new Geometry("quad", videoBGQuad);
+        mVideoBGGeom = new Geometry("mVideoBGGeom", videoBGQuad);
         //float newWidth = 1.f * screenWidth / screenHeight;
         // Center the Geometry in the middle of the screen.
         //
@@ -120,14 +126,43 @@ public class VuforiaJMEState extends AbstractAppState
         videoBGCam.setParallelProjection(true);
 
         // Also create a custom viewport.
-        ViewPort videoBGVP = renderManager.createMainView("VideoBGView",videoBGCam);
+        videoBGVP = renderManager.createMainView("VideoBGView",videoBGCam);
         // Attach the geometry representing the video background to the
         // viewport.
-        videoBGVP.attachScene(mVideoBGGeom);
+        //videoBGVP.attachScene(mVideoBGGeom); //That's the problem...
 
         //videoBGVP.setClearFlags(true, false, false);
         //videoBGVP.setBackgroundColor(new ColorRGBA(1,0,0,1));
 
+    }
+
+    @Override
+    public void initialize(AppStateManager stateManager, Application app){
+
+        super.initialize(stateManager, app);
+
+    }
+
+    @Override
+    public void cleanup(){
+        super.cleanup();
+
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        // Pause and unpause
+        super.setEnabled(enabled);
+        if(enabled){
+            // we must attach the viewport only if we are attach and active
+            //The reason i because the viewport is rendered even if
+            videoBGVP.attachScene(mVideoBGGeom);
+            this.attachedToViewPort = true;
+
+        } else {
+            videoBGVP.detachScene(mVideoBGGeom); //That's th problem...
+            this.attachedToViewPort=false;
+        }
     }
 
     public void setCameraPerspectiveNative(float fovY,float aspectRatio) {
@@ -234,16 +269,18 @@ public class VuforiaJMEState extends AbstractAppState
 
     // This method retrieves the preview images from the Android world and puts them into a JME image.
     public void setVideoBGTexture(final Image image) {
-        if (!mSceneInitialized) {
+       if (!mSceneInitialized) {
             return;
         }
         mCameraImage = image;
         mNewCameraFrameAvailable = true;
+
     }
 
 
     @Override
     public void update(float tpf) {
+
         updateTracking();
 
         try {
@@ -256,8 +293,10 @@ public class VuforiaJMEState extends AbstractAppState
             System.out.println(e);
         }
         // mCubeGeom.rotate(new Quaternion(1.f, 0.f, 0.f, 0.01f));
-        mVideoBGGeom.updateLogicalState(tpf);
-        mVideoBGGeom.updateGeometricState();
+        if(attachedToViewPort){
+            mVideoBGGeom.updateLogicalState(tpf);
+            mVideoBGGeom.updateGeometricState();
+        }
 
 
 

@@ -16,9 +16,6 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.input.controls.TouchTrigger;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
@@ -60,9 +57,17 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     private InputManager inputManager;
     private AppSettings settings;
     private ApplicationType applicationType;
+    private boolean scenePreloaded =false;
+
+    public void setApplicationType(ApplicationType applicationType){
+        this.applicationType = applicationType;
+    }
 
     public void setCamera(Camera camera) {
         this.camera = camera;
+        for(Scenario scenario : scenarioList.getAllScenario()){
+            scenario.setCamera(camera);
+        }
     }
 
     /**
@@ -126,7 +131,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         this.settings      = this.app.getContext().getSettings();
         this.guiNode       = this.app.getGuiNode();
         this.setCamera(cam);
-        AppGetter.setWorldScaleDefault(this.applicationType == ApplicationType.DESKTOP || this.applicationType == ApplicationType.ANDROID_DEV_FRAMEWORK ? 10 : 100);
+
         init(nodeList, this.camera);
         
     }
@@ -164,8 +169,6 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         SoundEmission soundEmission = new SoundEmission(cam, soundCapture.getInputHandle());
         soundEmission.setName("SoundEmission");
         scenarios.add(soundEmission);
-        
-        adjustScenario(this.applicationType, scenarios, renderManager);
         
         //Add first scenario
         List<Scenario> soundCaptureList = new ArrayList<Scenario>();
@@ -247,58 +250,36 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
      */
     private void adjustScenario(ApplicationType applicationType, List<Scenario> scenarios, RenderManager renderManager)
     {
+        Quaternion rot = new Quaternion();
+
         switch(applicationType)
         {
             case ANDROID:
-
-                //This is the rotation to put a scenarion in the correct angle for VuforiaJME
-                Quaternion rot = new Quaternion();
+                AppGetter.setWorldScaleDefault(100);
+                //This is the rotation to put a scenario in the correct angle for VuforiaJME
                 rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
-                //float scale = 10.0f;
-                
-                for(Scenario scenario : scenarios)
-                {
-                    //Correction for BUG TR-176
-                    //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
-                    //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
-                    if(renderManager != null){
-                        renderManager.preloadScene(scenario);
-                    }
-                    scenario.rotate(rot);
 
-                    //WORLD_SCALE_DEFAULT = 100;
-                    scenario.scale(AppGetter.getWorldScalingDefault());
-                }
-                break;
             case ANDROID_DEV_FRAMEWORK:
-                
-
-                //This is the rotation to put a scenarion in the correct angle for VuforiaJME
-                //Quaternion rot = new Quaternion();
-                //rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
-                //float scale = 10.0f;
-                
-                for(Scenario scenario : scenarios)
-                {
-                    //Correction for BUG TR-176
-                    //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
-                    //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
-                    if(renderManager != null){
-                        renderManager.preloadScene(scenario);
-                    }
-                    //scenario.rotate(rot);
-
-                    //WORLD_SCALE_DEFAULT = 100;
-                    scenario.scale(AppGetter.getWorldScalingDefault());
-                }
-
+                AppGetter.setWorldScaleDefault(10);
                 break;
             case DESKTOP:
-                for (Scenario scenario : scenarios) {
-                    scenario.scale(AppGetter.getWorldScalingDefault());
-                }
-                
+                AppGetter.setWorldScaleDefault(10);
                 break;
+        }
+
+        for(Scenario scenario : scenarios)
+        {
+            //Correction for BUG TR-176
+            //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
+            //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
+            if(renderManager != null && !this.scenePreloaded){
+                renderManager.preloadScene(scenario);
+            }
+            this.scenePreloaded = true;
+            scenario.setLocalRotation(rot);
+
+            //WORLD_SCALE_DEFAULT = 100;
+            scenario.setLocalScale(AppGetter.getWorldScalingDefault());
         }
     }
 
@@ -401,7 +382,8 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
-      super.initialize(stateManager, app); 
+      super.initialize(stateManager, app);
+      adjustScenario(this.applicationType, this.scenarioList.getAllScenario(), renderManager);
       guiNode.attachChild(localGuiNode);
       attachCurrentScenario();
       addInputMapping(applicationType);
@@ -659,6 +641,10 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
 
         private EnumMap<ScenarioEnum,List<Scenario>> enumScenarioEnumMap = new EnumMap<ScenarioEnum, List<Scenario>>(ScenarioEnum.class);
         private List<List<Scenario>> scenarioList = new ArrayList<List<Scenario>>();
+        private List<Scenario> allScenario = new ArrayList<Scenario>();
+        public List<Scenario> getAllScenario(){
+            return allScenario;
+        }
 
         ScenarioList(){}
 
@@ -666,6 +652,12 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         {
             enumScenarioEnumMap.put(scenarioEnum,scenarios);
             scenarioList.add(scenarios);
+            for(Scenario scenario : scenarios){
+
+                if(!allScenario.contains(scenario)){
+                    allScenario.add(scenario);
+                }
+            }
         }
 
         public ScenarioGroup getScenarioListByEnum(ScenarioEnum scenarioEnum)

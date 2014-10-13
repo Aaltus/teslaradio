@@ -11,22 +11,22 @@
                         <image width="60%" height="100%" filename="Interface/Logo.jpg" />
                     </panel>
                     <panel width="100%" height="15%" childLayout="center" >
-                        <control width="30%" height="50%" id="StartButton" name="button" label="Start" visibleToMouse="true" >
+                        <control width="30%" height="90%" id="StartButton" name="button" label="Start" visibleToMouse="true" >
                             <interact onClick="onStartButtonClick()"/>
                         </control>
                     </panel>
                     <panel width="100%" height="15%" childLayout="center">
-                        <control width="30%" height="50%" id="TutorialButton" name="button" label="Tutorial" visibleToMouse="true">
+                        <control width="30%" height="90%" id="TutorialButton" name="button" label="Tutorial" visibleToMouse="true">
                             <interact onClick="onTutorialButtonClick()"/>
                         </control>
                     </panel>
                     <panel width="100%" height="15%" childLayout="center">
-                        <control width="30%" height="50%" id="CreditsButton" name="button" label="Credits" visibleToMouse="true">
+                        <control width="30%" height="90%" id="CreditsButton" name="button" label="Credits" visibleToMouse="true">
                             <interact onClick="onCreditsButtonClick()"/>
                         </control>
                     </panel>
                     <panel width="100%" height="15%" childLayout="center">
-                        <control width="30%" height="50%" id="ExitButton" name="button" label="Exit" visibleToMouse="true">
+                        <control width="30%" height="90%" id="ExitButton" name="button" label="Exit" visibleToMouse="true">
                             <interact onClick="onEndGameClick()"/>
                         </control>
                     </panel>

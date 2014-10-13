@@ -4,7 +4,7 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.utils.AppLogger;
+
 import de.lessvoid.nifty.screen.ScreenController;
 
 /**
@@ -12,7 +12,7 @@ import de.lessvoid.nifty.screen.ScreenController;
  * @author jimbojd72
  */
 
-public interface StartScreenController extends ScreenController{
+public interface StartScreenController extends ScreenController {
     
     public void onStartButtonClick();
     public void onTutorialButtonClick();
