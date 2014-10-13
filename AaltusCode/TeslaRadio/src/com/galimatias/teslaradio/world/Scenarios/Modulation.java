@@ -19,8 +19,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Dome;
-import com.jme3.scene.shape.Quad;
-import com.jme3.scene.shape.Sphere;
 
 /**
  * Created by Batcave on 2014-09-09.
@@ -28,11 +26,7 @@ import com.jme3.scene.shape.Sphere;
 public final class Modulation extends Scenario implements EmitterObserver {
     
     private final static String TAG = "Modulation";
-    /**
-     * TODO Remove this bool and associated code in simpleUpdate when it works
-     * on Android. Only for debug purposes.
-     */
-    private final static boolean DEBUG_ANGLE = true;
+    
     // Values displayed on the digital screen of the PCB 3D object
     private final String sFM1061 = "106.1 FM";
     private final String sFM977 = "97.7 FM";
@@ -48,7 +42,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private Spatial actionSwitch;
     
     // TextBox of the scene
-    private TextBox titleTextBox;
     private TextBox digitalDisplay;
     
     // Default text to be seen when scenario starts
@@ -63,30 +56,13 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private Node outputEmitter = new Node();
     private Spatial destinationHandle;
     
-    // Handles for the emitter positions
-    private Spatial pathInHandle;
-    private Spatial pathCarrierHandle;
-    private Spatial pathOutChipHandle;
-    private Spatial outputHandle;
-    
-    // Paths
-    private Geometry pathIn;
-    private Geometry pathCarrier;
-    private Geometry pathOut;
-    
     // Geometry of the carrier signals
     private Geometry cubeCarrier;
     private Geometry pyramidCarrier;
     private Geometry dodecagoneCarrier; // Really...
     
-    // Output signals
-    private Geometry cubeOutputSignal;
-    private Geometry pyramidOutputSignal;
-    private Geometry dodecagoneOutputSignal;
-    private Geometry outSpatial;
-    
     // Current carrier signal and his associated output
-    private Geometry currentCarrier;
+    private Geometry selectedCarrier;
     private Node outputSignal;
     
     // this is PIIIIIII! (kick persian)
@@ -98,8 +74,10 @@ public final class Modulation extends Scenario implements EmitterObserver {
     
     //Variable for switch
     private float initAngleSwitch;
+    private float tpfCumulSwitch = 0;
     private float tpfCumul = 0;
-    private Quaternion rotationXSwitch = new Quaternion();
+    private Quaternion rotationXSwitch = new Quaternion();   
+
     
     public Modulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         
@@ -125,18 +103,18 @@ public final class Modulation extends Scenario implements EmitterObserver {
         scene.setLocalRotation(rot);
 
         // Get the handles of the emitters
-        pathInHandle = scene.getChild("Handle.In");
-        pathCarrierHandle = scene.getChild("Handle.Generator");
-        pathOutChipHandle = scene.getChild("Handle.Chip.Out");
-        outputHandle = scene.getChild("Handle.Out");
+        Spatial pathInHandle = scene.getChild("Handle.Module.In");
+        Spatial pathCarrierHandle = scene.getChild("Handle.Generator");
+        Spatial pathOutChipHandle = scene.getChild("Handle.Chip.Out");
+        Spatial outputHandle = scene.getChild("Handle.Module.Out");
 
         // Get the different paths
         Node wirePcb_node = (Node) scene.getChild("Path.In.Object");
-        pathIn = (Geometry) wirePcb_node.getChild("Path.In.Nurbs");
+        Geometry pathIn = (Geometry) wirePcb_node.getChild("Path.In.Nurbs");
         Node carrier_node = (Node) scene.getChild("Path.Generator.Object");
-        pathCarrier = (Geometry) carrier_node.getChild("Path.Generator.Nurbs");
+        Geometry pathCarrier = (Geometry) carrier_node.getChild("Path.Generator.Nurbs");
         Node pcbAmp_node = (Node) scene.getChild("Path.Out.Object");
-        pathOut = (Geometry) pcbAmp_node.getChild("Path.Out.Nurbs");        
+        Geometry pathOut = (Geometry) pcbAmp_node.getChild("Path.Out.Nurbs");        
         
         initDigitalDisplay();
         initTitleBox();
@@ -163,7 +141,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
     }
     
     @Override
-    public void loadMovableObjects() {
+    protected void loadMovableObjects() {
         turnButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
         initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
@@ -180,25 +158,29 @@ public final class Modulation extends Scenario implements EmitterObserver {
     
     private void initCarrierGeometries() {
         
-        Box cube = new Box(0.25f, 0.25f, 0.25f);
+        Box cube = new Box(0.4f, 0.4f, 0.4f);
         cubeCarrier = new Geometry("CubeCarrier", cube);
         Material mat1 = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.25f));
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         cubeCarrier.setMaterial(mat1);
-        cubeCarrier.setQueueBucket(RenderQueue.Bucket.Translucent);
+        cubeCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
+        cubeCarrier.setLocalTranslation(0.0f,0.4f,0.0f);
         
-        Dome pyramid = new Dome(2, 4, 0.25f);
+        Dome pyramid = new Dome(2, 4, 0.4f);
         pyramidCarrier = new Geometry("PyramidCarrier", pyramid);
         pyramidCarrier.setMaterial(mat1);
-        pyramidCarrier.setQueueBucket(queueBucket.Translucent);
+        pyramidCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
+        pyramidCarrier.setLocalTranslation(0.0f,0.4f,0.0f);
         
         Node dodecagone = (Node) assetManager.loadModel("Models/Modulation/Dodecahedron.j3o");
         dodecagoneCarrier = (Geometry) dodecagone.getChild("Solid.0041");
+        dodecagoneCarrier.scale(2.0f);
         dodecagoneCarrier.setName("DodecagoneCarrier");
         dodecagoneCarrier.setMaterial(mat1);
-        dodecagoneCarrier.setQueueBucket(queueBucket.Translucent);
+        dodecagoneCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
+        dodecagoneCarrier.setLocalTranslation(0.0f,0.4f,0.0f);
     }
 
     // TODO Add the real output signals with a pattern generator
@@ -206,35 +188,14 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         this.outputSignal = new Node();
         
-        Box cube = new Box(0.25f, 0.25f, 0.25f);
-        cubeOutputSignal = new Geometry("CubeOutputSignal", cube);
-        Material mat1 = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.25f));
-        mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        cubeOutputSignal.setMaterial(mat1);
-        cubeOutputSignal.setQueueBucket(RenderQueue.Bucket.Translucent);
+        //cubeOutputSignal = cubeCarrier.clone();
         
         // Default value of the outputSignal
-        this.outputSignal.attachChild(cubeOutputSignal);
-        
-        Dome pyramid = new Dome(2, 4, 0.25f);
-        pyramidOutputSignal = new Geometry("PyramidOutputSignal", pyramid);
-        pyramidOutputSignal.setMaterial(mat1);
-        pyramidOutputSignal.setQueueBucket(RenderQueue.Bucket.Translucent);
-        
-        Node dodecagone = (Node) assetManager.loadModel("Models/Modulation/Dodecahedron.j3o");
-        dodecagoneOutputSignal = (Geometry) dodecagone.getChild("Solid.0041");
-        dodecagoneOutputSignal.setName("DodecagoneOutputSignal");
-        dodecagoneOutputSignal.setMaterial(mat1);
-        dodecagoneOutputSignal.setQueueBucket(RenderQueue.Bucket.Translucent);
-        
-        Material mat2 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        mat2.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
-        mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        Sphere sphere = new Sphere(5, 5, 0.25f);
-        outSpatial = new Geometry("ModulationOutput",sphere);
-        outSpatial.setMaterial(mat2);
+        this.outputSignal.attachChild(cubeCarrier.clone());
+
+        //pyramidOutputSignal = pyramidCarrier.clone();
+
+        //dodecagoneOutputSignal = dodecagoneCarrier.clone();
     }
     
     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
@@ -245,7 +206,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
     
-    private void initTitleBox() {
+    @Override
+    protected void initTitleBox() {
         
         boolean lookAtCamera = false;
         boolean showDebugBox = false;
@@ -254,7 +216,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
         ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
-        titleTextBox = new TextBox(assetManager,
+        TextBox titleTextBox = new TextBox(assetManager,
                 titleText,
                 titleTextSize,
                 titleTextColor,
@@ -291,7 +253,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         // Get the digital display parameters
         Vector3f displayPosition = scene.getChild("Display").getLocalTranslation();
         // TODO Use addLocal... I tried but for some reasons, it doesn't work...
-        displayPosition = displayPosition.add(-0.4f, 0.15f, 0.0f);
+        displayPosition = displayPosition.add(-0.4f, 0.5f, 0.0f);
         
         digitalDisplay.setLocalTranslation(displayPosition);
         Quaternion rotY = new Quaternion();
@@ -326,9 +288,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
     //Dynamic move
     private void checkModulationMode(float tpf) {
         if (switchIsToggled) {
-            tpfCumul = tpfCumul + 3 * tpf;
-            switchRotation(isFM, tpfCumul);
-            // switchRotationWithoutDynamicSwitch(isFM);
+            tpfCumulSwitch += 3 * tpf;
+            switchRotation(isFM, tpfCumulSwitch);
             float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
             if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
                 switchIsToggled = false;
@@ -351,29 +312,31 @@ public final class Modulation extends Scenario implements EmitterObserver {
         turnButton.setLocalRotation(rot);
     }
     
-    private void changeModulation(int frequency, Boolean isFM) {
+    private void changeModulation(int frequency, Boolean isFM, float tpf) {
+        
+        
         
         if (isFM) {
             switch (frequency) {
                 case 1:
                     digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     // System.out.println(sFM1061);
-                    changeCarrierParticles(1);
+                    changeCarrierParticles(1, tpf);
                     break;
                 case 2:
                     digitalDisplay.simpleUpdate(sFM977, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     // System.out.println(sFM977);
-                    changeCarrierParticles(2);
+                    changeCarrierParticles(2, tpf);
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sFM952, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     // System.out.println(sFM952);
-                    changeCarrierParticles(3);
+                    changeCarrierParticles(3, tpf);
                     break;
                 default:
                     digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     // System.out.println(sFM1061);
-                    changeCarrierParticles(1);
+                    changeCarrierParticles(1, tpf);
                     break;
             }
         } else {
@@ -381,22 +344,22 @@ public final class Modulation extends Scenario implements EmitterObserver {
                 case 1:
                     digitalDisplay.simpleUpdate(sAM697, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     //  System.out.println(sAM697);
-                    changeCarrierParticles(1);
+                    changeCarrierParticles(1, tpf);
                     break;
                 case 2:
                     digitalDisplay.simpleUpdate(sAM498, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     //  System.out.println(sAM498);
-                    changeCarrierParticles(2);
+                    changeCarrierParticles(2, tpf);
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sAM707, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     //  System.out.println(sAM707);
-                    changeCarrierParticles(3);
+                    changeCarrierParticles(3, tpf);
                     break;
                 default:
                     digitalDisplay.simpleUpdate(sAM697, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     // System.out.println(sAM697);
-                    changeCarrierParticles(1);
+                    changeCarrierParticles(1, tpf);
                     break;
             }
         }
@@ -428,39 +391,74 @@ public final class Modulation extends Scenario implements EmitterObserver {
         }
     }
     
-    private void changeCarrierParticles(int frequency) {
+    private void changeCarrierParticles(int frequency, float tpf) {
+        
+        tpfCumul += tpf;
         
         switch (frequency) {
             case 1:
-                currentCarrier = cubeCarrier;
+                selectedCarrier = cubeCarrier;
                 break;
             case 2:
-                currentCarrier = pyramidCarrier;
+                selectedCarrier = pyramidCarrier;
                 break;
             case 3:
-                currentCarrier = dodecagoneCarrier;
+                selectedCarrier = dodecagoneCarrier;
                 break;
         }
         
-        if (carrierEmitter != null) {
-            carrierEmitter.getControl(ParticleEmitterControl.class).emitParticle(currentCarrier);
+        if (carrierEmitter != null && tpfCumul >= 1.0f) {
+            carrierEmitter.getControl(ParticleEmitterControl.class).emitParticle(selectedCarrier.clone());
+            tpfCumul = 0;
         }
         
     }
     
-    private void checkTrackableAngle(float trackableAngle) {
+    private void checkTrackableAngle(float trackableAngle, float tpf) {
         
         float stepRange = 2 * pi / 3;
         
         if (trackableAngle >= 0 && trackableAngle < stepRange) {
             turnTunerButton(trackableAngle);
-            changeModulation(1, isFM);
+            changeModulation(1, isFM, tpf);
         } else if (trackableAngle >= stepRange && trackableAngle < 2 * stepRange) {
             turnTunerButton(trackableAngle);
-            changeModulation(2, isFM);
+            changeModulation(2, isFM, tpf);
         } else if (trackableAngle >= 2 * stepRange && trackableAngle < 3 * stepRange) {
             turnTunerButton(trackableAngle);
-            changeModulation(3, isFM);
+            changeModulation(3, isFM, tpf);
+        }
+    }
+    
+    private void modulateFMorAM(Node clone, Spatial spatial) {
+        if (!isFM) {
+            float scale = 1.5f;
+            clone.getChild(0).setLocalScale(spatial.getLocalScale().mult(scale));
+        } else {
+            float scaleFactor = 1.5f;
+            Vector3f midScale = new Vector3f(0.5f,0.5f,0.5f);
+            
+            if (spatial.getLocalScale().length() < midScale.length()) {
+                scaleFactor = 2.5f;
+            } else {
+                scaleFactor = 0.5f;
+            }
+            
+            Vector3f scaleFM = spatial.getLocalScale().mult(new Vector3f(scaleFactor,1/scaleFactor,scaleFactor));
+            
+            if (scaleFM.x < spatial.getLocalScale().x || scaleFM.z < spatial.getLocalScale().z) {
+                System.out.println("Hello from too much scaling in x and z");
+                scaleFM.x = spatial.getLocalScale().x;
+                scaleFM.z = spatial.getLocalScale().z;
+            } else if (scaleFM.y < spatial.getLocalScale().y) {
+                System.out.println("Hello from too much scaling in y");
+                System.out.println("Signal scale : " + spatial.getLocalScale().toString());
+                System.out.println("FM signal scale : " + scaleFM.toString());
+                scaleFM.y = spatial.getLocalScale().y;
+            }
+
+            System.out.println("New FM signal scale : " + scaleFM.toString());
+            clone.getChild(0).setLocalScale(scaleFM);
         }
     }
 
@@ -555,10 +553,11 @@ public final class Modulation extends Scenario implements EmitterObserver {
         }
     }
     
+
     @Override
-    public boolean simpleUpdate(float tpf) {
+    protected boolean simpleUpdate(float tpf) {
         
-        if (DEBUG_ANGLE) {
+        if (this.DEBUG_ANGLE) { //In Scenario class !!
             trackableAngle += direction * (pi / 9) * tpf;
             
             if (trackableAngle >= 2 * pi || trackableAngle <= 0) {
@@ -570,14 +569,14 @@ public final class Modulation extends Scenario implements EmitterObserver {
             trackableAngle = this.getUserData("angleX");
         }
         
-        checkTrackableAngle(trackableAngle);
+        checkTrackableAngle(trackableAngle, tpf);
         checkModulationMode(tpf);
         
         return false;
     }
     
     @Override
-    public Spatial getInputHandle() {
+    protected Spatial getInputHandle() {
         return wirePcbEmitter;
     }
 
@@ -600,11 +599,19 @@ public final class Modulation extends Scenario implements EmitterObserver {
             //System.out.println("I am in " + notifierId);
             
             if (pcbAmpEmitter != null && spatial != null) {
-                outputSignal.setLocalScale(spatial.getLocalScale());
-                //System.out.println("The spatial scale : " + spatial.getWorldScale().toString());
-                pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(outputSignal.clone());
+                Node clone = (Node)outputSignal.clone();
+                
+                modulateFMorAM(clone, spatial);
+                
+                clone.attachChild(spatial);
+                
+                //System.out.println("Scaling : " + spatial.getLocalScale().toString());
+                pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(clone);
+                clone.setUserData("CarrierShape", outputSignal.getChild(0).getName());
+                clone.setUserData("isFM", isFM);
             }
             
         }
     }
+    
 }

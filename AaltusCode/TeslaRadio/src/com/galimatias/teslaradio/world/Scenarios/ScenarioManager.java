@@ -145,8 +145,13 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         //to which environment we are in. Don't forget to add scenario in it. 
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
+        //Init Demodulation scenario
+        Demodulation demodulation = new Demodulation(cam, null);
+        demodulation.setName("Demodulation");
+        scenarios.add(demodulation);
+        
         //Init Reception scenario
-        Reception reception = new Reception(cam, null);
+        Reception reception = new Reception(cam, demodulation.getInputHandle());
         reception.setName("Reception");
         scenarios.add(reception);
         
@@ -193,6 +198,12 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         receptionList.add(amplification);
         receptionList.add(reception);
         scenarioList.addScenario(ScenarioEnum.RECEPTION,receptionList);
+        
+        //Add fifth scenario
+        List<Scenario> demodulationList = new ArrayList<Scenario>();
+        demodulationList.add(reception);
+        demodulationList.add(demodulation);
+        scenarioList.addScenario(ScenarioEnum.DEMODULATION,demodulationList);
 
         //Only for debugging purpose deactivate it please.
         scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
