@@ -52,6 +52,7 @@ public class ScreenState extends AbstractAppState implements ScreenController{
         this.guiViewPort.addProcessor(niftyDisplay);
         nifty = niftyDisplay.getNifty();
         nifty.fromXml("Interface/StartScreen.xml", "start", this);
+        inputManager.setSimulateMouse(false); // must be false in order to the start screen to work.
 
 
       }
@@ -119,10 +120,12 @@ public class ScreenState extends AbstractAppState implements ScreenController{
     public void openStartMenu(){
         //this.app.getFlyByCamera().setDragToRotate(true);
         nifty.gotoScreen("start");
+        inputManager.setSimulateMouse(false); // must be false in order to the start screen to work.
     }
     public void closeStartMenu(){
         //this.app.getFlyByCamera().setDragToRotate(true);
         nifty.gotoScreen("null");
+        inputManager.setSimulateMouse(true); // must be false in order to the start screen to work.
     }
 
 }

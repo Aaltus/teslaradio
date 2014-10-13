@@ -47,7 +47,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
     private DirectionalLight back;
     private DirectionalLight front;
     private AmbientLight ambient;
-
+    private boolean viewPortAttached = true;
 
 
     public static void main(String[] args) {
@@ -116,6 +116,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
         // We use custom viewports - so the main viewport does not need to contain the rootNode
 
+        //Init all the things
         this.rootNode.addControl(new TrackableManager());
         vuforiaJMEState = new VuforiaJMEState(this,null);
         //this.getStateManager().attach(vuforiaJMEState);
@@ -123,30 +124,9 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         vuforiaJMEState.setCamera(fgCam);
         this.getStateManager().attach(vuforiaJMEState);
         vuforiaJMEState.setEnabled(true);
-        //this.getStateManager().attach(vuforiaJMEState);
-        /*scenarioManager = new ScenarioManager(this,
-                ScenarioManager.ApplicationType.ANDROID,
-                null,
-                null,
-                androidActivityListener);
-         */
 
-        vuforiaJMEState.setEnabled(false);
-        this.getStateManager().detach(vuforiaJMEState);
-        androidActivityListener.pauseTracking();
-        inputManager.setSimulateMouse(false); // must be false in order to the start screen to work.
+        stopVuforiaJMEState();
 
-
-
-        //To test only our 3d model
-        /*
-        initBackgroundSceneDemo();
-		initForegroundScene(mainState.getNodeList(), ScenarioManager.ApplicationType.ANDROID_DEV_FRAMEWORK, this.getCamera());                    // replace in the state
-        if(androidActivityListener != null){
-            androidActivityListener.pauseTracking();
-            //androidActivityListener.startTracking();
-        }
-        */
 
 
         androidActivityListener.onFinishSimpleInit();
@@ -203,62 +183,33 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
     }
 
+    public void onBackButton(){
+
+        openStartScreen();
+
+    }
+
     @Override
     public void startGame() {
 
-
         startScreenState.closeStartMenu();
 
-        viewPort.detachScene(rootNode);
+        stopDevFramework();
 
-        this.getStateManager().detach(mainState);
-        mainState = null;
+        startScenarioManagerForVuforiaJMEState();
 
-        this.getStateManager().detach(scenarioManager);
-        scenarioManager = new ScenarioManager(this,
-                ScenarioManager.ApplicationType.ANDROID,
-                this.rootNode.getControl(TrackableManager.class).getScenarioNodeList(),
-                fgCam,
-                androidActivityListener);
-        this.getStateManager().attach(scenarioManager);
-
-        androidActivityListener.startTracking();
-        this.getStateManager().attach(vuforiaJMEState);
-        vuforiaJMEState.setEnabled(true);
+        startVuforiaJMEState();
 
     }
 
     @Override
     public void startTutorial() {
 
-        viewPort.attachScene(rootNode);
-
         startScreenState.closeStartMenu();
-        inputManager.setSimulateMouse(true);
 
+        stopVuforiaJMEState();
 
-        androidActivityListener.pauseTracking();
-        this.getStateManager().detach(vuforiaJMEState);
-        vuforiaJMEState.setEnabled(false);
-
-        mainState = new DevFrameworkMainState(this,this);
-        mainState.setEnabled(true);
-        this.getStateManager().attach(mainState);
-
-        this.getStateManager().detach(scenarioManager);
-        scenarioManager = new ScenarioManager(this,
-                ScenarioManager.ApplicationType.ANDROID_DEV_FRAMEWORK,
-                mainState.getNodeList(),
-                this.getCamera(),
-                androidActivityListener);
-        this.getStateManager().attach(scenarioManager);
-/*
-        scenarioManager.setApplicationType(ScenarioManager.ApplicationType.ANDROID_DEV_FRAMEWORK);
-        scenarioManager.setNodeList(mainState.getNodeList());
-        scenarioManager.setCamera(this.getCamera());
-        this.getStateManager().attach(scenarioManager);
-*/
-
+        startDevFramework();
 
     }
 
@@ -275,21 +226,83 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
     @Override
     public void openStartScreen() {
 
-        //this.getFlyByCamera().setDragToRotate(true);
-        this.getFlyByCamera().setDragToRotate(true);
-        if(androidActivityListener != null){
-            androidActivityListener.pauseTracking();
-            //androidActivityListener.startTracking();
-        }
-        if(this.getStateManager().hasState(vuforiaJMEState)){
-            this.getStateManager().detach(vuforiaJMEState);
-        }
-        if(this.getStateManager().hasState(scenarioManager)){
-            this.getStateManager().detach(scenarioManager);
-        }
-        if(this.getStateManager().hasState(mainState)){
-            this.getStateManager().detach(mainState);
-        }
+        stopVuforiaJMEState();
+
+        stopScenarioManagerForVuforiaJMEState();
+
+        stopDevFramework();
+
         startScreenState.openStartMenu();
     }
+
+    private void startScenarioManagerForVuforiaJMEState() {
+        if(this.viewPortAttached){
+            viewPort.detachScene(rootNode);
+        }
+        this.getStateManager().detach(scenarioManager);
+        scenarioManager = new ScenarioManager(this,
+                ScenarioManager.ApplicationType.ANDROID,
+                this.rootNode.getControl(TrackableManager.class).getScenarioNodeList(),
+                fgCam,
+                androidActivityListener);
+        this.getStateManager().attach(scenarioManager);
+    }
+
+    private void stopScenarioManagerForVuforiaJMEState() {
+        //viewPort.clearScenes();
+        if(!this.viewPortAttached){
+            viewPort.attachScene(rootNode);
+        }
+
+        this.getStateManager().detach(scenarioManager);
+        scenarioManager = null;
+    }
+
+
+
+    private void startDevFramework() {
+
+        stopDevFramework();
+
+        mainState = new DevFrameworkMainState(this,this);
+        mainState.setEnabled(true);
+        this.getStateManager().attach(mainState);
+
+
+
+        stopScenarioManagerForVuforiaJMEState();
+
+        startScenarioManagerForDevFramework();
+    }
+
+    private void stopDevFramework() {
+        //mainState.setEnabled(false);
+        this.getStateManager().detach(mainState);
+        mainState = null;
+    }
+
+    private void startScenarioManagerForDevFramework() {
+        scenarioManager = new ScenarioManager(this,
+                ScenarioManager.ApplicationType.ANDROID_DEV_FRAMEWORK,
+                mainState.getNodeList(),
+                this.getCamera(),
+                androidActivityListener);
+        this.getStateManager().attach(scenarioManager);
+    }
+
+
+
+    private void startVuforiaJMEState() {
+        androidActivityListener.startTracking();
+        this.getStateManager().attach(vuforiaJMEState);
+        vuforiaJMEState.setEnabled(true);
+    }
+
+    private void stopVuforiaJMEState() {
+        androidActivityListener.pauseTracking();
+        this.getStateManager().detach(vuforiaJMEState);
+        vuforiaJMEState.setEnabled(false);
+    }
+
+
 }

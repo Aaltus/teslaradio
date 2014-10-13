@@ -4,8 +4,6 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.ar4android.vuforiaJME.AppGetter;
-import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -16,8 +14,6 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -28,7 +24,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
-import com.utils.AppLogger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,7 +124,8 @@ public class DevFrameworkMainState extends AbstractAppState implements ActionLis
         //init(applicationType, nodeList, camera, appListener);
         // init stuff that is independent of whether state is PAUSED or RUNNING
         //This is called 
-        
+
+        inputManager.setSimulateMouse(true);
         rootNode.attachChild(nodeA);
         rootNode.attachChild(nodeB);
         nodeB.attachChild(floor2);
@@ -143,6 +140,8 @@ public class DevFrameworkMainState extends AbstractAppState implements ActionLis
       super.cleanup();
       // unregister all my listeners, detach all my nodes, etc.../*
       removeInputMapping();
+      nodeB.detachChild(floor2);
+      nodeA.detachChild(floor);
       rootNode.detachChild(nodeA);
       rootNode.detachChild(nodeB);
     }

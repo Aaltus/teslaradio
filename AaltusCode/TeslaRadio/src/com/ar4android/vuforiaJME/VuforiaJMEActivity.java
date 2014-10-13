@@ -18,7 +18,6 @@
 
 package com.ar4android.vuforiaJME;
 
-import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -924,9 +923,17 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                             }
                             else
                             {
+                                (app).enqueue(new Callable<Object>() {
+                                    public Object call() throws Exception {
+                                        ((VuforiaJME)app).onBackButton();
+                                        return null;
+                                    }});
+                            /*
                                 AlertDialog dialog = new AlertDialog.Builder(VuforiaJMEActivity.this) // .setIcon(R.drawable.alert_dialog_icon)
                                         .setTitle(exitDialogTitle).setPositiveButton("Yes", VuforiaJMEActivity.this).setNegativeButton("No", VuforiaJMEActivity.this).setMessage(exitDialogMessage).create();
                                 dialog.show();
+                            */
+
                             }
 
                         }
@@ -942,6 +949,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
      * Called when screen orientation change for example
      * @param config
      */
+
 	@Override
     public void onConfigurationChanged(Configuration config)
     {
