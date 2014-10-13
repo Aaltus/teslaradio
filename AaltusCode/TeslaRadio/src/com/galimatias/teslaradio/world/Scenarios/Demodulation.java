@@ -30,7 +30,6 @@ import com.jme3.scene.Spatial;
 
 public class Demodulation extends Scenario implements EmitterObserver  {
 
-    private final static boolean DEBUG_ANGLE = true;
     
     private Camera cam;
     private Spatial destinationHandle;
@@ -61,7 +60,6 @@ public class Demodulation extends Scenario implements EmitterObserver  {
      // Signals emitters 
     private Node inputModule = new Node();
     private Node inputDemodulation = new Node();
-    private Node outputAntenneRx = new Node();
     
     // Handles for the emitter positions
     private Spatial pathInputPeg;
@@ -82,6 +80,11 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     //Angle for test purposes
     private float trackableAngle = 0;
     private int direction = 1;
+    
+    private String pegFilter = "";
+    private float stepRangePeg = 2 * pi / 3;
+
+    
     
     public Demodulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle){
         super(Camera, destinationHandle);
@@ -110,17 +113,20 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         initTitleBox();
                 
         pathInputPeg = scene.getChild("Handle.In");
+        pathOutputPeg = scene.getChild("Path.Out.Object");
         
          // Get the different paths
         Node wireInputPeg_node = (Node) scene.getChild("Path.In.Object");
         inputPegPath = (Geometry) wireInputPeg_node.getChild("Path.In.Nurbs");
-        Node wireOutputPeg_node = (Node) scene.getChild("Cube.005");
-        outputPegPath = (Geometry) wireOutputPeg_node.getChild("Cube.0181");
+        Node wireOutputPeg_node = (Node) scene.getChild("Path.Out.Object");
+        outputPegPath = (Geometry) wireOutputPeg_node.getChild("Path.Out.Nurbs");
        
         initParticlesEmitter(inputModule, pathInputPeg, inputPegPath, null);
+        initParticlesEmitter(inputDemodulation, pathOutputPeg, outputPegPath, null);
         
         // Set names for the emitters  // VOir si utile dans ce module
         inputModule.setName("InputModule");
+        inputDemodulation.setName("InputDemodulation");
 
         inputModule.getControl(ParticleEmitterControl.class).registerObserver(this);
         
@@ -257,13 +263,13 @@ public class Demodulation extends Scenario implements EmitterObserver  {
             if(tpfCumulButton > 2*pi){
                 tpfCumulButton = 0;
             }
-            checkTrackableAngle(tpfCumulButton);
+            checkTrackableAngle(tpfCumulButton); // rotation of PEG
         } else {
             trackableAngle = this.getUserData("angleX");
             rotationAxeY(trackableAngle, demodulationButton);
-            checkTrackableAngle(trackableAngle);
+            checkTrackableAngle(trackableAngle); // rotation of PEG
         }
-     
+        System.out.println("sqdqsd   " + demodulationButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_Y) );
         return false;
     }
 
@@ -289,32 +295,30 @@ public class Demodulation extends Scenario implements EmitterObserver  {
 
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
+         if (notifierId.equals("InputModule")) {
+             if(spatial.getUserData("CarrierShape").equals(pegFilter) && (spatial.getUserData("isFM") == isFM)){
+                 inputDemodulation.getControl(ParticleEmitterControl.class).emitParticle(spatial);
+             }
+         }
     }
     
     private void rotationAxeY(float ZXangle, Spatial object) { 
         Quaternion rot = new Quaternion();
         rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
         object.setLocalRotation(rot);
-        float[] angle = new float[3];
-        object.getLocalRotation().toAngles(angle);
-        System.out.println("object" + object +"zz"+ angle[1]);
     }
     
     private void checkTrackableAngle(float trackableAngle) {
-        float stepRange = 2 * pi / 3;
+        //stepRangePeg définie  en vraiable d'instance
         float stepPeg = 0;
-
-        if (trackableAngle >= 0 && trackableAngle < stepRange) {
-            //changeModulation(1, isFM);
-        } else if (trackableAngle >= stepRange && trackableAngle < 2 * stepRange) {
-            //changeModulation(2, isFM);
-            System.out.println("stepRange");
-            stepPeg = stepRange;
-        } else if (trackableAngle >= 2 * stepRange && trackableAngle < 3 * stepRange) {
-            //changeModulation(3, isFM);
-            stepPeg = 2 * stepRange;
+        pegFilter = "CubeCarrier";
+        if (trackableAngle >= stepRangePeg && trackableAngle < 2 * stepRangePeg) {
+            stepPeg = stepRangePeg;
+            pegFilter = "PyramidCarrier";
+        } else if (trackableAngle >= 2 * stepRangePeg && trackableAngle < 3 * stepRangePeg) {
+            stepPeg = 2 * stepRangePeg;
+            pegFilter = "DodecagoneCarrier";
         }
-        System.out.println("aazzae" + stepPeg);
         rotationAxeY(stepPeg, peg);
     }
     
@@ -346,5 +350,6 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         titleTextBox.move(titleTextPosition);
         this.attachChild(titleTextBox);
     }
-    
+
+            
 }

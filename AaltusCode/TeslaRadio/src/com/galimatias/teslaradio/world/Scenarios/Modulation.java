@@ -26,11 +26,7 @@ import com.jme3.scene.shape.Dome;
 public final class Modulation extends Scenario implements EmitterObserver {
     
     private final static String TAG = "Modulation";
-    /**
-     * TODO Remove this bool and associated code in simpleUpdate when it works
-     * on Android. Only for debug purposes.
-     */
-    private final static boolean DEBUG_ANGLE = true;
+    
     // Values displayed on the digital screen of the PCB 3D object
     private final String sFM1061 = "106.1 FM";
     private final String sFM977 = "97.7 FM";
@@ -85,7 +81,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private float initAngleSwitch;
     private float tpfCumulSwitch = 0;
     private float tpfCumul = 0;
-    private Quaternion rotationXSwitch = new Quaternion();
+    private Quaternion rotationXSwitch = new Quaternion();   
+
     
     public Modulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         
@@ -297,7 +294,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
         if (switchIsToggled) {
             tpfCumulSwitch += 3 * tpf;
             switchRotation(isFM, tpfCumulSwitch);
-            // switchRotationWithoutDynamicSwitch(isFM);
             float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
             if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
                 switchIsToggled = false;
@@ -526,10 +522,10 @@ public final class Modulation extends Scenario implements EmitterObserver {
         }
     }
     
-    @Override
+
     public boolean simpleUpdate(float tpf) {
         
-        if (DEBUG_ANGLE) {
+        if (DEBUG_ANGLE) { //In Scenario class !!
             trackableAngle += direction * (pi / 9) * tpf;
             
             if (trackableAngle >= 2 * pi || trackableAngle <= 0) {
@@ -576,8 +572,11 @@ public final class Modulation extends Scenario implements EmitterObserver {
                 clone.setLocalScale(spatial.getLocalScale());
                 //System.out.println("Scaling : " + spatial.getLocalScale().toString());
                 pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(clone);
+                clone.setUserData("CarrierShape", outputSignal.getChild(0).getName());
+                clone.setUserData("isFM", isFM);
             }
             
         }
     }
+    
 }

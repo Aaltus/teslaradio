@@ -35,6 +35,12 @@ public abstract class Scenario extends Node implements SignalObserver {
      */
     protected AssetManager assetManager;
 
+    /**
+     * TODO Remove this bool and associated code in simpleUpdate when it works
+     * on Android. Only for debug purposes. Impact on Modulation, Amplification
+     * and Demodulation class!!!
+     */
+    protected final static boolean DEBUG_ANGLE = true;
 
     /**
      * Camera linked to the scenario. All "LookAt" and camera-dependant effect
@@ -94,7 +100,6 @@ public abstract class Scenario extends Node implements SignalObserver {
         assetManager = AppGetter.getAssetManager();
         this.Camera = Camera;
         this.destinationHandle = destinationHandle;
-        
     }
 
     /**

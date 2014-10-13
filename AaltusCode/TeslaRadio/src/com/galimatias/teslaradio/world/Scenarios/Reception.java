@@ -64,7 +64,8 @@ public class Reception extends Scenario implements EmitterObserver  {
     
     // Paths
     private Geometry antenneRxPath;
-    
+    //try particle
+    private Geometry particle;
     
     public Reception(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         super(Camera, destinationHandle);
@@ -75,15 +76,15 @@ public class Reception extends Scenario implements EmitterObserver  {
         loadUnmovableObjects();
         loadMovableObjects();
         
-        //Test generate particle
+        //Generate try particle
         Box cube = new Box(0.25f, 0.25f, 0.25f);
-        cubeOutputSignal = new Geometry("CubeCarrier", cube);
+        particle = new Geometry("CubeCarrier", cube);
         Material mat1 = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setColor("Color", ColorRGBA.Blue);
-        cubeOutputSignal.setMaterial(mat1);
-   
-        
+        particle.setMaterial(mat1);
+        particle.setUserData("CarrierShape", "CubeCarrier");
+        particle.setUserData("isFM", true);
     }
 
     @Override
@@ -179,7 +180,7 @@ public class Reception extends Scenario implements EmitterObserver  {
                     }
                     
                     //Test generate particle
-                  // outputAntenneRx.getControl(ParticleEmitterControl.class).emitParticle(cubeOutputSignal);
+                    outputAntenneRx.getControl(ParticleEmitterControl.class).emitParticle(particle.clone());
                    
                  /*   // 5. Use the results (we mark the hit object)
                     if (results.size() > 0) {
@@ -266,5 +267,5 @@ public class Reception extends Scenario implements EmitterObserver  {
 
        titleTextBox.move(titleTextPosition);
        this.attachChild(titleTextBox);
-   }
+    }
 }

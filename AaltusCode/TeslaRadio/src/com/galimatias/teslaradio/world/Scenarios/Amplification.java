@@ -45,13 +45,6 @@ public final class Amplification extends Scenario implements EmitterObserver{
     private Spatial generateParticle;
     private Geometry cubeTestParticle;
     
-     /**
-     * TODO Remove this bool and associated code in simpleUpdate when it works
-     * on Android. Only for debug purposes.
-     */
-    private final static boolean DEBUG_ANGLE = true;
-    
-    
     // TextBox of the scene
     private TextBox titleTextBox;
     
@@ -75,6 +68,8 @@ public final class Amplification extends Scenario implements EmitterObserver{
     // Paths
     private Geometry inputAmpPath;
     private Geometry outputAmpPath;
+    //try particle
+    private Geometry particle;
 
     
     // this is PIIIIIII! (kick persian)
@@ -92,6 +87,16 @@ public final class Amplification extends Scenario implements EmitterObserver{
         this.cam = Camera;
         loadUnmovableObjects();
         loadMovableObjects();
+        
+        //Generate try particle
+        Box cube = new Box(0.25f, 0.25f, 0.25f);
+        particle = new Geometry("CubeCarrier", cube);
+        Material mat1 = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
+        mat1.setColor("Color", ColorRGBA.Blue);
+        particle.setMaterial(mat1);
+        particle.setUserData("CarrierShape", "CubeCarrier");
+        particle.setUserData("isFM", true);
     }
     
     @Override
@@ -169,6 +174,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
     private Spatial particleAmplification(Spatial particle){
         float angle = turnAmpliButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
         float ampliScale = 1+ angle/(2*pi);
+        System.out.println("ampli  "  + angle );
         particle.setLocalScale(ampliScale, ampliScale, ampliScale);
         return particle;
     }
@@ -231,7 +237,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
                 }
                 
                 //Generate test particle
-                inputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(newTestParticle());  
+                inputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(particle.clone());  
                 
                 // 5. Use the results (we mark the hit object)
                 if (results.size() > 0)
@@ -257,7 +263,10 @@ public final class Amplification extends Scenario implements EmitterObserver{
     public boolean simpleUpdate(float tpf) {
         if (DEBUG_ANGLE) {
             tpfCumul = tpf+ tpfCumul;
-            ampliButtonRotation(3*pi/2);
+            ampliButtonRotation(tpfCumul);
+            if(tpfCumul > 2*pi){
+                tpfCumul = 0;
+            }
         } else {
             ampliButtonRotation((Float)this.getUserData("angleX"));
         }
@@ -302,17 +311,6 @@ public final class Amplification extends Scenario implements EmitterObserver{
     @Override
     public Spatial getInputHandle() {
         return inputWireAmpli;
-    }
-    
-    public Geometry newTestParticle(){
-        //Test generate particle
-        Box cube = new Box(0.25f, 0.25f, 0.25f);
-        Geometry particle = new Geometry("CubeCarrier", cube);
-        Material mat1 = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", ColorRGBA.Blue);
-        particle.setMaterial(mat1);
-        return particle;
     }
     
     private void initTitleBox() {

@@ -11,7 +11,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+//import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 /**
  *
@@ -44,8 +44,8 @@ public class SoundControl extends AbstractControl {
     @Override
     protected void controlUpdate(float tpf) {
        try{
-           if( (boolean) this.spatial.getUserData(AppGetter.USR_NEW_WAVE_TOGGLED) ){
-               float scale = (float) this.spatial.getUserData(AppGetter.USR_NEXT_WAVE_SCALE);
+           if( (Boolean) this.spatial.getUserData(AppGetter.USR_NEW_WAVE_TOGGLED) ){
+               float scale = (Float) this.spatial.getUserData(AppGetter.USR_NEXT_WAVE_SCALE);
                this.audio.setVolume(scale * this.volume);
                this.audio.playInstance();
                this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, false);
