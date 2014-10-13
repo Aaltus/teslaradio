@@ -197,7 +197,7 @@ public class Reception extends Scenario implements EmitterObserver  {
     }
 
     @Override
-    public boolean simpleUpdate(float tpf) {
+    protected boolean simpleUpdate(float tpf) {
         return false;
     }
 

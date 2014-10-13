@@ -552,7 +552,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
     
 
     @Override
-    public boolean simpleUpdate(float tpf) {
+    protected boolean simpleUpdate(float tpf) {
         
         if (DEBUG_ANGLE) { //In Scenario class !!
             trackableAngle += direction * (pi / 9) * tpf;
