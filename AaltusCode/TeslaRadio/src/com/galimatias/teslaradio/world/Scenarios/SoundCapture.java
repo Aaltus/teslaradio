@@ -5,6 +5,7 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.ImageBox;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
@@ -26,7 +27,9 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
+import com.jme3.texture.Texture;
 
 //import com.galimatias.teslaradio.world.observer.ScenarioObserver;
 
@@ -136,12 +139,24 @@ public final class SoundCapture extends Scenario {
         wireDestinationEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
         MicWireEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
         
-        Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
-        mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        Sphere sphere = new Sphere(10, 10, 0.4f);
-        micTapParticle = new Geometry("MicTapParticle", sphere);
-        micTapParticle.setMaterial(mat1);
+        if (DEBUG_ANGLE) {
+            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+            //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
+            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.png");
+            mat1.setTexture("ColorMap", nyan);
+            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+            Quad rect = new Quad(1.0f, 1.0f);
+            micTapParticle = new Geometry("MicTapParticle", rect);
+            micTapParticle.setMaterial(mat1);            
+        } else {
+            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+            mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
+            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+            Sphere sphere = new Sphere(10, 10, 0.4f);
+            micTapParticle = new Geometry("MicTapParticle", sphere);
+            micTapParticle.setMaterial(mat1);
+        }
+        
         micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
         MicWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 25, 0.25f, 0.75f, true));
         MicWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);

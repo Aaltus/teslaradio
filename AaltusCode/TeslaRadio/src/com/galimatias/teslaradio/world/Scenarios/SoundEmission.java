@@ -14,8 +14,9 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
-import java.util.Vector;
+import com.jme3.texture.Texture;
 
 /**
  * Created by Greenwood0 on 2014-09-08.
@@ -151,15 +152,26 @@ public final class SoundEmission extends Scenario {
      */
     private void initParticles()
     {
-        // instantiate 3d Sound particul model
         Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
+        
+        // instantiate 3d Sound particul model
+        if (DEBUG_ANGLE) {
+            
+            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.png");
+            mat1.setTexture("ColorMap", nyan);
+            Quad rect = new Quad(0.5f,0.5f);
+            soundParticle = new Geometry("MicTapParticle", rect);
+        } else {
+            //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
+            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.png");
+            mat1.setTexture("DiffuseMap", nyan);
+            Sphere sphere = new Sphere(10, 10, 0.4f);
+            soundParticle = new Geometry("MicTapParticle", sphere);
+        }
+        
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        Sphere sphere = new Sphere(10, 10, 0.4f);
-        soundParticle = new Geometry("MicTapParticle", sphere);
         soundParticle.setMaterial(mat1);
         soundParticle.setQueueBucket(queueBucket.Opaque);
-
     }
 
     private void initOnTouchEffect() {
@@ -265,7 +277,7 @@ public final class SoundEmission extends Scenario {
 
         // Here, we need to get the vector to the mic handle
         //Vector3f receiverHandleVector = particleLinker.GetEmitterDestinationPaths(this);
-        //GuitarSoundEmitter.prepareEmitParticles(receiverHandleVector);
+        //GuitarSoundEmitter.prepareEmeitParticles(receiverHandleVector);
 
         guitar_sound.playInstance();
         /*
