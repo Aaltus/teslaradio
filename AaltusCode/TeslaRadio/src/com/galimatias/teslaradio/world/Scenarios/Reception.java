@@ -9,7 +9,6 @@ import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
-import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
@@ -31,9 +30,6 @@ import com.jme3.scene.shape.Box;
  * @author Barliber
  */
 public class Reception extends Scenario implements EmitterObserver  {
-    
-    private Camera cam;
-    private Spatial destinationHandle;
     
     // TextBox of the scene
     private TextBox titleTextBox;
@@ -216,7 +212,7 @@ public class Reception extends Scenario implements EmitterObserver  {
     }
 
     @Override
-    public Spatial getInputHandle() {
+    protected Spatial getInputHandle() {
         return outputAntenneRx;
     }
 
@@ -240,7 +236,8 @@ public class Reception extends Scenario implements EmitterObserver  {
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
     }
 
-    private void initTitleBox() {
+    @Override
+    protected void initTitleBox() {
 
        boolean lookAtCamera = false;
        boolean showDebugBox = false;

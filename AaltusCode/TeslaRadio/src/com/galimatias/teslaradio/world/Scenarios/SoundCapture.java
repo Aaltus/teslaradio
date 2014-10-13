@@ -41,11 +41,9 @@ import com.jme3.scene.shape.Sphere;
 public final class SoundCapture extends Scenario {
 
     private final static String TAG = "SoundCapture";
-
     
     private Spatial micro;
     private Spatial micHandleIn;
-    private Spatial destinationHandle;
     private Vector3f micHandleInPosition;
 
     private Geometry micTapParticle;
@@ -96,12 +94,12 @@ public final class SoundCapture extends Scenario {
         touchable.attachChild(micro);
         scene.attachChild(touchable);
         
-        initTextBox();
+        initTitleBox();
 
     }
 
     @Override
-    public void loadMovableObjects()
+    protected void loadMovableObjects()
     {
         initMicWireParticlesEmitter();
         initOnTouchEffect();
@@ -131,9 +129,9 @@ public final class SoundCapture extends Scenario {
         
         //System.out.println(destinationHandle.getName());
         
-        wireDestinationEmitter.addControl(new DynamicWireParticleEmitterControl(destinationHandle, 3.5f, cam));
+        wireDestinationEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, cam));
         
-        wireDestinationEmitter.getControl(ParticleEmitterControl.class).registerObserver(destinationHandle.getControl(ParticleEmitterControl.class));
+        wireDestinationEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
         MicWireEmitter.getControl(ParticleEmitterControl.class).registerObserver(wireDestinationEmitter.getControl(ParticleEmitterControl.class));
         
         wireDestinationEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
@@ -148,10 +146,7 @@ public final class SoundCapture extends Scenario {
         micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
         MicWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 25, 0.25f, 0.75f, true));
         MicWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
-        
-        
-      
-        
+  
     }
     
     private void initOnTouchEffect() {
@@ -159,44 +154,8 @@ public final class SoundCapture extends Scenario {
          * Will be used for the mic touch effect
          */
     }
-
-
-
-
-    public void initTextBox()
-    {
-        boolean lookAtCamera = false;
-        boolean showDebugBox = false;
-        float textBoxWidth = 5.2f;
-        float textBoxHeight = 0.8f;
-        
-        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
-        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
-        titleTextBox = new TextBox(assetManager, titleText, titleTextSize, defaultTextColor, titleBackColor, textBoxWidth, textBoxHeight, "titleText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
-        
-        //move the text on the ground without moving
-        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
-        titleTextBox.rotate((float)-Math.PI/2, 0, 0);
-        
-        titleTextBox.move(titleTextPosition);
-
-        float micTextBoxWidth = 6f;
-        float micTextBoxHeight = 1.2f;
-        ColorRGBA micTextBackColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f);
-        
-        microphoneTextBox = new TextBox(assetManager, microphoneText, secondaryTextSize, defaultTextColor, micTextBackColor, micTextBoxWidth, micTextBoxHeight, "instrumentText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
-        
-        //move the text on the ground without moving
-        Vector3f microphoneTextPosition = new Vector3f(0f, 0.25f, 3.5f);
-        microphoneTextBox.rotate((float)-Math.PI/2, 0, 0);
-        
-        microphoneTextBox.move(microphoneTextPosition);
-
-        touchable.attachChild(titleTextBox);
-        touchable.attachChild(microphoneTextBox);
-    }
     
-    public void microTouchEffect()
+    protected void microTouchEffect()
     {
         
         //DrumSoundEmitter.emitParticles(1.0f);
@@ -210,7 +169,7 @@ public final class SoundCapture extends Scenario {
 
     }
     
-    public void textBoxesUpdate(Vector3f upVector)
+    private void textBoxesUpdate(Vector3f upVector)
     {
         titleTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
         microphoneTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);  
@@ -324,7 +283,40 @@ public final class SoundCapture extends Scenario {
     }
 
     @Override
-    public Spatial getInputHandle() {
+    protected Spatial getInputHandle() {
         return MicWireEmitter;
+    }
+
+    @Override
+    protected void initTitleBox() {
+        boolean lookAtCamera = false;
+        boolean showDebugBox = false;
+        float textBoxWidth = 5.2f;
+        float textBoxHeight = 0.8f;
+        
+        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
+        titleTextBox = new TextBox(assetManager, titleText, titleTextSize, defaultTextColor, titleBackColor, textBoxWidth, textBoxHeight, "titleText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
+        
+        //move the text on the ground without moving
+        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
+        titleTextBox.rotate((float)-Math.PI/2, 0, 0);
+        
+        titleTextBox.move(titleTextPosition);
+
+        float micTextBoxWidth = 6f;
+        float micTextBoxHeight = 1.2f;
+        ColorRGBA micTextBackColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f);
+        
+        microphoneTextBox = new TextBox(assetManager, microphoneText, secondaryTextSize, defaultTextColor, micTextBackColor, micTextBoxWidth, micTextBoxHeight, "instrumentText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
+        
+        //move the text on the ground without moving
+        Vector3f microphoneTextPosition = new Vector3f(0f, 0.25f, 3.5f);
+        microphoneTextBox.rotate((float)-Math.PI/2, 0, 0);
+        
+        microphoneTextBox.move(microphoneTextPosition);
+
+        touchable.attachChild(titleTextBox);
+        touchable.attachChild(microphoneTextBox);
     }
 }
