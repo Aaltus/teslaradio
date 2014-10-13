@@ -20,6 +20,7 @@ import com.jme3.scene.Spatial;
 public abstract class Scenario extends Node implements SignalObserver {
 
     private final static String TAG = "Scenario";
+    protected final static boolean DEBUG_ANGLE = true;
    
     /**
      * The destination of the current scenario
