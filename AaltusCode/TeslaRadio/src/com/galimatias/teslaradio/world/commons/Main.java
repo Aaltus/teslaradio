@@ -3,36 +3,15 @@ package com.galimatias.teslaradio.world.commons;
 import com.galimatias.teslaradio.world.Scenarios.ScreenState;
 import com.galimatias.teslaradio.world.Scenarios.DevFrameworkMainState;
 import com.ar4android.vuforiaJME.AppGetter;
-import com.galimatias.teslaradio.world.Scenarios.DummyScenario;
-import com.galimatias.teslaradio.world.Scenarios.IScenarioManager;
-import com.galimatias.teslaradio.world.Scenarios.Scenario;
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
-import com.galimatias.teslaradio.world.Scenarios.SoundCapture;
 import com.galimatias.teslaradio.world.Scenarios.StateSwitcher;
-import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.SignalControl;
-import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.jme3.app.SimpleApplication;
-import com.jme3.cinematic.MotionPath;
-import com.jme3.bullet.PhysicsSpace;
-import com.jme3.input.KeyInput;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Quad;
 import com.utils.AppLogger;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main extends SimpleApplication implements StateSwitcher
 {

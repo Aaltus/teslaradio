@@ -47,7 +47,6 @@ public final class SoundCapture extends Scenario {
     private Spatial micHandleIn;
 
     private Geometry micTapParticle;
-    private Material electricParticleMat;
     
     // Emitters of the scenario
     private Node MicWireEmitter;
@@ -59,19 +58,10 @@ public final class SoundCapture extends Scenario {
     private Vector3f micPosition;
     private Vector3f micHandleInPosition;
     
-    //CHANGE THIS VALUE CHANGE THE PARTICULE BEHAVIOUR 
-    //Setting the direction norms and the speed displacement to the trajectories
-    private float VecDirectionNorms = 80f;
-    private float SoundParticles_Speed = 50f;
-    
     // Default text to be seen when scenario starts
     private String titleText = "La Capture du Son";
     private float titleTextSize = 0.5f;
     private ColorRGBA defaultTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
-
-    // Refresh hint values
-    private float maxTimeRefreshHint = 30f;
-    private float timeLastTouch = maxTimeRefreshHint;
        
     public SoundCapture(Camera Camera, Spatial destinationHandle)
     {

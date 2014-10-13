@@ -54,7 +54,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private Node carrierEmitter = new Node();
     private Node pcbAmpEmitter = new Node();
     private Node outputEmitter = new Node();
-    private Spatial destinationHandle;
     
     // Geometry of the carrier signals
     private Geometry cubeCarrier;
@@ -430,17 +429,17 @@ public final class Modulation extends Scenario implements EmitterObserver {
             Vector3f scaleFM = spatial.getLocalScale().mult(new Vector3f(scaleFactor,1/scaleFactor,scaleFactor));
             
             if (scaleFM.x < spatial.getLocalScale().x || scaleFM.z < spatial.getLocalScale().z) {
-                System.out.println("Hello from too much scaling in x and z");
+                //System.out.println("Hello from too much scaling in x and z");
                 scaleFM.x = spatial.getLocalScale().x;
                 scaleFM.z = spatial.getLocalScale().z;
             } else if (scaleFM.y < spatial.getLocalScale().y) {
-                System.out.println("Hello from too much scaling in y");
-                System.out.println("Signal scale : " + spatial.getLocalScale().toString());
-                System.out.println("FM signal scale : " + scaleFM.toString());
+                //System.out.println("Hello from too much scaling in y");
+                //System.out.println("Signal scale : " + spatial.getLocalScale().toString());
+                //System.out.println("FM signal scale : " + scaleFM.toString());
                 scaleFM.y = spatial.getLocalScale().y;
             }
 
-            System.out.println("New FM signal scale : " + scaleFM.toString());
+            //System.out.println("New FM signal scale : " + scaleFM.toString());
             clone.getChild(0).setLocalScale(scaleFM);
         }
     }

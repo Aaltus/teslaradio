@@ -11,11 +11,9 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
 import java.util.Vector;
 
@@ -42,40 +40,20 @@ public final class SoundEmission extends Scenario {
     //private SignalEmitter DrumSoundEmitter;
     //private SignalEmitter GuitarSoundEmitter;
 
-    private TouchEffectEmitter touchEffectEmitter;
-
     private TextBox titleTextBox;
     private TextBox instrumentTextBox;
 
     private ImageBox imageHintDrum;
     private ImageBox imageHintGuitar;
 
-    private Vector<Vector3f> drum_trajectories = new Vector<Vector3f>();
-    private Vector<Vector3f> guitar_trajectories = new Vector<Vector3f>();
-
     private Vector3f drumPosition;
     private Vector3f guitarPosition;
     private Vector3f drumHandleOutPosition;
     private Vector3f guitarHandleOutPosition;
 
-    //CHANGE THIS VALUE CHANGE THE PARTICULE BEHAVIOUR
-    //Setting the direction norms and the speed displacement to the trajectories
-    private float VecDirectionNorms = 8f;
-    private float SoundParticleSpeed = 5f;
-    private float SoundParticlePeriod = 0.25f;
-
-    // CHANGE THESE VALUES TO SET THE TOUCH EFFECT BEHAVIOUR
-    private float drumScaleGradient = 50.0f;
-    private float drumMaxScale = 20.0f;
-    private float drumMinScale = 0.0f;
-
     // Default text to be seen when scenario starts
     private String titleText = "L'émission du son";
-    private String instrumentText = "Les instruments modifient la pression d'air autour d’eux avec leur vibration. Ces zones de pressions se propagent à la vitesse du son.";
     private float titleTextSize = 0.5f;
-    private float secondaryTextSize = 0.25f;
-    private float instrumentTextSize = 0.25f;
-    private ColorRGBA defaultTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
 
     // Refresh hint values
     private float maxTimeRefreshHint = 10f;
