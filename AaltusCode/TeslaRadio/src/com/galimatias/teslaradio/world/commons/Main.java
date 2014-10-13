@@ -59,7 +59,7 @@ public class Main extends SimpleApplication implements StateSwitcher
         
         initLights();
         
-        mainState = new DevFrameworkMainState(this, flyCam);
+        mainState = new DevFrameworkMainState(this, this);
         scenarioManager = new ScenarioManager(this,
                 ScenarioManager.ApplicationType.DESKTOP,
                 mainState.getNodeList(),
