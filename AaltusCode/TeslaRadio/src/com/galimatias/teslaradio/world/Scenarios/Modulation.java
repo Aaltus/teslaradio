@@ -162,7 +162,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         cubeCarrier = new Geometry("CubeCarrier", cube);
         Material mat1 = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.25f));
+        mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.5f));
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         cubeCarrier.setMaterial(mat1);
         cubeCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
@@ -369,25 +369,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         if (spatial != null && emitterId.equals("CarrierEmitter")) {
             
-            String presentCarrierTypeName = spatial.getName();
-            
             outputSignal.detachAllChildren();
-                    
-            if (presentCarrierTypeName.equals("CubeCarrier")) {
-                //outputSignal = cubeOutputSignal;
-                outputSignal.attachChild(cubeOutputSignal);
-                outputSignal.attachChild(outSpatial);
-                
-            } else if (presentCarrierTypeName.equals("PyramidCarrier")) {
-                //outputSignal = pyramidOutputSignal;
-                outputSignal.attachChild(pyramidOutputSignal);
-                outputSignal.attachChild(outSpatial);
-                
-            } else if (presentCarrierTypeName.equals("DodecagoneCarrier")) {
-                //outputSignal = dodecagoneOutputSignal;
-                outputSignal.attachChild(dodecagoneOutputSignal);
-                outputSignal.attachChild(outSpatial);     
-            }
+            outputSignal.attachChild(spatial);
         }
     }
     

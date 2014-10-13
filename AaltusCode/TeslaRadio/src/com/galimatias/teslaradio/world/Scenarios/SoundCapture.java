@@ -6,13 +6,12 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.SignalEmitter;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
+import com.galimatias.teslaradio.world.effects.SoundControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.effects.TouchEffectEmitter;
-import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.audio.AudioNode;
-import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
@@ -23,10 +22,11 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Quad;
+import com.jme3.scene.shape.Sphere;
 
 //import com.galimatias.teslaradio.world.observer.ScenarioObserver;
 
@@ -43,7 +43,6 @@ public final class SoundCapture extends Scenario {
 
     private final static String TAG = "SoundCapture";
     
-    private AudioNode micro_sound;
     private Spatial micro;
     private TouchEffectEmitter touchEffectEmitter;
     private Spatial micHandleIn;
@@ -169,20 +168,11 @@ public final class SoundCapture extends Scenario {
          * Will be used for the mic touch effect
          */
     }
-    
-    protected void microTouchEffect()
-    {
-        
-        //DrumSoundEmitter.emitParticles(1.0f);
-        //DrumSoundEmitter.emitWaves();
 
+
+    protected void microTouchEffect() {
         int wavesPerTap = 4;
         MicWireEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(wavesPerTap);
-
-        //touchEffectEmitter.isTouched();
-
-        micro_sound.playInstance();
-
     }
     
     private void textBoxesUpdate(Vector3f upVector)

@@ -111,10 +111,7 @@ public class DevFrameworkMainState extends AbstractAppState implements ActionLis
         this.floor2 = new Geometry("Floor", new Box (60,Float.MIN_VALUE,60));
         Material floorMaterial2  = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         floorMaterial2.setColor("Color", ColorRGBA.Yellow);
-        floor2.setMaterial(floorMaterial2);
-
-        
-        
+        floor2.setMaterial(floorMaterial2);    
     }
     
     @Override
@@ -241,7 +238,7 @@ public class DevFrameworkMainState extends AbstractAppState implements ActionLis
                 flyCam.setDragToRotate(dragMouseToMove);
             }
             else if(name.equals(RETURN_TO_MENU)){
-                stateSwitcher.openStartScreen();
+            stateSwitcher.openStartScreen();
             }
         }
     }

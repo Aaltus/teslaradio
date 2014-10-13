@@ -4,9 +4,6 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
-import com.ar4android.vuforiaJME.AppGetter;
-import com.galimatias.teslaradio.world.observer.ParticleObserver;
-import com.jme3.cinematic.MotionPath;
 import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -16,12 +13,9 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.Sphere;
-import com.jme3.util.SkyFactory;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -109,10 +103,7 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
                 break;     
            
         }
-        
-        
-        
-        
+
         //Configure a scaling signal control
         ScalingSignalControl sigControl = new ScalingSignalControl(speed,spatialToSend,destinationHandle,materialClone);
         //We register our emitter to receive update and we add our DomeSignalControl

@@ -49,7 +49,7 @@ public abstract class Scenario extends Node implements SignalObserver {
      */
     protected boolean showInformativeMenu = false;
 
-     * REMOVED THIS AFTER ALEX CHANGES TO CIRCLE EFFECT
+     /** REMOVED THIS AFTER ALEX CHANGES TO CIRCLE EFFECT
      *
      */
     protected Node movableObjects = new Node("movable");
