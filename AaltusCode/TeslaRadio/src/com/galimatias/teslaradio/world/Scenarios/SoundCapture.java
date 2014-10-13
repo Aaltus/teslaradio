@@ -244,7 +244,7 @@ public final class SoundCapture extends Scenario {
 
 
     @Override
-    public boolean simpleUpdate(float tpf) {
+    protected boolean simpleUpdate(float tpf) {
 
         //touchEffectEmitter.simpleUpdate(tpf);
         

@@ -471,7 +471,7 @@ public final class SoundEmission extends Scenario {
     }
 
     @Override
-    public boolean simpleUpdate(float tpf) {
+    protected boolean simpleUpdate(float tpf) {
         
         timeLastTouch += tpf;
 

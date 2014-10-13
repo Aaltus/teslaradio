@@ -261,7 +261,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
     }
 
     @Override
-    public boolean simpleUpdate(float tpf) {
+    protected boolean simpleUpdate(float tpf) {
         if (DEBUG_ANGLE) {
             tpfCumul = tpf+ tpfCumul;
             ampliButtonRotation(3*pi/2);

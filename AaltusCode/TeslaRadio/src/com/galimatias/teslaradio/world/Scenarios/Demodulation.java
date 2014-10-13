@@ -252,7 +252,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     }
 
     @Override
-    public boolean simpleUpdate(float tpf) {
+    protected boolean simpleUpdate(float tpf) {
        checkModulationMode(tpf);
         if (this.DEBUG_ANGLE) {
             tpfCumulButton = tpf+ tpfCumulButton;
