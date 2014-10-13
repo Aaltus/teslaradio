@@ -6,11 +6,13 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
-import com.galimatias.teslaradio.world.effects.SoundControl;
+import com.galimatias.teslaradio.world.effects.SignalEmitter;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
+import com.galimatias.teslaradio.world.effects.TouchEffectEmitter;
+import com.galimatias.teslaradio.world.observer.ParticleEmitReceiveLinker;
 import com.jme3.audio.AudioNode;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
@@ -21,11 +23,10 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Sphere;
+import com.jme3.scene.shape.Quad;
 
 //import com.galimatias.teslaradio.world.observer.ScenarioObserver;
 
@@ -42,13 +43,15 @@ public final class SoundCapture extends Scenario {
 
     private final static String TAG = "SoundCapture";
 
+    private AudioNode micro_sound;
     
     private Spatial micro;
+    private TouchEffectEmitter touchEffectEmitter;
     private Spatial micHandleIn;
     private Spatial destinationHandle;
-    private Vector3f micHandleInPosition;
 
     private Geometry micTapParticle;
+    private Material electricParticleMat;
     
     // Emitters of the scenario
     private Node MicWireEmitter;
@@ -58,13 +61,25 @@ public final class SoundCapture extends Scenario {
     private TextBox microphoneTextBox;
 
     private Vector3f micPosition;
+    private Vector3f micHandleInPosition;
+    
+    //CHANGE THIS VALUE CHANGE THE PARTICULE BEHAVIOUR 
+    //Setting the direction norms and the speed displacement to the trajectories
+    private float VecDirectionNorms = 80f;
+    private float SoundParticles_Speed = 50f;
     
     // Default text to be seen when scenario starts
     private String titleText = "La Capture du Son";
     private String microphoneText = "L'énergie acoustique contenue dans le son se transforme en énergie électrique grâce à la vibration de la bobine magnétique dans le microphone.";
     private float titleTextSize = 0.5f;
     private float secondaryTextSize = 0.25f;
+    private float instrumentTextSize = 0.25f;
+    private float microphoneTextSize = 0.25f;
     private ColorRGBA defaultTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+
+    // Refresh hint values
+    private float maxTimeRefreshHint = 30f;
+    private float timeLastTouch = maxTimeRefreshHint;
        
     public SoundCapture(Camera Camera, Spatial destinationHandle)
     {
@@ -96,6 +111,7 @@ public final class SoundCapture extends Scenario {
         touchable.attachChild(micro);
         scene.attachChild(touchable);
         
+        initAudio();
         initTextBox();
 
     }
@@ -121,7 +137,6 @@ public final class SoundCapture extends Scenario {
         //Geometry tmpGeom = (Geometry)micWire_geom;//.scale(1/ScenarioManager.WORLD_SCALE_DEFAULT);
         
         MicWireEmitter.addControl(new StaticWireParticleEmitterControl(micWire_geom.getMesh(), 3.5f, cam));
-        MicWireEmitter.addControl(new SoundControl("Sounds/micro_sound.wav", false, 2));
         
         wireDestinationEmitter = new Node();
         wireDestinationEmitter.setName("WireDestinationEmitter");
@@ -140,18 +155,12 @@ public final class SoundCapture extends Scenario {
         MicWireEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
         
         Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
+        mat1.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        Sphere sphere = new Sphere(10, 10, 0.4f);
-        micTapParticle = new Geometry("MicTapParticle", sphere);
+        Quad rect = new Quad(1f, 1f);
+        micTapParticle = new Geometry("MicTapParticle", rect);
         micTapParticle.setMaterial(mat1);
-        micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
-        MicWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 25, 0.25f, 0.75f, true));
-        MicWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
-        
-        
-      
-        
+
     }
     
     private void initOnTouchEffect() {
@@ -161,7 +170,19 @@ public final class SoundCapture extends Scenario {
     }
 
 
+    private void initAudio()
+    {
+        /**
+         * Will be used for the mic touch effect
+         */
+        
+        micro_sound = new AudioNode(assetManager, "Sounds/micro_sound.wav", false);
+        micro_sound.setPositional(false);
+        micro_sound.setLooping(false);
+        micro_sound.setVolume(2);
+        this.attachChild(micro_sound);
 
+    }
 
     public void initTextBox()
     {
@@ -202,11 +223,11 @@ public final class SoundCapture extends Scenario {
         //DrumSoundEmitter.emitParticles(1.0f);
         //DrumSoundEmitter.emitWaves();
 
-        int wavesPerTap = 4;
-        MicWireEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(wavesPerTap);
+        MicWireEmitter.getControl(ParticleEmitterControl.class).emitParticle(micTapParticle.clone());
 
         //touchEffectEmitter.isTouched();
 
+        micro_sound.playInstance();
 
     }
     
