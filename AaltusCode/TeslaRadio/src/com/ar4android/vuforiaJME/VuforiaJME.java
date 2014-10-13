@@ -124,17 +124,17 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         this.getStateManager().attach(vuforiaJMEState);
         vuforiaJMEState.setEnabled(true);
         //this.getStateManager().attach(vuforiaJMEState);
-        scenarioManager = new ScenarioManager(this,
+        /*scenarioManager = new ScenarioManager(this,
                 ScenarioManager.ApplicationType.ANDROID,
                 null,
                 null,
                 androidActivityListener);
+         */
 
         vuforiaJMEState.setEnabled(false);
         this.getStateManager().detach(vuforiaJMEState);
         androidActivityListener.pauseTracking();
-
-        inputManager.setSimulateMouse(false);
+        inputManager.setSimulateMouse(false); // must be false in order to the start screen to work.
 
 
 
@@ -208,14 +208,19 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
 
         startScreenState.closeStartMenu();
+
         viewPort.detachScene(rootNode);
+
+        this.getStateManager().detach(mainState);
         mainState = null;
 
-        // scenarioManager.setApplicationType(ScenarioManager.ApplicationType.ANDROID);
-        //scenarioManager.setNodeList(this.rootNode.getControl(TrackableManager.class).getScenarioNodeList());
-        //scenarioManager.setCamera(fgCam);
-        this.getStateManager().detach(mainState);
-        //this.getStateManager().attach(scenarioManager);
+        this.getStateManager().detach(scenarioManager);
+        scenarioManager = new ScenarioManager(this,
+                ScenarioManager.ApplicationType.ANDROID,
+                this.rootNode.getControl(TrackableManager.class).getScenarioNodeList(),
+                fgCam,
+                androidActivityListener);
+        this.getStateManager().attach(scenarioManager);
 
         androidActivityListener.startTracking();
         this.getStateManager().attach(vuforiaJMEState);
@@ -226,23 +231,34 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
     @Override
     public void startTutorial() {
 
+        viewPort.attachScene(rootNode);
+
         startScreenState.closeStartMenu();
         inputManager.setSimulateMouse(true);
-        viewPort.attachScene(rootNode);
+
+
         androidActivityListener.pauseTracking();
         this.getStateManager().detach(vuforiaJMEState);
         vuforiaJMEState.setEnabled(false);
 
-
         mainState = new DevFrameworkMainState(this,this);
         mainState.setEnabled(true);
+        this.getStateManager().attach(mainState);
+
+        this.getStateManager().detach(scenarioManager);
+        scenarioManager = new ScenarioManager(this,
+                ScenarioManager.ApplicationType.ANDROID_DEV_FRAMEWORK,
+                mainState.getNodeList(),
+                this.getCamera(),
+                androidActivityListener);
+        this.getStateManager().attach(scenarioManager);
 /*
         scenarioManager.setApplicationType(ScenarioManager.ApplicationType.ANDROID_DEV_FRAMEWORK);
         scenarioManager.setNodeList(mainState.getNodeList());
         scenarioManager.setCamera(this.getCamera());
         this.getStateManager().attach(scenarioManager);
 */
-        this.getStateManager().attach(mainState);
+
 
     }
 

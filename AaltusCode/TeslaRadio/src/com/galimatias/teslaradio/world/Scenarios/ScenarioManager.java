@@ -258,7 +258,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 AppGetter.setWorldScaleDefault(100);
                 //This is the rotation to put a scenario in the correct angle for VuforiaJME
                 rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
-
+                break;
             case ANDROID_DEV_FRAMEWORK:
                 AppGetter.setWorldScaleDefault(10);
                 break;
