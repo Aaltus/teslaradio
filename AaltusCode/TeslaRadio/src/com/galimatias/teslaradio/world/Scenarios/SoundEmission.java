@@ -231,7 +231,7 @@ public final class SoundEmission extends Scenario {
         titleTextBox = new TextBox(assetManager, titleText, titleTextSize, titleTextColor, titleBackColor, textBoxWidth, textBoxHeight, "titleText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
 
         //move the text on the ground without moving
-        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 5f);
+        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
         titleTextBox.rotate((float)-Math.PI/2, 0, 0);
 
         //Was in its position when in the air and rotating
@@ -239,31 +239,7 @@ public final class SoundEmission extends Scenario {
 
         titleTextBox.move(titleTextPosition);
 
-
-        // Add other text boxes here
-        float instrumentTextBoxWidth = 4f;
-        float instrumentTextBoxHeight = 1.7f;
-        ColorRGBA instrumentTextBackColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f);
-        instrumentTextBox = new TextBox(assetManager, instrumentText, secondaryTextSize, defaultTextColor, instrumentTextBackColor, instrumentTextBoxWidth, instrumentTextBoxHeight, "instrumentText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
-
-        //move the text on the ground without moving
-        Vector3f instrumentTextPosition = new Vector3f(-3f, 0.25f, 1f);
-        instrumentTextBox.rotate((float)-Math.PI/2, 0, 0);
-
-        //Was in its position when in the air and rotating
-        //Vector3f instrumentTextPosition = ((drumHandleOut.getLocalTranslation().subtract(guitarHandleOut.getLocalTranslation())).divide(2f)).add(new Vector3f(-4f, 2f, 0f));
-        instrumentTextBox.move(instrumentTextPosition);
-
-
-        float micTextBoxWidth = 6f;
-        float micTextBoxHeight = 1.2f;
-        ColorRGBA micTextBackColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f);
-
-        //move the text on the ground without moving
-        Vector3f microphoneTextPosition = new Vector3f(5f, 0.25f, -3.5f);
-
         touchable.attachChild(titleTextBox);
-        touchable.attachChild(instrumentTextBox);
     }
 
     public void initImageBoxes()
@@ -385,7 +361,6 @@ public final class SoundEmission extends Scenario {
     public void textBoxesUpdate(Vector3f upVector)
     {
         titleTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
-        instrumentTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
     }
 
     @Override

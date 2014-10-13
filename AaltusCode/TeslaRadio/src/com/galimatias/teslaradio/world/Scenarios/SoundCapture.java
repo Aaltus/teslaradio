@@ -44,7 +44,6 @@ public final class SoundCapture extends Scenario {
     private final static String TAG = "SoundCapture";
     
     private Spatial micro;
-    private TouchEffectEmitter touchEffectEmitter;
     private Spatial micHandleIn;
 
     private Geometry micTapParticle;
@@ -67,11 +66,7 @@ public final class SoundCapture extends Scenario {
     
     // Default text to be seen when scenario starts
     private String titleText = "La Capture du Son";
-    private String microphoneText = "L'énergie acoustique contenue dans le son se transforme en énergie électrique grâce à la vibration de la bobine magnétique dans le microphone.";
     private float titleTextSize = 0.5f;
-    private float secondaryTextSize = 0.25f;
-    private float instrumentTextSize = 0.25f;
-    private float microphoneTextSize = 0.25f;
     private ColorRGBA defaultTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
 
     // Refresh hint values
@@ -178,7 +173,6 @@ public final class SoundCapture extends Scenario {
     private void textBoxesUpdate(Vector3f upVector)
     {
         titleTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
-        microphoneTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);  
     }
     
     @Override
@@ -310,19 +304,6 @@ public final class SoundCapture extends Scenario {
         
         titleTextBox.move(titleTextPosition);
 
-        float micTextBoxWidth = 6f;
-        float micTextBoxHeight = 1.2f;
-        ColorRGBA micTextBackColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f);
-        
-        microphoneTextBox = new TextBox(assetManager, microphoneText, secondaryTextSize, defaultTextColor, micTextBackColor, micTextBoxWidth, micTextBoxHeight, "instrumentText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
-        
-        //move the text on the ground without moving
-        Vector3f microphoneTextPosition = new Vector3f(0f, 0.25f, 3.5f);
-        microphoneTextBox.rotate((float)-Math.PI/2, 0, 0);
-        
-        microphoneTextBox.move(microphoneTextPosition);
-
         touchable.attachChild(titleTextBox);
-        touchable.attachChild(microphoneTextBox);
     }
 }
