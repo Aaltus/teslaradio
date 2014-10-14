@@ -65,11 +65,6 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
     }   
 
     @Override
-    protected void pathUpdate() {
-        //static path => do nothing here
-    }
-
-    @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
 
     }
@@ -148,8 +143,5 @@ public class StaticWireParticleEmitterControl extends ParticleEmitterControl {
             ((Node) this.spatial).attachChild(spatialToAttach);
         }
         spatialToSendBuffer.clear();
-        
-        // update dynamic path
-        this.pathUpdate();
     }
 }
