@@ -81,6 +81,11 @@ public final class SoundEmission extends Scenario {
     private float maxTimeRefreshHint = 10f;
     private float timeLastTouch = maxTimeRefreshHint;
     private final float hintFadingTime = 1.5f;
+    
+    //Arrows
+    Arrows moveArrow;
+    Arrows drumArrow;
+    Arrows guitarArrow;
 
     public SoundEmission(com.jme3.renderer.Camera Camera, Spatial destinationHandle)
     {
@@ -94,6 +99,7 @@ public final class SoundEmission extends Scenario {
 
         loadUnmovableObjects();
         loadMovableObjects();
+        loadArrows();
     }
 
     @Override
@@ -122,9 +128,8 @@ public final class SoundEmission extends Scenario {
 
         initAudio();
         initTitleBox();
-        initImageBoxes();
         initOnTouchEffect();
-  
+        
     }
 
     @Override
@@ -287,26 +292,26 @@ public final class SoundEmission extends Scenario {
         touchable.attachChild(instrumentTextBox);
     }
 
-    public void initImageBoxes()
+    public void loadArrows()
     {
+        moveArrow = new Arrows("move", assetManager, 10, hintFadingTime);
+        this.attachChild(moveArrow);
         
+        drumArrow = new Arrows("touch", assetManager, 1, hintFadingTime);
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
-        FadeControl fadeControl1     = new FadeControl(hintFadingTime);
-        Vector3f imageHintDrumPosition = /*drumHandleOut.getLocalTranslation()*/drumHandleOutPosition;/*.add(new Vector3f(0, 0.65f, 0f));*/
-        imageHintDrum = new ImageBox(0.4f, 0.75f, assetManager, "Drum Touch Hint", "Textures/Selection_Hand.png", 1f);
-        imageHintDrum.move(imageHintDrumPosition);
-        imageHintDrum.addControl(control1);
-        imageHintDrum.addControl(fadeControl1);
-        this.attachChild(imageHintDrum);
+        FadeControl fade1 = new FadeControl(hintFadingTime);
+        drumArrow.move(drumHandleOutPosition);
+        drumArrow.addControl(control1);
+        drumArrow.addControl(fade1);
+        this.attachChild(drumArrow);
         
+        guitarArrow = new Arrows("touch", assetManager, 1, hintFadingTime);
         LookAtCameraControl control2 = new LookAtCameraControl(Camera);
-        FadeControl fadeControl2     = new FadeControl(hintFadingTime);
-        Vector3f imageHintGuitarPosition = guitarHandleOutPosition;//guitarHandleOut.getLocalTranslation().add(new Vector3f(0, 0.6f, 0f));
-        imageHintGuitar = new ImageBox(0.4f, 0.75f, assetManager, "Guitar Touch Hint", "Textures/Selection_Hand.png", 6f);
-        imageHintGuitar.move(imageHintGuitarPosition);
-        imageHintGuitar.addControl(control2);
-        imageHintGuitar.addControl(fadeControl2);
-        this.attachChild(imageHintGuitar);
+        FadeControl fade2 = new FadeControl(hintFadingTime);
+        guitarArrow.move(guitarHandleOutPosition);
+        guitarArrow.addControl(control2);
+        guitarArrow.addControl(fade2);
+        this.attachChild(guitarArrow);
     }
 
     public void drumTouchEffect()
@@ -373,10 +378,8 @@ public final class SoundEmission extends Scenario {
     {
         timeLastTouch = 0f;
         
-        imageHintDrum.getControl(FadeControl.class).setShowImage(false);
-        imageHintGuitar.getControl(FadeControl.class).setShowImage(false);
-        //imageHintDrum.setShowImage(false);
-        //imageHintGuitar.setShowImage(false);
+        drumArrow.getControl(FadeControl.class).setShowImage(false);
+        guitarArrow.getControl(FadeControl.class).setShowImage(false);
     }
 
     /**
@@ -384,10 +387,8 @@ public final class SoundEmission extends Scenario {
      */
     public void ShowHintImages()
     {
-        imageHintDrum.getControl(FadeControl.class).setShowImage(true);
-        imageHintGuitar.getControl(FadeControl.class).setShowImage(true);
-        //imageHintDrum.setShowImage(true);
-        //imageHintGuitar.setShowImage(true);
+        drumArrow.getControl(FadeControl.class).setShowImage(true);
+        guitarArrow.getControl(FadeControl.class).setShowImage(true);
     }
 
     /**
@@ -479,6 +480,7 @@ public final class SoundEmission extends Scenario {
         {
             ShowHintImages();
         }
+        moveArrow.simpleUpdate(tpf);
         
         /*
         DrumSoundEmitter.simpleUpdate(tpf, this.Camera);

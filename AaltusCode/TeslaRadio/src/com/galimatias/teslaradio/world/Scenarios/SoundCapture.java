@@ -4,7 +4,10 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.Arrows;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.FadeControl;
+import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.SoundControl;
@@ -63,6 +66,14 @@ public final class SoundCapture extends Scenario {
     private float titleTextSize = 0.5f;
     private float secondaryTextSize = 0.25f;
     private ColorRGBA defaultTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+    
+    //Arrows
+    private Arrows micArrow;
+    
+    // Refresh hint values
+    private float maxTimeRefreshHint = 10f;
+    private float timeLastTouch = maxTimeRefreshHint;
+    private float hintFadingTime = 1.5f;
        
     public SoundCapture(Camera Camera, Spatial destinationHandle)
     {
@@ -73,6 +84,7 @@ public final class SoundCapture extends Scenario {
         
         loadUnmovableObjects();
         loadMovableObjects();
+        loadArrows();
     }
 
     /**
@@ -161,6 +173,8 @@ public final class SoundCapture extends Scenario {
         //DrumSoundEmitter.emitParticles(1.0f);
         //DrumSoundEmitter.emitWaves();
 
+        removeHintImages();
+        
         int wavesPerTap = 4;
         MicWireEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(wavesPerTap);
 
@@ -248,6 +262,13 @@ public final class SoundCapture extends Scenario {
 
         //touchEffectEmitter.simpleUpdate(tpf);
         
+        timeLastTouch += tpf;
+
+        if ((int)timeLastTouch == maxTimeRefreshHint)
+        {
+            ShowHintImages();
+        }
+        
         if(Camera != null) {
             Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
             textBoxesUpdate(upVector);
@@ -318,5 +339,33 @@ public final class SoundCapture extends Scenario {
 
         touchable.attachChild(titleTextBox);
         touchable.attachChild(microphoneTextBox);
+    }
+
+    private void loadArrows() {
+        micArrow = new Arrows("touch", assetManager, 1, 1.5f);
+        LookAtCameraControl control = new LookAtCameraControl(Camera);
+        FadeControl fade = new FadeControl(hintFadingTime);
+        micArrow.move(micHandleInPosition);
+        micArrow.addControl(control);
+        micArrow.addControl(fade);
+        this.attachChild(micArrow);
+    }
+    
+        /**
+     * Remove hints, is called after touch occurs
+     */
+    public void removeHintImages()
+    {
+        timeLastTouch = 0f;
+        
+        micArrow.getControl(FadeControl.class).setShowImage(false);
+    }
+
+    /**
+     * Show Hints, is called when no touch has occured for a while
+     */
+    public void ShowHintImages()
+    {
+        micArrow.getControl(FadeControl.class).setShowImage(true);
     }
 }

@@ -1,6 +1,10 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.Arrows;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.FadeControl;
+import com.galimatias.teslaradio.world.effects.ImageBox;
+import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
@@ -77,6 +81,15 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private float tpfCumulSwitch = 0;
     private float tpfCumul = 0;
     private Quaternion rotationXSwitch = new Quaternion();   
+    
+    //Arrows
+    private Arrows rotationArrow;
+    private Arrows switchArrow;
+    
+    // Refresh hint values
+    private float maxTimeRefreshHint = 10f;
+    private float timeLastTouch = maxTimeRefreshHint;
+    private float hintFadingTime = 1.5f;
 
     
     public Modulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
@@ -88,6 +101,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         loadUnmovableObjects();
         loadMovableObjects();
+        loadArrows();
     }
     
     @Override
@@ -299,6 +313,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
     }
     
     public void toggleModulationMode() {
+        removeHintImages();
         if (!switchIsToggled) {
             isFM = !isFM;
             switchIsToggled = true;
@@ -566,6 +581,14 @@ public final class Modulation extends Scenario implements EmitterObserver {
             trackableAngle = this.getUserData("angleX");
         }
         
+        timeLastTouch += tpf;
+
+        if ((int)timeLastTouch == maxTimeRefreshHint)
+        {
+            ShowHintImages();
+        }
+        
+        rotationArrow.simpleUpdate(tpf);
         checkTrackableAngle(trackableAngle, tpf);
         checkModulationMode(tpf);
         
@@ -609,6 +632,37 @@ public final class Modulation extends Scenario implements EmitterObserver {
             }
             
         }
+    }
+
+    private void loadArrows() {
+        rotationArrow = new Arrows("rotation", assetManager, 10, hintFadingTime);
+        this.attachChild(rotationArrow);
+        
+        switchArrow = new Arrows("touch", assetManager, 1, hintFadingTime);
+        LookAtCameraControl control = new LookAtCameraControl(Camera);
+        FadeControl fade = new FadeControl(hintFadingTime);
+        switchArrow.move(actionSwitch.getWorldTranslation());
+        switchArrow.addControl(control);
+        switchArrow.addControl(fade);
+        this.attachChild(switchArrow);
+    }
+    
+    /**
+     * Remove hints, is called after touch occurs
+     */
+    public void removeHintImages()
+    {
+        timeLastTouch = 0f;
+        
+        switchArrow.getControl(FadeControl.class).setShowImage(false);
+    }
+
+    /**
+     * Show Hints, is called when no touch has occured for a while
+     */
+    public void ShowHintImages()
+    {
+        switchArrow.getControl(FadeControl.class).setShowImage(true);
     }
     
 }
