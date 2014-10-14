@@ -37,10 +37,6 @@ public final class SoundEmission extends Scenario {
     private Spatial guitarEmitter;
     private Spatial drumEmitter;
 
-    //private Halo halo_drum, halo_guitar;
-    //private SignalEmitter DrumSoundEmitter;
-    //private SignalEmitter GuitarSoundEmitter;
-
     private TextBox titleTextBox;
     private TextBox instrumentTextBox;
 
