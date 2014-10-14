@@ -4,8 +4,10 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 import com.galimatias.teslaradio.world.effects.AirParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
@@ -28,6 +30,9 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Quad;
+import com.jme3.scene.shape.Sphere;
+import com.jme3.texture.Texture;
 
 
 /**
@@ -44,6 +49,8 @@ public final class Amplification extends Scenario implements EmitterObserver{
     //Test 
     private Spatial generateParticle;
     private Geometry cubeTestParticle;
+    
+    private Geometry autoGenParticle;
     
      /**
      * TODO Remove this bool and associated code in simpleUpdate when it works
@@ -84,9 +91,10 @@ public final class Amplification extends Scenario implements EmitterObserver{
     
     public Amplification(Camera Camera, Spatial destinationHandle){
         super(Camera, destinationHandle);
-        
+        this.needAutoGenIfMain = true;
         this.destinationHandle = destinationHandle;
         this.cam = Camera;
+        this.needAutoGenIfMain = true;
         loadUnmovableObjects();
         loadMovableObjects();
         
@@ -128,6 +136,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
      
         initParticlesEmitter(inputWireAmpli, pathInputAmpli, inputAmpPath, null);
         initParticlesEmitter(outputWireAmpli, pathOutputAmpli, outputAmpPath, null);
+        initPatternGenerator();
      
         // Set names for the emitters  // VOir si utile dans ce module
         inputWireAmpli.setName("InputWireAmpli");
@@ -190,7 +199,28 @@ public final class Amplification extends Scenario implements EmitterObserver{
  
     
     
-    
+        private void initPatternGenerator(){
+        
+        if (DEBUG_ANGLE) {
+            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+            //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
+            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.jpg");
+            mat1.setTexture("ColorMap", nyan);
+            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+            Quad rect = new Quad(1.0f, 1.0f);
+            autoGenParticle = new Geometry("MicTapParticle", rect);
+            autoGenParticle.setMaterial(mat1);            
+        } else {
+            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+            mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
+            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+            Sphere sphere = new Sphere(10, 10, 0.4f);
+            autoGenParticle = new Geometry("MicTapParticle", sphere);
+            autoGenParticle.setMaterial(mat1);
+        }
+        
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle, 1, 1,1,false));
+    }
 
     @Override
     public void restartScenario() {

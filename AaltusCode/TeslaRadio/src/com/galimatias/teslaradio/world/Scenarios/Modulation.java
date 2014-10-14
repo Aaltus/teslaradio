@@ -1,7 +1,9 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
@@ -19,6 +21,9 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Dome;
+import com.jme3.scene.shape.Quad;
+import com.jme3.scene.shape.Sphere;
+import com.jme3.texture.Texture;
 
 /**
  * Created by Batcave on 2014-09-09.
@@ -64,6 +69,9 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private Geometry selectedCarrier;
     private Node outputSignal;
     
+    //Pattern Geometry
+    private Geometry micTapParticle;
+    
     // this is PIIIIIII! (kick persian)
     private final float pi = (float) Math.PI;
     
@@ -84,6 +92,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         this.cam = Camera;
         this.destinationHandle = destinationHandle;
+        this.needAutoGenIfMain = true;
         
         loadUnmovableObjects();
         loadMovableObjects();
@@ -121,6 +130,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         initParticlesEmitter(wirePcbEmitter, pathInHandle, pathIn, cam);
         initParticlesEmitter(carrierEmitter, pathCarrierHandle, pathCarrier, null);
         initParticlesEmitter(pcbAmpEmitter, pathOutChipHandle, pathOut, null);
+        initPatternGenerator();
         
         scene.attachChild(outputEmitter);
         outputEmitter.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
@@ -205,6 +215,28 @@ public final class Modulation extends Scenario implements EmitterObserver {
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
     
+    private void initPatternGenerator(){
+        
+        if (DEBUG_ANGLE) {
+            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+            //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
+            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.jpg");
+            mat1.setTexture("ColorMap", nyan);
+            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+            Quad rect = new Quad(1.0f, 1.0f);
+            micTapParticle = new Geometry("MicTapParticle", rect);
+            micTapParticle.setMaterial(mat1);            
+        } else {
+            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+            mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
+            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+            Sphere sphere = new Sphere(10, 10, 0.4f);
+            micTapParticle = new Geometry("MicTapParticle", sphere);
+            micTapParticle.setMaterial(mat1);
+        }
+        
+        this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 1, 1,1,false));
+    }
     @Override
     protected void initTitleBox() {
         
@@ -595,5 +627,17 @@ public final class Modulation extends Scenario implements EmitterObserver {
             
         }
     }
+      
+    /**
+     * Sets the base particle for auto-generation
+     */
+    @Override
+    protected void setAutoGenerationParticle(Geometry particle){
+        this.micTapParticle = particle;
+        this.wirePcbEmitter.getControl(PatternGeneratorControl.class).
+                setBaseParticle(this.micTapParticle);
+    };
+
+
     
 }

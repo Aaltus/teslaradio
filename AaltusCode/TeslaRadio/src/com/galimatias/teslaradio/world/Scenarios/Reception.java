@@ -6,6 +6,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
@@ -14,6 +15,7 @@ import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
 import static com.jme3.input.event.TouchEvent.Type.DOWN;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
@@ -24,6 +26,9 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Quad;
+import com.jme3.scene.shape.Sphere;
+import com.jme3.texture.Texture;
 
 /**
  *
@@ -62,13 +67,14 @@ public class Reception extends Scenario implements EmitterObserver  {
     private Geometry antenneRxPath;
     //try particle
     private Geometry particle;
+    private Geometry autoGenParticle;
     
     public Reception(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         super(Camera, destinationHandle);
 
         this.cam = Camera;
         this.destinationHandle = destinationHandle;
-
+        this.needAutoGenIfMain = true;
         loadUnmovableObjects();
         loadMovableObjects();
         
@@ -104,6 +110,7 @@ public class Reception extends Scenario implements EmitterObserver  {
         antenneRxPath = (Geometry) wireAntenneRx_node.getChild("NurbsPath.005");
        
         initParticlesEmitter(outputAntenneRx, pathAntenneRx, antenneRxPath, null);
+        initPatternGenerator();
         
         scene.attachChild(outputModule);
         outputModule.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
@@ -264,5 +271,28 @@ public class Reception extends Scenario implements EmitterObserver  {
 
        titleTextBox.move(titleTextPosition);
        this.attachChild(titleTextBox);
+    }
+    
+    private void initPatternGenerator(){
+        
+        if (DEBUG_ANGLE) {
+            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+            //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
+            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.jpg");
+            mat1.setTexture("ColorMap", nyan);
+            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+            Quad rect = new Quad(1.0f, 1.0f);
+            autoGenParticle = new Geometry("MicTapParticle", rect);
+            autoGenParticle.setMaterial(mat1);            
+        } else {
+            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+            mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
+            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+            Sphere sphere = new Sphere(10, 10, 0.4f);
+            autoGenParticle = new Geometry("MicTapParticle", sphere);
+            autoGenParticle.setMaterial(mat1);
+        }
+        
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle, 1, 1,1,false));
     }
 }
