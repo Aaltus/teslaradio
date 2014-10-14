@@ -76,11 +76,6 @@ public final class SoundEmission extends Scenario {
     private float secondaryTextSize = 0.25f;
     private float instrumentTextSize = 0.25f;
     private ColorRGBA defaultTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
-
-    // Refresh hint values
-    private float maxTimeRefreshHint = 10f;
-    private float timeLastTouch = maxTimeRefreshHint;
-    private final float hintFadingTime = 1.5f;
     
     //Arrows
     Arrows moveArrow;
@@ -293,25 +288,19 @@ public final class SoundEmission extends Scenario {
     }
 
     public void loadArrows()
-    {
-        moveArrow = new Arrows("move", assetManager, 10, hintFadingTime);
-        this.attachChild(moveArrow);
-        
-        drumArrow = new Arrows("touch", assetManager, 1, hintFadingTime);
+    {        
+        drumArrow = new Arrows("touch", drumHandleOutPosition, assetManager, 1);
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
-        FadeControl fade1 = new FadeControl(hintFadingTime);
-        drumArrow.move(drumHandleOutPosition);
         drumArrow.addControl(control1);
-        drumArrow.addControl(fade1);
         this.attachChild(drumArrow);
         
-        guitarArrow = new Arrows("touch", assetManager, 1, hintFadingTime);
+        guitarArrow = new Arrows("touch", guitarHandleOutPosition, assetManager, 1);
         LookAtCameraControl control2 = new LookAtCameraControl(Camera);
-        FadeControl fade2 = new FadeControl(hintFadingTime);
-        guitarArrow.move(guitarHandleOutPosition);
         guitarArrow.addControl(control2);
-        guitarArrow.addControl(fade2);
         this.attachChild(guitarArrow);
+        
+        moveArrow = new Arrows("move", null, assetManager, 10);
+        this.attachChild(moveArrow);
     }
 
     public void drumTouchEffect()
@@ -376,19 +365,10 @@ public final class SoundEmission extends Scenario {
      */
     public void removeHintImages()
     {
-        timeLastTouch = 0f;
-        
         drumArrow.getControl(FadeControl.class).setShowImage(false);
+        drumArrow.resetTimeLastTouch();
         guitarArrow.getControl(FadeControl.class).setShowImage(false);
-    }
-
-    /**
-     * Show Hints, is called when no touch has occured for a while
-     */
-    public void ShowHintImages()
-    {
-        drumArrow.getControl(FadeControl.class).setShowImage(true);
-        guitarArrow.getControl(FadeControl.class).setShowImage(true);
+        guitarArrow.resetTimeLastTouch();
     }
 
     /**
@@ -474,12 +454,8 @@ public final class SoundEmission extends Scenario {
     @Override
     protected boolean simpleUpdate(float tpf) {
         
-        timeLastTouch += tpf;
-
-        if ((int)timeLastTouch == maxTimeRefreshHint)
-        {
-            ShowHintImages();
-        }
+        drumArrow.simpleUpdate(tpf);
+        guitarArrow.simpleUpdate(tpf);
         moveArrow.simpleUpdate(tpf);
         
         /*

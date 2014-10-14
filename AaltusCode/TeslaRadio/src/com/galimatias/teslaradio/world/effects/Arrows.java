@@ -20,14 +20,16 @@ import com.jme3.scene.shape.Quad;
  * @author Christian
  */
 public class Arrows extends Node{
-    private float baseScale;
-    private float cumulatedTime;
-    private String name;
-    private Quaternion rot;
-    private Geometry imageGeom;
-    private float fadingTime;
-    private float currentFadingTime;  
-    private boolean showImage = true;  
+    private float       baseScale;
+    private float       cumulatedTime;
+    private String      name;
+    private Quaternion  rot;
+    private Geometry    imageGeom;
+    
+    // Refresh hint values
+    private float maxTimeRefreshHint = 10f;
+    private float timeLastTouch = maxTimeRefreshHint;
+    private float hintFadingTime = 1.5f;
     
     /**
      * 
@@ -35,54 +37,60 @@ public class Arrows extends Node{
      * @param mat
      * @param baseScale 
      */
-    public Arrows(String name, AssetManager assetManager, float baseScale, float fadingTime)
-    {
-        this.fadingTime = fadingTime;
-        currentFadingTime = fadingTime;
-        
+    public Arrows(String name, Vector3f location, AssetManager assetManager, float baseScale)
+    {        
         if (name.equals("touch")){
-            imageGeom = new Geometry(name ,new Quad(1f, 1f));
+            imageGeom = new Geometry(name ,new Box(0.5f, 0.5f, Float.MIN_VALUE));
+            imageGeom.move(Vector3f.UNIT_Y);
         }
         else{
             imageGeom = new Geometry(name ,new Box(1f,Float.MIN_VALUE,1f));
         }
+        
         Material imageMat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         imageMat.setTexture("ColorMap", assetManager.loadTexture("Textures/"+name+".png"));
         imageMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        FadeControl fade = new FadeControl(hintFadingTime);
+        if (location != null){
+            this.move(location);
+        }
         imageGeom.setQueueBucket(RenderQueue.Bucket.Transparent);
         imageGeom.setMaterial(imageMat);
+        this.addControl(fade);
         this.attachChild(imageGeom);
-        
-        this.name = name;
-        this.baseScale = baseScale;
         this.setLocalScale(baseScale);
-        //this.setQueueBucket(RenderQueue.Bucket.Transparent);
+        
+        this.name      = name;
+        this.baseScale = baseScale;
+        
         if (name.equals("rotation")){
             this.rot = new Quaternion();
         }
     }
     
-    /**
-     * Set the show image bool that will create a fade in/ fade out.
-     * @param showImage the showImage to set
-     */
-    public void setShowImage(boolean showImage) {
-        this.showImage = showImage;
+    public void resetTimeLastTouch(){
+        timeLastTouch = 0f;
     }
     
     public void simpleUpdate(float tpf)
     {
+        timeLastTouch += tpf;
         cumulatedTime+=tpf;
+
+        if (timeLastTouch >= maxTimeRefreshHint)
+        {
+            this.getControl(FadeControl.class).setShowImage(true);
+        }
+                
         float movement = 0.5f*(float)Math.sin(cumulatedTime*3);
-        
         if (this.name.equals("move")){
             this.setLocalScale(baseScale+movement);
         }
         else if (this.name.equals("rotation")){
             this.setLocalRotation(this.rot.fromAngleAxis(movement, Vector3f.UNIT_Y));
         }
-        else if (this.name.equals("move")){
-            
+        else if (this.name.equals("touch")){
+            this.setLocalScale(baseScale+movement/3);            
         }
     }
     

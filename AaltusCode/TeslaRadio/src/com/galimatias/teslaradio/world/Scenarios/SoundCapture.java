@@ -69,11 +69,6 @@ public final class SoundCapture extends Scenario {
     
     //Arrows
     private Arrows micArrow;
-    
-    // Refresh hint values
-    private float maxTimeRefreshHint = 10f;
-    private float timeLastTouch = maxTimeRefreshHint;
-    private float hintFadingTime = 1.5f;
        
     public SoundCapture(Camera Camera, Spatial destinationHandle)
     {
@@ -261,13 +256,7 @@ public final class SoundCapture extends Scenario {
     protected boolean simpleUpdate(float tpf) {
 
         //touchEffectEmitter.simpleUpdate(tpf);
-        
-        timeLastTouch += tpf;
-
-        if ((int)timeLastTouch == maxTimeRefreshHint)
-        {
-            ShowHintImages();
-        }
+        micArrow.simpleUpdate(tpf);
         
         if(Camera != null) {
             Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
@@ -342,12 +331,9 @@ public final class SoundCapture extends Scenario {
     }
 
     private void loadArrows() {
-        micArrow = new Arrows("touch", assetManager, 1, 1.5f);
+        micArrow = new Arrows("touch", micHandleInPosition, assetManager, 1);
         LookAtCameraControl control = new LookAtCameraControl(Camera);
-        FadeControl fade = new FadeControl(hintFadingTime);
-        micArrow.move(micHandleInPosition);
         micArrow.addControl(control);
-        micArrow.addControl(fade);
         this.attachChild(micArrow);
     }
     
@@ -356,16 +342,7 @@ public final class SoundCapture extends Scenario {
      */
     public void removeHintImages()
     {
-        timeLastTouch = 0f;
-        
         micArrow.getControl(FadeControl.class).setShowImage(false);
-    }
-
-    /**
-     * Show Hints, is called when no touch has occured for a while
-     */
-    public void ShowHintImages()
-    {
-        micArrow.getControl(FadeControl.class).setShowImage(true);
+        micArrow.resetTimeLastTouch();
     }
 }

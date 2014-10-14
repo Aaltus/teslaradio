@@ -85,11 +85,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
     //Arrows
     private Arrows rotationArrow;
     private Arrows switchArrow;
-    
-    // Refresh hint values
-    private float maxTimeRefreshHint = 10f;
-    private float timeLastTouch = maxTimeRefreshHint;
-    private float hintFadingTime = 1.5f;
 
     
     public Modulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
@@ -581,14 +576,9 @@ public final class Modulation extends Scenario implements EmitterObserver {
             trackableAngle = this.getUserData("angleX");
         }
         
-        timeLastTouch += tpf;
-
-        if ((int)timeLastTouch == maxTimeRefreshHint)
-        {
-            ShowHintImages();
-        }
-        
+        switchArrow.simpleUpdate(tpf);
         rotationArrow.simpleUpdate(tpf);
+        
         checkTrackableAngle(trackableAngle, tpf);
         checkModulationMode(tpf);
         
@@ -635,15 +625,12 @@ public final class Modulation extends Scenario implements EmitterObserver {
     }
 
     private void loadArrows() {
-        rotationArrow = new Arrows("rotation", assetManager, 10, hintFadingTime);
+        rotationArrow = new Arrows("rotation", null, assetManager, 10);
         this.attachChild(rotationArrow);
         
-        switchArrow = new Arrows("touch", assetManager, 1, hintFadingTime);
+        switchArrow = new Arrows("touch", actionSwitch.getWorldTranslation(), assetManager, 1);
         LookAtCameraControl control = new LookAtCameraControl(Camera);
-        FadeControl fade = new FadeControl(hintFadingTime);
-        switchArrow.move(actionSwitch.getWorldTranslation());
         switchArrow.addControl(control);
-        switchArrow.addControl(fade);
         this.attachChild(switchArrow);
     }
     
@@ -652,17 +639,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
      */
     public void removeHintImages()
     {
-        timeLastTouch = 0f;
-        
         switchArrow.getControl(FadeControl.class).setShowImage(false);
-    }
-
-    /**
-     * Show Hints, is called when no touch has occured for a while
-     */
-    public void ShowHintImages()
-    {
-        switchArrow.getControl(FadeControl.class).setShowImage(true);
+        switchArrow.resetTimeLastTouch();
     }
     
 }
