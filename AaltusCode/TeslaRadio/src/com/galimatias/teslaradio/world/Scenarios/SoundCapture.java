@@ -5,14 +5,11 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.ImageBox;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.SoundControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
-import com.galimatias.teslaradio.world.effects.TouchEffectEmitter;
-import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
@@ -158,7 +155,7 @@ public final class SoundCapture extends Scenario {
         }
         
         micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
-        MicWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 25, 0.25f, 0.75f, true));
+        MicWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 5, 0.25f, 0.75f, false));
         MicWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
   
     }

@@ -119,7 +119,7 @@ public class Reception extends Scenario implements EmitterObserver  {
         
        // inputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
         outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));    
-        outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(outputModule.getControl(ParticleEmitterControl.class));
+        outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
 
     }
 
@@ -220,16 +220,39 @@ public class Reception extends Scenario implements EmitterObserver  {
     public void signalEndOfPath(Geometry caller, float magnitude) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    private void updateWifiLogo(Float normScale) {
+        
+        if (normScale >= 0 && normScale < 0.25f) {
+            System.out.println("1");
+        } else if (normScale >= 0.25f && normScale < 0.5f) {
+            System.out.println("2");
+        } else if (normScale >= 0.5f && normScale < 0.75f) {
+            System.out.println("3");
+        } else {
+            System.out.println("4");
+        }     
+    }
 
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
-        if (notifierId.equals("OutputModule")) {
-          //Change Scale
-             outputAntenneRx.getControl(ParticleEmitterControl.class).emitParticle(spatial);
-         }
+        System.out.println(notifierId);
+        if (notifierId.equals("OutputAntenneRx")) {
+
+             if (outputAntenneRx != null) {
+                 
+                Vector3f particleScale = spatial.getUserData("Scale");
+                float normScale = particleScale.length()/spatial.getLocalScale().length();
+                
+                System.out.println("Normalize scaling : " + normScale);
+                
+                updateWifiLogo(normScale);
+                outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
+             }
+        }
     }
     
-     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
+    private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
         scene.attachChild(signalEmitter);
         signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
