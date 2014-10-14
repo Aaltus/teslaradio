@@ -16,5 +16,5 @@ public interface IScenarioManager extends TouchListener,ActionListener, IScenari
 
     void setNodeList(List<Node> nodeList);
 
-    void simpleUpdate(float tpf);
+    //void simpleUpdate(float tpf);
 }

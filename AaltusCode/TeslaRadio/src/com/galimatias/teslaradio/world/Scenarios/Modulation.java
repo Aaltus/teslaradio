@@ -26,11 +26,7 @@ import com.jme3.scene.shape.Dome;
 public final class Modulation extends Scenario implements EmitterObserver {
     
     private final static String TAG = "Modulation";
-    /**
-     * TODO Remove this bool and associated code in simpleUpdate when it works
-     * on Android. Only for debug purposes.
-     */
-    private final static boolean DEBUG_ANGLE = true;
+    
     // Values displayed on the digital screen of the PCB 3D object
     private final String sFM1061 = "106.1 FM";
     private final String sFM977 = "97.7 FM";
@@ -58,17 +54,11 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private Node carrierEmitter = new Node();
     private Node pcbAmpEmitter = new Node();
     private Node outputEmitter = new Node();
-    private Spatial destinationHandle;
     
     // Geometry of the carrier signals
     private Geometry cubeCarrier;
     private Geometry pyramidCarrier;
     private Geometry dodecagoneCarrier; // Really...
-    
-    // Output signals
-    private Geometry cubeOutputSignal;
-    private Geometry pyramidOutputSignal;
-    private Geometry dodecagoneOutputSignal;
     
     // Current carrier signal and his associated output
     private Geometry selectedCarrier;
@@ -85,7 +75,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private float initAngleSwitch;
     private float tpfCumulSwitch = 0;
     private float tpfCumul = 0;
-    private Quaternion rotationXSwitch = new Quaternion();
+    private Quaternion rotationXSwitch = new Quaternion();   
+
     
     public Modulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         
@@ -130,7 +121,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         initParticlesEmitter(wirePcbEmitter, pathInHandle, pathIn, cam);
         initParticlesEmitter(carrierEmitter, pathCarrierHandle, pathCarrier, null);
         initParticlesEmitter(pcbAmpEmitter, pathOutChipHandle, pathOut, null);
-
+        
         scene.attachChild(outputEmitter);
         outputEmitter.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
         //System.out.println("translation " + outputHandle.getLocalTranslation());
@@ -149,7 +140,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
     }
     
     @Override
-    public void loadMovableObjects() {
+    protected void loadMovableObjects() {
         turnButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
         initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
@@ -214,7 +205,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
     
-    private void initTitleBox() {
+    @Override
+    protected void initTitleBox() {
         
         boolean lookAtCamera = false;
         boolean showDebugBox = false;
@@ -297,7 +289,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
         if (switchIsToggled) {
             tpfCumulSwitch += 3 * tpf;
             switchRotation(isFM, tpfCumulSwitch);
-            // switchRotationWithoutDynamicSwitch(isFM);
             float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
             if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
                 switchIsToggled = false;
@@ -377,22 +368,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         if (spatial != null && emitterId.equals("CarrierEmitter")) {
             
-            String presentCarrierTypeName = spatial.getName();
-                    
             outputSignal.detachAllChildren();
-            
-            if (presentCarrierTypeName.equals("CubeCarrier")) {
-                //outputSignal = cubeOutputSignal;
-                outputSignal.attachChild(spatial);
-                
-            } else if (presentCarrierTypeName.equals("PyramidCarrier")) {
-                //outputSignal = pyramidOutputSignal;
-                outputSignal.attachChild(spatial);
-                
-            } else if (presentCarrierTypeName.equals("DodecagoneCarrier")) {
-                //outputSignal = dodecagoneOutputSignal;
-                outputSignal.attachChild(spatial);
-            }
+            outputSignal.attachChild(spatial);
         }
     }
     
@@ -432,6 +409,38 @@ public final class Modulation extends Scenario implements EmitterObserver {
         } else if (trackableAngle >= 2 * stepRange && trackableAngle < 3 * stepRange) {
             turnTunerButton(trackableAngle);
             changeModulation(3, isFM, tpf);
+        }
+    }
+    
+    private void modulateFMorAM(Node clone, Spatial spatial) {
+        if (!isFM) {
+            float scale = 1.5f;
+            clone.getChild(0).setLocalScale(spatial.getLocalScale().mult(scale));
+        } else {
+            float scaleFactor = 1.5f;
+            Vector3f midScale = new Vector3f(0.5f,0.5f,0.5f);
+            
+            if (spatial.getLocalScale().length() < midScale.length()) {
+                scaleFactor = 2.5f;
+            } else {
+                scaleFactor = 0.5f;
+            }
+            
+            Vector3f scaleFM = spatial.getLocalScale().mult(new Vector3f(scaleFactor,1/scaleFactor,scaleFactor));
+            
+            if (scaleFM.x < spatial.getLocalScale().x || scaleFM.z < spatial.getLocalScale().z) {
+                //System.out.println("Hello from too much scaling in x and z");
+                scaleFM.x = spatial.getLocalScale().x;
+                scaleFM.z = spatial.getLocalScale().z;
+            } else if (scaleFM.y < spatial.getLocalScale().y) {
+                //System.out.println("Hello from too much scaling in y");
+                //System.out.println("Signal scale : " + spatial.getLocalScale().toString());
+                //System.out.println("FM signal scale : " + scaleFM.toString());
+                scaleFM.y = spatial.getLocalScale().y;
+            }
+
+            //System.out.println("New FM signal scale : " + scaleFM.toString());
+            clone.getChild(0).setLocalScale(scaleFM);
         }
     }
 
@@ -526,10 +535,11 @@ public final class Modulation extends Scenario implements EmitterObserver {
         }
     }
     
+
     @Override
-    public boolean simpleUpdate(float tpf) {
+    protected boolean simpleUpdate(float tpf) {
         
-        if (DEBUG_ANGLE) {
+        if (this.DEBUG_ANGLE) { //In Scenario class !!
             trackableAngle += direction * (pi / 9) * tpf;
             
             if (trackableAngle >= 2 * pi || trackableAngle <= 0) {
@@ -548,7 +558,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
     }
     
     @Override
-    public Spatial getInputHandle() {
+    protected Spatial getInputHandle() {
         return wirePcbEmitter;
     }
 
@@ -572,12 +582,18 @@ public final class Modulation extends Scenario implements EmitterObserver {
             
             if (pcbAmpEmitter != null && spatial != null) {
                 Node clone = (Node)outputSignal.clone();
+                
+                modulateFMorAM(clone, spatial);
+                
                 clone.attachChild(spatial);
-                clone.setLocalScale(spatial.getLocalScale());
+                
                 //System.out.println("Scaling : " + spatial.getLocalScale().toString());
                 pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(clone);
+                clone.setUserData("CarrierShape", outputSignal.getChild(0).getName());
+                clone.setUserData("isFM", isFM);
             }
             
         }
     }
+    
 }

@@ -61,17 +61,18 @@ public class PatternGeneratorControl extends AbstractControl {
         
         this.scaleList = new ArrayList<Float>();
         float step = (maxScale - minScale) / scaleStep;
-        for(int i = 0; i < scaleStep;i++)
+        for(int i = scaleStep - 1; i > 0;i--)
         {
             this.scaleList.add(this.minScale + i * step);
         }
-        for(int i = scaleStep - 2; i > 0;i--)
+        for(int i = 0; i < scaleStep; i++)
         {
             this.scaleList.add(this.minScale + i * step);
         }
         if(this.isRandom){
             Collections.shuffle(this.scaleList);
         }
+
     }
     
    /**
@@ -90,9 +91,10 @@ public class PatternGeneratorControl extends AbstractControl {
         this.scaleList = magnitudes;
         this.scaleStep = magnitudes.size();
         this.isRandom = isRandom;
-         if(this.isRandom){
+        if(this.isRandom){
             Collections.shuffle(this.scaleList);
         }
+
     }
    
     /**
@@ -124,30 +126,18 @@ public class PatternGeneratorControl extends AbstractControl {
         }
     }
     
-    /**
-     * Toggle a new wave with only one object. Used by the autoplayer.
-     */
-    public void toggleNewWave() {
-        
-        this.geomList.clear();
-        
-        float scale = this.scaleList.get(this.waveIterator);
-            if(++this.waveIterator == this.scaleStep){
-                this.waveIterator = 0;
-                if(this.isRandom){
-                   Collections.shuffle(this.scaleList);
-                }
-            }
-
-            this.toggleNewWave(scale);
-    }
-    
-    /**
-     * Toggle a new waveform with the inside parameter and wavesPerToggle objects
-     * @param wavesPerToggle 
+    /** Toggle a new waveform with the inside parameter and wavesPerToggle objects
+    * @param wavesPerToggle 
      */
     public void toggleNewWave(int wavesPerToggle)
-    {
+    {   
+        {
+            this.geomList.clear();
+            float scale = this.scaleList.get(this.waveIterator);
+            this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, true);
+            this.spatial.setUserData(AppGetter.USR_NEXT_WAVE_SCALE, scale/this.maxScale);
+        }
+        
         for (int i=0; i<wavesPerToggle; i++) {
             float scale = this.scaleList.get(this.waveIterator);
             if(++this.waveIterator == this.scaleStep){
@@ -159,7 +149,8 @@ public class PatternGeneratorControl extends AbstractControl {
 
             this.toggleNewWave(scale);
         }
-    }
+     }
+    
     /**
      * Toggle a new emission wave with the specified scale;
      * @param scale Scale of the particle
@@ -203,7 +194,7 @@ public class PatternGeneratorControl extends AbstractControl {
         @Override
         
         public void run() {
-                toggleNewWave();
+                toggleNewWave(1);
             }
           
     };

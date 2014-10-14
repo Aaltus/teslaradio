@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+    <useStyles filename="nifty-default-styles.xml" />
+    <useControls filename="nifty-default-controls.xml" />
+
+    <screen id="start" controller="com.galimatias.teslaradio.world.Scenarios.ScreenState">
+        <layer childLayout="center">
+            <panel width="100%" height="100%" align="center" valign="center" childLayout="vertical" backgroundColor="#55a5" padding="10">
+                <panel height="100%" backgroundColor="#55aa" childLayout="vertical">
+                    <panel width="100%" height="40%" childLayout="center">
+                        <image width="60%" height="100%" filename="Interface/Logo.jpg" />
+                    </panel>
+                    <panel width="100%" height="15%" childLayout="center" >
+                        <control width="30%" height="90%" id="StartButton" name="button" label="Start" visibleToMouse="true" focusable="false">
+                            <interact onClick="onStartButtonClick()" />
+                        </control>
+                    </panel>
+                    <panel width="100%" height="15%" childLayout="center">
+                        <control width="30%" height="90%" id="TutorialButton" name="button" label="Tutorial" visibleToMouse="true" focusable="false">
+                            <interact onClick="onTutorialButtonClick()"/>
+                        </control>
+                    </panel>
+                    <panel width="100%" height="15%" childLayout="center">
+                        <control width="30%" height="90%" id="CreditsButton" name="button" label="Credits" visibleToMouse="true" focusable="false">
+                            <interact onClick="onCreditsButtonClick()"/>
+                        </control>
+                    </panel>
+                    <panel width="100%" height="15%" childLayout="center">
+                        <control width="30%" height="90%" id="ExitButton" name="button" label="Exit" visibleToMouse="true" focusable="false">
+                            <interact onClick="onEndGameClick()"/>
+                        </control>
+                    </panel>
+                </panel>
+            </panel>
+        </layer>
+    </screen>
+    
+    <screen id="null" controller="com.galimatias.teslaradio.world.Scenarios.ScreenState"/>
+</nifty>

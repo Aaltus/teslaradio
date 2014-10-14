@@ -18,17 +18,14 @@
 
 package com.ar4android.vuforiaJME;
 
-import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Debug;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -40,12 +37,14 @@ import com.galimatias.teslaradio.SplashscreenDialogFragment;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.galimatias.teslaradio.world.Scenarios.IScenarioSwitcher;
+import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
 import com.qualcomm.QCAR.QCAR;
 import com.utils.AppLogger;
 import com.utils.LanguageLocaleChanger;
+
 import java.nio.ByteBuffer;
 import java.util.concurrent.Callable;
 
@@ -54,7 +53,7 @@ import java.util.concurrent.Callable;
  * Center of the Android side of the application. All Android view and specific thing are here.
  * It also initialize vuforia library and jme app.
  */
-public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements AppListener, IScenarioSwitcher {
+public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements AndroidActivityListener, IScenarioSwitcher {
 
     // Boolean to use the profiler. If it's set to true, you can get the tracefile on your phone /sdcard/traceFile.trace
     private static final boolean UseProfiler = false;
@@ -107,7 +106,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     private Object mShutdownLock = new Object();
 
     // QCAR initialization flags:
-    private int mQCARFlags = 0;
+    private int mQCARFlags = QCAR.GL_20;
 
     // Contextual Menu Options for Camera Flash - Autofocus
     private boolean mFlash = false;
@@ -176,6 +175,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         mouseEventsInvertX = true;
         // Invert the MouseEvents Y (default = true)
         mouseEventsInvertY = true;
+
+
     }
 
     Image cameraJMEImageRGB565;
@@ -235,6 +236,30 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         });
     }
 
+    @Override
+    public void pauseTracking() {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pauseQCARandTasks(false);
+            }
+        });
+
+    }
+
+    @Override
+    public void startTracking() {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                resumeQCARandTasks();
+            }
+        });
+
+    }
+
     public InformativeMenuFragment getInformativeMenuFragment()
     {
         FragmentManager fm = getSupportFragmentManager();//getSupportFragmentManager();
@@ -249,18 +274,25 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     public void onFinishSimpleInit()
     {
 
-
         class OneShotTask implements Runnable {
-            IScenarioSwitcher scenarioSwitcher;
-            OneShotTask(IScenarioSwitcher s) { scenarioSwitcher = s; }
+            //IScenarioSwitcher scenarioSwitcher;
+            //OneShotTask(IScenarioSwitcher s) { scenarioSwitcher = s; }
+            //IScenarioSwitcher scenarioSwitcher;
+            //OneShotTask() { scenarioSwitcher = s; }
             public void run() {
                 dismissSplashscreenDialog();
                 //TODO it should be a better idea to create a scenario manager in the activity and then pass it to vuforia jme.
-                getInformativeMenuFragment().setScenarioSwitcher(scenarioSwitcher);
+                //InformativeMenuFragment informativeMenuFragment = getInformativeMenuFragment();
+                //if(informativeMenuFragment != null)
+                //{
+                //    getInformativeMenuFragment().setScenarioSwitcher(scenarioSwitcher);
+                //}
             }
         }
 
-        OneShotTask oneShotTask = new OneShotTask(this);
+        //OneShotTask oneShotTask = new OneShotTask(this);
+        //runOnUiThread(oneShotTask);
+        OneShotTask oneShotTask = new OneShotTask();
         runOnUiThread(oneShotTask);
 
     }
@@ -288,9 +320,14 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     @Override
     public void setScenarioByEnum(final ScenarioEnum scenarioEnum) {
-        ((VuforiaJME)app).enqueue(new Callable<Object>() {
+        (app).enqueue(new Callable<Object>() {
                     public Object call() throws Exception {
-                        ((VuforiaJME)app).getScenarioManager().setScenarioByEnum(scenarioEnum);
+                        //((VuforiaJME)app).getiScenarioManager().setScenarioByEnum(scenarioEnum);
+                        ScenarioManager state = app.getStateManager().getState(ScenarioManager.class);
+                        if(state != null)
+                        {
+                            state.setScenarioByEnum(scenarioEnum);
+                        }
                         return null;
                     }});
     }
@@ -522,27 +559,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             case APPSTATUS_INIT_LAYOUT:
 
                 AppLogger.getInstance().i(TAG, "In APPSTATUS_INIT_LAYOUT");
-
-                //create the layout on top of the jmonkey view to add button and fragments
-                //initTopLayout();
-                ViewGroup rootView        = (ViewGroup) findViewById(android.R.id.content);
-                LayoutInflater factory    = LayoutInflater.from(this);
-                FrameLayout frameLayout1  = new FrameLayout(this);
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                frameLayout1.setLayoutParams(layoutParams);
-
-                frameLayout1.setId(4);
-                rootView.addView(frameLayout1);
-
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                Fragment fragment = new InformativeMenuFragment();
-                ft.replace(frameLayout1.getId(), fragment, INFORMATIVE_MENU_FRAGMENT_TAG);
-                ft.commit();
-                fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
-
-                //Add the fragment with frangment transaction with framwlayoyt
-
+                initTopInformativeMenuFragment();
                 updateApplicationStatus(APPSTATUS_INITED);
 
                 break;
@@ -603,6 +620,28 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 AppLogger.getInstance().e(TAG, errorMesasge);
                 throw new RuntimeException(errorMesasge);
         }
+    }
+
+    private void initTopInformativeMenuFragment() {
+        //create the layout on top of the jmonkey view to add button and fragments
+        //initTopLayout();
+        ViewGroup rootView        = (ViewGroup) findViewById(android.R.id.content);
+        //LayoutInflater factory    = LayoutInflater.from(this);
+        FrameLayout frameLayout1  = new FrameLayout(this);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        frameLayout1.setLayoutParams(layoutParams);
+
+        frameLayout1.setId(4);
+        rootView.addView(frameLayout1);
+
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        InformativeMenuFragment fragment = new InformativeMenuFragment();
+        fragment.setScenarioSwitcher(this);
+
+        ft.replace(frameLayout1.getId(), fragment, INFORMATIVE_MENU_FRAGMENT_TAG);
+        ft.commit();
+        fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
     }
 
     /** Initialize application GUI elements that are not related to AR. */
@@ -670,7 +709,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
      */
 	public void initializeImageBuffer(int width,int height)
 	{
-        AppLogger.getInstance().d(TAG, "initializeImageBuffer");
+        AppLogger.getInstance().d(TAG, "initializeImageBuffer with width: " + width + " and height: " + height);
 
 		int bufferSizeRGB565 = width * height * 2;
 
@@ -707,10 +746,15 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 			cameraJMEImageRGB565.setData(mPreviewByteBufferRGB565);
 
             // Set our camera image as the JME background
-			if (app != null) {
-				((com.ar4android.vuforiaJME.VuforiaJME) app)
-						.setVideoBGTexture(cameraJMEImageRGB565);
-			}	
+            (app).enqueue(new Callable<Object>() {
+             public Object call() throws Exception {
+                 VuforiaJMEState state = app.getStateManager().getState(VuforiaJMEState.class);
+                 if (state != null) {
+                     state.setVideoBGTexture(cameraJMEImageRGB565);
+                 }
+                 return null;
+             }});
+
 		}
 
 
@@ -736,8 +780,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             Debug.startMethodTracing("traceFile");
         }
 
-        //Set an AppListener to receive callbacks from VuforiaJME e.g. to show informative menu
-        ((VuforiaJME) app).setAppListener(this);
+        //Set an AndroidActivityListener to receive callbacks from VuforiaJME e.g. to show informative menu
+        ((VuforiaJME) app).setAndroidActivityListener(this);
 
         showSplashscreenDialog();
 
@@ -753,7 +797,12 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     	// make sure the AndroidGLSurfaceView view is on top of the view
 		// hierarchy
 		//view.setZOrderOnTop(true);
-		
+        resumeQCARandTasks();
+
+
+    }
+
+    private void resumeQCARandTasks() {
         // QCAR-specific resume operation
         QCAR.onResume();
 
@@ -763,16 +812,21 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         {
             updateApplicationStatus(APPSTATUS_CAMERA_RUNNING);
         }
-        
-        firstTimeGetImage=true;
-	}
 
-	@Override
+        firstTimeGetImage=true;
+    }
+
+
+    @Override
 	protected void onPause() {
 
         AppLogger.getInstance().i(TAG, "onPause");
-		super.onPause();		
-	
+		super.onPause();
+
+        pauseQCARandTasks(true);
+	}
+
+    private void pauseQCARandTasks(boolean isQCARPause) {
         if (mAppStatus == APPSTATUS_CAMERA_RUNNING)
         {
             updateApplicationStatus(APPSTATUS_CAMERA_STOPPED);
@@ -786,10 +840,12 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         }
 
         // QCAR-specific pause operation
-        QCAR.onPause();
-        
+        if(isQCARPause){
+            QCAR.onPause();
+        }
+
         firstTimeGetImage=true;
-	}
+    }
 
     @Override
     protected void onStop()
@@ -807,7 +863,12 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     {
         AppLogger.getInstance().i(TAG, "onDestroy");
         super.onDestroy();
-        
+        destroyQCARCameraAndTasks();
+
+
+    }
+
+    private void destroyQCARCameraAndTasks() {
         // Cancel potentially running tasks
         if (mInitQCARTask != null &&
             mInitQCARTask.getStatus() != InitQCARTask.Status.FINISHED)
@@ -843,7 +904,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         //Jonathan: I commented this see reason why here:
         //https://stackoverflow.com/questions/2414105/why-is-it-bad-practice-to-call-system-gc
         //System.gc();
-        
     }
 
     //jdesmarais: I override this because from AndroidHarness because I want to provide a way to use the back button to dismiss the UI
@@ -863,9 +923,17 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                             }
                             else
                             {
+                                (app).enqueue(new Callable<Object>() {
+                                    public Object call() throws Exception {
+                                        ((VuforiaJME)app).onBackButton();
+                                        return null;
+                                    }});
+                            /*
                                 AlertDialog dialog = new AlertDialog.Builder(VuforiaJMEActivity.this) // .setIcon(R.drawable.alert_dialog_icon)
                                         .setTitle(exitDialogTitle).setPositiveButton("Yes", VuforiaJMEActivity.this).setNegativeButton("No", VuforiaJMEActivity.this).setMessage(exitDialogMessage).create();
                                 dialog.show();
+                            */
+
                             }
 
                         }
@@ -881,6 +949,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
      * Called when screen orientation change for example
      * @param config
      */
+
 	@Override
     public void onConfigurationChanged(Configuration config)
     {

@@ -22,6 +22,18 @@ public class AppGetter {
     private SimpleApplication app;
     private ScheduledThreadPoolExecutor executor;
     
+    /*User Data Strings*/
+    /**
+     * The user data tag to set that a new wave has been toggled
+     */
+    static public final String USR_NEW_WAVE_TOGGLED = "newWaveToggled"; 
+    /**
+     * Scale of the current emission node
+     */
+    static public final String USR_NEXT_WAVE_SCALE = "nextWaveScale";
+    
+    /*Public methods*/
+    
     //world scalling
     private static float worldScaling = 10;
 

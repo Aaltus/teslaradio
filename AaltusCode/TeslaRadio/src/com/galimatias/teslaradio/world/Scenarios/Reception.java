@@ -4,11 +4,11 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
-import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
@@ -31,9 +31,6 @@ import com.jme3.scene.shape.Box;
  */
 public class Reception extends Scenario implements EmitterObserver  {
     
-    private Camera cam;
-    private Spatial destinationHandle;
-    
     // TextBox of the scene
     private TextBox titleTextBox;
     
@@ -45,15 +42,17 @@ public class Reception extends Scenario implements EmitterObserver  {
     //Test 
     private Spatial antenne;
     
-     // this is PIIIIIII! (kick persian)
+    // this is PIIIIIII! (kick persian)
     private final float pi = (float) Math.PI;
     
     // Signals emitters 
     private Node inputAntenneRx = new Node();
     private Node outputAntenneRx = new Node();
+    private Node outputModule = new Node();
     
     // Handles for the emitter positions
     private Spatial pathAntenneRx;
+    private Spatial outputHandle;
     
     //Test
     // Output signals
@@ -61,7 +60,8 @@ public class Reception extends Scenario implements EmitterObserver  {
     
     // Paths
     private Geometry antenneRxPath;
-    
+    //try particle
+    private Geometry particle;
     
     public Reception(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         super(Camera, destinationHandle);
@@ -72,15 +72,15 @@ public class Reception extends Scenario implements EmitterObserver  {
         loadUnmovableObjects();
         loadMovableObjects();
         
-        //Test generate particle
+        //Generate try particle
         Box cube = new Box(0.25f, 0.25f, 0.25f);
-        cubeOutputSignal = new Geometry("CubeCarrier", cube);
+        particle = new Geometry("CubeCarrier", cube);
         Material mat1 = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setColor("Color", ColorRGBA.Blue);
-        cubeOutputSignal.setMaterial(mat1);
-   
-        
+        particle.setMaterial(mat1);
+        particle.setUserData("CarrierShape", "CubeCarrier");
+        particle.setUserData("isFM", true);
     }
 
     @Override
@@ -97,6 +97,7 @@ public class Reception extends Scenario implements EmitterObserver  {
         initTitleBox();
                 
         pathAntenneRx = scene.getChild("Path.Sortie.001");
+        outputHandle = scene.getChild("Antenna.Handle.Out");
         
          // Get the different paths
         Node wireAntenneRx_node = (Node) scene.getChild("Path.Sortie.001");
@@ -104,13 +105,21 @@ public class Reception extends Scenario implements EmitterObserver  {
        
         initParticlesEmitter(outputAntenneRx, pathAntenneRx, antenneRxPath, null);
         
+        scene.attachChild(outputModule);
+        outputModule.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        outputModule.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
+        outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
+
+        
+        
         // Set names for the emitters  // VOir si utile dans ce module
        // inputAntenneRx.setName("InputAntenneRx");
         outputAntenneRx.setName("OutputAntenneRx");
         
         
        // inputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
-        outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
+        outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));    
+        outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(outputModule.getControl(ParticleEmitterControl.class));
 
     }
 
@@ -167,7 +176,7 @@ public class Reception extends Scenario implements EmitterObserver  {
                     }
                     
                     //Test generate particle
-                    outputAntenneRx.getControl(ParticleEmitterControl.class).emitParticle(cubeOutputSignal);
+                    outputAntenneRx.getControl(ParticleEmitterControl.class).emitParticle(particle.clone());
                    
                  /*   // 5. Use the results (we mark the hit object)
                     if (results.size() > 0) {
@@ -188,7 +197,7 @@ public class Reception extends Scenario implements EmitterObserver  {
     }
 
     @Override
-    public boolean simpleUpdate(float tpf) {
+    protected boolean simpleUpdate(float tpf) {
         return false;
     }
 
@@ -203,7 +212,7 @@ public class Reception extends Scenario implements EmitterObserver  {
     }
 
     @Override
-    public Spatial getInputHandle() {
+    protected Spatial getInputHandle() {
         return outputAntenneRx;
     }
 
@@ -227,7 +236,8 @@ public class Reception extends Scenario implements EmitterObserver  {
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
     }
 
-    private void initTitleBox() {
+    @Override
+    protected void initTitleBox() {
 
        boolean lookAtCamera = false;
        boolean showDebugBox = false;
@@ -254,5 +264,5 @@ public class Reception extends Scenario implements EmitterObserver  {
 
        titleTextBox.move(titleTextPosition);
        this.attachChild(titleTextBox);
-   }
+    }
 }

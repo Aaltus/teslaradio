@@ -11,13 +11,12 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
-import java.util.Vector;
+import com.jme3.texture.Texture;
 
 /**
  * Created by Greenwood0 on 2014-09-08.
@@ -34,7 +33,6 @@ public final class SoundEmission extends Scenario {
 
     private Spatial drumHandleOut;
     private Spatial guitarHandleOut;
-    private Spatial destinationHandle;
     
     private Spatial guitarAirParticleEmitter;
     private Spatial drumAirParticleEmitter;
@@ -43,40 +41,20 @@ public final class SoundEmission extends Scenario {
     //private SignalEmitter DrumSoundEmitter;
     //private SignalEmitter GuitarSoundEmitter;
 
-    //private TouchEffectEmitter touchEffectEmitter;
-
     private TextBox titleTextBox;
     private TextBox instrumentTextBox;
 
     private ImageBox imageHintDrum;
     private ImageBox imageHintGuitar;
 
-    private Vector<Vector3f> drum_trajectories = new Vector<Vector3f>();
-    private Vector<Vector3f> guitar_trajectories = new Vector<Vector3f>();
-
     private Vector3f drumPosition;
     private Vector3f guitarPosition;
     private Vector3f drumHandleOutPosition;
     private Vector3f guitarHandleOutPosition;
 
-    //CHANGE THIS VALUE CHANGE THE PARTICULE BEHAVIOUR
-    //Setting the direction norms and the speed displacement to the trajectories
-    private float VecDirectionNorms = 8f;
-    private float SoundParticleSpeed = 5f;
-    private float SoundParticlePeriod = 0.25f;
-
-    // CHANGE THESE VALUES TO SET THE TOUCH EFFECT BEHAVIOUR
-    private float drumScaleGradient = 50.0f;
-    private float drumMaxScale = 20.0f;
-    private float drumMinScale = 0.0f;
-
     // Default text to be seen when scenario starts
     private String titleText = "L'émission du son";
-    private String instrumentText = "Les instruments modifient la pression d'air autour d’eux avec leur vibration. Ces zones de pressions se propagent à la vitesse du son.";
     private float titleTextSize = 0.5f;
-    private float secondaryTextSize = 0.25f;
-    private float instrumentTextSize = 0.25f;
-    private ColorRGBA defaultTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
 
     // Refresh hint values
     private float maxTimeRefreshHint = 10f;
@@ -122,21 +100,16 @@ public final class SoundEmission extends Scenario {
         guitarHandleOutPosition = guitarHandleOut.getLocalTranslation().add(sceneGuit.getLocalTranslation());
 
         initAudio();
-        initTextBox();
+        initTitleBox();
         initImageBoxes();
-        initHaloEffects();
         initOnTouchEffect();
-        
-        
-        
-        
+  
     }
 
     @Override
     protected void loadMovableObjects() {
 
-        initDrumParticlesEmitter();
-        initGuitarParticlesEmitter();
+        initParticles();
         
         ParticleEmitterControl microphoneControl = this.destinationHandle.getControl(ParticleEmitterControl.class);
         Material mat1 = new Material(assetManager, 
@@ -177,74 +150,26 @@ public final class SoundEmission extends Scenario {
     /**
      * Initialisation of the tambour effects
      */
-    private void initDrumParticlesEmitter()
+    private void initParticles()
     {
-        // instantiate 3d Sound particul model
-        Sphere sphere = new Sphere(10, 10, 0.4f);
-        soundParticle = new Geometry("particul",sphere);
-        Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        soundParticul_mat.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
-        soundParticul_mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        soundParticle.setMaterial(soundParticul_mat);
-        Geometry soundParticleTranslucent = soundParticle.clone();
-        soundParticleTranslucent.getMaterial().setTexture("ColorMap", assetManager.loadTexture("Textures/Sound_wAlpha.png"));
-        soundParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
+        Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         
-
-        //DrumSoundEmitter = new SignalEmitter(drum_trajectories, drum2MicLength, soundParticle, soundParticleTranslucent, SoundParticleSpeed, SignalType.Air );
-
-        // Initializing the new Signal Emitter
-        /*
-        DrumSoundEmitter = new SignalEmitter(this);
-        this.attachChild(DrumSoundEmitter);
-        DrumSoundEmitter.setLocalTranslation(drumHandleOutPosition);
-       
-        //Set the impulsional response of the emitter
-        ArrayList<Float> waveMagnitudes = new ArrayList(3);
-
-        waveMagnitudes.add(5f);
-        waveMagnitudes.add(3f);
-        waveMagnitudes.add(1f);
-
-        DrumSoundEmitter.setWaves(waveMagnitudes, soundParticle, soundParticleTranslucent, SoundParticlePeriod, SoundParticleSpeed);
-        * */
-    }
-    
-    
-    /**
-     * Initialisation of the drum effects
-     */
-    private void initGuitarParticlesEmitter()
-    {
-
-        Quad rect = new Quad(0.1f, 0.1f);
-        Geometry soundParticle = new Geometry("particul",rect);
-        Material soundParticul_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        soundParticul_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Sound.png"));
-
-        soundParticle.setMaterial(soundParticul_mat);
-        Geometry soundParticleTranslucent = soundParticle.clone();
-        soundParticleTranslucent.getMaterial().setTexture("ColorMap", assetManager.loadTexture("Textures/Sound_wAlpha.png"));
-
-        /*
-        GuitarSoundEmitter = new SignalEmitter(this);
-        this.attachChild(GuitarSoundEmitter);
-        GuitarSoundEmitter.setLocalTranslation(guitarHandleOutPosition); // TO DO: utiliser le object handle blender pour position
-
-        //Set the impulsional response of the emitter
-        ArrayList<Float> waveMagnitudes = new ArrayList(7);
-
-        waveMagnitudes.add(5f);
-        waveMagnitudes.add(2f);
-        waveMagnitudes.add(3f);
-        waveMagnitudes.add(1.5f);
-        waveMagnitudes.add(1.2f);
-        waveMagnitudes.add(1.0f);
-        waveMagnitudes.add(0.8f);
-
-        GuitarSoundEmitter.setWaves(waveMagnitudes, soundParticle, soundParticleTranslucent, SoundParticlePeriod, SoundParticleSpeed);
-        * */
-
+        // instantiate 3d Sound particul model
+        if (DEBUG_ANGLE) {
+            
+            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.jpg");
+            mat1.setTexture("ColorMap", nyan);
+            Quad rect = new Quad(0.5f,0.5f);
+            soundParticle = new Geometry("MicTapParticle", rect);
+        } else {
+            mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
+            Sphere sphere = new Sphere(10, 10, 0.4f);
+            soundParticle = new Geometry("MicTapParticle", sphere);
+        }
+        
+        mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        soundParticle.setMaterial(mat1);
+        soundParticle.setQueueBucket(queueBucket.Opaque);
     }
 
     private void initOnTouchEffect() {
@@ -260,27 +185,6 @@ public final class SoundEmission extends Scenario {
         touchEffectEmitter = new TouchEffectEmitter("DrumEffect", drumMinScale, drumMaxScale, drumScaleGradient, drumTouchEffect, new Vector3f(1.0f,0.0f,1.0f));
         this.attachChild(touchEffectEmitter);
         touchEffectEmitter.setLocalTranslation(drumHandleOutPosition.add(new Vector3f(0.0f,0.1f,0.0f)));
-        * */
-    }
-
-    private void initHaloEffects()
-    {
-        //Add the halo effects under the interactive objects
-        /*
-        Box rect = new Box(2f, Float.MIN_VALUE, 2f);
-
-        Material halo_mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        halo_mat.setTexture("ColorMap", assetManager.loadTexture("Textures/Halo.png"));
-        halo_mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-
-        halo_drum = new Halo("halo",rect,halo_mat,0.85f);
-        halo_guitar = new Halo("halo",rect,halo_mat,1.30f);
-
-        this.attachChild(halo_drum);
-        this.attachChild(halo_guitar);
-
-        halo_drum.setLocalTranslation(drumPosition);
-        halo_guitar.setLocalTranslation(guitarPosition);
         * */
     }
 
@@ -301,7 +205,9 @@ public final class SoundEmission extends Scenario {
 
     }
 
-    public void initTextBox()
+    
+    @Override
+    protected void initTitleBox()
     {
         boolean lookAtCamera = false;
         boolean showDebugBox = false;
@@ -313,7 +219,7 @@ public final class SoundEmission extends Scenario {
         titleTextBox = new TextBox(assetManager, titleText, titleTextSize, titleTextColor, titleBackColor, textBoxWidth, textBoxHeight, "titleText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
 
         //move the text on the ground without moving
-        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 5f);
+        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
         titleTextBox.rotate((float)-Math.PI/2, 0, 0);
 
         //Was in its position when in the air and rotating
@@ -321,31 +227,7 @@ public final class SoundEmission extends Scenario {
 
         titleTextBox.move(titleTextPosition);
 
-
-        // Add other text boxes here
-        float instrumentTextBoxWidth = 4f;
-        float instrumentTextBoxHeight = 1.7f;
-        ColorRGBA instrumentTextBackColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f);
-        instrumentTextBox = new TextBox(assetManager, instrumentText, secondaryTextSize, defaultTextColor, instrumentTextBackColor, instrumentTextBoxWidth, instrumentTextBoxHeight, "instrumentText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
-
-        //move the text on the ground without moving
-        Vector3f instrumentTextPosition = new Vector3f(-3f, 0.25f, 1f);
-        instrumentTextBox.rotate((float)-Math.PI/2, 0, 0);
-
-        //Was in its position when in the air and rotating
-        //Vector3f instrumentTextPosition = ((drumHandleOut.getLocalTranslation().subtract(guitarHandleOut.getLocalTranslation())).divide(2f)).add(new Vector3f(-4f, 2f, 0f));
-        instrumentTextBox.move(instrumentTextPosition);
-
-
-        float micTextBoxWidth = 6f;
-        float micTextBoxHeight = 1.2f;
-        ColorRGBA micTextBackColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 0.5f);
-
-        //move the text on the ground without moving
-        Vector3f microphoneTextPosition = new Vector3f(5f, 0.25f, -3.5f);
-
         touchable.attachChild(titleTextBox);
-        touchable.attachChild(instrumentTextBox);
     }
 
     public void initImageBoxes()
@@ -383,6 +265,8 @@ public final class SoundEmission extends Scenario {
         
         AirParticleEmitterControl control = drumAirParticleEmitter.getControl(AirParticleEmitterControl.class);
         control.emitParticle(soundParticle.clone());
+        
+
     }
 
     public void guitarTouchEffect()
@@ -391,7 +275,7 @@ public final class SoundEmission extends Scenario {
 
         // Here, we need to get the vector to the mic handle
         //Vector3f receiverHandleVector = particleLinker.GetEmitterDestinationPaths(this);
-        //GuitarSoundEmitter.prepareEmitParticles(receiverHandleVector);
+        //GuitarSoundEmitter.prepareEmeitParticles(receiverHandleVector);
 
         guitar_sound.playInstance();
         /*
@@ -465,7 +349,6 @@ public final class SoundEmission extends Scenario {
     public void textBoxesUpdate(Vector3f upVector)
     {
         titleTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
-        instrumentTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
     }
 
     @Override
@@ -532,7 +415,7 @@ public final class SoundEmission extends Scenario {
     }
 
     @Override
-    public boolean simpleUpdate(float tpf) {
+    protected boolean simpleUpdate(float tpf) {
         
         timeLastTouch += tpf;
 
@@ -577,7 +460,7 @@ public final class SoundEmission extends Scenario {
     }
 
     @Override
-    public Spatial getInputHandle() {
+    protected Spatial getInputHandle() {
         return null;
     }
 }
