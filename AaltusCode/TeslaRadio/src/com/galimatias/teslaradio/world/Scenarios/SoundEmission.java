@@ -28,14 +28,13 @@ public final class SoundEmission extends Scenario {
 
     private Spatial drum;
     private Spatial guitar;
+    private Node guitarEmitter;
+    private Node drumEmitter;
     
     private Geometry soundParticle;
 
     private Spatial drumHandleOut;
     private Spatial guitarHandleOut;
-    
-    private Spatial guitarEmitter;
-    private Spatial drumEmitter;
 
     private TextBox titleTextBox;
     private TextBox instrumentTextBox;
