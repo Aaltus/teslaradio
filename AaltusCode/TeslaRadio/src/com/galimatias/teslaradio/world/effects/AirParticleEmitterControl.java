@@ -4,6 +4,8 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
+import com.ar4android.vuforiaJME.AppGetter;
+import com.jme3.cinematic.MotionPath;
 import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;

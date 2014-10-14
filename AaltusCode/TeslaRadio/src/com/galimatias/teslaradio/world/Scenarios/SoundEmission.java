@@ -34,8 +34,8 @@ public final class SoundEmission extends Scenario {
     private Spatial drumHandleOut;
     private Spatial guitarHandleOut;
     
-    private Spatial guitarAirParticleEmitter;
-    private Spatial drumAirParticleEmitter;
+    private Spatial guitarEmitter;
+    private Spatial drumEmitter;
 
     //private Halo halo_drum, halo_guitar;
     //private SignalEmitter DrumSoundEmitter;
@@ -116,24 +116,24 @@ public final class SoundEmission extends Scenario {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.5f));
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        guitarAirParticleEmitter = new Node();
-        guitarAirParticleEmitter.setLocalTranslation(guitarHandleOutPosition);
-        this.attachChild(guitarAirParticleEmitter);
-        guitarAirParticleEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 20f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
-        guitarAirParticleEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
-        guitarAirParticleEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+        
+        this.guitarEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 2f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
+        this.guitarEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
+        this.guitarEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+        this.guitarEmitter.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
+        this.guitarEmitter.addControl(new SoundControl("Sounds/guitar.wav",false,2));
         
         
         Material mat2 = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat2.setColor("Color", new ColorRGBA(0, 1, 1, 0.5f));
         mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        drumAirParticleEmitter = new Node();
-        drumAirParticleEmitter.setLocalTranslation(drumHandleOutPosition);
-        this.attachChild(drumAirParticleEmitter);
-        drumAirParticleEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 20f, 13f, mat2, AirParticleEmitterControl.AreaType.DOME));
-        drumAirParticleEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
-        drumAirParticleEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+        
+        this.drumEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 2f, 13f, mat2, AirParticleEmitterControl.AreaType.DOME));
+        this.drumEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
+        this.drumEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+        this.drumEmitter.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
+        this.drumEmitter.addControl(new SoundControl("Sounds/drum_taiko.wav",false,2));
     }
 
     @Override
@@ -263,7 +263,7 @@ public final class SoundEmission extends Scenario {
         //touchEffectEmitter.isTouched();
         drum_sound.playInstance();
         
-        AirParticleEmitterControl control = drumAirParticleEmitter.getControl(AirParticleEmitterControl.class);
+        AirParticleEmitterControl control = drumEmitter.getControl(AirParticleEmitterControl.class);
         control.emitParticle(soundParticle.clone());
         
 
@@ -298,7 +298,7 @@ public final class SoundEmission extends Scenario {
         * */
         
         
-        AirParticleEmitterControl control = guitarAirParticleEmitter.getControl(AirParticleEmitterControl.class);
+        AirParticleEmitterControl control = guitarEmitter.getControl(AirParticleEmitterControl.class);
         control.emitParticle(soundParticle.clone());
     }
 
