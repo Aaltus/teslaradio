@@ -157,14 +157,12 @@ public final class SoundEmission extends Scenario {
         // instantiate 3d Sound particul model
         if (DEBUG_ANGLE) {
             
-            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.png");
+            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.jpg");
             mat1.setTexture("ColorMap", nyan);
             Quad rect = new Quad(0.5f,0.5f);
             soundParticle = new Geometry("MicTapParticle", rect);
         } else {
-            //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
-            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.png");
-            mat1.setTexture("DiffuseMap", nyan);
+            mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
             Sphere sphere = new Sphere(10, 10, 0.4f);
             soundParticle = new Geometry("MicTapParticle", sphere);
         }

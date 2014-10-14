@@ -142,7 +142,7 @@ public final class SoundCapture extends Scenario {
         if (DEBUG_ANGLE) {
             Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
             //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
-            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.png");
+            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.jpg");
             mat1.setTexture("ColorMap", nyan);
             mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
             Quad rect = new Quad(1.0f, 1.0f);
