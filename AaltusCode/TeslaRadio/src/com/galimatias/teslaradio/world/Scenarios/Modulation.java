@@ -302,7 +302,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
             float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
             if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
                 switchIsToggled = false;
-                tpfCumul = 0;
+                tpfCumulSwitch = 0;
+                
             }
         }
     }
@@ -484,16 +485,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
             actionSwitch.setLocalRotation(rotationXSwitch);
         }
     }
-    
-    private void switchRotationWithoutDynamicSwitch(boolean isFM) {
-        if (!isFM) {
-            rotationXSwitch.fromAngleAxis(initAngleSwitch, Vector3f.UNIT_X);
-            actionSwitch.setLocalRotation(rotationXSwitch);
-        } else {
-            rotationXSwitch.fromAngleAxis(-initAngleSwitch, Vector3f.UNIT_X);
-            actionSwitch.setLocalRotation(rotationXSwitch);
-        }
-    }
 
     //convert angle for range [0 ; 2pi]
     private float angleRangeTwoPi(float angle) {
@@ -625,13 +616,13 @@ public final class Modulation extends Scenario implements EmitterObserver {
     }
 
     private void loadArrows() {
-        rotationArrow = new Arrows("rotation", null, assetManager, 10);
-        this.attachChild(rotationArrow);
-        
         switchArrow = new Arrows("touch", actionSwitch.getWorldTranslation(), assetManager, 1);
         LookAtCameraControl control = new LookAtCameraControl(Camera);
         switchArrow.addControl(control);
         this.attachChild(switchArrow);
+        
+        rotationArrow = new Arrows("rotation", null, assetManager, 10);
+        this.attachChild(rotationArrow);
     }
     
     /**

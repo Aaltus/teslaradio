@@ -4,6 +4,9 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.Arrows;
+import com.galimatias.teslaradio.world.effects.FadeControl;
+import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
@@ -46,7 +49,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     
      //Variable for switch
     private float initAngleSwitch;
-    private float tpfCumul = 0;
+    private float tpfCumulSwitch = 0;
     private float tpfCumulButton = 0;
     private Quaternion rotationXSwitch = new Quaternion();
     
@@ -76,10 +79,13 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     
     //Angle for test purposes
     private float trackableAngle = 0;
-    private int direction = 1;
     
     private String pegFilter = "";
     private float stepRangePeg = 2 * pi / 3;
+    
+    //arrows
+    private Arrows switchArrow;
+    private Arrows rotationArrow;
 
     
     
@@ -91,7 +97,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
 
         loadUnmovableObjects();
         loadMovableObjects();   
-        
+        loadArrows();
     }
     
     
@@ -145,12 +151,12 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     //Dynamic move
     private void checkModulationMode(float tpf) {
         if (switchIsToggled) {
-            tpfCumul = tpfCumul + 3 * tpf;
-            switchRotation(isFM, tpfCumul);
+            tpfCumulSwitch += 3 * tpf;
+            switchRotation(isFM, tpfCumulSwitch);
             float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
             if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
                 switchIsToggled = false;
-                tpfCumul = 0;
+                tpfCumulSwitch = 0;
             }
         }
     }
@@ -164,11 +170,9 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     
     private void switchRotation(boolean isFM, float tpfCumul) {
         if (!isFM) {
-            System.out.println("!isFM");
             rotationXSwitch.fromAngleAxis(angleRangeTwoPi(initAngleSwitch - tpfCumul), Vector3f.UNIT_X);
             actionSwitch.setLocalRotation(rotationXSwitch);
         } else {
-            System.out.println("isFM");
             rotationXSwitch.fromAngleAxis(angleRangeTwoPi(-initAngleSwitch + tpfCumul), Vector3f.UNIT_X);
             actionSwitch.setLocalRotation(rotationXSwitch);
         }
@@ -186,6 +190,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     }
 
     public void toggleModulationMode() {
+        removeHintImages();
         if (!switchIsToggled) {
             isFM = !isFM;
             switchIsToggled = true;
@@ -254,6 +259,9 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     @Override
     protected boolean simpleUpdate(float tpf) {
        checkModulationMode(tpf);
+       switchArrow.simpleUpdate(tpf);
+       rotationArrow.simpleUpdate(tpf);
+       
         if (this.DEBUG_ANGLE) {
             tpfCumulButton = tpf+ tpfCumulButton;
             rotationAxeY(tpfCumulButton, demodulationButton);
@@ -347,6 +355,25 @@ public class Demodulation extends Scenario implements EmitterObserver  {
 
         titleTextBox.move(titleTextPosition);
         this.attachChild(titleTextBox);
+    }
+
+    private void loadArrows() {
+        switchArrow = new Arrows("touch", actionSwitch.getWorldTranslation(), assetManager, 1);
+        LookAtCameraControl control = new LookAtCameraControl(cam);
+        switchArrow.addControl(control);
+        this.attachChild(switchArrow);
+        
+        rotationArrow = new Arrows("rotation", null, assetManager, 10);
+        this.attachChild(rotationArrow);
+    }
+    
+    /**
+     * Remove hints, is called after touch occurs
+     */
+    public void removeHintImages()
+    {
+        switchArrow.getControl(FadeControl.class).setShowImage(false);
+        switchArrow.resetTimeLastTouch();
     }
 
             
