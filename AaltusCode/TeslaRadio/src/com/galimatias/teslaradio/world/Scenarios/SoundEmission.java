@@ -76,11 +76,11 @@ public final class SoundEmission extends Scenario {
     private float secondaryTextSize = 0.25f;
     private float instrumentTextSize = 0.25f;
     private ColorRGBA defaultTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
-
-    // Refresh hint values
-    private float maxTimeRefreshHint = 10f;
-    private float timeLastTouch = maxTimeRefreshHint;
-    private final float hintFadingTime = 1.5f;
+    
+    //Arrows
+    Arrows moveArrow;
+    Arrows drumArrow;
+    Arrows guitarArrow;
 
     public SoundEmission(com.jme3.renderer.Camera Camera, Spatial destinationHandle)
     {
@@ -94,6 +94,7 @@ public final class SoundEmission extends Scenario {
 
         loadUnmovableObjects();
         loadMovableObjects();
+        loadArrows();
     }
 
     @Override
@@ -122,9 +123,8 @@ public final class SoundEmission extends Scenario {
 
         initAudio();
         initTitleBox();
-        initImageBoxes();
         initOnTouchEffect();
-  
+        
     }
 
     @Override
@@ -287,26 +287,20 @@ public final class SoundEmission extends Scenario {
         touchable.attachChild(instrumentTextBox);
     }
 
-    public void initImageBoxes()
-    {
-        
+    public void loadArrows()
+    {        
+        drumArrow = new Arrows("touch", drumHandleOutPosition, assetManager, 1);
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
-        FadeControl fadeControl1     = new FadeControl(hintFadingTime);
-        Vector3f imageHintDrumPosition = /*drumHandleOut.getLocalTranslation()*/drumHandleOutPosition;/*.add(new Vector3f(0, 0.65f, 0f));*/
-        imageHintDrum = new ImageBox(0.4f, 0.75f, assetManager, "Drum Touch Hint", "Textures/Selection_Hand.png", 1f);
-        imageHintDrum.move(imageHintDrumPosition);
-        imageHintDrum.addControl(control1);
-        imageHintDrum.addControl(fadeControl1);
-        this.attachChild(imageHintDrum);
+        drumArrow.addControl(control1);
+        this.attachChild(drumArrow);
         
+        guitarArrow = new Arrows("touch", guitarHandleOutPosition, assetManager, 1);
         LookAtCameraControl control2 = new LookAtCameraControl(Camera);
-        FadeControl fadeControl2     = new FadeControl(hintFadingTime);
-        Vector3f imageHintGuitarPosition = guitarHandleOutPosition;//guitarHandleOut.getLocalTranslation().add(new Vector3f(0, 0.6f, 0f));
-        imageHintGuitar = new ImageBox(0.4f, 0.75f, assetManager, "Guitar Touch Hint", "Textures/Selection_Hand.png", 6f);
-        imageHintGuitar.move(imageHintGuitarPosition);
-        imageHintGuitar.addControl(control2);
-        imageHintGuitar.addControl(fadeControl2);
-        this.attachChild(imageHintGuitar);
+        guitarArrow.addControl(control2);
+        this.attachChild(guitarArrow);
+        
+        moveArrow = new Arrows("move", null, assetManager, 10);
+        this.attachChild(moveArrow);
     }
 
     public void drumTouchEffect()
@@ -371,23 +365,10 @@ public final class SoundEmission extends Scenario {
      */
     public void removeHintImages()
     {
-        timeLastTouch = 0f;
-        
-        imageHintDrum.getControl(FadeControl.class).setShowImage(false);
-        imageHintGuitar.getControl(FadeControl.class).setShowImage(false);
-        //imageHintDrum.setShowImage(false);
-        //imageHintGuitar.setShowImage(false);
-    }
-
-    /**
-     * Show Hints, is called when no touch has occured for a while
-     */
-    public void ShowHintImages()
-    {
-        imageHintDrum.getControl(FadeControl.class).setShowImage(true);
-        imageHintGuitar.getControl(FadeControl.class).setShowImage(true);
-        //imageHintDrum.setShowImage(true);
-        //imageHintGuitar.setShowImage(true);
+        drumArrow.getControl(FadeControl.class).setShowImage(false);
+        drumArrow.resetTimeLastTouch();
+        guitarArrow.getControl(FadeControl.class).setShowImage(false);
+        guitarArrow.resetTimeLastTouch();
     }
 
     /**
@@ -473,12 +454,9 @@ public final class SoundEmission extends Scenario {
     @Override
     protected boolean simpleUpdate(float tpf) {
         
-        timeLastTouch += tpf;
-
-        if ((int)timeLastTouch == maxTimeRefreshHint)
-        {
-            ShowHintImages();
-        }
+        drumArrow.simpleUpdate(tpf);
+        guitarArrow.simpleUpdate(tpf);
+        moveArrow.simpleUpdate(tpf);
         
         /*
         DrumSoundEmitter.simpleUpdate(tpf, this.Camera);

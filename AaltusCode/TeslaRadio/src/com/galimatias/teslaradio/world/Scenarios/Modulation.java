@@ -1,6 +1,10 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.Arrows;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.FadeControl;
+import com.galimatias.teslaradio.world.effects.ImageBox;
+import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
@@ -77,6 +81,10 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private float tpfCumulSwitch = 0;
     private float tpfCumul = 0;
     private Quaternion rotationXSwitch = new Quaternion();   
+    
+    //Arrows
+    private Arrows rotationArrow;
+    private Arrows switchArrow;
 
     
     public Modulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
@@ -88,6 +96,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         loadUnmovableObjects();
         loadMovableObjects();
+        loadArrows();
     }
     
     @Override
@@ -299,6 +308,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
     }
     
     public void toggleModulationMode() {
+        removeHintImages();
         if (!switchIsToggled) {
             isFM = !isFM;
             switchIsToggled = true;
@@ -566,6 +576,9 @@ public final class Modulation extends Scenario implements EmitterObserver {
             trackableAngle = this.getUserData("angleX");
         }
         
+        switchArrow.simpleUpdate(tpf);
+        rotationArrow.simpleUpdate(tpf);
+        
         checkTrackableAngle(trackableAngle, tpf);
         checkModulationMode(tpf);
         
@@ -609,6 +622,25 @@ public final class Modulation extends Scenario implements EmitterObserver {
             }
             
         }
+    }
+
+    private void loadArrows() {
+        rotationArrow = new Arrows("rotation", null, assetManager, 10);
+        this.attachChild(rotationArrow);
+        
+        switchArrow = new Arrows("touch", actionSwitch.getWorldTranslation(), assetManager, 1);
+        LookAtCameraControl control = new LookAtCameraControl(Camera);
+        switchArrow.addControl(control);
+        this.attachChild(switchArrow);
+    }
+    
+    /**
+     * Remove hints, is called after touch occurs
+     */
+    public void removeHintImages()
+    {
+        switchArrow.getControl(FadeControl.class).setShowImage(false);
+        switchArrow.resetTimeLastTouch();
     }
     
 }
