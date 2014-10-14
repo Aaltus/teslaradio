@@ -27,15 +27,13 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
-import com.jme3.renderer.ViewPort;
 import com.utils.AppLogger;
 
 public class VuforiaJME extends SimpleApplication implements AppObservable, StateSwitcher {
 
 	private static final String TAG = VuforiaJME.class.getName();
-    private float mForegroundCamFOVY = 30;
-    private Camera fgCam;
+
+
 
     private ScreenState startScreenState;
 
@@ -118,10 +116,9 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
         //Init all the things
         this.rootNode.addControl(new TrackableManager());
-        vuforiaJMEState = new VuforiaJMEState(this,null);
+        vuforiaJMEState = new VuforiaJMEState(this);
         //this.getStateManager().attach(vuforiaJMEState);
-        initForegroundCamera(mForegroundCamFOVY);
-        vuforiaJMEState.setCamera(fgCam);
+
         this.getStateManager().attach(vuforiaJMEState);
         vuforiaJMEState.setEnabled(true);
 
@@ -132,28 +129,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         androidActivityListener.onFinishSimpleInit();
 	}
 
-    public void initForegroundCamera(float fovY) {
 
-        int settingsWidth = settings.getWidth();
-        int settingsHeight = settings.getHeight();
-        AppLogger.getInstance().d(TAG, "initForegroundCamera with width : " + Integer.toString(settings.getWidth()) + " height: " + Integer.toString(settings.getHeight()));
-		fgCam = new Camera(settingsWidth, settingsHeight);
-		
-		fgCam.setViewPort(0, 1.0f, 0.f, 1.0f);
-		fgCam.setLocation(new Vector3f(0f, 0f, 0f));
-        fgCam.setAxes(
-                new Vector3f(1.0f, 0.0f, 0.0f),
-                new Vector3f(0.0f, 1.0f, 0.0f),
-                new Vector3f(0.0f, 0.0f, 1.0f));
-		fgCam.setFrustumPerspective(fovY, settingsWidth / settingsHeight, 1000, 10000);
-
-		ViewPort fgVP = renderManager.createMainView("ForegroundView", fgCam);
-		fgVP.attachScene(rootNode);
-		//color,depth,stencil
-		fgVP.setClearFlags(false, true, false);
-		fgVP.setBackgroundColor(new ColorRGBA(0, 0, 0, 1));
-//		fgVP.setBackgroundColor(new ColorRGBA(0,0,0,0));
-	}
 
     public void initLights()
     {
@@ -207,6 +183,8 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
         startScreenState.closeStartMenu();
 
+        stopScenarioManagerForVuforiaJMEState();
+
         stopVuforiaJMEState();
 
         startDevFramework();
@@ -238,12 +216,13 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
     private void startScenarioManagerForVuforiaJMEState() {
         if(this.viewPortAttached){
             viewPort.detachScene(rootNode);
+            this.viewPortAttached = false;
         }
         this.getStateManager().detach(scenarioManager);
         scenarioManager = new ScenarioManager(this,
                 ScenarioManager.ApplicationType.ANDROID,
                 this.rootNode.getControl(TrackableManager.class).getScenarioNodeList(),
-                fgCam,
+                vuforiaJMEState.getCamera(),
                 androidActivityListener);
         this.getStateManager().attach(scenarioManager);
     }
@@ -252,6 +231,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         //viewPort.clearScenes();
         if(!this.viewPortAttached){
             viewPort.attachScene(rootNode);
+            this.viewPortAttached = true;
         }
 
         this.getStateManager().detach(scenarioManager);
@@ -300,8 +280,9 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
     private void stopVuforiaJMEState() {
         androidActivityListener.pauseTracking();
-        this.getStateManager().detach(vuforiaJMEState);
         vuforiaJMEState.setEnabled(false);
+        this.getStateManager().detach(vuforiaJMEState);
+
     }
 
 

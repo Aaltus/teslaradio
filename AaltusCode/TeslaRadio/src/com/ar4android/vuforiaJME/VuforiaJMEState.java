@@ -6,6 +6,7 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -35,10 +36,12 @@ public class VuforiaJMEState extends AbstractAppState
     private Camera fgCam;
     private ViewPort videoBGVP;
     private boolean attachedToViewPort = false;
+    private ViewPort fgVP;
 
     public void setCamera(Camera cam){
         fgCam = cam;
     }
+    public Camera getCamera(){return fgCam;}
 
     private Camera videoBGCam;
     // The geometry which will represent the video background
@@ -57,13 +60,15 @@ public class VuforiaJMEState extends AbstractAppState
     // A flag indicating if a new Android camera image is available.
     private boolean mNewCameraFrameAvailable = false;
 
+    private float mForegroundCamFOVY = 30;
+
     /** Native function to update the renderer. */
     public native void updateTracking();
 
     /** Native function for initializing the renderer. */
     public native void initTracking(int width, int height);
 
-    public VuforiaJMEState(SimpleApplication app, Camera fgCam){
+    public VuforiaJMEState(SimpleApplication app){
 
         this.app = app;
         this.settings = this.app.getContext().getSettings();
@@ -77,6 +82,9 @@ public class VuforiaJMEState extends AbstractAppState
         initTracking(settings.getWidth(), settings.getHeight());
         initVideoBackground(settings.getWidth(), settings.getHeight());
         initBackgroundCamera(); //thats the problem
+
+        initForegroundCamera(mForegroundCamFOVY);
+        //setCamera(fgCam);
 
     }
 
@@ -111,6 +119,29 @@ public class VuforiaJMEState extends AbstractAppState
         mCameraTexture = new Texture2D();
 
         mSceneInitialized = true;
+    }
+
+    public void initForegroundCamera(float fovY) {
+
+        int settingsWidth = settings.getWidth();
+        int settingsHeight = settings.getHeight();
+        AppLogger.getInstance().d(TAG, "initForegroundCamera with width : " + Integer.toString(settings.getWidth()) + " height: " + Integer.toString(settings.getHeight()));
+        fgCam = new Camera(settingsWidth, settingsHeight);
+
+        fgCam.setViewPort(0, 1.0f, 0.f, 1.0f);
+        fgCam.setLocation(new Vector3f(0f, 0f, 0f));
+        fgCam.setAxes(
+                new Vector3f(1.0f, 0.0f, 0.0f),
+                new Vector3f(0.0f, 1.0f, 0.0f),
+                new Vector3f(0.0f, 0.0f, 1.0f));
+        fgCam.setFrustumPerspective(fovY, settingsWidth / settingsHeight, 1000, 10000);
+
+        fgVP = renderManager.createMainView("ForegroundView", fgCam);
+        //fgVP.attachScene(rootNode);
+        //color,depth,stencil
+        fgVP.setClearFlags(false, true, false);
+        fgVP.setBackgroundColor(new ColorRGBA(0, 0, 0, 1));
+//		fgVP.setBackgroundColor(new ColorRGBA(0,0,0,0));
     }
 
     public void initBackgroundCamera() {
@@ -154,14 +185,20 @@ public class VuforiaJMEState extends AbstractAppState
         // Pause and unpause
         super.setEnabled(enabled);
         if(enabled){
-            // we must attach the viewport only if we are attach and active
-            //The reason i because the viewport is rendered even if
-            videoBGVP.attachScene(mVideoBGGeom);
-            this.attachedToViewPort = true;
+            if(!this.attachedToViewPort){
+                // we must attach the viewport only if we are attach and active
+                //The reason i because the viewport is rendered even if
+                videoBGVP.attachScene(mVideoBGGeom);
+                fgVP.attachScene(rootNode);
+                this.attachedToViewPort = true;
+            }
 
         } else {
-            videoBGVP.detachScene(mVideoBGGeom); //That's th problem...
-            this.attachedToViewPort=false;
+            if(this.attachedToViewPort){
+                videoBGVP.detachScene(mVideoBGGeom); //That's th problem...
+                fgVP.detachScene(rootNode);
+                this.attachedToViewPort=false;
+            }
         }
     }
 
