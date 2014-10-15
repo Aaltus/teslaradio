@@ -151,7 +151,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
         
    //-------------------------------AirParticleEmitterControl------------------
         Material mat2 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        mat2.setColor("Color", new ColorRGBA(0, 1, 1, 1f));
+        mat2.setColor("Color", new ColorRGBA(0, 1, 1, 0.5f));
         mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         
         scene.attachChild(outputModule);
