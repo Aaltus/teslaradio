@@ -301,7 +301,7 @@ public final class Reception extends Scenario implements EmitterObserver  {
              if (outputAntenneRx != null) {
                  
                 Float particleScale = spatial.getUserData("Scale");
-                
+                 
                 System.out.println("Scale before emission : " + particleScale.toString());
                 System.out.println("Scale when received : " + spatial.getLocalScale().toString());
                 
