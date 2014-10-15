@@ -8,6 +8,8 @@ import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.observer.SignalObserver;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -21,7 +23,7 @@ public abstract class Scenario extends Node implements SignalObserver {
 
     private final static String TAG = "Scenario";
     
-    protected final static boolean DEBUG_ANGLE = true;
+    protected final static boolean DEBUG_ANGLE = false;
    
     /**
      * The destination of the current scenario
@@ -86,6 +88,7 @@ public abstract class Scenario extends Node implements SignalObserver {
         assetManager = AppGetter.getAssetManager();
         this.Camera = Camera;
         this.destinationHandle = destinationHandle;
+        this.setUserData("angleX", 0.0f);
         
     }
 
@@ -143,7 +146,17 @@ public abstract class Scenario extends Node implements SignalObserver {
      * Initialization of the title boxes of a scenario.
      */
     protected abstract void initTitleBox();
-    
+
+    /**
+     * This method will apply an opposite trackable rotation on the model, preventing it from rotating
+     * @param ZXangle
+     */
+    protected void invRotScenario(float ZXangle) {
+
+        Quaternion rot = new Quaternion();
+        rot.fromAngleAxis(-ZXangle, Vector3f.UNIT_Y);
+        scene.setLocalRotation(rot);
+    }
     
     
 }
