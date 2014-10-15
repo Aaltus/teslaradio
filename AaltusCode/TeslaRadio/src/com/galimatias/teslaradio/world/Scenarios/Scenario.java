@@ -155,6 +155,7 @@ public abstract class Scenario extends Node implements SignalObserver {
      * Initialization of the title boxes of a scenario.
      */
     protected abstract void initTitleBox();
+
     
     /**
      * Start the auto generation of particles
@@ -183,7 +184,6 @@ public abstract class Scenario extends Node implements SignalObserver {
     public boolean getNeedsAutoGen(){
         return this.needAutoGenIfMain;
     }
-    
 
 
     /**

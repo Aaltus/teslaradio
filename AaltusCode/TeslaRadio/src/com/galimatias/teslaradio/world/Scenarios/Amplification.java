@@ -311,7 +311,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
     protected boolean simpleUpdate(float tpf) {
         if (DEBUG_ANGLE) {
             tpfCumul = tpf+ tpfCumul;
-            ampliButtonRotation(3*pi/2);
+            ampliButtonRotation(tpfCumul);
         } else {
             ampliButtonRotation((Float)this.getUserData("angleX"));
         }
