@@ -155,7 +155,7 @@ public abstract class Scenario extends Node implements SignalObserver {
      * Initialization of the title boxes of a scenario.
      */
     protected abstract void initTitleBox();
-<<<<<<< HEAD
+
     
     /**
      * Start the auto generation of particles
@@ -184,8 +184,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     public boolean getNeedsAutoGen(){
         return this.needAutoGenIfMain;
     }
-    
-=======
+
 
     /**
      * This method will apply an opposite trackable rotation on the model, preventing it from rotating
@@ -197,7 +196,7 @@ public abstract class Scenario extends Node implements SignalObserver {
         rot.fromAngleAxis(-ZXangle, Vector3f.UNIT_Y);
         scene.setLocalRotation(rot);
     }
->>>>>>> develop
+
     
     
 }
