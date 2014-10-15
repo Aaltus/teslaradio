@@ -37,6 +37,7 @@ public class PatternGeneratorControl extends AbstractControl {
     protected int   waveIterator;
     protected Future autoPlayThread;
     private final boolean isRandom;
+    private int particlePerAutoWave;
     
    /**
     * 
@@ -102,20 +103,22 @@ public class PatternGeneratorControl extends AbstractControl {
      * 
      * @param delay The time in second before each emission. If lower than minimum delay,
      * minimum delay will be used
+     * @param particlePerWave particle per wave
      */
-    public void startAutoPlay(float delay){
+    public void startAutoPlay(float delay, int particlePerWave){
         if(delay < this.minWaveDelay){
             delay = this.minWaveDelay;
         }
+        this.particlePerAutoWave = particlePerWave;
         this.autoWaveDelay = delay;
         this.autoPlayThread = AppGetter.getThreadExecutor().scheduleAtFixedRate(
-                autoPlay,0,(long) (this.autoWaveDelay * 1000),TimeUnit.MILLISECONDS);
+                autoPlay,0,(long) (1000*(this.autoWaveDelay  + particlePerWave * this.minWaveDelay)),TimeUnit.MILLISECONDS);
     }
     /**
      * Start autoplay with the minmum delay being the delay
      */
-    public void startAutoPlay(){
-        this.startAutoPlay(this.minWaveDelay);
+    public void startAutoPlay(int particlePerWave){
+        this.startAutoPlay(this.minWaveDelay, particlePerWave);
     }
     /**
      * Stop the autoplay
@@ -160,6 +163,8 @@ public class PatternGeneratorControl extends AbstractControl {
     {
         Spatial geom = this.baseParticle.clone();
         geom.scale(scale);
+        Float fs = geom.getWorldScale().length();
+        geom.setUserData("Scale", fs);
         //The Queue will always have a size of 1 or 0, we don't want to queue
         //more than the minimum delay
         this.geomList.addLast(geom);
@@ -198,7 +203,7 @@ public class PatternGeneratorControl extends AbstractControl {
         
         public void run() {
                try{
-                   toggleNewWave(1);
+                   toggleNewWave(particlePerAutoWave);
                }catch(Exception e){
                    //Empty, the interrupt...
                }
