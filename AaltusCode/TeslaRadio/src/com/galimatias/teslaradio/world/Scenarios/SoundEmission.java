@@ -114,7 +114,7 @@ public final class SoundEmission extends Scenario {
         ParticleEmitterControl microphoneControl = this.destinationHandle.getControl(ParticleEmitterControl.class);
         Material mat1 = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", new ColorRGBA(1, 0, 1, 1f));
+        mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.5f));
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
 
         this.guitarEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 20f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
@@ -124,7 +124,7 @@ public final class SoundEmission extends Scenario {
         this.guitarEmitter.addControl(new SoundControl("Sounds/guitar.wav",false,2));
         Material mat2 = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md");
-        mat2.setColor("Color", new ColorRGBA(0, 1, 1, 1f));
+        mat2.setColor("Color", new ColorRGBA(0, 1, 1, 0.5f));
         mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
        
         this.drumEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 20f, 13f, mat2, AirParticleEmitterControl.AreaType.DOME));
