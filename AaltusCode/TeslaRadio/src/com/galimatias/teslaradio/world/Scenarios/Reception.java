@@ -67,7 +67,14 @@ public class Reception extends Scenario implements EmitterObserver  {
     private Geometry antenneRxPath;
     //try particle
     private Geometry particle;
-    private Geometry autoGenParticle;
+    
+    //Autogen stuff
+    private Node autoGenParticle;
+    private Node cubeSignal;
+    private Node pyramidSignal;
+    private Node dodecagoneSignal;
+    
+    private Boolean isFM = true;
     
     public Reception(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         super(Camera, destinationHandle);
@@ -110,7 +117,7 @@ public class Reception extends Scenario implements EmitterObserver  {
         antenneRxPath = (Geometry) wireAntenneRx_node.getChild("NurbsPath.005");
        
         initParticlesEmitter(outputAntenneRx, pathAntenneRx, antenneRxPath, null);
-        initPatternGenerator();
+        
         
         scene.attachChild(outputModule);
         outputModule.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
@@ -128,6 +135,9 @@ public class Reception extends Scenario implements EmitterObserver  {
         outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));    
         outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(outputModule.getControl(ParticleEmitterControl.class));
 
+        initModulatedParticles();
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 1, 1,1,false));
+   
     }
 
     @Override
@@ -186,6 +196,7 @@ public class Reception extends Scenario implements EmitterObserver  {
                     outputAntenneRx.getControl(ParticleEmitterControl.class).emitParticle(particle.clone());
                    
                  /*   // 5. Use the results (we mark the hit object)
+                  * 
                     if (results.size() > 0) {
                         // The closest collision point is what was truly hit:
                         CollisionResult closest = results.getClosestCollision();
@@ -205,7 +216,7 @@ public class Reception extends Scenario implements EmitterObserver  {
 
     @Override
     protected boolean simpleUpdate(float tpf) {
-        return false;
+        return true;
     }
 
     @Override
@@ -273,26 +284,34 @@ public class Reception extends Scenario implements EmitterObserver  {
        this.attachChild(titleTextBox);
     }
     
-    private void initPatternGenerator(){
+     
         
-        if (DEBUG_ANGLE) {
-            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-            //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
-            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.jpg");
-            mat1.setTexture("ColorMap", nyan);
-            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-            Quad rect = new Quad(1.0f, 1.0f);
-            autoGenParticle = new Geometry("MicTapParticle", rect);
-            autoGenParticle.setMaterial(mat1);            
-        } else {
-            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-            mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
-            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-            Sphere sphere = new Sphere(10, 10, 0.4f);
-            autoGenParticle = new Geometry("MicTapParticle", sphere);
-            autoGenParticle.setMaterial(mat1);
-        }
+    private void initModulatedParticles(){
+        Geometry baseGeom = ModulationCommon.initBaseGeneratorParticle();
+        Geometry[] carrier = ModulationCommon.initCarrierGeometries();
+              
+        this.cubeSignal = new Node();
+        this.cubeSignal.attachChild(carrier[0].clone());
+        ModulationCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
+        this.cubeSignal.attachChild(baseGeom.clone());
+        this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
+        this.cubeSignal.setUserData("isFM", isFM);
         
-        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle, 1, 1,1,false));
+        this.pyramidSignal = new Node();
+        this.pyramidSignal.attachChild(carrier[0].clone());
+        ModulationCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
+        this.pyramidSignal.attachChild(baseGeom.clone());
+        this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
+        this.pyramidSignal.setUserData("isFM", isFM);
+       
+        this.dodecagoneSignal = new Node();
+        this.dodecagoneSignal.attachChild(carrier[0].clone());
+        ModulationCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
+        this.dodecagoneSignal.attachChild(baseGeom.clone());
+        this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
+        this.dodecagoneSignal.setUserData("isFM", isFM);
+        
+        this.autoGenParticle = this.cubeSignal;
+       
     }
 }

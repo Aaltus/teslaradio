@@ -44,8 +44,8 @@ public class SoundControl extends AbstractControl {
     @Override
     protected void controlUpdate(float tpf) {
        try{
-           if( (boolean) this.spatial.getUserData(AppGetter.USR_NEW_WAVE_TOGGLED) ){
-               float scale = (float) this.spatial.getUserData(AppGetter.USR_NEXT_WAVE_SCALE);
+           if(  this.spatial.getUserData(AppGetter.USR_NEW_WAVE_TOGGLED) ){
+               float scale =  this.spatial.getUserData(AppGetter.USR_NEXT_WAVE_SCALE);
                this.audio.setVolume(scale * this.volume);
                this.audio.playInstance();
                this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, false);

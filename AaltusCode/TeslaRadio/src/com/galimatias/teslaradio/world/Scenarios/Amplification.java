@@ -50,8 +50,13 @@ public final class Amplification extends Scenario implements EmitterObserver{
     private Spatial generateParticle;
     private Geometry cubeTestParticle;
     
-    private Geometry autoGenParticle;
+    private Node autoGenParticle;
     
+    private Node cubeSignal;
+    private Node pyramidSignal;
+    private Node dodecagoneSignal;
+    
+    private Boolean isFM = true;
      /**
      * TODO Remove this bool and associated code in simpleUpdate when it works
      * on Android. Only for debug purposes.
@@ -136,7 +141,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
      
         initParticlesEmitter(inputWireAmpli, pathInputAmpli, inputAmpPath, null);
         initParticlesEmitter(outputWireAmpli, pathOutputAmpli, outputAmpPath, null);
-        initPatternGenerator();
+        
      
         // Set names for the emitters  // VOir si utile dans ce module
         inputWireAmpli.setName("InputWireAmpli");
@@ -160,6 +165,10 @@ public final class Amplification extends Scenario implements EmitterObserver{
         inputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
         outputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
         
+        
+        this.initModulatedParticles();
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 1, 1,1,false));
+   
     }
 
     @Override
@@ -199,27 +208,35 @@ public final class Amplification extends Scenario implements EmitterObserver{
  
     
     
-        private void initPatternGenerator(){
+     
         
-        if (DEBUG_ANGLE) {
-            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-            //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
-            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.jpg");
-            mat1.setTexture("ColorMap", nyan);
-            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-            Quad rect = new Quad(1.0f, 1.0f);
-            autoGenParticle = new Geometry("MicTapParticle", rect);
-            autoGenParticle.setMaterial(mat1);            
-        } else {
-            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-            mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
-            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-            Sphere sphere = new Sphere(10, 10, 0.4f);
-            autoGenParticle = new Geometry("MicTapParticle", sphere);
-            autoGenParticle.setMaterial(mat1);
-        }
+    private void initModulatedParticles(){
+        Geometry baseGeom = ModulationCommon.initBaseGeneratorParticle();
+        Geometry[] carrier = ModulationCommon.initCarrierGeometries();
+                
+        this.cubeSignal = new Node();
+        this.cubeSignal.attachChild(carrier[0].clone());
+        ModulationCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
+        this.cubeSignal.attachChild(baseGeom.clone());
+        this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
+        this.cubeSignal.setUserData("isFM", isFM);
         
-        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle, 1, 1,1,false));
+        this.pyramidSignal = new Node();
+        this.pyramidSignal.attachChild(carrier[0].clone());
+        ModulationCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
+        this.pyramidSignal.attachChild(baseGeom.clone());
+        this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
+        this.pyramidSignal.setUserData("isFM", isFM);
+       
+        this.dodecagoneSignal = new Node();
+        this.dodecagoneSignal.attachChild(carrier[0].clone());
+        ModulationCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
+        this.dodecagoneSignal.attachChild(baseGeom.clone());
+        this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
+        this.dodecagoneSignal.setUserData("isFM", isFM);
+        
+        this.autoGenParticle = this.cubeSignal;
+       
     }
 
     @Override
@@ -370,5 +387,12 @@ public final class Amplification extends Scenario implements EmitterObserver{
         titleTextBox.move(titleTextPosition);
         this.attachChild(titleTextBox);
     }
+    
+   /* @Override
+    protected void setAutoGenerationParticle(Geometry particle){
+       // this.micTapParticle = particle;
+        //this.wirePcbEmitter.getControl(PatternGeneratorControl.class).
+          //      setBaseParticle(this.micTapParticle);
+    };*/
     
 }

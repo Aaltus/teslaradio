@@ -155,7 +155,11 @@ public final class Modulation extends Scenario implements EmitterObserver {
         actionSwitch = scene.getChild("Switch");
         initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
         
-        initCarrierGeometries();
+        Geometry[] geom = ModulationCommon.initCarrierGeometries();
+        cubeCarrier = geom[0];
+        pyramidCarrier = geom[1];
+        dodecagoneCarrier = geom[2];
+        
         initOutputSignals();
 
         //Assign touchable
@@ -165,33 +169,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
     }
     
-    private void initCarrierGeometries() {
-        
-        Box cube = new Box(0.4f, 0.4f, 0.4f);
-        cubeCarrier = new Geometry("CubeCarrier", cube);
-        Material mat1 = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.5f));
-        mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        cubeCarrier.setMaterial(mat1);
-        cubeCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
-        cubeCarrier.setLocalTranslation(0.0f,0.4f,0.0f);
-        
-        Dome pyramid = new Dome(2, 4, 0.4f);
-        pyramidCarrier = new Geometry("PyramidCarrier", pyramid);
-        pyramidCarrier.setMaterial(mat1);
-        pyramidCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
-        pyramidCarrier.setLocalTranslation(0.0f,0.4f,0.0f);
-        
-        Node dodecagone = (Node) assetManager.loadModel("Models/Modulation/Dodecahedron.j3o");
-        dodecagoneCarrier = (Geometry) dodecagone.getChild("Solid.0041");
-        dodecagoneCarrier.scale(2.0f);
-        dodecagoneCarrier.setName("DodecagoneCarrier");
-        dodecagoneCarrier.setMaterial(mat1);
-        dodecagoneCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
-        dodecagoneCarrier.setLocalTranslation(0.0f,0.4f,0.0f);
-    }
-
     // TODO Add the real output signals with a pattern generator
     private void initOutputSignals() {
         
@@ -444,37 +421,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
         }
     }
     
-    private void modulateFMorAM(Node clone, Spatial spatial) {
-        if (!isFM) {
-            float scale = 1.5f;
-            clone.getChild(0).setLocalScale(spatial.getLocalScale().mult(scale));
-        } else {
-            float scaleFactor = 1.5f;
-            Vector3f midScale = new Vector3f(0.5f,0.5f,0.5f);
-            
-            if (spatial.getLocalScale().length() < midScale.length()) {
-                scaleFactor = 2.5f;
-            } else {
-                scaleFactor = 0.5f;
-            }
-            
-            Vector3f scaleFM = spatial.getLocalScale().mult(new Vector3f(scaleFactor,1/scaleFactor,scaleFactor));
-            
-            if (scaleFM.x < spatial.getLocalScale().x || scaleFM.z < spatial.getLocalScale().z) {
-                //System.out.println("Hello from too much scaling in x and z");
-                scaleFM.x = spatial.getLocalScale().x;
-                scaleFM.z = spatial.getLocalScale().z;
-            } else if (scaleFM.y < spatial.getLocalScale().y) {
-                //System.out.println("Hello from too much scaling in y");
-                //System.out.println("Signal scale : " + spatial.getLocalScale().toString());
-                //System.out.println("FM signal scale : " + scaleFM.toString());
-                scaleFM.y = spatial.getLocalScale().y;
-            }
-
-            //System.out.println("New FM signal scale : " + scaleFM.toString());
-            clone.getChild(0).setLocalScale(scaleFM);
-        }
-    }
 
     /**
      * Switches the FM/AM switch dynamically
@@ -615,7 +561,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
             if (pcbAmpEmitter != null && spatial != null) {
                 Node clone = (Node)outputSignal.clone();
                 
-                modulateFMorAM(clone, spatial);
+                ModulationCommon.modulateFMorAM(clone, spatial, isFM);
                 
                 clone.attachChild(spatial);
                 
