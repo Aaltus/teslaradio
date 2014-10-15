@@ -209,7 +209,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
         
     private void initModulatedParticles(){
         Geometry baseGeom = ModulationCommon.initBaseGeneratorParticle();
-        Geometry[] carrier = ModulationCommon.initCarrierGeometries();
+        Spatial[] carrier = ModulationCommon.initCarrierGeometries();
                 
         this.cubeSignal = new Node();
         this.cubeSignal.attachChild(carrier[0].clone());

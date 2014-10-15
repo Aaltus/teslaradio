@@ -61,8 +61,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private Node outputEmitter = new Node();
     
     // Geometry of the carrier signals
-    private Geometry cubeCarrier;
-    private Geometry pyramidCarrier;
+    private Spatial cubeCarrier;
+    private Spatial pyramidCarrier;
     private Spatial dodecagoneCarrier; // Really...
     
     // Current carrier signal and his associated output
@@ -143,6 +143,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         carrierEmitter.setName("CarrierEmitter");
         pcbAmpEmitter.setName("PCBAmpEmitter");
         
+        carrierEmitter.getLocalTranslation().addLocal(new Vector3f(0.0f,0.2f,0.0f));
         carrierEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
         wirePcbEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
         outputEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
@@ -155,7 +156,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         actionSwitch = scene.getChild("Switch");
         initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
         
-        Geometry[] geom = ModulationCommon.initCarrierGeometries();
+        Spatial[] geom = ModulationCommon.initCarrierGeometries();
         cubeCarrier = geom[0];
         pyramidCarrier = geom[1];
         dodecagoneCarrier = geom[2];
@@ -194,23 +195,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
     
     private void initPatternGenerator(){
         
-        if (DEBUG_ANGLE) {
-            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-            //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
-            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.jpg");
-            mat1.setTexture("ColorMap", nyan);
-            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-            Quad rect = new Quad(1.0f, 1.0f);
-            micTapParticle = new Geometry("MicTapParticle", rect);
-            micTapParticle.setMaterial(mat1);            
-        } else {
-            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-            mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
-            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-            Sphere sphere = new Sphere(10, 10, 0.4f);
-            micTapParticle = new Geometry("MicTapParticle", sphere);
-            micTapParticle.setMaterial(mat1);
-        }
+        micTapParticle = ModulationCommon.initBaseGeneratorParticle();
         
         this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 1, 1,1,false));
     }

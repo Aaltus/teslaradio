@@ -33,7 +33,7 @@ public class ModulationCommon {
         if (DEBUG_ANGLE) {
             Material mat1 = new Material(AppGetter.getAssetManager(),"Common/MatDefs/Misc/Unshaded.j3md");
             //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
-            Texture nyan = AppGetter.getAssetManager().loadTexture("Textures/Nyan_Cat.jpg");
+            Texture nyan = AppGetter.getAssetManager().loadTexture("Textures/Nyan_Cat.png");
             mat1.setTexture("ColorMap", nyan);
             mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
             Quad rect = new Quad(1.0f, 1.0f);
@@ -50,36 +50,36 @@ public class ModulationCommon {
         
         return baseGeom;
     }
-    public static Geometry[] initCarrierGeometries() {
-        Geometry cubeCarrier;
-        Geometry pyramidCarrier;
-        Geometry dodecagoneCarrier;
+    public static Spatial[] initCarrierGeometries() {
+        Spatial cubeCarrier;
+        Spatial pyramidCarrier;
+        Spatial dodecagoneCarrier;
         
-        Box cube = new Box(0.4f, 0.4f, 0.4f);
-        cubeCarrier = new Geometry("CubeCarrier", cube);
-        Material mat1 = new Material(AppGetter.getAssetManager(),
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.5f));
-        mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        cubeCarrier.setMaterial(mat1);
+        cubeCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation/Cube.j3o");
+        Material m = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        m.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation/Edgemap_square.png"));
+        m.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         cubeCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
-        cubeCarrier.setLocalTranslation(0.0f,0.4f,0.0f);
+        cubeCarrier.setMaterial(m);
+        cubeCarrier.scale(0.35f);
         
-        Dome pyramid = new Dome(2, 4, 0.4f);
-        pyramidCarrier = new Geometry("PyramidCarrier", pyramid);
-        pyramidCarrier.setMaterial(mat1);
+        pyramidCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation/Tetrahedron.j3o");
+        Material m2 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        m2.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation/Edgemap_triangle.png"));
+        m2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         pyramidCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
-        pyramidCarrier.setLocalTranslation(0.0f,0.4f,0.0f);
+        pyramidCarrier.setMaterial(m2);
+        pyramidCarrier.scale(0.4f);
         
-        Node dodecagone = (Node) AppGetter.getAssetManager().loadModel("Models/Modulation/Dodecahedron.j3o");
-        dodecagoneCarrier = (Geometry) dodecagone.getChild("Solid.0041");
-        dodecagoneCarrier.scale(2.0f);
-        dodecagoneCarrier.setName("DodecagoneCarrier");
-        dodecagoneCarrier.setMaterial(mat1);
+        dodecagoneCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation/Dodecahedron.j3o");
+        Material m3 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        m3.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation/Edgemap_square.png"));
+        m3.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         dodecagoneCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
-        dodecagoneCarrier.setLocalTranslation(0.0f,0.4f,0.0f);
+        dodecagoneCarrier.setMaterial(m3);
+        dodecagoneCarrier.scale(0.4f);
         
-        return new Geometry[]{cubeCarrier,pyramidCarrier,dodecagoneCarrier};
+        return new Spatial[]{cubeCarrier,pyramidCarrier,dodecagoneCarrier};
     }
     
     public static void modulateFMorAM(Node clone, Spatial spatial, boolean isFm) {
