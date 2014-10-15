@@ -142,7 +142,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
         
         scene.attachChild(outputModule);
         outputModule.setLocalTranslation(pathAntenneTx.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-        outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 2, 13, mat2));
+        outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 2, 4, mat2));
         outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
         outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
         
@@ -187,11 +187,6 @@ public final class Amplification extends Scenario implements EmitterObserver{
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
     }
     
- 
-    
-    
-    
-
     @Override
     public void restartScenario() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -295,10 +290,12 @@ public final class Amplification extends Scenario implements EmitterObserver{
          if (notifierId.equals("InputWireAmpli")) {
           //Change Scale
              outputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
-         } else if(notifierId.equals("OutputWireAmpli")){
+         } else if(notifierId.equals("OutputWireAmpli")) {
+             Float scale = new Float(spatial.getWorldScale().length());
+             spatial.setUserData("Scale", scale);
+             System.out.println("Before addition : " + spatial.getWorldScale());
              outputModule.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
-         }
-        
+         }   
     }
 
     @Override

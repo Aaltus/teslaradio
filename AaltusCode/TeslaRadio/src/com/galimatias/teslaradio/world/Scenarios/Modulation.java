@@ -28,12 +28,12 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private final static String TAG = "Modulation";
     
     // Values displayed on the digital screen of the PCB 3D object
-    private final String sFM1061 = "106.1 FM";
-    private final String sFM977 = "97.7 FM";
-    private final String sFM952 = "95.2 FM";
-    private final String sAM697 = "697 AM";
-    private final String sAM498 = "498 AM";
-    private final String sAM707 = "707 AM";
+    private final String sFM1061 = "FM 106.1MHz";
+    private final String sFM969 = "FM 96.9MHz";
+    private final String sFM1027 = "FM 102.7MHz";
+    private final String sAM600 = "AM 600kHz";
+    private final String sAM800 = "AM 800kHz";
+    private final String sAM1500 = "AM 1500kHz";
     private Boolean isFM = true;
     private Boolean switchIsToggled = false;
     
@@ -58,10 +58,10 @@ public final class Modulation extends Scenario implements EmitterObserver {
     // Geometry of the carrier signals
     private Geometry cubeCarrier;
     private Geometry pyramidCarrier;
-    private Geometry dodecagoneCarrier; // Really...
+    private Spatial dodecagoneCarrier; // Really...
     
     // Current carrier signal and his associated output
-    private Geometry selectedCarrier;
+    private Spatial selectedCarrier;
     private Node outputSignal;
     
     // this is PIIIIIII! (kick persian)
@@ -173,12 +173,11 @@ public final class Modulation extends Scenario implements EmitterObserver {
         pyramidCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         pyramidCarrier.setLocalTranslation(0.0f,0.4f,0.0f);
         
-        Node dodecagone = (Node) assetManager.loadModel("Models/Modulation/Dodecahedron.j3o");
-        dodecagoneCarrier = (Geometry) dodecagone.getChild("Solid.0041");
-        dodecagoneCarrier.scale(2.0f);
+        dodecagoneCarrier = assetManager.loadModel("Models/Modulation/Dodecahedron.j3o");
+        dodecagoneCarrier.scale(0.75f);
         dodecagoneCarrier.setName("DodecagoneCarrier");
-        dodecagoneCarrier.setMaterial(mat1);
-        dodecagoneCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
+        /*dodecagoneCarrier.setMaterial(mat1);
+        dodecagoneCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);*/
         dodecagoneCarrier.setLocalTranslation(0.0f,0.4f,0.0f);
     }
 
@@ -313,8 +312,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
     
     private void changeModulation(int frequency, Boolean isFM, float tpf) {
         
-        
-        
         if (isFM) {
             switch (frequency) {
                 case 1:
@@ -323,12 +320,12 @@ public final class Modulation extends Scenario implements EmitterObserver {
                     changeCarrierParticles(1, tpf);
                     break;
                 case 2:
-                    digitalDisplay.simpleUpdate(sFM977, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sFM969, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     // System.out.println(sFM977);
                     changeCarrierParticles(2, tpf);
                     break;
                 case 3:
-                    digitalDisplay.simpleUpdate(sFM952, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sFM1027, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     // System.out.println(sFM952);
                     changeCarrierParticles(3, tpf);
                     break;
@@ -341,22 +338,22 @@ public final class Modulation extends Scenario implements EmitterObserver {
         } else {
             switch (frequency) {
                 case 1:
-                    digitalDisplay.simpleUpdate(sAM697, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sAM600, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     //  System.out.println(sAM697);
                     changeCarrierParticles(1, tpf);
                     break;
                 case 2:
-                    digitalDisplay.simpleUpdate(sAM498, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sAM800, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     //  System.out.println(sAM498);
                     changeCarrierParticles(2, tpf);
                     break;
                 case 3:
-                    digitalDisplay.simpleUpdate(sAM707, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sAM1500, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     //  System.out.println(sAM707);
                     changeCarrierParticles(3, tpf);
                     break;
                 default:
-                    digitalDisplay.simpleUpdate(sAM697, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sAM600, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
                     // System.out.println(sAM697);
                     changeCarrierParticles(1, tpf);
                     break;
