@@ -8,6 +8,7 @@ import com.ar4android.vuforiaJME.AppGetter;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -27,9 +28,9 @@ public class PatternGeneratorControl extends AbstractControl {
     protected float minWaveDelay;
     protected float autoWaveDelay;
     protected float lastCall;
-    protected ArrayDeque<Geometry> geomList = new ArrayDeque<Geometry>();
+    protected ArrayDeque<Spatial> geomList = new ArrayDeque<Spatial>();
     protected List<Float>     scaleList;
-    protected Geometry baseParticle;
+    protected Spatial baseParticle;
     protected float maxScale;
     protected float minScale;
     protected int   scaleStep;
@@ -46,7 +47,7 @@ public class PatternGeneratorControl extends AbstractControl {
     * @param maxScale The biggest particle scale
     * @param isRandom If set to true, the scale will be randomly taken from the list
     */
-    public PatternGeneratorControl(float waveMinDelay, Geometry baseGeom,
+    public PatternGeneratorControl(float waveMinDelay, Spatial baseGeom,
             int scaleStep, float minScale, float maxScale, boolean isRandom){
         
         this.minWaveDelay = waveMinDelay;
@@ -82,7 +83,7 @@ public class PatternGeneratorControl extends AbstractControl {
     * @param magnitudes The List of Magnitudes of the particles
     * @param isRandom If set to true, the scale will be randomly taken from the list
     */
-    public PatternGeneratorControl(float waveMinDelay,Geometry baseGeom,
+    public PatternGeneratorControl(float waveMinDelay,Spatial baseGeom,
             List<Float> magnitudes, boolean isRandom){
         this.minWaveDelay = waveMinDelay;
         this.waveIterator = 0;
@@ -157,7 +158,7 @@ public class PatternGeneratorControl extends AbstractControl {
      */
     public void toggleNewWave(float scale)
     {
-        Geometry geom = this.baseParticle.clone();
+        Spatial geom = this.baseParticle.clone();
         geom.scale(scale);
         //The Queue will always have a size of 1 or 0, we don't want to queue
         //more than the minimum delay
@@ -181,7 +182,9 @@ public class PatternGeneratorControl extends AbstractControl {
         this.lastCall = 0;
             
     }
-   
+    public void setBaseParticle(Spatial newParticle){
+        this.baseParticle =  newParticle;
+    }
     @Override 
     protected void controlRender(RenderManager rm, ViewPort vp) {
        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -194,7 +197,11 @@ public class PatternGeneratorControl extends AbstractControl {
         @Override
         
         public void run() {
-                toggleNewWave(1);
+               try{
+                   toggleNewWave(1);
+               }catch(Exception e){
+                   //Empty, the interrupt...
+               }
             }
           
     };

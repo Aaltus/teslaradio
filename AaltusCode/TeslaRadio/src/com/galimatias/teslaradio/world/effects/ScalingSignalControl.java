@@ -88,7 +88,7 @@ public class ScalingSignalControl extends AbstractControl implements ParticleObs
         }
         
         // check if it is the end of the path and notify
-        if(currentTotalScale >= 1)
+        if(currentTotalScale >= particleInitScale)
         {
             if(this.observer != null){
                 this.observer.onParticleEndOfLife(spatial);
