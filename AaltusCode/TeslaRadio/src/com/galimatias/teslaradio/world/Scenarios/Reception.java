@@ -242,7 +242,7 @@ public final class Reception extends Scenario implements EmitterObserver  {
     protected boolean simpleUpdate(float tpf) {
         
         updateWifiLogos(signalIntensity);
-        return true;
+        return false;
     }
 
     @Override
