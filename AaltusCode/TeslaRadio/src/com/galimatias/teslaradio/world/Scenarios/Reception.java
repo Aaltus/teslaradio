@@ -5,6 +5,8 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.ImageBox;
+import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
@@ -34,7 +36,7 @@ import com.jme3.texture.Texture;
  *
  * @author Barliber
  */
-public class Reception extends Scenario implements EmitterObserver  {
+public final class Reception extends Scenario implements EmitterObserver  {
     
     // TextBox of the scene
     private TextBox titleTextBox;
@@ -67,6 +69,13 @@ public class Reception extends Scenario implements EmitterObserver  {
     private Geometry antenneRxPath;
     //try particle
     private Geometry particle;
+    
+    // Wifi logo related
+    int signalIntensity = 0;
+    private ImageBox wifiLogoLow;
+    private ImageBox wifiLogoMedium;
+    private ImageBox wifiLogoFull;
+    private Node wifi = new Node();
     
     //Autogen stuff
     private Node autoGenParticle;
@@ -108,11 +117,24 @@ public class Reception extends Scenario implements EmitterObserver  {
         scene.setLocalRotation(rot);
         
         initTitleBox();
-                
+        
+        wifiLogoLow = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Low", "Models/Reception/wifi-logo_low.png", 0.0f);
+        wifiLogoMedium = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Medium", "Models/Reception/wifi-logo_medium.png", 0.0f);
+        wifiLogoFull = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Full", "Models/Reception/wifi-logo_full.png", 0.0f);
+        
+        addWifiControl(wifiLogoLow);
+        addWifiControl(wifiLogoMedium);
+        addWifiControl(wifiLogoFull);
+
+        scene.attachChild(wifi);
+        wifi.attachChild(wifiLogoLow);
+        
         pathAntenneRx = scene.getChild("Path.Sortie.001");
         outputHandle = scene.getChild("Antenna.Handle.Out");
         
-         // Get the different paths
+        wifi.setLocalTranslation(outputHandle.getLocalTranslation().addLocal(3.0f, 5.0f, -3.0f));
+        
+        // Get the different paths
         Node wireAntenneRx_node = (Node) scene.getChild("Path.Sortie.001");
         antenneRxPath = (Geometry) wireAntenneRx_node.getChild("NurbsPath.005");
        
@@ -124,20 +146,22 @@ public class Reception extends Scenario implements EmitterObserver  {
         outputModule.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
         outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
 
-        
-        
         // Set names for the emitters  // VOir si utile dans ce module
-       // inputAntenneRx.setName("InputAntenneRx");
+        // inputAntenneRx.setName("InputAntenneRx");
         outputAntenneRx.setName("OutputAntenneRx");
-        
-        
-       // inputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
-        outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));    
-        outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(outputModule.getControl(ParticleEmitterControl.class));
 
+        // inputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
+        outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));    
+        outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
+        
         initModulatedParticles();
         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 1, 1,1,false));
+    }
    
+    private void addWifiControl(ImageBox wifiLogo) {
+        LookAtCameraControl lookAtControl = new LookAtCameraControl(Camera);
+        wifiLogo.addControl(lookAtControl);
+        wifiLogo.getControl(LookAtCameraControl.class).setEnabled(true);
     }
 
     @Override
@@ -216,6 +240,8 @@ public class Reception extends Scenario implements EmitterObserver  {
 
     @Override
     protected boolean simpleUpdate(float tpf) {
+        
+        updateWifiLogos(signalIntensity);
         return true;
     }
 
@@ -238,16 +264,58 @@ public class Reception extends Scenario implements EmitterObserver  {
     public void signalEndOfPath(Geometry caller, float magnitude) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    private void updateSignalIntensity(Float normScale) { 
+        wifi.detachAllChildren();
+        if (normScale >= 0 && normScale < 0.33f) {
+            signalIntensity = 1;
+        } else if (normScale >= 0.33f && normScale < 0.66f) {
+            signalIntensity = 2;
+        } else {
+            signalIntensity = 3;
+        }
+    }
+    
+    private void updateWifiLogos(int signalIntensity) {
+        
+        switch(signalIntensity) {
+            case 1:
+                wifi.attachChild(wifiLogoLow);
+                break;
+            case 2:
+                wifi.attachChild(wifiLogoMedium);
+                break;
+            case 3:
+                wifi.attachChild(wifiLogoFull);
+                break;
+            default:
+                wifi.attachChild(wifiLogoLow);
+                break;
+        }
+    }
 
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
-        if (notifierId.equals("OutputModule")) {
-          //Change Scale
-             outputAntenneRx.getControl(ParticleEmitterControl.class).emitParticle(spatial);
-         }
+        if (notifierId.equals("OutputAntenneRx")) {
+
+             if (outputAntenneRx != null) {
+                 
+                Float particleScale = spatial.getUserData("Scale");
+                
+                System.out.println("Scale before emission : " + particleScale.toString());
+                System.out.println("Scale when received : " + spatial.getLocalScale().toString());
+                
+                float normScale = spatial.getWorldScale().length()/particleScale;
+                
+                System.out.println("Normalized scale : " + normScale);
+                
+                updateSignalIntensity(normScale);
+                outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
+             }
+        }
     }
     
-     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
+    private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
         scene.attachChild(signalEmitter);
         signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
@@ -284,9 +352,8 @@ public class Reception extends Scenario implements EmitterObserver  {
        this.attachChild(titleTextBox);
     }
     
-     
-        
-    private void initModulatedParticles(){
+
+    private void initModulatedParticles() {
         Geometry baseGeom = ModulationCommon.initBaseGeneratorParticle();
         Geometry[] carrier = ModulationCommon.initCarrierGeometries();
               

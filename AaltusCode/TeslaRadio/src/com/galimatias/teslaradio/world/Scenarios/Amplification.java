@@ -205,9 +205,6 @@ public final class Amplification extends Scenario implements EmitterObserver{
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
     }
     
- 
-    
-    
      
         
     private void initModulatedParticles(){
@@ -342,10 +339,12 @@ public final class Amplification extends Scenario implements EmitterObserver{
          if (notifierId.equals("InputWireAmpli")) {
           //Change Scale
              outputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
-         } else if(notifierId.equals("OutputWireAmpli")){
+         } else if(notifierId.equals("OutputWireAmpli")) {
+             Float scale = new Float(spatial.getWorldScale().length());
+             spatial.setUserData("Scale", scale);
+             System.out.println("Before addition : " + spatial.getWorldScale());
              outputModule.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
-         }
-        
+         }   
     }
 
     @Override
