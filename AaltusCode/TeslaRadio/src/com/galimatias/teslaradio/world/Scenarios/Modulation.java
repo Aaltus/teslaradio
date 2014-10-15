@@ -97,9 +97,9 @@ public final class Modulation extends Scenario implements EmitterObserver {
         this.attachChild(scene);
         
         scene.setLocalTranslation(new Vector3f(2.5f, 0.0f, 0.5f));
-        Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(-pi / 2, Vector3f.UNIT_Y);
-        scene.setLocalRotation(rot);
+//        Quaternion rot = new Quaternion();
+//        rot.fromAngleAxis(-pi / 2, Vector3f.UNIT_Y);
+//        scene.setLocalRotation(rot);
 
         // Get the handles of the emitters
         Spatial pathInHandle = scene.getChild("Handle.Module.In");
@@ -550,8 +550,9 @@ public final class Modulation extends Scenario implements EmitterObserver {
             //trackableAngle = 0;
             trackableAngle = this.getUserData("angleX");
         }
-        
+
         checkTrackableAngle(trackableAngle, tpf);
+        invRotScenario(trackableAngle + (pi / 2));
         checkModulationMode(tpf);
         
         return false;
