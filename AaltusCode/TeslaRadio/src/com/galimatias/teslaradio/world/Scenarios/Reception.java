@@ -36,7 +36,7 @@ import com.jme3.texture.Texture;
  *
  * @author Barliber
  */
-public class Reception extends Scenario implements EmitterObserver  {
+public final class Reception extends Scenario implements EmitterObserver  {
     
     // TextBox of the scene
     private TextBox titleTextBox;
@@ -69,6 +69,13 @@ public class Reception extends Scenario implements EmitterObserver  {
     private Geometry antenneRxPath;
     //try particle
     private Geometry particle;
+    
+    // Wifi logo related
+    int signalIntensity = 0;
+    private ImageBox wifiLogoLow;
+    private ImageBox wifiLogoMedium;
+    private ImageBox wifiLogoFull;
+    private Node wifi = new Node();
     
     //Autogen stuff
     private Node autoGenParticle;
@@ -146,11 +153,10 @@ public class Reception extends Scenario implements EmitterObserver  {
         // inputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
         outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));    
         outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
-
-    }
-    
+        
         initModulatedParticles();
         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 1, 1,1,false));
+    }
    
     private void addWifiControl(ImageBox wifiLogo) {
         LookAtCameraControl lookAtControl = new LookAtCameraControl(Camera);
@@ -234,6 +240,8 @@ public class Reception extends Scenario implements EmitterObserver  {
 
     @Override
     protected boolean simpleUpdate(float tpf) {
+        
+        updateWifiLogos(signalIntensity);
         return true;
     }
 
@@ -257,18 +265,32 @@ public class Reception extends Scenario implements EmitterObserver  {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    private void updateWifiLogo(Float normScale) { 
-        
+    private void updateSignalIntensity(Float normScale) { 
+        wifi.detachAllChildren();
         if (normScale >= 0 && normScale < 0.33f) {
-            wifi.detachChild(wifiLogoMedium);
-            System.out.println("1");
+            signalIntensity = 1;
         } else if (normScale >= 0.33f && normScale < 0.66f) {
-            wifi.detachChild(wifiLogoFull);
-            wifi.attachChild(wifiLogoMedium);
-            System.out.println("2");
+            signalIntensity = 2;
         } else {
-            wifi.attachChild(wifiLogoFull);
-            System.out.println("3");
+            signalIntensity = 3;
+        }
+    }
+    
+    private void updateWifiLogos(int signalIntensity) {
+        
+        switch(signalIntensity) {
+            case 1:
+                wifi.attachChild(wifiLogoLow);
+                break;
+            case 2:
+                wifi.attachChild(wifiLogoMedium);
+                break;
+            case 3:
+                wifi.attachChild(wifiLogoFull);
+                break;
+            default:
+                wifi.attachChild(wifiLogoLow);
+                break;
         }
     }
 
@@ -287,7 +309,7 @@ public class Reception extends Scenario implements EmitterObserver  {
                 
                 System.out.println("Normalized scale : " + normScale);
                 
-                updateWifiLogo(normScale);
+                updateSignalIntensity(normScale);
                 outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
              }
         }
@@ -330,9 +352,8 @@ public class Reception extends Scenario implements EmitterObserver  {
        this.attachChild(titleTextBox);
     }
     
-     
-        
-    private void initModulatedParticles(){
+
+    private void initModulatedParticles() {
         Geometry baseGeom = ModulationCommon.initBaseGeneratorParticle();
         Geometry[] carrier = ModulationCommon.initCarrierGeometries();
               
