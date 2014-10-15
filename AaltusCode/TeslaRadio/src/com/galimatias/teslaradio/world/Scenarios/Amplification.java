@@ -4,8 +4,10 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 import com.galimatias.teslaradio.world.effects.AirParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
@@ -28,6 +30,9 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Quad;
+import com.jme3.scene.shape.Sphere;
+import com.jme3.texture.Texture;
 
 
 /**
@@ -45,6 +50,13 @@ public final class Amplification extends Scenario implements EmitterObserver{
     private Spatial generateParticle;
     private Geometry cubeTestParticle;
     
+    private Node autoGenParticle;
+    
+    private Node cubeSignal;
+    private Node pyramidSignal;
+    private Node dodecagoneSignal;
+    
+    private Boolean isFM = true;
      /**
      * TODO Remove this bool and associated code in simpleUpdate when it works
      * on Android. Only for debug purposes.
@@ -84,9 +96,10 @@ public final class Amplification extends Scenario implements EmitterObserver{
     
     public Amplification(Camera Camera, Spatial destinationHandle){
         super(Camera, destinationHandle);
-        
+        this.needAutoGenIfMain = true;
         this.destinationHandle = destinationHandle;
         this.cam = Camera;
+        this.needAutoGenIfMain = true;
         loadUnmovableObjects();
         loadMovableObjects();
         
@@ -128,6 +141,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
      
         initParticlesEmitter(inputWireAmpli, pathInputAmpli, inputAmpPath, null);
         initParticlesEmitter(outputWireAmpli, pathOutputAmpli, outputAmpPath, null);
+        
      
         // Set names for the emitters  // VOir si utile dans ce module
         inputWireAmpli.setName("InputWireAmpli");
@@ -142,7 +156,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
         
         scene.attachChild(outputModule);
         outputModule.setLocalTranslation(pathAntenneTx.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-        outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 2, 13, mat2));
+        outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 20, 13, mat2));
         outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
         outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
         
@@ -151,6 +165,10 @@ public final class Amplification extends Scenario implements EmitterObserver{
         inputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
         outputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
         
+        
+        this.initModulatedParticles();
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 1, 1,1,false));
+   
     }
 
     @Override
@@ -190,7 +208,36 @@ public final class Amplification extends Scenario implements EmitterObserver{
  
     
     
-    
+     
+        
+    private void initModulatedParticles(){
+        Geometry baseGeom = ModulationCommon.initBaseGeneratorParticle();
+        Geometry[] carrier = ModulationCommon.initCarrierGeometries();
+                
+        this.cubeSignal = new Node();
+        this.cubeSignal.attachChild(carrier[0].clone());
+        ModulationCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
+        this.cubeSignal.attachChild(baseGeom.clone());
+        this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
+        this.cubeSignal.setUserData("isFM", isFM);
+        
+        this.pyramidSignal = new Node();
+        this.pyramidSignal.attachChild(carrier[0].clone());
+        ModulationCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
+        this.pyramidSignal.attachChild(baseGeom.clone());
+        this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
+        this.pyramidSignal.setUserData("isFM", isFM);
+       
+        this.dodecagoneSignal = new Node();
+        this.dodecagoneSignal.attachChild(carrier[0].clone());
+        ModulationCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
+        this.dodecagoneSignal.attachChild(baseGeom.clone());
+        this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
+        this.dodecagoneSignal.setUserData("isFM", isFM);
+        
+        this.autoGenParticle = this.cubeSignal;
+       
+    }
 
     @Override
     public void restartScenario() {
@@ -340,5 +387,12 @@ public final class Amplification extends Scenario implements EmitterObserver{
         titleTextBox.move(titleTextPosition);
         this.attachChild(titleTextBox);
     }
+    
+   /* @Override
+    protected void setAutoGenerationParticle(Geometry particle){
+       // this.micTapParticle = particle;
+        //this.wirePcbEmitter.getControl(PatternGeneratorControl.class).
+          //      setBaseParticle(this.micTapParticle);
+    };*/
     
 }

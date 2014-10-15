@@ -5,12 +5,14 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppGetter;
+import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.observer.SignalObserver;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
@@ -23,7 +25,14 @@ public abstract class Scenario extends Node implements SignalObserver {
 
     private final static String TAG = "Scenario";
     
+
     protected final static boolean DEBUG_ANGLE = false;
+    /**
+     * Set to true to start autogeneration when scenario is the main scenario
+     */
+    protected boolean needAutoGenIfMain = false;
+    
+
    
     /**
      * The destination of the current scenario
@@ -146,6 +155,37 @@ public abstract class Scenario extends Node implements SignalObserver {
      * Initialization of the title boxes of a scenario.
      */
     protected abstract void initTitleBox();
+<<<<<<< HEAD
+    
+    /**
+     * Start the auto generation of particles
+     */
+    protected void startAutoGeneration(){
+        this.getInputHandle().getControl(PatternGeneratorControl.class).startAutoPlay();
+    };
+    
+    /**
+     * Stop the auto generation of particles
+     */
+    protected void stopAutoGeneration(){
+       if(this.getInputHandle() != null){ 
+       this.getInputHandle().getControl(PatternGeneratorControl.class).stopAutoPlay();
+       }
+    };
+    
+    /**
+     * Sets the base particle for auto-generation
+     */
+    protected void setAutoGenerationParticle(Geometry particle){
+      this.getInputHandle().getControl(PatternGeneratorControl.class).
+              setBaseParticle(particle);
+    };
+    
+    public boolean getNeedsAutoGen(){
+        return this.needAutoGenIfMain;
+    }
+    
+=======
 
     /**
      * This method will apply an opposite trackable rotation on the model, preventing it from rotating
@@ -157,6 +197,7 @@ public abstract class Scenario extends Node implements SignalObserver {
         rot.fromAngleAxis(-ZXangle, Vector3f.UNIT_Y);
         scene.setLocalRotation(rot);
     }
+>>>>>>> develop
     
     
 }
