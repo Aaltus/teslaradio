@@ -94,16 +94,6 @@ public final class Amplification extends Scenario implements EmitterObserver{
         this.needAutoGenIfMain = true;
         loadUnmovableObjects();
         loadMovableObjects();
-        
-         //Generate try particle
-        Box cube = new Box(0.25f, 0.25f, 0.25f);
-        particle = new Geometry("CubeCarrier", cube);
-        Material mat1 = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", ColorRGBA.Blue);
-        particle.setMaterial(mat1);
-        particle.setUserData("CarrierShape", "CubeCarrier");
-        particle.setUserData("isFM", true);
     }
     
     @Override
@@ -188,8 +178,8 @@ public final class Amplification extends Scenario implements EmitterObserver{
     //Scale handle of the particle
     private Spatial particleAmplification(Spatial particle){
         float angle = turnAmpliButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
-        float ampliScale = 1+ angle/(2*pi);
-        particle.setLocalScale(ampliScale, ampliScale, ampliScale);
+        float ampliScale = 1 + angle/(2*pi);
+        particle.scale(ampliScale/1.25f);
         return particle;
     }
     
