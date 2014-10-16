@@ -203,8 +203,6 @@ public abstract class Scenario extends Node implements SignalObserver {
      * @param ZXangle
      */
     protected void invRotScenario(float ZXangle) {
-
-
         if (Math.abs(ZXangle - cumulatedRot) > (3.1416f / 40f)){
             Quaternion rot = new Quaternion();
             rot.fromAngleAxis(-ZXangle, Vector3f.UNIT_Y);

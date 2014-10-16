@@ -143,7 +143,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         actionSwitch = scene.getChild("Switch");
         peg = scene.getChild("Circle");
         initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
-       
+
         //Assign touchable
         touchable = new Node();//(Node) scene.getParent().getChild("Touchable")
         touchable.attachChild(actionSwitch);
@@ -167,7 +167,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         scene.attachChild(signalEmitter);
         signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
-        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
+        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
     
     private void switchRotation(boolean isFM, float tpfCumul) {
@@ -277,7 +277,6 @@ public class Demodulation extends Scenario implements EmitterObserver  {
             rotationAxeY(trackableAngle, demodulationButton);
             checkTrackableAngle(trackableAngle); // rotation of PEG
         }
-        System.out.println("sqdqsd   " + demodulationButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_Y) );
         return false;
     }
 
@@ -370,7 +369,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
             mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
             Quad rect = new Quad(1.0f, 1.0f);
             autoGenParticle = new Geometry("MicTapParticle", rect);
-            autoGenParticle.setMaterial(mat1);            
+            autoGenParticle.setMaterial(mat1);
         } else {
             Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
             mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
@@ -379,7 +378,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
             autoGenParticle = new Geometry("MicTapParticle", sphere);
             autoGenParticle.setMaterial(mat1);
         }
-        
+
         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle, 7, 0.25f, 2f, true));
         this.waveTime = 1;
         this.particlePerWave = 4;
