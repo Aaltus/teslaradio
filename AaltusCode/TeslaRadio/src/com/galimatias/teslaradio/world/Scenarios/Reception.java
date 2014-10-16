@@ -131,8 +131,8 @@ public final class Reception extends Scenario implements EmitterObserver  {
        
         initParticlesEmitter(outputAntenneRx, pathAntenneRx, antenneRxPath, null);
         
-        
         scene.attachChild(outputModule);
+        System.out.println(outputHandle.getLocalTranslation().toString());
         outputModule.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
         outputModule.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
         outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
@@ -262,6 +262,13 @@ public final class Reception extends Scenario implements EmitterObserver  {
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
     }
+    
+    @Override
+    protected void startAutoGeneration(){
+        super.startAutoGeneration();
+        
+        scene.detachChild(wifi);
+    };
 
     @Override
     protected void initTitleBox() {

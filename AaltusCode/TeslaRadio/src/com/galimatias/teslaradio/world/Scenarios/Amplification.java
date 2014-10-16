@@ -91,7 +91,6 @@ public final class Amplification extends Scenario implements EmitterObserver{
         this.needAutoGenIfMain = true;
         this.destinationHandle = destinationHandle;
         this.cam = Camera;
-        this.needAutoGenIfMain = true;
         loadUnmovableObjects();
         loadMovableObjects();
     }
