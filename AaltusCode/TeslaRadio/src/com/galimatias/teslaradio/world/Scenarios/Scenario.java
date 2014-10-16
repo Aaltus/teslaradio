@@ -86,9 +86,19 @@ public abstract class Scenario extends Node implements SignalObserver {
     protected Camera cam;
 
     /**
+     * Defines the number of particle per auto-gen wave
+     */
+    protected int particlePerWave = 1;
+    /**
+     * Defines the time between 2 auto-wave emission
+     */
+    protected float waveTime = 1;
+    
+    /**
      * We make the default constructor private to prevent its use.
      * We always want a assetmanager and a camera
      */
+    
     private Scenario()
     {
 
@@ -163,7 +173,7 @@ public abstract class Scenario extends Node implements SignalObserver {
      * Start the auto generation of particles
      */
     protected void startAutoGeneration(){
-        this.getInputHandle().getControl(PatternGeneratorControl.class).startAutoPlay();
+        this.getInputHandle().getControl(PatternGeneratorControl.class).startAutoPlay(1,this.particlePerWave);
     };
     
     /**
@@ -194,14 +204,22 @@ public abstract class Scenario extends Node implements SignalObserver {
      */
     protected void invRotScenario(float ZXangle) {
 
-        cumulatedRot += ZXangle;
 
-        if (cumulatedRot > (3.1416f / 5f)){
+        if (ZXangle - cumulatedRot > (3.1416f / 32f)){
             Quaternion rot = new Quaternion();
             rot.fromAngleAxis(-cumulatedRot, Vector3f.UNIT_Y);
             scene.setLocalRotation(rot);
-            cumulatedRot = 0;
+            cumulatedRot = ZXangle;
         }
+
+//        cumulatedRot += ZXangle;
+//
+//        if (cumulatedRot > (3.1416f / 5f)){
+//            Quaternion rot = new Quaternion();
+//            rot.fromAngleAxis(-cumulatedRot, Vector3f.UNIT_Y);
+//            scene.setLocalRotation(rot);
+//            cumulatedRot = 0;
+//        }
     }
 
     
