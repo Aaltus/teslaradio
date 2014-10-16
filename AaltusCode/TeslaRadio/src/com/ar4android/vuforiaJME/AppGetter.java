@@ -32,6 +32,7 @@ public class AppGetter {
      */
     static public final String USR_NEXT_WAVE_SCALE = "nextWaveScale";
     
+    static public final String USR_NOISE_LEVEL = "nextNoiseLevel";
     /*Public methods*/
     
     //world scalling

@@ -9,6 +9,7 @@ import com.galimatias.teslaradio.world.effects.ImageBox;
 import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
+import com.galimatias.teslaradio.world.effects.SoundControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
@@ -154,6 +155,8 @@ public final class Reception extends Scenario implements EmitterObserver  {
         outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));    
         outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
         
+        this.getInputHandle().addControl(new SoundControl("Sounds/guitar.wav",false,1));
+        
         initModulatedParticles();
         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, 0.25f, 2f, true));
         this.waveTime = 1;
@@ -230,12 +233,15 @@ public final class Reception extends Scenario implements EmitterObserver  {
         switch(signalIntensity) {
             case 1:
                 wifi.attachChild(wifiLogoLow);
+                this.getInputHandle().getControl(SoundControl.class).playSound(false, 0.9f);
                 break;
             case 2:
                 wifi.attachChild(wifiLogoMedium);
+                this.getInputHandle().getControl(SoundControl.class).playSound(false, 0.6f);
                 break;
             case 3:
                 wifi.attachChild(wifiLogoFull);
+                this.getInputHandle().getControl(SoundControl.class).playSound(false, 0.3f);
                 break;
             default:
                 wifi.attachChild(wifiLogoLow);
