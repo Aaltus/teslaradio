@@ -46,8 +46,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
     
     // Default text to be seen when scenario starts
     private String titleText = "La Modulation";
-    private float titleTextSize = 0.5f;
-    private ColorRGBA defaultTextColor = ColorRGBA.Green;
+    private ColorRGBA digitalTextColor = ColorRGBA.Green;
     
     // Signals emitters 
     private Node wirePcbEmitter = new Node();
@@ -207,25 +206,17 @@ public final class Modulation extends Scenario implements EmitterObserver {
     
     @Override
     protected void initTitleBox() {
-        
-        boolean lookAtCamera = false;
-        boolean showDebugBox = false;
-        float textBoxWidth = 5.2f;
-        float textBoxHeight = 0.8f;
-        
-        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
-        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
-        TextBox titleTextBox = new TextBox(assetManager,
-                titleText,
-                titleTextSize,
-                titleTextColor,
-                titleBackColor,
-                textBoxWidth,
-                textBoxHeight,
-                "titleText",
-                BitmapFont.Align.Center.Center,
-                showDebugBox,
-                lookAtCamera);
+        TextBox titleTextBox = new TextBox(assetManager, 
+                                    titleText, 
+                                    textSize,
+                                    textColor, 
+                                    textBoxColor,
+                                    titleWidth, 
+                                    titleHeight, 
+                                    "titleText", 
+                                    BitmapFont.Align.Center, 
+                                    showTextDebug, 
+                                    textLookAtCamera);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
@@ -239,15 +230,16 @@ public final class Modulation extends Scenario implements EmitterObserver {
 
         // Default configuration of the digital display
         digitalDisplay = new TextBox(assetManager,
-                sFM1061,
-                titleTextSize,
-                defaultTextColor,
-                new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f),
-                3.5f, 1.0f,
-                "DigitalDisplay",
-                BitmapFont.Align.Center.Center,
-                false,
-                false);
+                                    sFM1061,
+                                    textSize,
+                                    digitalTextColor,
+                                    new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f),
+                                    3.5f, 
+                                    1.0f,
+                                    "DigitalDisplay",
+                                    BitmapFont.Align.Center.Center,
+                                    false,
+                                    false);
 
         // Get the digital display parameters
         Vector3f displayPosition = scene.getChild("Display").getLocalTranslation();
@@ -318,46 +310,70 @@ public final class Modulation extends Scenario implements EmitterObserver {
         if (isFM) {
             switch (frequency) {
                 case 1:
-                    digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    // System.out.println(sFM1061);
+                    digitalDisplay.simpleUpdate(sFM1061,
+                                                textSize, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
                 case 2:
-                    digitalDisplay.simpleUpdate(sFM977, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    // System.out.println(sFM977);
+                    digitalDisplay.simpleUpdate(sFM977, 
+                                                textSize, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(2, tpf);
                     break;
                 case 3:
-                    digitalDisplay.simpleUpdate(sFM952, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    // System.out.println(sFM952);
+                    digitalDisplay.simpleUpdate(sFM952, 
+                                                textSize, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(3, tpf);
                     break;
                 default:
-                    digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    // System.out.println(sFM1061);
+                    digitalDisplay.simpleUpdate(sFM1061, 
+                                                textSize, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
             }
         } else {
             switch (frequency) {
                 case 1:
-                    digitalDisplay.simpleUpdate(sAM697, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    //  System.out.println(sAM697);
+                    digitalDisplay.simpleUpdate(sAM697, 
+                                                textSize, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
                 case 2:
-                    digitalDisplay.simpleUpdate(sAM498, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    //  System.out.println(sAM498);
+                    digitalDisplay.simpleUpdate(sAM498, 
+                                                textSize, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(2, tpf);
                     break;
                 case 3:
-                    digitalDisplay.simpleUpdate(sAM707, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    //  System.out.println(sAM707);
+                    digitalDisplay.simpleUpdate(sAM707, 
+                                                textSize, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(3, tpf);
                     break;
                 default:
-                    digitalDisplay.simpleUpdate(sAM697, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    // System.out.println(sAM697);
+                    digitalDisplay.simpleUpdate(sAM697, 
+                                                textSize, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
             }
