@@ -14,13 +14,9 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 /**
  * Contains static methods used by Amplification and Modulation
@@ -64,7 +60,7 @@ public class ModulationCommon {
         m.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         cubeCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         cubeCarrier.setMaterial(m);
-        cubeCarrier.scale(0.35f);
+        cubeCarrier.scale(0.3f);
         
         pyramidCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation/Tetrahedron.j3o");
         Material m2 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
@@ -80,7 +76,7 @@ public class ModulationCommon {
         m3.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         dodecagoneCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         dodecagoneCarrier.setMaterial(m3);
-        dodecagoneCarrier.scale(0.4f);
+        dodecagoneCarrier.scale(0.35f);
         
         return new Spatial[]{cubeCarrier,pyramidCarrier,dodecagoneCarrier};
     }
@@ -95,7 +91,7 @@ public class ModulationCommon {
             Vector3f midScale = new Vector3f(midScaleValue,midScaleValue,midScaleValue);
             
             if (spatial.getLocalScale().length() < midScale.length()) {
-                scaleFactor = 1.25f;
+                scaleFactor = 0.75f;
             } else {
                 scaleFactor = 0.5f;
             }
@@ -115,6 +111,7 @@ public class ModulationCommon {
 
             //System.out.println("New FM signal scale : " + scaleFM.toString());
             clone.getChild(0).setLocalScale(scaleFM);
+            clone.scale(0.5f);
         }
     }
 }
