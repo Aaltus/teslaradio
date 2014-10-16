@@ -153,7 +153,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
     protected void loadMovableObjects() {
         turnButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
-        initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
+        initAngleSwitch = actionSwitch.getLocalRotation().getX();
         
         Spatial[] geom = ModulationCommon.initCarrierGeometries();
         cubeCarrier = geom[0];
@@ -288,11 +288,10 @@ public final class Modulation extends Scenario implements EmitterObserver {
         if (switchIsToggled) {
             tpfCumulSwitch += 3 * tpf;
             switchRotation(isFM, tpfCumulSwitch);
-            float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
+            float currAngle = actionSwitch.getLocalRotation().getX();
             if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
                 switchIsToggled = false;
-                tpfCumulSwitch = 0;
-                
+                tpfCumulSwitch = 0;             
             }
         }
     }
@@ -518,6 +517,13 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         return false;
     }
+    
+    @Override
+    protected void startAutoGeneration(){
+        super.startAutoGeneration();
+        
+        
+    };
     
     @Override
     protected Spatial getInputHandle() {

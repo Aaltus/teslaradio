@@ -143,7 +143,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         demodulationButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
         peg = scene.getChild("Circle");
-        initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
+        initAngleSwitch = actionSwitch.getLocalRotation().getX();
 
         //Assign touchable
         touchable = new Node();//(Node) scene.getParent().getChild("Touchable")
@@ -156,7 +156,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         if (switchIsToggled) {
             tpfCumulSwitch += 3 * tpf;
             switchRotation(isFM, tpfCumulSwitch);
-            float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
+            float currAngle = actionSwitch.getLocalRotation().getX();
             if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
                 switchIsToggled = false;
                 tpfCumulSwitch = 0;
