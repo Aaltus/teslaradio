@@ -1,6 +1,5 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
-import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
@@ -11,19 +10,11 @@ import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.*;
 import com.jme3.renderer.Camera;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Dome;
-import com.jme3.scene.shape.Quad;
-import com.jme3.scene.shape.Sphere;
-import com.jme3.texture.Texture;
 
 /**
  * Created by Batcave on 2014-09-09.
@@ -144,6 +135,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
         pcbAmpEmitter.setName("PCBAmpEmitter");
         
         carrierEmitter.getLocalTranslation().addLocal(new Vector3f(0.0f,0.2f,0.0f));
+        pcbAmpEmitter.getLocalTranslation().addLocal(new Vector3f(0.0f,0.5f,0.0f));
+        
         carrierEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
         wirePcbEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
         outputEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
