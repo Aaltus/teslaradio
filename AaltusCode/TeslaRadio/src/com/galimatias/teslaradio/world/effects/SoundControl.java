@@ -44,8 +44,8 @@ public class SoundControl extends AbstractControl {
         this.noise.setLooping(isLoop);
         this.audio.setVolume(this.volume - noiseLevel*this.volume);
         this.noise.setVolume(noiseLevel*this.volume);
-        this.audio.play();
-        this.noise.play();
+        this.audio.playInstance();
+        this.noise.playInstance();
     }
     /**
      * Start sound

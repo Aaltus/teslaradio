@@ -11,6 +11,7 @@ import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
+import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 
 import com.jme3.collision.CollisionResults;
@@ -39,7 +40,7 @@ import com.jme3.texture.Texture;
  *
  * @author Barliber
  */
-public final class Amplification extends Scenario implements EmitterObserver{
+public final class Amplification extends Scenario implements EmitterObserver, AutoGenObserver{
     
     private final static String TAG = "Amplification";
     
@@ -168,6 +169,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
         
         this.initModulatedParticles();
         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, 0.25f, 2f, true));
+        ModulationCommon.registerObserver(this);
         this.waveTime = 1;
         this.particlePerWave = 4;
    
@@ -186,29 +188,6 @@ public final class Amplification extends Scenario implements EmitterObserver{
     }
     
     
-    
-    private void ampliButtonRotation(float ZXangle) {
-        Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
-        turnAmpliButton.setLocalRotation(rot);
-    }
-    //Scale handle of the particle
-    private Spatial particleAmplification(Spatial particle){
-        float angle = turnAmpliButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
-        float ampliScale = 1+ angle/(2*pi);
-        particle.setLocalScale(ampliScale, ampliScale, ampliScale);
-        return particle;
-    }
-    
-     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
-        scene.attachChild(signalEmitter);
-        signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-        signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
-        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
-    }
-    
-     
-        
     private void initModulatedParticles(){
         Geometry baseGeom = ModulationCommon.initBaseGeneratorParticle();
         Geometry[] carrier = ModulationCommon.initCarrierGeometries();
@@ -237,6 +216,29 @@ public final class Amplification extends Scenario implements EmitterObserver{
         this.autoGenParticle = this.cubeSignal;
        
     }
+    private void ampliButtonRotation(float ZXangle) {
+        Quaternion rot = new Quaternion();
+        rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
+        turnAmpliButton.setLocalRotation(rot);
+    }
+    //Scale handle of the particle
+    private Spatial particleAmplification(Spatial particle){
+        float angle = turnAmpliButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
+        float ampliScale = 1+ angle/(2*pi);
+        particle.setLocalScale(ampliScale, ampliScale, ampliScale);
+        return particle;
+    }
+    
+     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
+        scene.attachChild(signalEmitter);
+        signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
+        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
+    }
+    
+     
+        
+    
 
     @Override
     public void restartScenario() {
@@ -331,11 +333,20 @@ public final class Amplification extends Scenario implements EmitterObserver{
         this.attachChild(titleTextBox);
     }
     
-   /* @Override
-    protected void setAutoGenerationParticle(Geometry particle){
-       // this.micTapParticle = particle;
-        //this.wirePcbEmitter.getControl(PatternGeneratorControl.class).
-          //      setBaseParticle(this.micTapParticle);
-    };*/
+    @Override
+    public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
+        this.isFM = isFm;
+        this.initModulatedParticles();
+        if(newCarrier.getName().equals("CubeCarrier")){
+             this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
+        }
+        else if(newCarrier.getName().equals("PyramidCarrier")){
+            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.pyramidSignal);
+        }
+        else if(newCarrier.getName().equals("DodecagoneCarrier")){
+            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.dodecagoneSignal);
+            
+        }
+    }
     
 }

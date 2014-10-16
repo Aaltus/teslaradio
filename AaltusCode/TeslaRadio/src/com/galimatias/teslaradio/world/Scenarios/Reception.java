@@ -12,6 +12,7 @@ import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.SoundControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
+import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
@@ -37,7 +38,7 @@ import com.jme3.texture.Texture;
  *
  * @author Barliber
  */
-public final class Reception extends Scenario implements EmitterObserver  {
+public final class Reception extends Scenario implements EmitterObserver, AutoGenObserver  {
     
     // TextBox of the scene
     private TextBox titleTextBox;
@@ -104,6 +105,7 @@ public final class Reception extends Scenario implements EmitterObserver  {
         particle.setMaterial(mat1);
         particle.setUserData("CarrierShape", "CubeCarrier");
         particle.setUserData("isFM", true);
+        ModulationCommon.registerObserver(this);
     }
 
     @Override
@@ -219,6 +221,7 @@ public final class Reception extends Scenario implements EmitterObserver  {
     
     private void updateSignalIntensity(Float normScale) { 
         wifi.detachAllChildren();
+        this.getInputHandle().getControl(SoundControl.class).playSound(false, 1-normScale);
         if (normScale >= 0 && normScale < 0.33f) {
             signalIntensity = 1;
         } else if (normScale >= 0.33f && normScale < 0.66f) {
@@ -233,15 +236,13 @@ public final class Reception extends Scenario implements EmitterObserver  {
         switch(signalIntensity) {
             case 1:
                 wifi.attachChild(wifiLogoLow);
-                this.getInputHandle().getControl(SoundControl.class).playSound(false, 0.9f);
                 break;
             case 2:
                 wifi.attachChild(wifiLogoMedium);
-                this.getInputHandle().getControl(SoundControl.class).playSound(false, 0.6f);
                 break;
             case 3:
                 wifi.attachChild(wifiLogoFull);
-                this.getInputHandle().getControl(SoundControl.class).playSound(false, 0.3f);
+                //this.getInputHandle().getControl(SoundControl.class).playSound(false, 0.3f);
                 break;
             default:
                 wifi.attachChild(wifiLogoLow);
@@ -257,12 +258,12 @@ public final class Reception extends Scenario implements EmitterObserver  {
                  
                 Float particleScale = spatial.getUserData("Scale");
                  
-                System.out.println("Scale before emission : " + particleScale.toString());
-                System.out.println("Scale when received : " + spatial.getLocalScale().toString());
+                //System.out.println("Scale before emission : " + particleScale.toString());
+                //System.out.println("Scale when received : " + spatial.getLocalScale().toString());
                 
                 float normScale = spatial.getWorldScale().length()/particleScale;
                 
-                System.out.println("Normalized scale : " + normScale);
+                //System.out.println("Normalized scale : " + normScale);
                 
                 updateSignalIntensity(normScale);
                 outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
@@ -335,5 +336,21 @@ public final class Reception extends Scenario implements EmitterObserver  {
         
         this.autoGenParticle = this.cubeSignal;
        
+    }
+    
+    @Override
+    public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
+        this.isFM = isFm;
+        this.initModulatedParticles();
+        if(newCarrier.getName().equals("CubeCarrier")){
+             this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
+        }
+        else if(newCarrier.getName().equals("PyramidCarrier")){
+            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.pyramidSignal);
+        }
+        else if(newCarrier.getName().equals("DodecagoneCarrier")){
+            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.dodecagoneSignal);
+            
+        }
     }
 }

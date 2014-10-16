@@ -6,6 +6,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppGetter;
 import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
+import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
@@ -21,6 +22,7 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains static methods used by Amplification and Modulation
@@ -28,6 +30,10 @@ import java.util.ArrayList;
  */
 public class ModulationCommon {
     
+    private static List<AutoGenObserver> observerList = new ArrayList<AutoGenObserver>();
+    
+    
+            
     public static Geometry initBaseGeneratorParticle(){
         Geometry baseGeom;
         if (DEBUG_ANGLE) {
@@ -112,5 +118,19 @@ public class ModulationCommon {
             //System.out.println("New FM signal scale : " + scaleFM.toString());
             clone.getChild(0).setLocalScale(scaleFM);
         }
+    }
+
+    
+    public static void registerObserver(AutoGenObserver observer) {
+        observerList.add(observer);
+    }
+
+    // observable method to notify whoever wants to know that a particle as ended his path
+   
+    public static void notifyObservers(Spatial newCarrier, boolean isFm) {
+        for(AutoGenObserver observer : observerList)
+        {
+            observer.autoGenObserverUpdate(newCarrier, isFm);
+        }        
     }
 }
