@@ -94,6 +94,7 @@ class VuforiaJME_UpdateCallback : public QCAR::UpdateCallback
     virtual void QCAR_onUpdate(QCAR::State& state)
     {
 
+
     	//from
         //https://developer.vuforia.com/forum/faq/android-how-can-i-access-camera-image
         QCAR::Image *imageRGB565 = NULL;
@@ -207,7 +208,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative(JNIEnv
 // RENDERING CALL
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJME_updateTracking(JNIEnv *env, jobject obj)
+Java_com_ar4android_vuforiaJME_VuforiaJMEState_updateTracking(JNIEnv *env, jobject obj)
 {
     jclass activityClass = env->GetObjectClass(obj);
     jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
@@ -333,14 +334,14 @@ void configureVideoBackground()
     
     if (isActivityInPortraitMode)
     {
-        LOGI("configureVideoBackground PORTRAIT");
+        //LOG("configureVideoBackground PORTRAIT");
         config.mSize.data[0] = videoMode.mHeight
                                 * (screenHeight / (float)videoMode.mWidth);
         config.mSize.data[1] = screenHeight;
 
         if(config.mSize.data[0] < screenWidth)
         {
-            LOGI("Correcting rendering background size to handle mismatch between screen and video aspect ratios.");
+            LOGI("Correcting rendering background size to handle missmatch between screen and video aspect ratios.");
             config.mSize.data[0] = screenWidth;
             config.mSize.data[1] = screenWidth * 
                               (videoMode.mWidth / (float)videoMode.mHeight);
@@ -348,7 +349,7 @@ void configureVideoBackground()
     }
     else
     {
-        LOGI("configureVideoBackground LANDSCAPE");
+        //LOG("configureVideoBackground LANDSCAPE");
         config.mSize.data[0] = screenWidth;
         config.mSize.data[1] = videoMode.mHeight
                             * (screenWidth / (float)videoMode.mWidth);
@@ -375,7 +376,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative(
                             JNIEnv* env, jobject obj, jint width, jint height)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative");
-
+    
     // Store screen dimensions
     screenWidth = width;
     screenHeight = height;
@@ -418,6 +419,8 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera(JNIEnv *env, jobje
     // Select the default mode:
     if (!cameraDevice.selectVideoMode(QCAR::CameraDevice::MODE_DEFAULT))
         return;
+    //if (!cameraDevice.selectVideoMode(QCAR::CameraDevice::MODE_OPTIMIZE_SPEED))
+    //    return;
 
 
 
@@ -512,10 +515,10 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setFocusMode(JNIEnv*, jobject,
 }
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJME_initTracking(
+Java_com_ar4android_vuforiaJME_VuforiaJMEState_initTracking(
                         JNIEnv* env, jobject obj, jint width, jint height)
 {
-    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJME_initTracking");
+    LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEState_initTracking");
 
     // Update screen dimensions
     screenWidth = width;

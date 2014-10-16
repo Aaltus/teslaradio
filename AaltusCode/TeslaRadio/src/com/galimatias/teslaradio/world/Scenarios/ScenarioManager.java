@@ -1,7 +1,7 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.ar4android.vuforiaJME.AndroidActivityListener;
 import com.ar4android.vuforiaJME.AppGetter;
-import com.ar4android.vuforiaJME.AppListener;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -41,24 +41,36 @@ import java.util.List;
  *
  * Created by jimbojd72 on 9/3/14.
  */
-public class ScenarioManager  extends AbstractAppState implements IScenarioManager
+public class ScenarioManager extends AbstractAppState implements IScenarioManager
 {
-
-    
     
     private static final String TOUCH_EVENT_NAME = "Touch";
     private static final String RIGHT_CLICK_MOUSE_EVENT_NAME = "Mouse";
     
     private SimpleApplication app;
+    
     private Node guiNode;
+    private Node localGuiNode = new Node("Local Gui Node");
     private Camera camera;
     private AssetManager assetManager;
     private RenderManager renderManager;
     private InputManager inputManager;
     private AppSettings settings;
     private ApplicationType applicationType;
+    private boolean scenePreloaded =false;
 
-   /**
+    public void setApplicationType(ApplicationType applicationType){
+        this.applicationType = applicationType;
+    }
+
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+        for(Scenario scenario : scenarioList.getAllScenario()){
+            scenario.setCamera(camera);
+        }
+    }
+
+    /**
      * An enum that provide insight to the manager to which scale/rotation it must provide to the scenario
      * created to fit in to the Android app or the JMonkey SDK app.
      */
@@ -83,11 +95,17 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
     public List<Node> getNodeList() {
         return nodeList;
     }
+    @Override
+    public void setNodeList(List<Node> nodeList) {
+
+        this.nodeList = nodeList;
+        attachCurrentScenario();
+    }
 
     /**
      * Callback interface to open the informativeMenu.
      */
-    private AppListener appListener;
+    private AndroidActivityListener androidActivityListener;
     
     private static final String NEXT_SCENARIO = "NextScenario";
     private static final String PREVIOUS_SCENARIO = "PreviousScenario";
@@ -101,27 +119,26 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
             ApplicationType applicationType,
             List<Node> node,
             Camera cam,
-            AppListener appListener)
+            AndroidActivityListener androidActivityListener)
     {
         this.app = app;
         this.nodeList = node;
-        this.appListener = appListener;
+        this.androidActivityListener = androidActivityListener;
         this.applicationType = applicationType;
         this.assetManager  = this.app.getAssetManager();//AppGetter.getAssetManager();
         this.renderManager = this.app.getRenderManager();
         this.inputManager  = this.app.getInputManager();
         this.settings      = this.app.getContext().getSettings();
         this.guiNode       = this.app.getGuiNode();
-        this.camera        = cam;
-        AppGetter.setWorldScaleDefault(this.applicationType == ApplicationType.DESKTOP || this.applicationType == ApplicationType.ANDROID_DEV_FRAMEWORK ? 10 : 100);
-        init(applicationType, nodeList, camera, appListener);
+        this.setCamera(cam);
+
+        init(nodeList, this.camera);
         
     }
     
-    private void init(ApplicationType applicationType,
+    private void init(
             List<Node> node,
-            Camera cam,
-            AppListener appListener)
+            Camera cam)
     {   
         
         //This a list of all the scenario that we will rotate/scale according
@@ -157,9 +174,6 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
         SoundEmission soundEmission = new SoundEmission(cam, soundCapture.getInputHandle());
         soundEmission.setName("SoundEmission");
         scenarios.add(soundEmission);
-        
-        addInputMapping(this.applicationType);
-        adjustScenario(this.applicationType, scenarios, renderManager);
         
         //Add first scenario
         List<Scenario> soundCaptureList = new ArrayList<Scenario>();
@@ -221,7 +235,7 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
         Node node1 = new Node();
         node1.setName(NEXT_SCENARIO);
         node1.attachChild(pic1);
-        guiNode.attachChild(node1);
+        localGuiNode.attachChild(node1);
         pic1.move(-imageWidth / 2, -imageHeight / 2, 0);
         //node2.rotate(0, 0, -(float)Math.PI);
         node1.move(settings.getWidth()-imageWidth/2,settings.getHeight()/2, 0);
@@ -234,7 +248,7 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
         Node node2 = new Node();
         node2.setName(PREVIOUS_SCENARIO);
         node2.attachChild(pic2);
-        guiNode.attachChild(node2);
+        localGuiNode.attachChild(node2);
         pic2.move(-imageWidth/2, -imageHeight/2, 0);
         node2.rotate(0, 0, -(float)Math.PI);
         node2.move(imageWidth/2,settings.getHeight()/2, 0);
@@ -247,58 +261,36 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
      */
     private void adjustScenario(ApplicationType applicationType, List<Scenario> scenarios, RenderManager renderManager)
     {
+        Quaternion rot = new Quaternion();
+
         switch(applicationType)
         {
             case ANDROID:
-
-                //This is the rotation to put a scenarion in the correct angle for VuforiaJME
-                Quaternion rot = new Quaternion();
+                AppGetter.setWorldScaleDefault(100);
+                //This is the rotation to put a scenario in the correct angle for VuforiaJME
                 rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
-                //float scale = 10.0f;
-                
-                for(Scenario scenario : scenarios)
-                {
-                    //Correction for BUG TR-176
-                    //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
-                    //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
-                    if(renderManager != null){
-                        renderManager.preloadScene(scenario);
-                    }
-                    scenario.rotate(rot);
-
-                    //WORLD_SCALE_DEFAULT = 100;
-                    scenario.scale(AppGetter.getWorldScalingDefault());
-                }
                 break;
             case ANDROID_DEV_FRAMEWORK:
-                
-
-                //This is the rotation to put a scenarion in the correct angle for VuforiaJME
-                //Quaternion rot = new Quaternion();
-                //rot.fromAngleAxis(3.14f / 2, new Vector3f(1.0f, 0.0f, 0.0f));
-                //float scale = 10.0f;
-                
-                for(Scenario scenario : scenarios)
-                {
-                    //Correction for BUG TR-176
-                    //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
-                    //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
-                    if(renderManager != null){
-                        renderManager.preloadScene(scenario);
-                    }
-                    //scenario.rotate(rot);
-
-                    //WORLD_SCALE_DEFAULT = 100;
-                    scenario.scale(AppGetter.getWorldScalingDefault());
-                }
-
+                AppGetter.setWorldScaleDefault(10);
                 break;
             case DESKTOP:
-                for (Scenario scenario : scenarios) {
-                    scenario.scale(AppGetter.getWorldScalingDefault());
-                }
-                
+                AppGetter.setWorldScaleDefault(10);
                 break;
+        }
+
+        for(Scenario scenario : scenarios)
+        {
+            //Correction for BUG TR-176
+            //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
+            //So the first time that the we were seeing a model, the vidoe was stagerring to load everything.
+            if(renderManager != null && !this.scenePreloaded){
+                renderManager.preloadScene(scenario);
+            }
+            this.scenePreloaded = true;
+            scenario.setLocalRotation(rot);
+
+            //WORLD_SCALE_DEFAULT = 100;
+            scenario.setLocalScale(AppGetter.getWorldScalingDefault());
         }
     }
 
@@ -336,7 +328,7 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
         }
     }
     
-    private void removeInputMapping(ApplicationType applicationType)
+    private void removeInputMapping()
     {
         this.inputManager.removeListener(this);
     }
@@ -361,6 +353,9 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
         if(getCurrentScenario() != null){
             for(Scenario scenario : getCurrentScenario().getScenarios() )
             {
+                if(scenario.getNeedsAutoGen()){
+                    scenario.stopAutoGeneration();
+                }
                 Node parent = scenario.getParent();
                 if(parent != null){
                     parent.detachChild(scenario);
@@ -380,17 +375,20 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
             for(Node node : getNodeList())
             {
                 if(count < size){
-                    Scenario currentScenario = getCurrentScenario().getScenarios().get(count);
+                    Scenario scenario = getCurrentScenario().getScenarios().get(count);
+                    if(count == 0 && scenario.getNeedsAutoGen()){
+                        scenario.startAutoGeneration();
+                    }
                     if(node != null)
                     {
-                        node.attachChild(currentScenario);
+                        node.attachChild(scenario);
                     }
                     else
                     {
-                        Node parent = currentScenario.getParent();
+                        Node parent = scenario.getParent();
                         if(parent != null)
                         {
-                            parent.detachChild(currentScenario);
+                            parent.detachChild(scenario);
                         }
                     }
                 }
@@ -401,8 +399,11 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
-      super.initialize(stateManager, app); 
+      super.initialize(stateManager, app);
+      adjustScenario(this.applicationType, this.scenarioList.getAllScenario(), renderManager);
+      guiNode.attachChild(localGuiNode);
       attachCurrentScenario();
+      addInputMapping(applicationType);
       // init stuff that is independent of whether state is PAUSED or RUNNING
       
    }
@@ -411,7 +412,8 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
     public void cleanup() {
       super.cleanup();
       detachCurrentScenario();
-      removeInputMapping(this.applicationType);
+      guiNode.detachChild(localGuiNode);
+      removeInputMapping();
       
       // unregister all my listeners, detach all my nodes, etc.../*
       
@@ -472,13 +474,7 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
         setCurrentScenario(scenarioList.getScenarioListByEnum(scenarioEnum));
     }
 
-    @Override
-    public void setNodeList(List<Node> nodeList) {
-
-        this.nodeList = nodeList;
-        attachCurrentScenario();
-    }
-
+  
     /**
      * To be call to update the scenario
      * @param tpf
@@ -488,9 +484,9 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
 
         for(Scenario scenario : getCurrentScenario().getScenarios() )
         {
-            if (scenario.simpleUpdate(tpf) && appListener != null)
+            if (scenario.simpleUpdate(tpf) && androidActivityListener != null)
             {
-                appListener.toggleInformativeMenuCallback(scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios()));
+                androidActivityListener.toggleInformativeMenuCallback(scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios()));
             }
         }
     };
@@ -539,7 +535,7 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
             Vector3f dir = new Vector3f(0f, 0f, 1f);
             Ray ray = new Ray(origin, dir);
             // 3. Collect intersections between Ray and Shootables in results list.
-            guiNode.collideWith(ray, results);
+            localGuiNode.collideWith(ray, results);
 
             if(results.size() > 0 && touchEvent.getType() == TouchEvent.Type.DOWN)
             {
@@ -565,6 +561,8 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
 
 
     }
+    
+    
     
     /**
      * This event is generated by the DevFramework from keyboard key or Mouse event
@@ -661,6 +659,10 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
 
         private EnumMap<ScenarioEnum,List<Scenario>> enumScenarioEnumMap = new EnumMap<ScenarioEnum, List<Scenario>>(ScenarioEnum.class);
         private List<List<Scenario>> scenarioList = new ArrayList<List<Scenario>>();
+        private List<Scenario> allScenario = new ArrayList<Scenario>();
+        public List<Scenario> getAllScenario(){
+            return allScenario;
+        }
 
         ScenarioList(){}
 
@@ -668,6 +670,12 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
         {
             enumScenarioEnumMap.put(scenarioEnum,scenarios);
             scenarioList.add(scenarios);
+            for(Scenario scenario : scenarios){
+
+                if(!allScenario.contains(scenario)){
+                    allScenario.add(scenario);
+                }
+            }
         }
 
         public ScenarioGroup getScenarioListByEnum(ScenarioEnum scenarioEnum)
@@ -736,4 +744,6 @@ public class ScenarioManager  extends AbstractAppState implements IScenarioManag
             return currentScenatioEnum;
         }
     }
+    
+    
 }
