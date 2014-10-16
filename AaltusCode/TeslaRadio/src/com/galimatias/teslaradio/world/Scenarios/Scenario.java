@@ -205,24 +205,12 @@ public abstract class Scenario extends Node implements SignalObserver {
     protected void invRotScenario(float ZXangle) {
 
 
-        if (ZXangle - cumulatedRot > (3.1416f / 32f)){
+        if (Math.abs(ZXangle - cumulatedRot) > (3.1416f / 40f)){
             Quaternion rot = new Quaternion();
-            rot.fromAngleAxis(-cumulatedRot, Vector3f.UNIT_Y);
+            rot.fromAngleAxis(-ZXangle, Vector3f.UNIT_Y);
             scene.setLocalRotation(rot);
             cumulatedRot = ZXangle;
         }
-
-//        cumulatedRot += ZXangle;
-//
-//        if (cumulatedRot > (3.1416f / 5f)){
-//            Quaternion rot = new Quaternion();
-//            rot.fromAngleAxis(-cumulatedRot, Vector3f.UNIT_Y);
-//            scene.setLocalRotation(rot);
-//            cumulatedRot = 0;
-//        }
     }
-
-    
-    
 }
 
