@@ -140,8 +140,8 @@ public final class SoundCapture extends Scenario {
         micTapParticle = ModulationCommon.initBaseGeneratorParticle();
         
         micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
-        micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, ModulationCommon.minParticleScale, 
-                                                              ModulationCommon.maxParticleScale, true));
+        micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, ModulationCommon.minBaseParticleScale, 
+                                                              ModulationCommon.maxBaseParticleScale, true));
         micWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
         this.particlePerWave = 4;
         this.waveTime = 1;

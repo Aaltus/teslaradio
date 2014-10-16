@@ -28,8 +28,8 @@ import java.util.ArrayList;
  */
 public class ModulationCommon {
     
-    public static float minParticleScale = 0.25f;
-    public static float maxParticleScale = 0.75f;
+    public static float minBaseParticleScale = 0.25f;
+    public static float maxBaseParticleScale = 0.75f;
     
     public static Geometry initBaseGeneratorParticle(){
         Geometry baseGeom;
@@ -91,7 +91,7 @@ public class ModulationCommon {
             clone.getChild(0).setLocalScale(spatial.getLocalScale().mult(scale));
         } else {
             float scaleFactor = 1.25f;
-            float midScaleValue = (ModulationCommon.minParticleScale + ModulationCommon.maxParticleScale)/2.0f;
+            float midScaleValue = (ModulationCommon.minBaseParticleScale + ModulationCommon.maxBaseParticleScale)/2.0f;
             Vector3f midScale = new Vector3f(midScaleValue,midScaleValue,midScaleValue);
             
             if (spatial.getLocalScale().length() < midScale.length()) {
