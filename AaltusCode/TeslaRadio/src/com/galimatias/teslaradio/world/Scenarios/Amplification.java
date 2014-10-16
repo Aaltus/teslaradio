@@ -167,7 +167,8 @@ public final class Amplification extends Scenario implements EmitterObserver{
         
         
         this.initModulatedParticles();
-        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, 0.25f, 2f, true));
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, ModulationCommon.minBaseParticleScale, 
+                                                                     ModulationCommon.maxBaseParticleScale, true));
         this.waveTime = 1;
         this.particlePerWave = 4;
    
@@ -211,7 +212,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
         
     private void initModulatedParticles(){
         Geometry baseGeom = ModulationCommon.initBaseGeneratorParticle();
-        Geometry[] carrier = ModulationCommon.initCarrierGeometries();
+        Spatial[] carrier = ModulationCommon.initCarrierGeometries();
                 
         this.cubeSignal = new Node();
         this.cubeSignal.attachChild(carrier[0].clone());
