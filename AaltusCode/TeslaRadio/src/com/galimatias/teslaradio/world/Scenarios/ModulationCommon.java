@@ -84,14 +84,14 @@ public class ModulationCommon {
     
     public static void modulateFMorAM(Node clone, Spatial spatial, boolean isFm) {
         if (!isFm) {
-            float scale = 1.5f;
+            float scale = 1.25f;
             clone.getChild(0).setLocalScale(spatial.getLocalScale().mult(scale));
         } else {
-            float scaleFactor = 1.5f;
+            float scaleFactor = 1.25f;
             Vector3f midScale = new Vector3f(0.5f,0.5f,0.5f);
             
             if (spatial.getLocalScale().length() < midScale.length()) {
-                scaleFactor = 2.5f;
+                scaleFactor = 1.25f;
             } else {
                 scaleFactor = 0.5f;
             }
