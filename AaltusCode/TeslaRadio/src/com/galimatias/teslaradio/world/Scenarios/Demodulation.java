@@ -265,11 +265,14 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         if (this.DEBUG_ANGLE) {
             tpfCumulButton = tpf+ tpfCumulButton;
             rotationAxeY(tpfCumulButton, demodulationButton);
-            if(tpfCumulButton > 2*pi){
+
+            if (tpfCumulButton > 2*pi) {
                 tpfCumulButton = 0;
             }
+
             checkTrackableAngle(tpfCumulButton); // rotation of PEG
-        } else {
+        }
+        else {
             trackableAngle = this.getUserData("angleX");
             rotationAxeY(trackableAngle, demodulationButton);
             checkTrackableAngle(trackableAngle); // rotation of PEG

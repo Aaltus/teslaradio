@@ -24,6 +24,8 @@ import com.jme3.scene.Spatial;
 public abstract class Scenario extends Node implements SignalObserver {
 
     private final static String TAG = "Scenario";
+
+    private float cumulatedRot = 0;
     
 
     protected final static boolean DEBUG_ANGLE = false;
@@ -202,12 +204,13 @@ public abstract class Scenario extends Node implements SignalObserver {
      */
     protected void invRotScenario(float ZXangle) {
 
-        Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(-ZXangle, Vector3f.UNIT_Y);
-        scene.setLocalRotation(rot);
-    }
 
-    
-    
+        if (Math.abs(ZXangle - cumulatedRot) > (3.1416f / 40f)){
+            Quaternion rot = new Quaternion();
+            rot.fromAngleAxis(-ZXangle, Vector3f.UNIT_Y);
+            scene.setLocalRotation(rot);
+            cumulatedRot = ZXangle;
+        }
+    }
 }
 
