@@ -276,6 +276,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
             trackableAngle = this.getUserData("angleX");
             rotationAxeY(trackableAngle, demodulationButton);
             checkTrackableAngle(trackableAngle); // rotation of PEG
+            invRotScenario(trackableAngle + (pi / 2));
         }
         return false;
     }
