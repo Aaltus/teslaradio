@@ -4,6 +4,7 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.observer.ParticleObservable;
 import com.galimatias.teslaradio.world.observer.ParticleObserver;
 import com.jme3.cinematic.MotionPath;
@@ -32,6 +33,8 @@ public class SignalControl extends AbstractControl implements ParticleObservable
     private float endScaleRatio;
     private float startScaleRatio;
     
+    private Spatial refNodeDetachAttach;
+    
     // for end of path notification
     private ParticleObserver observer;
     
@@ -40,10 +43,18 @@ public class SignalControl extends AbstractControl implements ParticleObservable
     }
     
     public SignalControl(MotionPath path, float speed, Camera cam){
-        this(path, speed, cam, -1);
+        this(path, speed, cam, -1, null);
     }
-            
+    
+    public SignalControl(MotionPath path, float speed, Camera cam, Spatial refNodeDetachAttach){
+        this(path, speed, cam, -1,refNodeDetachAttach);
+    }
+      
     public SignalControl(MotionPath path, float speed, Camera cam, float endScaleRatio){
+       this(path,speed,cam,endScaleRatio,null);
+    }
+    
+    public SignalControl(MotionPath path, float speed, Camera cam, float endScaleRatio, Spatial refNodeDetachAttach){
         this.path = path;
         this.speed = speed;
         this.enabled = false;
@@ -52,6 +63,7 @@ public class SignalControl extends AbstractControl implements ParticleObservable
         this.currentPosition = new Vector3f();
         this.cam = cam;
         this.endScaleRatio = endScaleRatio;
+        this.refNodeDetachAttach = refNodeDetachAttach;
     }
     
     @Override
@@ -76,6 +88,16 @@ public class SignalControl extends AbstractControl implements ParticleObservable
 
         if (cam != null) {
             this.spatial.lookAt(cam.getLocation(), cam.getUp());
+        }
+        
+        // verify if the refNodeDetachAttach is still in focus or not
+        if(refNodeDetachAttach != null)
+        {
+            // if the emitter node is detach then detach particles on dynamic path
+            if(!AppGetter.hasRootNodeAsAncestor(refNodeDetachAttach))
+            {
+                this.spatial.removeFromParent();
+            }
         }
     }
 
