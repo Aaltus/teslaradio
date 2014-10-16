@@ -14,13 +14,9 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 /**
  * Contains static methods used by Amplification and Modulation

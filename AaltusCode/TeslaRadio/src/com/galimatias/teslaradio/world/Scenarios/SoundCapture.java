@@ -4,7 +4,6 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
-import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
@@ -14,8 +13,6 @@ import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
@@ -25,9 +22,6 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Quad;
-import com.jme3.scene.shape.Sphere;
-import com.jme3.texture.Texture;
 
 //import com.galimatias.teslaradio.world.observer.ScenarioObserver;
 

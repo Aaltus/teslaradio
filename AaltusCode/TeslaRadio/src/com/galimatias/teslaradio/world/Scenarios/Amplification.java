@@ -4,7 +4,6 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
-import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 import com.galimatias.teslaradio.world.effects.AirParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
@@ -13,26 +12,19 @@ import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 
-import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
-import static com.jme3.input.event.TouchEvent.Type.DOWN;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Ray;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Quad;
-import com.jme3.scene.shape.Sphere;
-import com.jme3.texture.Texture;
 
 
 /**
@@ -287,7 +279,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
          } else if(notifierId.equals("OutputWireAmpli")) {
              Float scale = new Float(spatial.getWorldScale().length());
              spatial.setUserData("Scale", scale);
-             System.out.println("Before addition : " + spatial.getWorldScale());
+             //System.out.println("Before addition : " + spatial.getWorldScale());
              outputModule.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
          }   
     }
