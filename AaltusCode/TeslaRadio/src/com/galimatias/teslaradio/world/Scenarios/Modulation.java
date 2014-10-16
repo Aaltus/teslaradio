@@ -507,13 +507,13 @@ public final class Modulation extends Scenario implements EmitterObserver {
         } else {
             //trackableAngle = 0;
             trackableAngle = this.getUserData("angleX");
+            invRotScenario(trackableAngle + (pi / 2));
         }
 
         switchArrow.simpleUpdate(tpf);
         rotationArrow.simpleUpdate(tpf);
         
         checkTrackableAngle(trackableAngle, tpf);
-        invRotScenario(trackableAngle + (pi / 2));
         checkModulationMode(tpf);
         
         return false;

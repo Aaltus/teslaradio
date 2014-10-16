@@ -124,7 +124,7 @@ public final class Reception extends Scenario implements EmitterObserver  {
         pathAntenneRx = scene.getChild("Path.Sortie.001");
         outputHandle = scene.getChild("Antenna.Handle.Out");
         
-        wifi.setLocalTranslation(outputHandle.getLocalTranslation().addLocal(3.0f, 5.0f, -3.0f));
+        wifi.setLocalTranslation(outputHandle.getLocalTranslation().add(3.0f, 5.0f, -3.0f));
         
         // Get the different paths
         antenneRxPath = (Geometry)((Node) pathAntenneRx).getChild("NurbsPath.005");
