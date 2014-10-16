@@ -190,7 +190,9 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         micTapParticle = ModulationCommon.initBaseGeneratorParticle();
         
-        this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 1, 1,1,false));
+        this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 7, 0.25f, 2f, true));
+        this.waveTime = 1;
+        this.particlePerWave = 4;
     }
     @Override
     protected void initTitleBox() {
