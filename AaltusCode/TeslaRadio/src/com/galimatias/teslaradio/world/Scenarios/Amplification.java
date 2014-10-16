@@ -4,7 +4,6 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
-import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 import com.galimatias.teslaradio.world.effects.AirParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
@@ -14,26 +13,19 @@ import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 
-import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
-import static com.jme3.input.event.TouchEvent.Type.DOWN;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Ray;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Quad;
-import com.jme3.scene.shape.Sphere;
-import com.jme3.texture.Texture;
 
 
 /**
@@ -62,7 +54,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
      * TODO Remove this bool and associated code in simpleUpdate when it works
      * on Android. Only for debug purposes.
      */
-    private final static boolean DEBUG_ANGLE = true;
+    private final static boolean DEBUG_ANGLE = false;
     
     
     // TextBox of the scene
@@ -100,19 +92,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         this.needAutoGenIfMain = true;
         this.destinationHandle = destinationHandle;
         this.cam = Camera;
-        this.needAutoGenIfMain = true;
         loadUnmovableObjects();
         loadMovableObjects();
-        
-         //Generate try particle
-        Box cube = new Box(0.25f, 0.25f, 0.25f);
-        particle = new Geometry("CubeCarrier", cube);
-        Material mat1 = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", ColorRGBA.Blue);
-        particle.setMaterial(mat1);
-        particle.setUserData("CarrierShape", "CubeCarrier");
-        particle.setUserData("isFM", true);
     }
     
     @Override
@@ -168,7 +149,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         
         
         this.initModulatedParticles();
-        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, 0.25f, 2f, true));
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, ModulationCommon.minBaseParticleScale, 
+                                                                     ModulationCommon.maxBaseParticleScale, true));
         ModulationCommon.registerObserver(this);
         this.waveTime = 1;
         this.particlePerWave = 4;
@@ -188,9 +170,32 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     }
     
     
+    
+    private void ampliButtonRotation(float ZXangle) {
+        Quaternion rot = new Quaternion();
+        rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
+        turnAmpliButton.setLocalRotation(rot);
+    }
+    //Scale handle of the particle
+    private Spatial particleAmplification(Spatial particle){
+        float angle = turnAmpliButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
+        float ampliScale = 1 + angle/(2*pi);
+        particle.scale(ampliScale/1.25f);
+        return particle;
+    }
+    
+     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
+        scene.attachChild(signalEmitter);
+        signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
+        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
+    }
+    
+     
+        
     private void initModulatedParticles(){
         Geometry baseGeom = ModulationCommon.initBaseGeneratorParticle();
-        Geometry[] carrier = ModulationCommon.initCarrierGeometries();
+        Spatial[] carrier = ModulationCommon.initCarrierGeometries();
                 
         this.cubeSignal = new Node();
         this.cubeSignal.attachChild(carrier[0].clone());
@@ -256,7 +261,9 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
             tpfCumul = tpf+ tpfCumul;
             ampliButtonRotation(tpfCumul);
         } else {
-            ampliButtonRotation((Float)this.getUserData("angleX"));
+            float trackableAngle = this.getUserData("angleX");
+            ampliButtonRotation(trackableAngle);
+            invRotScenario(trackableAngle + (pi / 2));
         }
         return false;
     }
@@ -288,7 +295,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
          } else if(notifierId.equals("OutputWireAmpli")) {
              Float scale = new Float(spatial.getWorldScale().length());
              spatial.setUserData("Scale", scale);
-             System.out.println("Before addition : " + spatial.getWorldScale());
+             //System.out.println("Before addition : " + spatial.getWorldScale());
              outputModule.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
          }   
     }

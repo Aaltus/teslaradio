@@ -14,25 +14,17 @@ import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
-import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
-import static com.jme3.input.event.TouchEvent.Type.DOWN;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Ray;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Quad;
-import com.jme3.scene.shape.Sphere;
-import com.jme3.texture.Texture;
 
 /**
  *
@@ -135,16 +127,15 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         pathAntenneRx = scene.getChild("Path.Sortie.001");
         outputHandle = scene.getChild("Antenna.Handle.Out");
         
-        wifi.setLocalTranslation(outputHandle.getLocalTranslation().addLocal(3.0f, 5.0f, -3.0f));
+        wifi.setLocalTranslation(outputHandle.getLocalTranslation().add(3.0f, 5.0f, -3.0f));
         
         // Get the different paths
-        Node wireAntenneRx_node = (Node) scene.getChild("Path.Sortie.001");
-        antenneRxPath = (Geometry) wireAntenneRx_node.getChild("NurbsPath.005");
+        antenneRxPath = (Geometry)((Node) pathAntenneRx).getChild("NurbsPath.005");
        
         initParticlesEmitter(outputAntenneRx, pathAntenneRx, antenneRxPath, null);
         
-        
         scene.attachChild(outputModule);
+        System.out.println(outputHandle.getLocalTranslation().toString());
         outputModule.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
         outputModule.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
         outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
@@ -160,7 +151,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         this.getInputHandle().addControl(new SoundControl("Sounds/guitar.wav",false,1));
         
         initModulatedParticles();
-        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, 0.25f, 2f, true));
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, ModulationCommon.minBaseParticleScale, 
+                                                                     ModulationCommon.maxBaseParticleScale, true));
         this.waveTime = 1;
         this.particlePerWave = 4;
     }
@@ -277,6 +269,13 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
     }
+    
+    @Override
+    protected void startAutoGeneration(){
+        super.startAutoGeneration();
+        
+        scene.detachChild(wifi);
+    };
 
     @Override
     protected void initTitleBox() {
@@ -311,7 +310,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
 
     private void initModulatedParticles() {
         Geometry baseGeom = ModulationCommon.initBaseGeneratorParticle();
-        Geometry[] carrier = ModulationCommon.initCarrierGeometries();
+        Spatial[] carrier = ModulationCommon.initCarrierGeometries();
               
         this.cubeSignal = new Node();
         this.cubeSignal.attachChild(carrier[0].clone());

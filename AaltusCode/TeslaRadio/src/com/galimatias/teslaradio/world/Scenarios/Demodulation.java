@@ -4,6 +4,9 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.Arrows;
+import com.galimatias.teslaradio.world.effects.FadeControl;
+import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
@@ -49,11 +52,10 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     // Default text to be seen when scenario starts
     private String titleText = "La Démodulation";
     private float titleTextSize = 0.5f;
-    private ColorRGBA defaultTextColor = ColorRGBA.Green;
     
      //Variable for switch
     private float initAngleSwitch;
-    private float tpfCumul = 0;
+    private float tpfCumulSwitch = 0;
     private float tpfCumulButton = 0;
     private Quaternion rotationXSwitch = new Quaternion();
     
@@ -68,11 +70,7 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     // Handles for the emitter positions
     private Spatial pathInputPeg;
     private Spatial pathOutputPeg; // and Input demodulateur
-    
-    //Test
-    // Output signals
-    private Geometry cubeOutputSignal;
-    
+        
     // Paths
     private Geometry inputPegPath;
     private Geometry outputPegPath;
@@ -89,10 +87,14 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     
     //Angle for test purposes
     private float trackableAngle = 0;
-    private int direction = 1;
     
     private String pegFilter = "";
     private float stepRangePeg = 2 * pi / 3;
+
+    //arrows
+    private Arrows switchArrow;
+    private Arrows rotationArrow;
+	
     
     
     public Demodulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle){
@@ -103,6 +105,7 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
 
         loadUnmovableObjects();
         loadMovableObjects();   
+        loadArrows();
         ModulationCommon.registerObserver(this);
         
     }
@@ -151,7 +154,7 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
         actionSwitch = scene.getChild("Switch");
         peg = scene.getChild("Circle");
         initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
-       
+
         //Assign touchable
         touchable = new Node();//(Node) scene.getParent().getChild("Touchable")
         touchable.attachChild(actionSwitch);
@@ -161,12 +164,12 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     //Dynamic move
     private void checkModulationMode(float tpf) {
         if (switchIsToggled) {
-            tpfCumul = tpfCumul + 3 * tpf;
-            switchRotation(isFM, tpfCumul);
+            tpfCumulSwitch += 3 * tpf;
+            switchRotation(isFM, tpfCumulSwitch);
             float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
             if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
                 switchIsToggled = false;
-                tpfCumul = 0;
+                tpfCumulSwitch = 0;
             }
         }
     }
@@ -175,16 +178,14 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
         scene.attachChild(signalEmitter);
         signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
-        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
+        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
     
     private void switchRotation(boolean isFM, float tpfCumul) {
         if (!isFM) {
-            System.out.println("!isFM");
             rotationXSwitch.fromAngleAxis(angleRangeTwoPi(initAngleSwitch - tpfCumul), Vector3f.UNIT_X);
             actionSwitch.setLocalRotation(rotationXSwitch);
         } else {
-            System.out.println("isFM");
             rotationXSwitch.fromAngleAxis(angleRangeTwoPi(-initAngleSwitch + tpfCumul), Vector3f.UNIT_X);
             actionSwitch.setLocalRotation(rotationXSwitch);
         }
@@ -202,6 +203,7 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     }
 
     public void toggleModulationMode() {
+        removeHintImages();
         if (!switchIsToggled) {
             isFM = !isFM;
             switchIsToggled = true;
@@ -271,19 +273,25 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     @Override
     protected boolean simpleUpdate(float tpf) {
        checkModulationMode(tpf);
+       switchArrow.simpleUpdate(tpf);
+       rotationArrow.simpleUpdate(tpf);
+       
         if (this.DEBUG_ANGLE) {
             tpfCumulButton = tpf+ tpfCumulButton;
             rotationAxeY(tpfCumulButton, demodulationButton);
-            if(tpfCumulButton > 2*pi){
+
+            if (tpfCumulButton > 2*pi) {
                 tpfCumulButton = 0;
             }
+
             checkTrackableAngle(tpfCumulButton); // rotation of PEG
-        } else {
+        }
+        else {
             trackableAngle = this.getUserData("angleX");
             rotationAxeY(trackableAngle, demodulationButton);
             checkTrackableAngle(trackableAngle); // rotation of PEG
+            invRotScenario(trackableAngle + (pi / 2));
         }
-        System.out.println("sqdqsd   " + demodulationButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_Y) );
         return false;
     }
 
@@ -368,7 +376,7 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     
    private void initModulatedParticles(){
         Geometry baseGeom = ModulationCommon.initBaseGeneratorParticle();
-        Geometry[] carrier = ModulationCommon.initCarrierGeometries();
+        Spatial[] carrier = ModulationCommon.initCarrierGeometries();
                 
         this.cubeSignal = new Node();
         this.cubeSignal.attachChild(carrier[0].clone());
@@ -377,6 +385,7 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
         this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
         this.cubeSignal.setUserData("isFM", isFM);
         
+       
         this.pyramidSignal = new Node();
         this.pyramidSignal.attachChild(carrier[0].clone());
         ModulationCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
@@ -390,7 +399,7 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
         this.dodecagoneSignal.attachChild(baseGeom.clone());
         this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
         this.dodecagoneSignal.setUserData("isFM", isFM);
-        
+
         this.autoGenParticle = this.cubeSignal;
        
     }
@@ -407,8 +416,27 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
         }
         else if(newCarrier.getName().equals("DodecagoneCarrier")){
             this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.dodecagoneSignal);
-            
         }
     }
-            
+    
+    private void loadArrows() {
+        switchArrow = new Arrows("touch", actionSwitch.getWorldTranslation(), assetManager, 1);
+        LookAtCameraControl control = new LookAtCameraControl(cam);
+        switchArrow.addControl(control);
+        this.attachChild(switchArrow);
+        
+        rotationArrow = new Arrows("rotation", null, assetManager, 10);
+        this.attachChild(rotationArrow);
+    }
+    
+    /**
+     * Remove hints, is called after touch occurs
+     */
+    public void removeHintImages()
+    {
+        switchArrow.getControl(FadeControl.class).setShowImage(false);
+        switchArrow.resetTimeLastTouch();
+    }
 }
+               
+
