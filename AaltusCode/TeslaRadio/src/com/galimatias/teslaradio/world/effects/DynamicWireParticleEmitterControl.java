@@ -14,6 +14,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import com.utils.AppLogger;
 import java.util.ArrayList;
 
 /**
@@ -70,7 +71,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
 
         
         // create the signal control and put the signal in the send buffer
-        SignalControl sigControl = new SignalControl(path,speed,cam);
+        SignalControl sigControl = new SignalControl(path,speed,cam,this.spatial);
         sigControl.registerObserver(this);
         spatialToSend.addControl(sigControl);
         
