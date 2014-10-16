@@ -286,12 +286,13 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             if(renderManager != null && !this.scenePreloaded){
                 renderManager.preloadScene(scenario);
             }
-            this.scenePreloaded = true;
+            
             scenario.setLocalRotation(rot);
 
             //WORLD_SCALE_DEFAULT = 100;
             scenario.setLocalScale(AppGetter.getWorldScalingDefault());
         }
+        this.scenePreloaded = true;
     }
 
     private void addInputMapping(ApplicationType applicationType)
