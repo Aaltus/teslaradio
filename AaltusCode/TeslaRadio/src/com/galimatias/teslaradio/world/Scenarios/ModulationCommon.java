@@ -28,6 +28,9 @@ import java.util.ArrayList;
  */
 public class ModulationCommon {
     
+    public static float minParticleScale = 0.25f;
+    public static float maxParticleScale = 0.75f;
+    
     public static Geometry initBaseGeneratorParticle(){
         Geometry baseGeom;
         if (DEBUG_ANGLE) {
@@ -88,7 +91,8 @@ public class ModulationCommon {
             clone.getChild(0).setLocalScale(spatial.getLocalScale().mult(scale));
         } else {
             float scaleFactor = 1.25f;
-            Vector3f midScale = new Vector3f(0.5f,0.5f,0.5f);
+            float midScaleValue = (ModulationCommon.minParticleScale + ModulationCommon.maxParticleScale)/2.0f;
+            Vector3f midScale = new Vector3f(midScaleValue,midScaleValue,midScaleValue);
             
             if (spatial.getLocalScale().length() < midScale.length()) {
                 scaleFactor = 1.25f;
