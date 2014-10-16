@@ -150,6 +150,9 @@ public final class Modulation extends Scenario implements EmitterObserver {
         cubeCarrier = geom[0];
         pyramidCarrier = geom[1];
         dodecagoneCarrier = geom[2];
+        
+        carrierEmitter.getLocalTranslation().addLocal(new Vector3f(0.0f,cubeCarrier.getWorldScale().y,0.0f));
+        pcbAmpEmitter.getLocalTranslation().addLocal(new Vector3f(0.0f,cubeCarrier.getWorldScale().y,0.0f));
                 
         initOutputSignals();
 
@@ -373,9 +376,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
                 selectedCarrier = dodecagoneCarrier;
                 break;
         }
-        
-        carrierEmitter.getLocalTranslation().addLocal(new Vector3f(0.0f,selectedCarrier.getWorldScale().y,0.0f));
-        pcbAmpEmitter.getLocalTranslation().addLocal(new Vector3f(0.0f,selectedCarrier.getWorldScale().y,0.0f));
         
         if (carrierEmitter != null && tpfCumul >= 1.0f) {
             carrierEmitter.getControl(ParticleEmitterControl.class).emitParticle(selectedCarrier.clone());
