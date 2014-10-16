@@ -1,6 +1,10 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.Arrows;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.FadeControl;
+import com.galimatias.teslaradio.world.effects.ImageBox;
+import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
@@ -75,6 +79,10 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private float tpfCumulSwitch = 0;
     private float tpfCumul = 0;
     private Quaternion rotationXSwitch = new Quaternion();   
+    
+    //Arrows
+    private Arrows rotationArrow;
+    private Arrows switchArrow;
 
     
     public Modulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
@@ -87,6 +95,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         loadUnmovableObjects();
         loadMovableObjects();
+        loadArrows();
     }
     
     @Override
@@ -282,12 +291,14 @@ public final class Modulation extends Scenario implements EmitterObserver {
             float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
             if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
                 switchIsToggled = false;
-                tpfCumul = 0;
+                tpfCumulSwitch = 0;
+                
             }
         }
     }
     
     public void toggleModulationMode() {
+        removeHintImages();
         if (!switchIsToggled) {
             isFM = !isFM;
             switchIsToggled = true;
@@ -416,16 +427,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
             actionSwitch.setLocalRotation(rotationXSwitch);
         }
     }
-    
-    private void switchRotationWithoutDynamicSwitch(boolean isFM) {
-        if (!isFM) {
-            rotationXSwitch.fromAngleAxis(initAngleSwitch, Vector3f.UNIT_X);
-            actionSwitch.setLocalRotation(rotationXSwitch);
-        } else {
-            rotationXSwitch.fromAngleAxis(-initAngleSwitch, Vector3f.UNIT_X);
-            actionSwitch.setLocalRotation(rotationXSwitch);
-        }
-    }
 
     //convert angle for range [0 ; 2pi]
     private float angleRangeTwoPi(float angle) {
@@ -508,6 +509,9 @@ public final class Modulation extends Scenario implements EmitterObserver {
             trackableAngle = this.getUserData("angleX");
         }
 
+        switchArrow.simpleUpdate(tpf);
+        rotationArrow.simpleUpdate(tpf);
+        
         checkTrackableAngle(trackableAngle, tpf);
         invRotScenario(trackableAngle + (pi / 2));
         checkModulationMode(tpf);
@@ -553,17 +557,31 @@ public final class Modulation extends Scenario implements EmitterObserver {
             
         }
     }
-      
-    /**
-     * Sets the base particle for auto-generation
-     */
+    private void loadArrows() {
+        switchArrow = new Arrows("touch", actionSwitch.getWorldTranslation(), assetManager, 1);
+        LookAtCameraControl control = new LookAtCameraControl(Camera);
+        switchArrow.addControl(control);
+        this.attachChild(switchArrow);
+        
+        rotationArrow = new Arrows("rotation", null, assetManager, 10);
+        this.attachChild(rotationArrow);
+    }
+	
     @Override
     protected void setAutoGenerationParticle(Geometry particle){
         this.micTapParticle = particle;
         this.wirePcbEmitter.getControl(PatternGeneratorControl.class).
-                setBaseParticle(this.micTapParticle);
-    };
-
-
+            setBaseParticle(this.micTapParticle);
+        
+    }
+	    
+    /**
+     * Remove hints, is called after touch occurs
+     */
+    public void removeHintImages()
+    {
+        switchArrow.getControl(FadeControl.class).setShowImage(false);
+        switchArrow.resetTimeLastTouch();
+    }
     
 }

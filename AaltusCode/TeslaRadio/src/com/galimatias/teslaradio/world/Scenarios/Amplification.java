@@ -53,7 +53,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
      * TODO Remove this bool and associated code in simpleUpdate when it works
      * on Android. Only for debug purposes.
      */
-    private final static boolean DEBUG_ANGLE = true;
+    private final static boolean DEBUG_ANGLE = false;
     
     
     // TextBox of the scene
@@ -236,7 +236,9 @@ public final class Amplification extends Scenario implements EmitterObserver{
             tpfCumul = tpf+ tpfCumul;
             ampliButtonRotation(tpfCumul);
         } else {
-            ampliButtonRotation((Float)this.getUserData("angleX"));
+            float trackableAngle = this.getUserData("angleX");
+            ampliButtonRotation(trackableAngle);
+            invRotScenario(trackableAngle + (pi / 2));
         }
         return false;
     }
