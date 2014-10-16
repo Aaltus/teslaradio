@@ -4,6 +4,7 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
@@ -49,7 +50,7 @@ public final class SoundCapture extends Scenario {
     private Geometry micTapParticle;
     
     // Emitters of the scenario
-    private Node MicWireEmitter;
+    private Node micWireEmitter;
     private Node wireDestinationEmitter;
 
     private TextBox titleTextBox;
@@ -69,7 +70,7 @@ public final class SoundCapture extends Scenario {
         
         this.destinationHandle = destinationHandle;
         this.cam = Camera;
-        
+        this.needAutoGenIfMain = true;
         loadUnmovableObjects();
         loadMovableObjects();
     }
@@ -109,16 +110,16 @@ public final class SoundCapture extends Scenario {
        
     private void initMicWireParticlesEmitter()
     {
-        MicWireEmitter = new Node();
-        MicWireEmitter.setLocalTranslation(micPosition.x, micPosition.y,micPosition.z); // TO DO: utiliser le object handle blender pour position
-        scene.attachChild(MicWireEmitter);
+        micWireEmitter = new Node();
+        micWireEmitter.setLocalTranslation(micPosition.x, micPosition.y,micPosition.z); // TO DO: utiliser le object handle blender pour position
+        scene.attachChild(micWireEmitter);
         
         Node micWire_node = (Node) scene.getParent().getChild("WirePath");
         Geometry micWire_geom = (Geometry) micWire_node.getChild("BezierCurve");
         //Geometry tmpGeom = (Geometry)micWire_geom;//.scale(1/ScenarioManager.WORLD_SCALE_DEFAULT);
         
-        MicWireEmitter.addControl(new StaticWireParticleEmitterControl(micWire_geom.getMesh(), 3.5f, cam));
-        MicWireEmitter.addControl(new SoundControl("Sounds/micro_sound.wav", false, 2));
+        micWireEmitter.addControl(new StaticWireParticleEmitterControl(micWire_geom.getMesh(), 3.5f, cam));
+        micWireEmitter.addControl(new SoundControl("Sounds/micro_sound.wav", false, 2));
         
         wireDestinationEmitter = new Node();
         wireDestinationEmitter.setName("WireDestinationEmitter");
@@ -131,35 +132,22 @@ public final class SoundCapture extends Scenario {
         wireDestinationEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, cam));
         
         wireDestinationEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
-        MicWireEmitter.getControl(ParticleEmitterControl.class).registerObserver(wireDestinationEmitter.getControl(ParticleEmitterControl.class));
+        micWireEmitter.getControl(ParticleEmitterControl.class).registerObserver(wireDestinationEmitter.getControl(ParticleEmitterControl.class));
         
         wireDestinationEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
-        MicWireEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+        micWireEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
         
-        if (DEBUG_ANGLE) {
-            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-            //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
-            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.png");
-            mat1.setTexture("ColorMap", nyan);
-            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-            Quad rect = new Quad(1.0f, 1.0f);
-            micTapParticle = new Geometry("MicTapParticle", rect);
-            micTapParticle.setMaterial(mat1);            
-        } else {
-            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-            mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
-            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-            Sphere sphere = new Sphere(10, 10, 0.4f);
-            micTapParticle = new Geometry("MicTapParticle", sphere);
-            micTapParticle.setMaterial(mat1);
-        }
+        micTapParticle = ModulationCommon.initBaseGeneratorParticle();
         
         micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
-        MicWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 5, 0.25f, 0.75f, false));
-        MicWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
-  
+        micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, ModulationCommon.minBaseParticleScale, 
+                                                              ModulationCommon.maxBaseParticleScale, true));
+        micWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
+        this.particlePerWave = 4;
+        this.waveTime = 1;
     }
-    
+     
+        
     private void initOnTouchEffect() {
         /**
          * Will be used for the mic touch effect
@@ -169,7 +157,7 @@ public final class SoundCapture extends Scenario {
 
     protected void microTouchEffect() {
         int wavesPerTap = 4;
-        MicWireEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(wavesPerTap);
+        micWireEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(wavesPerTap);
     }
     
     private void textBoxesUpdate(Vector3f upVector)
@@ -286,7 +274,7 @@ public final class SoundCapture extends Scenario {
 
     @Override
     protected Spatial getInputHandle() {
-        return MicWireEmitter;
+        return micWireEmitter;
     }
 
     @Override
