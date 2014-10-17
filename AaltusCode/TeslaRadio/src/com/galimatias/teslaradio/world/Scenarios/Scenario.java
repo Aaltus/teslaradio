@@ -104,14 +104,14 @@ public abstract class Scenario extends Node implements SignalObserver {
     /**
      * Default parameters for textBoxes
      */
-    protected float textSize             = 0.5f;
-    protected ColorRGBA textColor        = new ColorRGBA(125/255f, 249/255f, 255/255f, 1f);  
-    protected ColorRGBA textBoxColor     = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);;
-    protected float titleWidth           = 5.2f; 
-    protected float titleHeight          = 0.8f;
-    protected BitmapFont.Align alignment = BitmapFont.Align.Center;
-    protected boolean showTextDebug      = false;
-    protected boolean textLookAtCamera   = false;
+    protected final float TextSize             = 0.5f;
+    protected final ColorRGBA TextColor        = new ColorRGBA(125/255f, 249/255f, 255/255f, 1f);  
+    protected final ColorRGBA TextBoxColor     = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);;
+    protected final float TitleWidth           = 5.2f; 
+    protected final float TitleHeight          = 0.8f;
+    protected final BitmapFont.Align Alignment = BitmapFont.Align.Center;
+    protected final boolean ShowTextDebug      = false;
+    protected final boolean TextLookAtCamera   = false;
     
     private Scenario()
     {

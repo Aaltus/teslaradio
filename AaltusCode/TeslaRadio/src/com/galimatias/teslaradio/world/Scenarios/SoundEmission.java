@@ -203,15 +203,15 @@ public final class SoundEmission extends Scenario {
     {
         titleTextBox = new TextBox(assetManager, 
                                     titleText, 
-                                    textSize,
-                                    textColor, 
-                                    textBoxColor,
-                                    titleWidth, 
-                                    titleHeight, 
+                                    TextSize,
+                                    TextColor, 
+                                    TextBoxColor,
+                                    TitleWidth, 
+                                    TitleHeight, 
                                     "titleText", 
                                     BitmapFont.Align.Center, 
-                                    showTextDebug, 
-                                    textLookAtCamera);
+                                    ShowTextDebug, 
+                                    TextLookAtCamera);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);

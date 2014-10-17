@@ -209,15 +209,15 @@ public final class Modulation extends Scenario implements EmitterObserver {
     protected void initTitleBox() {
         TextBox titleTextBox = new TextBox(assetManager, 
                                     titleText, 
-                                    textSize,
-                                    textColor, 
-                                    textBoxColor,
-                                    titleWidth, 
-                                    titleHeight, 
+                                    TextSize,
+                                    TextColor, 
+                                    TextBoxColor,
+                                    TitleWidth, 
+                                    TitleHeight, 
                                     "titleText", 
                                     BitmapFont.Align.Center, 
-                                    showTextDebug, 
-                                    textLookAtCamera);
+                                    ShowTextDebug, 
+                                    TextLookAtCamera);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
@@ -232,7 +232,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         // Default configuration of the digital display
         digitalDisplay = new TextBox(assetManager,
                                     sFM1061,
-                                    textSize,
+                                    TextSize,
                                     digitalTextColor,
                                     new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f),
                                     3.5f, 
@@ -311,7 +311,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
             switch (frequency) {
                 case 1:
                     digitalDisplay.simpleUpdate(sFM1061,
-                                                textSize, 
+                                                TextSize, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
@@ -319,7 +319,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
                     break;
                 case 2:
                     digitalDisplay.simpleUpdate(sFM969, 
-                                                textSize, 
+                                                TextSize, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
@@ -327,7 +327,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sFM1027, 
-                                                textSize, 
+                                                TextSize, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
@@ -335,7 +335,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
                     break;
                 default:
                     digitalDisplay.simpleUpdate(sFM1061, 
-                                                textSize, 
+                                                TextSize, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
@@ -346,7 +346,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
             switch (frequency) {
                 case 1:
                     digitalDisplay.simpleUpdate(sAM600, 
-                                                textSize, 
+                                                TextSize, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
@@ -354,7 +354,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
                     break;
                 case 2:
                     digitalDisplay.simpleUpdate(sAM800, 
-                                                textSize, 
+                                                TextSize, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
@@ -362,7 +362,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sAM1500, 
-                                                textSize, 
+                                                TextSize, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
@@ -370,7 +370,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
                     break;
                 default:
                     digitalDisplay.simpleUpdate(sAM600, 
-                                                textSize, 
+                                                TextSize, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
