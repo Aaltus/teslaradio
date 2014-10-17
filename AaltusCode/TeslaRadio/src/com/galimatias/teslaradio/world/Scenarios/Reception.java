@@ -276,15 +276,15 @@ public final class Reception extends Scenario implements EmitterObserver  {
     protected void initTitleBox() {
        titleTextBox = new TextBox(assetManager, 
                                     titleText, 
-                                    TextSize,
-                                    TextColor, 
-                                    TextBoxColor,
-                                    TitleWidth, 
-                                    TitleHeight, 
+                                    TEXTSIZE,
+                                    TEXTCOLOR, 
+                                    TEXTBOXCOLOR,
+                                    TITLEWIDTH, 
+                                    TITLEHEIGHT, 
                                     "titleText", 
                                     BitmapFont.Align.Center, 
-                                    ShowTextDebug, 
-                                    TextLookAtCamera);
+                                    SHOWTEXTDEBUG, 
+                                    TEXTLOOKATCAMERA);
 
        //move the text on the ground without moving
        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
