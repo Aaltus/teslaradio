@@ -111,27 +111,33 @@ public final class SoundEmission extends Scenario {
 
         initParticles();
         
-        ParticleEmitterControl microphoneControl = this.destinationHandle.getControl(ParticleEmitterControl.class);
         Material mat1 = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.5f));
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-
-        this.guitarEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 20f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
-        this.guitarEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
-        this.guitarEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
-        this.guitarEmitter.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
-        this.guitarEmitter.addControl(new SoundControl("Sounds/guitar.wav",false,2));
+        
+        
         Material mat2 = new Material(assetManager, 
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat2.setColor("Color", new ColorRGBA(0, 1, 1, 0.5f));
         mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-       
-        this.drumEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 20f, 13f, mat2, AirParticleEmitterControl.AreaType.DOME));
-        this.drumEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
-        this.drumEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
-        this.drumEmitter.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
-        this.drumEmitter.addControl(new SoundControl("Sounds/drum_taiko.wav",false,2));
+        
+        if(destinationHandle != null){
+            ParticleEmitterControl microphoneControl = this.destinationHandle.getControl(ParticleEmitterControl.class);
+
+            this.guitarEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 20f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
+            this.guitarEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
+            this.guitarEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+            this.guitarEmitter.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
+            this.guitarEmitter.addControl(new SoundControl("Sounds/guitar.wav",false,2));
+
+
+            this.drumEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 20f, 13f, mat2, AirParticleEmitterControl.AreaType.DOME));
+            this.drumEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
+            this.drumEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+            this.drumEmitter.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
+            this.drumEmitter.addControl(new SoundControl("Sounds/drum_taiko.wav",false,2));
+        }
     }
 
     @Override

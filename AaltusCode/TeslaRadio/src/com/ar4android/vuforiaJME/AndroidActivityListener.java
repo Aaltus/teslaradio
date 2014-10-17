@@ -7,7 +7,7 @@ import com.galimatias.teslaradio.subject.ScenarioEnum;
  */
 public interface AndroidActivityListener {
 
-   public void onFinishSimpleInit();
+   //public void onFinishSimpleInit();
 
    public void toggleInformativeMenuCallback(ScenarioEnum scenarioEnum);
 

@@ -33,7 +33,6 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import com.galimatias.teslaradio.InformativeMenuFragment;
 import com.galimatias.teslaradio.R;
-import com.galimatias.teslaradio.SplashscreenDialogFragment;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.galimatias.teslaradio.world.Scenarios.IScenarioSwitcher;
@@ -269,7 +268,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     }
 
 
-
+/*
     @Override
     public void onFinishSimpleInit()
     {
@@ -296,7 +295,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         runOnUiThread(oneShotTask);
 
     }
-
+*/
     @Override
     public boolean hasNextScenario() {
 
@@ -783,7 +782,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         //Set an AndroidActivityListener to receive callbacks from VuforiaJME e.g. to show informative menu
         ((VuforiaJME) app).setAndroidActivityListener(this);
 
-        showSplashscreenDialog();
+        //showSplashscreenDialog();
 
         // Update the application status to start initializing application:
         updateApplicationStatus(APPSTATUS_INIT_APP);
@@ -977,9 +976,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     }
 
-    /**
+/*    *//**
      * Show the language dialog
-     */
+     *//*
     private void showSplashscreenDialog()
     {
 
@@ -999,7 +998,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         if(splashscreenDialogFragment != null){
             splashscreenDialogFragment.dismiss();
         }
-    }
+    }*/
 
 
 }

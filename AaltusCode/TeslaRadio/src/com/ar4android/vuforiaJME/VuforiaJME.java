@@ -126,7 +126,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
 
 
-        androidActivityListener.onFinishSimpleInit();
+        //androidActivityListener.onFinishSimpleInit();
 	}
 
 
