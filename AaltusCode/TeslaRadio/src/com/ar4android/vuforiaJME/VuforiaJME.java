@@ -85,6 +85,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
         androidActivityListener.onFinishSimpleInit();
 
+
         //To uncomments
         startScreenState = new ScreenState(this, this);
         this.getStateManager().attach(startScreenState);
@@ -170,6 +171,8 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
     @Override
     public void startGame() {
 
+        androidActivityListener.showInformativeMenu();
+
         startScreenState.closeStartMenu();
 
         stopDevFramework();
@@ -182,6 +185,8 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
     @Override
     public void startTutorial() {
+
+        androidActivityListener.showInformativeMenu();
 
         startScreenState.closeStartMenu();
 
@@ -205,6 +210,8 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
     @Override
     public void openStartScreen() {
+
+        androidActivityListener.hideInformativeMenu();
 
         stopVuforiaJMEState();
 
