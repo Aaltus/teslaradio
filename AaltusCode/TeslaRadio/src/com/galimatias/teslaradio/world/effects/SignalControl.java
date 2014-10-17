@@ -4,6 +4,7 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.observer.ParticleObservable;
 import com.galimatias.teslaradio.world.observer.ParticleObserver;
 import com.jme3.cinematic.MotionPath;
@@ -29,6 +30,10 @@ public class SignalControl extends AbstractControl implements ParticleObservable
     private float speed;
     private Vector3f currentPosition;
     private Camera cam;
+    private float endScaleRatio;
+    private float startScaleRatio;
+    
+    private Spatial refNodeDetachAttach;
     
     // for end of path notification
     private ParticleObserver observer;
@@ -38,6 +43,18 @@ public class SignalControl extends AbstractControl implements ParticleObservable
     }
     
     public SignalControl(MotionPath path, float speed, Camera cam){
+        this(path, speed, cam, -1, null);
+    }
+    
+    public SignalControl(MotionPath path, float speed, Camera cam, Spatial refNodeDetachAttach){
+        this(path, speed, cam, -1,refNodeDetachAttach);
+    }
+      
+    public SignalControl(MotionPath path, float speed, Camera cam, float endScaleRatio){
+       this(path,speed,cam,endScaleRatio,null);
+    }
+    
+    public SignalControl(MotionPath path, float speed, Camera cam, float endScaleRatio, Spatial refNodeDetachAttach){
         this.path = path;
         this.speed = speed;
         this.enabled = false;
@@ -45,10 +62,8 @@ public class SignalControl extends AbstractControl implements ParticleObservable
         this.distanceTraveled = 0;
         this.currentPosition = new Vector3f();
         this.cam = cam;
-    }
-
-    SignalControl() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.endScaleRatio = endScaleRatio;
+        this.refNodeDetachAttach = refNodeDetachAttach;
     }
     
     @Override
@@ -69,9 +84,20 @@ public class SignalControl extends AbstractControl implements ParticleObservable
         wayPointIndex.set(path.getWayPointIndexForDistance(distanceTraveled));
         splinePath.interpolate(wayPointIndex.y, (int) (wayPointIndex.x), this.currentPosition);
         this.spatial.setLocalTranslation(currentPosition);
-        
+        this.spatial.setLocalScale(this.startScaleRatio -((this.distanceTraveled/path.getLength())*(this.startScaleRatio-this.endScaleRatio)));
+
         if (cam != null) {
             this.spatial.lookAt(cam.getLocation(), cam.getUp());
+        }
+        
+        // verify if the refNodeDetachAttach is still in focus or not
+        if(refNodeDetachAttach != null)
+        {
+            // if the emitter node is detach then detach particles on dynamic path
+            if(!AppGetter.hasRootNodeAsAncestor(refNodeDetachAttach))
+            {
+                this.spatial.removeFromParent();
+            }
         }
     }
 
@@ -90,5 +116,15 @@ public class SignalControl extends AbstractControl implements ParticleObservable
         this.observer = null;
     }
 
+    @Override
+    public void setSpatial(Spatial spatial) {
+        super.setSpatial(spatial); //To change body of generated methods, choose Tools | Templates.
+        if(spatial != null) {
+            this.startScaleRatio = spatial.getLocalScale().x;
+            if(this.endScaleRatio == -1){
+                this.endScaleRatio = this.startScaleRatio;
+            }
+        }
+    }
     
 }

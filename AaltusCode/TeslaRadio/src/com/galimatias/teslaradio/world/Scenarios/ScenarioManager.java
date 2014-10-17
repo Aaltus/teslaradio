@@ -286,12 +286,13 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             if(renderManager != null && !this.scenePreloaded){
                 renderManager.preloadScene(scenario);
             }
-            this.scenePreloaded = true;
+            
             scenario.setLocalRotation(rot);
 
             //WORLD_SCALE_DEFAULT = 100;
             scenario.setLocalScale(AppGetter.getWorldScalingDefault());
         }
+        this.scenePreloaded = true;
     }
 
     private void addInputMapping(ApplicationType applicationType)
@@ -353,6 +354,9 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         if(getCurrentScenario() != null){
             for(Scenario scenario : getCurrentScenario().getScenarios() )
             {
+                if(scenario.getNeedsAutoGen()){
+                    scenario.stopAutoGeneration();
+                }
                 Node parent = scenario.getParent();
                 if(parent != null){
                     parent.detachChild(scenario);
@@ -372,17 +376,20 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             for(Node node : getNodeList())
             {
                 if(count < size){
-                    Scenario currentScenario = getCurrentScenario().getScenarios().get(count);
+                    Scenario scenario = getCurrentScenario().getScenarios().get(count);
+                    if(count == 0 && scenario.getNeedsAutoGen()){
+                        scenario.startAutoGeneration();
+                    }
                     if(node != null)
                     {
-                        node.attachChild(currentScenario);
+                        node.attachChild(scenario);
                     }
                     else
                     {
-                        Node parent = currentScenario.getParent();
+                        Node parent = scenario.getParent();
                         if(parent != null)
                         {
-                            parent.detachChild(currentScenario);
+                            parent.detachChild(scenario);
                         }
                     }
                 }
@@ -468,6 +475,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         setCurrentScenario(scenarioList.getScenarioListByEnum(scenarioEnum));
     }
 
+  
     /**
      * To be call to update the scenario
      * @param tpf

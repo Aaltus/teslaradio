@@ -41,7 +41,6 @@ public class TextBox extends Node {
     
     private boolean lookAtCamera = false;
     
-
     public TextBox(AssetManager assetManager, 
                    String textToDisplay, 
                    float size, 
@@ -179,7 +178,7 @@ public class TextBox extends Node {
         text.move(-textBoxWidth /2.0f,0,0);
         
         //Add an invisible geometry in front of the textbox to make it clickable/touchable
-        Quad quad = new Quad(textBoxWidth, textBoxHeight);
+        Quad quad    = new Quad(textBoxWidth, textBoxHeight);
         overTouchBox = new Geometry("quad", quad);
         
         Material boxMat;
@@ -204,8 +203,9 @@ public class TextBox extends Node {
         //move the box to the center of the box to make it rotate around its center instead of its left side
         overTouchBox.move(-textBoxWidth / 2.0f, 0, 0);
         
+        
         Quad backgroundQuad = new Quad(textBoxWidth, textBoxHeight);
-        backgroundBox = new Geometry("backgoundBox", backgroundQuad);
+        backgroundBox       = new Geometry("backgoundBox", backgroundQuad);
         Material backgroundBoxMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         backgroundBoxMat.setColor("Color", backgroundColor);
         backgroundBoxMat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);

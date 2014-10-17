@@ -5,12 +5,16 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppGetter;
+import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.observer.SignalObserver;
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
@@ -22,8 +26,17 @@ import com.jme3.scene.Spatial;
 public abstract class Scenario extends Node implements SignalObserver {
 
     private final static String TAG = "Scenario";
+
+    private float cumulatedRot = 0;
     
-    protected final static boolean DEBUG_ANGLE = true;
+
+    protected final static boolean DEBUG_ANGLE = false;
+    /**
+     * Set to true to start autogeneration when scenario is the main scenario
+     */
+    protected boolean needAutoGenIfMain = false;
+    
+
    
     /**
      * The destination of the current scenario
@@ -75,6 +88,15 @@ public abstract class Scenario extends Node implements SignalObserver {
     protected Camera cam;
 
     /**
+     * Defines the number of particle per auto-gen wave
+     */
+    protected int particlePerWave = 1;
+    /**
+     * Defines the time between 2 auto-wave emission
+     */
+    protected float waveTime = 1;
+    
+    /**
      * We make the default constructor private to prevent its use.
      * We always want a assetmanager and a camera
      */
@@ -101,6 +123,7 @@ public abstract class Scenario extends Node implements SignalObserver {
         assetManager = AppGetter.getAssetManager();
         this.Camera = Camera;
         this.destinationHandle = destinationHandle;
+        this.setUserData("angleX", 0.0f);
         
     }
 
@@ -158,8 +181,48 @@ public abstract class Scenario extends Node implements SignalObserver {
      * Initialization of the title boxes of a scenario.
      */
     protected abstract void initTitleBox();
+
     
+    /**
+     * Start the auto generation of particles
+     */
+    protected void startAutoGeneration(){
+        this.getInputHandle().getControl(PatternGeneratorControl.class).startAutoPlay(1,this.particlePerWave);
+    };
     
+    /**
+     * Stop the auto generation of particles
+     */
+    protected void stopAutoGeneration(){
+       if(this.getInputHandle() != null){ 
+       this.getInputHandle().getControl(PatternGeneratorControl.class).stopAutoPlay();
+       }
+    };
     
+    /**
+     * Sets the base particle for auto-generation
+     */
+    protected void setAutoGenerationParticle(Geometry particle){
+      this.getInputHandle().getControl(PatternGeneratorControl.class).
+              setBaseParticle(particle);
+    };
+    
+    public boolean getNeedsAutoGen(){
+        return this.needAutoGenIfMain;
+    }
+
+
+    /**
+     * This method will apply an opposite trackable rotation on the model, preventing it from rotating
+     * @param ZXangle
+     */
+    protected void invRotScenario(float ZXangle) {
+        if (Math.abs(ZXangle - cumulatedRot) > (3.1416f / 40f)){
+            Quaternion rot = new Quaternion();
+            rot.fromAngleAxis(-ZXangle, Vector3f.UNIT_Y);
+            scene.setLocalRotation(rot);
+            cumulatedRot = ZXangle;
+        }
+    }
 }
 

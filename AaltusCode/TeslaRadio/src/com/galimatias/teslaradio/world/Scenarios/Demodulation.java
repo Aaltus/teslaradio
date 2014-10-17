@@ -4,7 +4,11 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.world.effects.Arrows;
+import com.galimatias.teslaradio.world.effects.FadeControl;
+import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
@@ -13,6 +17,8 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
 import static com.jme3.input.event.TouchEvent.Type.DOWN;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
@@ -22,6 +28,9 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Quad;
+import com.jme3.scene.shape.Sphere;
+import com.jme3.texture.Texture;
 
 /**
  *
@@ -44,7 +53,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     
      //Variable for switch
     private float initAngleSwitch;
-    private float tpfCumul = 0;
+    private float tpfCumulSwitch = 0;
     private float tpfCumulButton = 0;
     private Quaternion rotationXSwitch = new Quaternion();
     
@@ -59,11 +68,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     // Handles for the emitter positions
     private Spatial pathInputPeg;
     private Spatial pathOutputPeg; // and Input demodulateur
-    
-    //Test
-    // Output signals
-    private Geometry cubeOutputSignal;
-    
+        
     // Paths
     private Geometry inputPegPath;
     private Geometry outputPegPath;
@@ -74,11 +79,15 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     
     //Angle for test purposes
     private float trackableAngle = 0;
-    private int direction = 1;
     
     private String pegFilter = "";
     private float stepRangePeg = 2 * pi / 3;
-
+    
+    //arrows
+    private Arrows switchArrow;
+    private Arrows rotationArrow;
+	
+    private Geometry autoGenParticle;
     
     
     public Demodulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle){
@@ -89,7 +98,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
 
         loadUnmovableObjects();
         loadMovableObjects();   
-        
+        loadArrows();
     }
     
     
@@ -118,6 +127,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
        
         initParticlesEmitter(inputModule, pathInputPeg, inputPegPath, null);
         initParticlesEmitter(inputDemodulation, pathOutputPeg, outputPegPath, null);
+        initPatternGenerator();
         
         // Set names for the emitters  // VOir si utile dans ce module
         inputModule.setName("InputModule");
@@ -132,8 +142,8 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         demodulationButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
         peg = scene.getChild("Circle");
-        initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
-       
+        initAngleSwitch = actionSwitch.getLocalRotation().getX();
+
         //Assign touchable
         touchable = new Node();//(Node) scene.getParent().getChild("Touchable")
         touchable.attachChild(actionSwitch);
@@ -143,12 +153,12 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     //Dynamic move
     private void checkModulationMode(float tpf) {
         if (switchIsToggled) {
-            tpfCumul = tpfCumul + 3 * tpf;
-            switchRotation(isFM, tpfCumul);
-            float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
+            tpfCumulSwitch += 3 * tpf;
+            switchRotation(isFM, tpfCumulSwitch);
+            float currAngle = actionSwitch.getLocalRotation().getX();
             if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
                 switchIsToggled = false;
-                tpfCumul = 0;
+                tpfCumulSwitch = 0;
             }
         }
     }
@@ -157,16 +167,14 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         scene.attachChild(signalEmitter);
         signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
-        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
+        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
     
     private void switchRotation(boolean isFM, float tpfCumul) {
         if (!isFM) {
-            System.out.println("!isFM");
             rotationXSwitch.fromAngleAxis(angleRangeTwoPi(initAngleSwitch - tpfCumul), Vector3f.UNIT_X);
             actionSwitch.setLocalRotation(rotationXSwitch);
         } else {
-            System.out.println("isFM");
             rotationXSwitch.fromAngleAxis(angleRangeTwoPi(-initAngleSwitch + tpfCumul), Vector3f.UNIT_X);
             actionSwitch.setLocalRotation(rotationXSwitch);
         }
@@ -184,6 +192,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     }
 
     public void toggleModulationMode() {
+        removeHintImages();
         if (!switchIsToggled) {
             isFM = !isFM;
             switchIsToggled = true;
@@ -252,19 +261,25 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     @Override
     protected boolean simpleUpdate(float tpf) {
        checkModulationMode(tpf);
+       switchArrow.simpleUpdate(tpf);
+       rotationArrow.simpleUpdate(tpf);
+       
         if (this.DEBUG_ANGLE) {
             tpfCumulButton = tpf+ tpfCumulButton;
             rotationAxeY(tpfCumulButton, demodulationButton);
-            if(tpfCumulButton > 2*pi){
+
+            if (tpfCumulButton > 2*pi) {
                 tpfCumulButton = 0;
             }
+
             checkTrackableAngle(tpfCumulButton); // rotation of PEG
-        } else {
+        }
+        else {
             trackableAngle = this.getUserData("angleX");
             rotationAxeY(trackableAngle, demodulationButton);
             checkTrackableAngle(trackableAngle); // rotation of PEG
+            invRotScenario(trackableAngle + (pi / 2));
         }
-        System.out.println("sqdqsd   " + demodulationButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_Y) );
         return false;
     }
 
@@ -337,6 +352,50 @@ public class Demodulation extends Scenario implements EmitterObserver  {
 
         titleTextBox.move(titleTextPosition);
         this.attachChild(titleTextBox);
+    }
+    
+    private void initPatternGenerator(){
+        
+        if (DEBUG_ANGLE) {
+            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+            //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
+            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.png");
+            mat1.setTexture("ColorMap", nyan);
+            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+            Quad rect = new Quad(1.0f, 1.0f);
+            autoGenParticle = new Geometry("MicTapParticle", rect);
+            autoGenParticle.setMaterial(mat1);
+        } else {
+            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+            mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
+            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+            Sphere sphere = new Sphere(10, 10, 0.4f);
+            autoGenParticle = new Geometry("MicTapParticle", sphere);
+            autoGenParticle.setMaterial(mat1);
+        }
+
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle, 7, 0.25f, 2f, true));
+        this.waveTime = 1;
+        this.particlePerWave = 4;
+    }
+
+    private void loadArrows() {
+        switchArrow = new Arrows("touch", actionSwitch.getWorldTranslation(), assetManager, 1);
+        LookAtCameraControl control = new LookAtCameraControl(cam);
+        switchArrow.addControl(control);
+        this.attachChild(switchArrow);
+        
+        rotationArrow = new Arrows("rotation", null, assetManager, 10);
+        this.attachChild(rotationArrow);
+    }
+    
+    /**
+     * Remove hints, is called after touch occurs
+     */
+    public void removeHintImages()
+    {
+        switchArrow.getControl(FadeControl.class).setShowImage(false);
+        switchArrow.resetTimeLastTouch();
     }
 
             
