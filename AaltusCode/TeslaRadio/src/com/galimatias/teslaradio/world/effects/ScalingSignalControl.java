@@ -23,6 +23,7 @@ public class ScalingSignalControl extends AbstractControl implements ParticleObs
     private float currentTotalScale;
     private float speed;
     private Spatial particle;
+    private float particleInitScale;
     private Spatial destinationSpatial;
     private boolean reachingDestination = false;
     // for end of path notification
@@ -41,6 +42,7 @@ public class ScalingSignalControl extends AbstractControl implements ParticleObs
         this.speed = speed;
         this.enabled = false;
         this.particle = particle;
+        this.particleInitScale = particle.getLocalScale().x;
         this.destinationSpatial = destinationSpatial;
         this.currentTotalScale = 0;
         this.material = material;
@@ -63,10 +65,10 @@ public class ScalingSignalControl extends AbstractControl implements ParticleObs
         }
         
         
-        
         float deltaScale = tpf*speed;
         currentTotalScale += deltaScale;
         this.spatial.setLocalScale(currentTotalScale);
+        if(this.particle != null){ this.particle.setLocalScale((1-currentTotalScale)*this.particleInitScale);}
         
         //If we have a material, we make it scale to become transparent with the deltascale.
         if(this.material != null){
@@ -82,10 +84,11 @@ public class ScalingSignalControl extends AbstractControl implements ParticleObs
         {
             reachingDestination = true;
             this.observer.onParticleReachingReceiver(this.particle);
+            this.particle = null;
         }
         
         // check if it is the end of the path and notify
-        if(currentTotalScale >= 1)
+        if(currentTotalScale >= particleInitScale)
         {
             if(this.observer != null){
                 this.observer.onParticleEndOfLife(spatial);

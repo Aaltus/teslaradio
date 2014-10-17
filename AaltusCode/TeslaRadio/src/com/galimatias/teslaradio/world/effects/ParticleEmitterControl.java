@@ -43,11 +43,7 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     // this is done in controlUpdate to be synch with frames
     @Override
     protected abstract void controlUpdate(float tpf);
-    
-    // this function should do nothing if the path is not a dynamic one
-    protected abstract void pathUpdate();
-    
-    
+       
     // this method define a material to be set to each particle before emission
     // if not define the emitter wont edit the geom material already in place.
     public void setDefaultMaterial(Material mat)
