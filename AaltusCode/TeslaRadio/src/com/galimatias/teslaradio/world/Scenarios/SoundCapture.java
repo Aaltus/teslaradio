@@ -128,21 +128,22 @@ public final class SoundCapture extends Scenario {
         scene.attachChild(wireDestinationEmitter);
         
         //System.out.println(destinationHandle.getName());
-        
-        wireDestinationEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, cam));
-        
-        wireDestinationEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
-        micWireEmitter.getControl(ParticleEmitterControl.class).registerObserver(wireDestinationEmitter.getControl(ParticleEmitterControl.class));
-        
-        wireDestinationEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
-        micWireEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
-        
-        micTapParticle = ModulationCommon.initBaseGeneratorParticle();
-        
-        micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
-        micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, ModulationCommon.minBaseParticleScale, 
-                                                              ModulationCommon.maxBaseParticleScale, true));
-        micWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
+        if(this.destinationHandle != null){
+            wireDestinationEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, cam));
+
+            wireDestinationEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
+            micWireEmitter.getControl(ParticleEmitterControl.class).registerObserver(wireDestinationEmitter.getControl(ParticleEmitterControl.class));
+
+            wireDestinationEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+            micWireEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+
+            micTapParticle = ModulationCommon.initBaseGeneratorParticle();
+
+            micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
+            micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, ModulationCommon.minBaseParticleScale, 
+                                                                  ModulationCommon.maxBaseParticleScale, true));
+            micWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
+        }
         this.particlePerWave = 4;
         this.waveTime = 1;
     }

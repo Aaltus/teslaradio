@@ -132,16 +132,20 @@ public final class Reception extends Scenario implements EmitterObserver  {
         scene.attachChild(outputModule);
         System.out.println(outputHandle.getLocalTranslation().toString());
         outputModule.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-        outputModule.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
-        outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
+        if(this.destinationHandle != null){
+            outputModule.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
+            outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
+        }
 
         // Set names for the emitters  // VOir si utile dans ce module
         // inputAntenneRx.setName("InputAntenneRx");
         outputAntenneRx.setName("OutputAntenneRx");
 
         // inputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
-        outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));    
-        outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
+        if(this.destinationHandle != null){
+            outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));    
+            outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
+        }
         
         initModulatedParticles();
         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, ModulationCommon.minBaseParticleScale, 

@@ -134,15 +134,18 @@ public final class Amplification extends Scenario implements EmitterObserver{
         mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         
         scene.attachChild(outputModule);
-        outputModule.setLocalTranslation(pathAntenneTx.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-        outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 20, 13, mat2));
-        outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
-        outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
         
-  //-------------------------------AirParticleEmitterControl------------------
-        
-        inputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
-        outputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
+        if(this.destinationHandle != null){
+            outputModule.setLocalTranslation(pathAntenneTx.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+            outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 20, 13, mat2));
+            outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
+            outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
+
+      //-------------------------------AirParticleEmitterControl------------------
+
+            inputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
+            outputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
+        }
         
         
         this.initModulatedParticles();
