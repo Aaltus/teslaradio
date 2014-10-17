@@ -83,6 +83,8 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 		setDisplayFps(true);
 
 
+        androidActivityListener.onFinishSimpleInit();
+
         //To uncomments
         startScreenState = new ScreenState(this, this);
         this.getStateManager().attach(startScreenState);
@@ -126,7 +128,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
 
 
-        //androidActivityListener.onFinishSimpleInit();
+
 	}
 
 

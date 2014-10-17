@@ -33,6 +33,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import com.galimatias.teslaradio.InformativeMenuFragment;
 import com.galimatias.teslaradio.R;
+import com.galimatias.teslaradio.SplashscreenDialogFragment;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.galimatias.teslaradio.world.Scenarios.IScenarioSwitcher;
@@ -110,6 +111,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     // Contextual Menu Options for Camera Flash - Autofocus
     private boolean mFlash = false;
     private boolean mContAutofocus = false;
+
+    public boolean manuallyPauseTracking = false;
 
     // The menu item for swapping data sets:
     private MenuItem mDataSetMenuItem = null;
@@ -239,8 +242,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     public void pauseTracking() {
 
         runOnUiThread(new Runnable() {
+
             @Override
             public void run() {
+                manuallyPauseTracking = true;
                 pauseQCARandTasks(false);
             }
         });
@@ -253,6 +258,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                manuallyPauseTracking = false;
                 resumeQCARandTasks();
             }
         });
@@ -268,7 +274,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     }
 
 
-/*
+
     @Override
     public void onFinishSimpleInit()
     {
@@ -295,7 +301,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         runOnUiThread(oneShotTask);
 
     }
-*/
+
     @Override
     public boolean hasNextScenario() {
 
@@ -782,7 +788,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         //Set an AndroidActivityListener to receive callbacks from VuforiaJME e.g. to show informative menu
         ((VuforiaJME) app).setAndroidActivityListener(this);
 
-        //showSplashscreenDialog();
+        showSplashscreenDialog();
 
         // Update the application status to start initializing application:
         updateApplicationStatus(APPSTATUS_INIT_APP);
@@ -797,6 +803,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 		// hierarchy
 		//view.setZOrderOnTop(true);
         resumeQCARandTasks();
+        if(this.manuallyPauseTracking){
+            pauseQCARandTasks(false);
+        }
 
 
     }
@@ -978,13 +987,13 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
 /*    *//**
      * Show the language dialog
-     *//*
+     */
     private void showSplashscreenDialog()
     {
 
         AppLogger.getInstance().d(TAG, "Show splashscreen dialog");
         FragmentManager fm = getSupportFragmentManager();//getSupportFragmentManager();
-        SplashscreenDialogFragment  SplashscreenDialogFragment = new  SplashscreenDialogFragment();
+        SplashscreenDialogFragment SplashscreenDialogFragment = new  SplashscreenDialogFragment();
         SplashscreenDialogFragment.show(fm, ITEM_SPLASHSCREEN_FRAGMENT_TAG);
 
     }
@@ -998,7 +1007,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         if(splashscreenDialogFragment != null){
             splashscreenDialogFragment.dismiss();
         }
-    }*/
+    }
 
 
 }
