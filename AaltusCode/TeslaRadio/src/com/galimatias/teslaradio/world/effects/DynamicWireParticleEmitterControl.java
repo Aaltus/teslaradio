@@ -6,14 +6,18 @@ package com.galimatias.teslaradio.world.effects;
 
 import com.ar4android.vuforiaJME.AppGetter;
 import com.jme3.cinematic.MotionPath;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import com.jme3.scene.shape.Cylinder;
 import com.utils.AppLogger;
 import java.util.ArrayList;
 
@@ -27,13 +31,24 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
     private Spatial destinationHandle;
     private Quaternion localRotMem = new Quaternion();
     private Node dummyRootNodeScaled = new Node();
-
+    
+    private Vector3f emitterPos;
+    
+    // dynamic wire
+    private Node wireGeomNode = new Node();
+    private Vector3f pathDirection = new Vector3f();
+    private Quaternion wireRotQuat = new Quaternion();
+    
     public DynamicWireParticleEmitterControl(Spatial destinationHandle, float speed)
     {
         this(destinationHandle, speed, null);
     }
     
-    public DynamicWireParticleEmitterControl(Spatial destinationHandle, float speed, Camera cam)
+    public DynamicWireParticleEmitterControl(Spatial destinationHandle, float speed, Camera cam){
+        this(destinationHandle, speed, cam, false);
+    }
+               
+    public DynamicWireParticleEmitterControl(Spatial destinationHandle, float speed, Camera cam, boolean wireIsVisible)
     {
         spatialToSendBuffer = new ArrayList();
         path = new MotionPath();
@@ -41,23 +56,55 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         this.speed = speed;
         this.destinationHandle = destinationHandle;
         this.cam = cam;
+        
+        
+        if(wireIsVisible){
+            Geometry wireGeom = new Geometry();
+            wireGeom.setMesh(new Cylinder(10, 10, 0.1f, 1, true));
+            Material wireMat = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+            wireMat.setColor("Color", new ColorRGBA(1, 0, 1, 1));
+            wireGeom.setMaterial(wireMat);
+            wireGeom.setLocalTranslation(0, 0, 0.5f);
+            this.wireGeomNode.attachChild(wireGeom);
+            this.dummyRootNodeScaled.attachChild(wireGeomNode);
+        }
+        else{
+            this.wireGeomNode = null;
+        }
     }
     
     protected void pathUpdate() {
 
+        // get the new position of the emitter in world
+        emitterPos = this.spatial.getWorldTranslation().divide(this.spatial.getWorldScale());
+        
         // validate that the handle is valid
         //TODO: Maybe do something more bulletproof than getting the rootnode from AppGetter
         if(AppGetter.hasRootNodeAsAncestor(this.destinationHandle))
         {
             this.path.clearWayPoints();
-            this.path.addWayPoint(this.spatial.getWorldTranslation().divide(this.spatial.getWorldScale().x));
-            this.path.addWayPoint(this.destinationHandle.getWorldTranslation().divide(this.spatial.getWorldScale().x));
+            this.path.addWayPoint(emitterPos);
+            this.path.addWayPoint(this.destinationHandle.getWorldTranslation().divide(this.spatial.getWorldScale()));
         }
         else
         {
             this.path.clearWayPoints();
         }
-    }    
+        
+        if(wireGeomNode != null){
+            this.wireGeomNode.setLocalScale(1, 1, this.path.getLength());
+            this.wireGeomNode.setLocalTranslation(emitterPos);
+            pathDirection = this.destinationHandle.getWorldTranslation().divide(this.spatial.getWorldScale()).subtract(emitterPos);
+            this.wireGeomNode.setLocalRotation(findRotQuaternion(Vector3f.UNIT_Z,pathDirection,wireRotQuat));
+        }
+    }
+    
+    private Quaternion findRotQuaternion(Vector3f v1, Vector3f v2, Quaternion returnQuat)
+    {
+        Vector3f rotAxis = v1.cross(v2);
+        returnQuat.fromAngleAxis(v1.normalizeLocal().angleBetween(v2.normalizeLocal()),rotAxis.normalizeLocal());
+        return returnQuat;
+    }
         
     @Override
     public void emitParticle(Spatial spatialToSend) {
