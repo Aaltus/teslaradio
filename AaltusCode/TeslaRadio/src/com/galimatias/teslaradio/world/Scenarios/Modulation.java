@@ -75,7 +75,9 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private int direction = 1;
     
     //Variable for switch
-    private float initAngleSwitch;
+    private Quaternion initAngleSwitch = new Quaternion();
+    private Quaternion endAngleSwitch = new Quaternion();
+    private float stepAngleSwitch = 0;
     private float tpfCumulSwitch = 0;
     private float tpfCumul = 0;
     private Quaternion rotationXSwitch = new Quaternion();   
@@ -153,7 +155,9 @@ public final class Modulation extends Scenario implements EmitterObserver {
     protected void loadMovableObjects() {
         turnButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
-        initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
+        
+        initAngleSwitch.fromAngleAxis(0.45f, Vector3f.UNIT_X);
+        endAngleSwitch.fromAngleAxis(-0.45f, Vector3f.UNIT_X);
         
         Spatial[] geom = ModulationCommon.initCarrierGeometries();
         cubeCarrier = geom[0];
@@ -286,13 +290,13 @@ public final class Modulation extends Scenario implements EmitterObserver {
     //Dynamic move
     private void checkModulationMode(float tpf) {
         if (switchIsToggled) {
-            tpfCumulSwitch += 3 * tpf;
-            switchRotation(isFM, tpfCumulSwitch);
-            float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
-            if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
+            tpfCumulSwitch += tpf;
+            stepAngleSwitch = tpfCumulSwitch/0.35f; //permet de donner la vitesse
+            switchRotation(isFM, stepAngleSwitch);
+            Quaternion currAngle = actionSwitch.getLocalRotation();
+            if (stepAngleSwitch >= 1) {
                 switchIsToggled = false;
-                tpfCumulSwitch = 0;
-                
+                tpfCumulSwitch = 0;    
             }
         }
     }
@@ -419,12 +423,12 @@ public final class Modulation extends Scenario implements EmitterObserver {
      * @param tpfCumul
      */
     private void switchRotation(boolean isFM, float tpfCumul) {
+        Quaternion currRotation = new Quaternion();
         if (!isFM) {
-            rotationXSwitch.fromAngleAxis(angleRangeTwoPi(initAngleSwitch - tpfCumul), Vector3f.UNIT_X);
-            actionSwitch.setLocalRotation(rotationXSwitch);
+            actionSwitch.setLocalRotation(currRotation.slerp(initAngleSwitch, endAngleSwitch, tpfCumul));
+
         } else {
-            rotationXSwitch.fromAngleAxis(angleRangeTwoPi(-initAngleSwitch + tpfCumul), Vector3f.UNIT_X);
-            actionSwitch.setLocalRotation(rotationXSwitch);
+            actionSwitch.setLocalRotation(currRotation.slerp(endAngleSwitch, initAngleSwitch, tpfCumul)); 
         }
     }
 

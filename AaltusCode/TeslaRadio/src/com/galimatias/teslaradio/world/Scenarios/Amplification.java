@@ -49,11 +49,6 @@ public final class Amplification extends Scenario implements EmitterObserver{
     private Node dodecagoneSignal;
     
     private Boolean isFM = true;
-     /**
-     * TODO Remove this bool and associated code in simpleUpdate when it works
-     * on Android. Only for debug purposes.
-     */
-    private final static boolean DEBUG_ANGLE = true;
     
     
     // TextBox of the scene
@@ -233,7 +228,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
 
     @Override
     protected boolean simpleUpdate(float tpf) {
-        if (DEBUG_ANGLE) {
+        if (this.DEBUG_ANGLE) {
             tpfCumul = tpf+ tpfCumul;
             ampliButtonRotation(tpfCumul);
         } else {
