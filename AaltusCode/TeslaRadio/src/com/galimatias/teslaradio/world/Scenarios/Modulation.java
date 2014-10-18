@@ -20,6 +20,9 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Batcave on 2014-09-09.
  */
@@ -105,9 +108,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
         this.attachChild(scene);
         
         scene.setLocalTranslation(new Vector3f(2.5f, 0.0f, 0.5f));
-//        Quaternion rot = new Quaternion();
-//        rot.fromAngleAxis(-pi / 2, Vector3f.UNIT_Y);
-//        scene.setLocalRotation(rot);
 
         // Get the handles of the emitters
         Spatial pathInHandle = scene.getChild("Handle.Module.In");
@@ -334,11 +334,11 @@ public final class Modulation extends Scenario implements EmitterObserver {
                     changeCarrierParticles(3, tpf);
                     break;
                 default:
-                    digitalDisplay.simpleUpdate(sFM1061, 
-                                                TEXTSIZE, 
-                                                digitalTextColor, 
-                                                Camera, 
-                                                Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sFM1061,
+                            TEXTSIZE,
+                            digitalTextColor,
+                            Camera,
+                            Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
             }
@@ -369,11 +369,11 @@ public final class Modulation extends Scenario implements EmitterObserver {
                     changeCarrierParticles(3, tpf);
                     break;
                 default:
-                    digitalDisplay.simpleUpdate(sAM600, 
-                                                TEXTSIZE, 
-                                                digitalTextColor, 
-                                                Camera, 
-                                                Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sAM600,
+                            TEXTSIZE,
+                            digitalTextColor,
+                            Camera,
+                            Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
             }
@@ -524,6 +524,9 @@ public final class Modulation extends Scenario implements EmitterObserver {
         } else {
             //trackableAngle = 0;
             trackableAngle = this.getUserData("angleX");
+
+            List<Node> lstArrows = new ArrayList<Node>();
+            lstArrows.add(switchArrow);
             invRotScenario(trackableAngle + (pi / 2));
         }
 
@@ -582,10 +585,10 @@ public final class Modulation extends Scenario implements EmitterObserver {
         }
     }
     private void loadArrows() {
-        switchArrow = new Arrows("touch", actionSwitch.getWorldTranslation(), assetManager, 1);
+        switchArrow = new Arrows("touch", actionSwitch.getLocalTranslation(), assetManager, 1);
         LookAtCameraControl control = new LookAtCameraControl(Camera);
         switchArrow.addControl(control);
-        this.attachChild(switchArrow);
+        scene.attachChild(switchArrow);
         
         rotationArrow = new Arrows("rotation", null, assetManager, 10);
         this.attachChild(rotationArrow);

@@ -4,12 +4,8 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.galimatias.teslaradio.world.effects.AirParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
+import com.galimatias.teslaradio.world.effects.*;
 
-import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 
 import com.jme3.font.BitmapFont;
@@ -47,6 +43,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
     private Node cubeSignal;
     private Node pyramidSignal;
     private Node dodecagoneSignal;
+    private Arrows moveArrow;
     
     private Boolean isFM = true;
      /**
@@ -91,6 +88,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
         this.cam = Camera;
         loadUnmovableObjects();
         loadMovableObjects();
+        loadArrows();
     }
     
     @Override
@@ -167,8 +165,12 @@ public final class Amplification extends Scenario implements EmitterObserver{
         //Test Board
         generateParticle = scene.getChild("Board.001");
     }
-    
-    
+
+    private void loadArrows()
+    {
+        moveArrow = new Arrows("move", null, assetManager, 10);
+        this.attachChild(moveArrow);
+    }
     
     private void ampliButtonRotation(float ZXangle) {
         Quaternion rot = new Quaternion();
@@ -233,6 +235,8 @@ public final class Amplification extends Scenario implements EmitterObserver{
 
     @Override
     protected boolean simpleUpdate(float tpf) {
+        moveArrow.simpleUpdate(tpf);
+
         if (DEBUG_ANGLE) {
             tpfCumul = tpf+ tpfCumul;
             ampliButtonRotation(tpfCumul);

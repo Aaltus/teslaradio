@@ -225,7 +225,7 @@ public final class SoundEmission extends Scenario {
         touchable.attachChild(titleTextBox);
     }
 
-    public void loadArrows()
+    private void loadArrows()
     {        
         drumArrow = new Arrows("touch", drumHandleOutPosition, assetManager, 1);
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);

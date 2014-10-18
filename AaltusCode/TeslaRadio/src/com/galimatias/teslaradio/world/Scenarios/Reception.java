@@ -4,13 +4,7 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.ImageBox;
-import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
-import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
-import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.TextBox;
+import com.galimatias.teslaradio.world.effects.*;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
@@ -23,6 +17,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.utils.AppLogger;
 
 /**
  *
@@ -72,6 +67,8 @@ public final class Reception extends Scenario implements EmitterObserver  {
     private Node cubeSignal;
     private Node pyramidSignal;
     private Node dodecagoneSignal;
+
+    private Arrows moveArrow;
     
     private Boolean isFM = true;
     
@@ -83,6 +80,7 @@ public final class Reception extends Scenario implements EmitterObserver  {
         this.needAutoGenIfMain = true;
         loadUnmovableObjects();
         loadMovableObjects();
+        loadArrows();
         
         //Generate try particle
         Box cube = new Box(0.25f, 0.25f, 0.25f);
@@ -153,6 +151,12 @@ public final class Reception extends Scenario implements EmitterObserver  {
         this.waveTime = 1;
         this.particlePerWave = 4;
     }
+
+    private void loadArrows()
+    {
+        moveArrow = new Arrows("move", null, assetManager, 10);
+        this.attachChild(moveArrow);
+    }
    
     private void addWifiControl(ImageBox wifiLogo) {
         LookAtCameraControl lookAtControl = new LookAtCameraControl(Camera);
@@ -183,7 +187,8 @@ public final class Reception extends Scenario implements EmitterObserver  {
 
     @Override
     protected boolean simpleUpdate(float tpf) {
-        
+
+        moveArrow.simpleUpdate(tpf);
         updateWifiLogos(signalIntensity);
         return false;
     }
@@ -244,14 +249,7 @@ public final class Reception extends Scenario implements EmitterObserver  {
              if (outputAntenneRx != null) {
                  
                 Float particleScale = spatial.getUserData("Scale");
-                 
-                //System.out.println("Scale before emission : " + particleScale.toString());
-                //System.out.println("Scale when received : " + spatial.getLocalScale().toString());
-                
                 float normScale = spatial.getWorldScale().length()/particleScale;
-                
-                //System.out.println("Normalized scale : " + normScale);
-                
                 updateSignalIntensity(normScale);
                 outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
              }
@@ -270,7 +268,7 @@ public final class Reception extends Scenario implements EmitterObserver  {
         super.startAutoGeneration();
         
         scene.detachChild(wifi);
-    };
+    }
 
     @Override
     protected void initTitleBox() {

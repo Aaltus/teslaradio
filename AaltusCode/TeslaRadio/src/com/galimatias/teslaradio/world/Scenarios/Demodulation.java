@@ -380,10 +380,10 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     }
 
     private void loadArrows() {
-        switchArrow = new Arrows("touch", actionSwitch.getWorldTranslation(), assetManager, 1);
+        switchArrow = new Arrows("touch", actionSwitch.getLocalTranslation(), assetManager, 1);
         LookAtCameraControl control = new LookAtCameraControl(cam);
         switchArrow.addControl(control);
-        this.attachChild(switchArrow);
+        scene.attachChild(switchArrow);
         
         rotationArrow = new Arrows("rotation", null, assetManager, 10);
         this.attachChild(rotationArrow);
