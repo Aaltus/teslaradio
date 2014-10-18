@@ -35,8 +35,6 @@ public final class Reception extends Scenario implements EmitterObserver  {
     
     // Default text to be seen when scenario starts
     private String titleText = "La Réception";
-    private float titleTextSize = 0.5f;
-    private ColorRGBA defaultTextColor = ColorRGBA.Green;
 
     //Test 
     private Spatial antenne;
@@ -124,26 +122,30 @@ public final class Reception extends Scenario implements EmitterObserver  {
         pathAntenneRx = scene.getChild("Path.Sortie.001");
         outputHandle = scene.getChild("Antenna.Handle.Out");
         
-        wifi.setLocalTranslation(outputHandle.getLocalTranslation().addLocal(3.0f, 5.0f, -3.0f));
+        wifi.setLocalTranslation(outputHandle.getLocalTranslation().add(3.0f, 5.0f, -3.0f));
         
         // Get the different paths
         antenneRxPath = (Geometry)((Node) pathAntenneRx).getChild("NurbsPath.005");
        
         initParticlesEmitter(outputAntenneRx, pathAntenneRx, antenneRxPath, null);
         
-        
         scene.attachChild(outputModule);
+        System.out.println(outputHandle.getLocalTranslation().toString());
         outputModule.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-        outputModule.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
-        outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
+        if(this.destinationHandle != null){
+            outputModule.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
+            outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
+        }
 
         // Set names for the emitters  // VOir si utile dans ce module
         // inputAntenneRx.setName("InputAntenneRx");
         outputAntenneRx.setName("OutputAntenneRx");
 
         // inputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
-        outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));    
-        outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
+        if(this.destinationHandle != null){
+            outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));    
+            outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
+        }
         
         initModulatedParticles();
         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, ModulationCommon.minBaseParticleScale, 
@@ -262,28 +264,27 @@ public final class Reception extends Scenario implements EmitterObserver  {
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
     }
+    
+    @Override
+    protected void startAutoGeneration(){
+        super.startAutoGeneration();
+        
+        scene.detachChild(wifi);
+    };
 
     @Override
     protected void initTitleBox() {
-
-       boolean lookAtCamera = false;
-       boolean showDebugBox = false;
-       float textBoxWidth = 5.2f;
-       float textBoxHeight = 0.8f;
-
-       ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
-       ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
-       titleTextBox = new TextBox(assetManager,
-               titleText,
-               titleTextSize,
-               titleTextColor,
-               titleBackColor,
-               textBoxWidth,
-               textBoxHeight,
-               "titleText",
-               BitmapFont.Align.Center.Center,
-               showDebugBox,
-               lookAtCamera);
+       titleTextBox = new TextBox(assetManager, 
+                                    titleText, 
+                                    TEXTSIZE,
+                                    TEXTCOLOR, 
+                                    TEXTBOXCOLOR,
+                                    TITLEWIDTH, 
+                                    TITLEHEIGHT, 
+                                    "titleText", 
+                                    BitmapFont.Align.Center, 
+                                    SHOWTEXTDEBUG, 
+                                    TEXTLOOKATCAMERA);
 
        //move the text on the ground without moving
        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);

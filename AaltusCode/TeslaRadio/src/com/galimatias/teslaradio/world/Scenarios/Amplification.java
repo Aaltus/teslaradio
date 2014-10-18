@@ -56,8 +56,6 @@ public final class Amplification extends Scenario implements EmitterObserver{
     
     // Default text to be seen when scenario starts
     private String titleText = "L'Amplification";
-    private float titleTextSize = 0.5f;
-    private ColorRGBA defaultTextColor = ColorRGBA.Green;
 
     // Signals emitters 
     private Node inputWireAmpli = new Node();
@@ -86,7 +84,6 @@ public final class Amplification extends Scenario implements EmitterObserver{
         this.needAutoGenIfMain = true;
         this.destinationHandle = destinationHandle;
         this.cam = Camera;
-        this.needAutoGenIfMain = true;
         loadUnmovableObjects();
         loadMovableObjects();
     }
@@ -132,15 +129,18 @@ public final class Amplification extends Scenario implements EmitterObserver{
         mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         
         scene.attachChild(outputModule);
-        outputModule.setLocalTranslation(pathAntenneTx.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-        outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 20, 13, mat2));
-        outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
-        outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
         
-  //-------------------------------AirParticleEmitterControl------------------
-        
-        inputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
-        outputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
+        if(this.destinationHandle != null){
+            outputModule.setLocalTranslation(pathAntenneTx.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+            outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 20, 13, mat2));
+            outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
+            outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
+
+      //-------------------------------AirParticleEmitterControl------------------
+
+            inputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
+            outputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
+        }
         
         
         this.initModulatedParticles();
@@ -232,7 +232,8 @@ public final class Amplification extends Scenario implements EmitterObserver{
             tpfCumul = tpf+ tpfCumul;
             ampliButtonRotation(tpfCumul);
         } else {
-            ampliButtonRotation((Float)this.getUserData("angleX"));
+            ampliButtonRotation((Float)this.getUserData("angleX"));;
+			invRotScenario(trackableAngle + (pi / 2));
         }
         return false;
     }
@@ -281,25 +282,17 @@ public final class Amplification extends Scenario implements EmitterObserver{
     
     @Override
     protected void initTitleBox() {
-
-        boolean lookAtCamera = false;
-        boolean showDebugBox = false;
-        float textBoxWidth = 5.2f;
-        float textBoxHeight = 0.8f;
-
-        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
-        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
-        titleTextBox = new TextBox(assetManager,
-                titleText,
-                titleTextSize,
-                titleTextColor,
-                titleBackColor,
-                textBoxWidth,
-                textBoxHeight,
-                "titleText",
-                BitmapFont.Align.Center.Center,
-                showDebugBox,
-                lookAtCamera);
+        titleTextBox = new TextBox(assetManager, 
+                                    titleText, 
+                                    TEXTSIZE,
+                                    TEXTCOLOR, 
+                                    TEXTBOXCOLOR,
+                                    TITLEWIDTH, 
+                                    TITLEHEIGHT, 
+                                    "titleText", 
+                                    BitmapFont.Align.Center, 
+                                    SHOWTEXTDEBUG, 
+                                    TEXTLOOKATCAMERA);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
