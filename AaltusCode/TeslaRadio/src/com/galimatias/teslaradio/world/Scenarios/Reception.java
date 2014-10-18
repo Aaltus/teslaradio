@@ -145,11 +145,8 @@ public final class Reception extends Scenario implements EmitterObserver  {
             outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
         }
         
-        initModulatedParticles();
-        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, ModulationCommon.minBaseParticleScale, 
-                                                                     ModulationCommon.maxBaseParticleScale, true));
-        this.waveTime = 1;
-        this.particlePerWave = 4;
+        initPatternGenerator();
+        
     }
 
     private void loadArrows()
@@ -292,8 +289,8 @@ public final class Reception extends Scenario implements EmitterObserver  {
        this.attachChild(titleTextBox);
     }
     
-
-    private void initModulatedParticles() {
+    @Override
+    protected void initPatternGenerator() {
         Geometry baseGeom = ModulationCommon.initBaseGeneratorParticle();
         Spatial[] carrier = ModulationCommon.initCarrierGeometries();
               
@@ -319,6 +316,11 @@ public final class Reception extends Scenario implements EmitterObserver  {
         this.dodecagoneSignal.setUserData("isFM", isFM);
         
         this.autoGenParticle = this.cubeSignal;
+        
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, ModulationCommon.minBaseParticleScale, 
+                                                                     ModulationCommon.maxBaseParticleScale, true));
+        this.waveTime = 1;
+        this.particlePerWave = 4;
        
     }
 }

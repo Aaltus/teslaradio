@@ -69,9 +69,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
     //Pattern Geometry
     private Geometry micTapParticle;
     
-    // this is PIIIIIII! (kick persian)
-    private final float pi = (float) Math.PI;
-    
     //Angle for test purposes
     private float trackableAngle = 0;
     private int direction = 1;
@@ -89,12 +86,10 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private Arrows switchArrow;
 
     
-    public Modulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
+    public Modulation(Camera Camera, Spatial destinationHandle) {
         
         super(Camera, destinationHandle);
         
-        this.cam = Camera;
-        this.destinationHandle = destinationHandle;
         this.needAutoGenIfMain = true;
         
         loadUnmovableObjects();
@@ -200,7 +195,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
     
-    private void initPatternGenerator(){
+    @Override
+    protected void initPatternGenerator() {
         
         micTapParticle = ModulationCommon.initBaseGeneratorParticle();
         
@@ -209,6 +205,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         this.waveTime = 1;
         this.particlePerWave = 4;
     }
+    
     @Override
     protected void initTitleBox() {
         TextBox titleTextBox = new TextBox(assetManager, 

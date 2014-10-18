@@ -74,7 +74,6 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     private Geometry inputPegPath;
     private Geometry outputPegPath;
     
-    
     // this is PIIIIIII! (kick persian)
     private final float pi = (float) Math.PI;
     
@@ -87,8 +86,12 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     //arrows
     private Arrows switchArrow;
     private Arrows rotationArrow;
-	
-    private Geometry autoGenParticle;
+
+    // Auto-generated signals
+    private Node cubeSignal;
+    private Node pyramidSignal;
+    private Node dodecagoneSignal;
+    private Node autoGenParticle;
     
     
     public Demodulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle){
@@ -96,6 +99,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
 
         this.cam = Camera;
         this.destinationHandle = destinationHandle;
+        this.needAutoGenIfMain = true;
 
         loadUnmovableObjects();
         loadMovableObjects();   
@@ -134,7 +138,6 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         inputModule.setName("InputModule");
         inputDemodulation.setName("InputDemodulation");
 
-      
         inputModule.getControl(ParticleEmitterControl.class).registerObserver(this);
         
     }
@@ -365,25 +368,35 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         this.attachChild(titleTextBox);
     }
     
-    private void initPatternGenerator(){
+    @Override
+    protected void initPatternGenerator(){
         
-        if (DEBUG_ANGLE) {
-            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-            //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
-            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.png");
-            mat1.setTexture("ColorMap", nyan);
-            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-            Quad rect = new Quad(1.0f, 1.0f);
-            autoGenParticle = new Geometry("MicTapParticle", rect);
-            autoGenParticle.setMaterial(mat1);
-        } else {
-            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-            mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
-            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-            Sphere sphere = new Sphere(10, 10, 0.4f);
-            autoGenParticle = new Geometry("MicTapParticle", sphere);
-            autoGenParticle.setMaterial(mat1);
-        }
+        Geometry baseGeom = ModulationCommon.initBaseGeneratorParticle();
+        Spatial[] carrier = ModulationCommon.initCarrierGeometries();
+                
+        this.cubeSignal = new Node();
+        this.cubeSignal.attachChild(carrier[0].clone());
+        ModulationCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
+        this.cubeSignal.attachChild(baseGeom.clone());
+        this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
+        this.cubeSignal.setUserData("isFM", isFM);
+        
+        this.pyramidSignal = new Node();
+        this.pyramidSignal.attachChild(carrier[0].clone());
+        ModulationCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
+        this.pyramidSignal.attachChild(baseGeom.clone());
+        this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
+        this.pyramidSignal.setUserData("isFM", isFM);
+       
+        this.dodecagoneSignal = new Node();
+        this.dodecagoneSignal.attachChild(carrier[0].clone());
+        ModulationCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
+        this.dodecagoneSignal.attachChild(baseGeom.clone());
+        this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
+        this.dodecagoneSignal.setUserData("isFM", isFM);
+        
+        this.autoGenParticle = this.cubeSignal;
+        
         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle, 7, 0.25f, 2f, true));
         this.waveTime = 1;
         this.particlePerWave = 4;

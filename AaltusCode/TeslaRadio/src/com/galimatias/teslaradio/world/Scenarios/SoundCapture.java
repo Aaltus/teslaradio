@@ -128,7 +128,7 @@ public final class SoundCapture extends Scenario {
         scene.attachChild(wireDestinationEmitter);
         
         //System.out.println(destinationHandle.getName());
-        if(this.destinationHandle != null){
+        if(this.destinationHandle != null) {
             wireDestinationEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, cam));
 
             wireDestinationEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
@@ -137,15 +137,8 @@ public final class SoundCapture extends Scenario {
             wireDestinationEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
             micWireEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
 
-            micTapParticle = ModulationCommon.initBaseGeneratorParticle();
-
-            micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
-            micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, ModulationCommon.minBaseParticleScale, 
-                                                                  ModulationCommon.maxBaseParticleScale, true));
-            micWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
+            initPatternGenerator();
         }
-        this.particlePerWave = 4;
-        this.waveTime = 1;
     }
      
         
@@ -159,8 +152,7 @@ public final class SoundCapture extends Scenario {
     protected void microTouchEffect() {
         removeHintImages();
         
-        int wavesPerTap = 4;
-        micWireEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(wavesPerTap);
+        micWireEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(particlePerWave);
     }
     
     private void textBoxesUpdate(Vector3f upVector)
@@ -233,6 +225,19 @@ public final class SoundCapture extends Scenario {
         }
     }
 
+    @Override
+    protected void initPatternGenerator() {
+        micTapParticle = ModulationCommon.initBaseGeneratorParticle();
+
+        micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
+        micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, ModulationCommon.minBaseParticleScale, 
+                                                                  ModulationCommon.maxBaseParticleScale, true));
+        micWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
+        
+        this.particlePerWave = 4;
+        this.waveTime = 1;
+    }
+    
     @Override
     public void restartScenario() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

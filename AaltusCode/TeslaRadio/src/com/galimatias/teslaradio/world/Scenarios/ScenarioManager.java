@@ -145,8 +145,13 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         //to which environment we are in. Don't forget to add scenario in it. 
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
+        // Init the playback scenario, this is the last of them! yayyyyy!
+        Playback playback = new Playback(cam,null);
+        playback.setName("Playback");
+        scenarios.add(playback);
+        
         //Init Demodulation scenario
-        Demodulation demodulation = new Demodulation(cam, null);
+        Demodulation demodulation = new Demodulation(cam, playback.getInputHandle());
         demodulation.setName("Demodulation");
         scenarios.add(demodulation);
         
@@ -204,11 +209,17 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         demodulationList.add(reception);
         demodulationList.add(demodulation);
         scenarioList.addScenario(ScenarioEnum.DEMODULATION,demodulationList);
+        
+        //Add last scenario
+        List<Scenario> playbackList = new ArrayList<Scenario>();
+        playbackList.add(demodulation);
+        playbackList.add(playback);
+        scenarioList.addScenario(ScenarioEnum.PLAYBACK,playbackList);
 
         //Only for debugging purpose deactivate it please.
-        scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
-      //  scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
-    //    scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
+        // scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
+        // scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
+        // scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
 
         //setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));
         setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDCAPTURE));

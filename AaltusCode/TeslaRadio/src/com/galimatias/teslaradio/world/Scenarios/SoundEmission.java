@@ -413,4 +413,9 @@ public final class SoundEmission extends Scenario {
     protected Spatial getInputHandle() {
         return null;
     }
+
+    @Override
+    protected void initPatternGenerator() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
