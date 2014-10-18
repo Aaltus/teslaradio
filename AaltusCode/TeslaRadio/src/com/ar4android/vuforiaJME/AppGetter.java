@@ -34,7 +34,7 @@ public class AppGetter {
     
     static public final String USR_NOISE_LEVEL = "nextNoiseLevel";
     
-    static public final String USR_AUDIO_SCALE = "audioScale";
+    static public final String USR_SCALE = "Scale";
     /*Public methods*/
     
     //world scalling
