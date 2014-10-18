@@ -574,7 +574,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
            // System.out.println("I am in " + notifierId);
             changeOuputParticles(spatial, notifierId);
             
-            this.getParent().setUserData(AppGetter.USR_AUDIO_SCALE, spatial.getUserData(AppGetter.USR_NEXT_WAVE_SCALE));
+            this.getParent().setUserData(AppGetter.USR_SCALE, spatial.getUserData(AppGetter.USR_NEXT_WAVE_SCALE));
             
         } else if (notifierId.equals("WirePCBEmitter")) {
 

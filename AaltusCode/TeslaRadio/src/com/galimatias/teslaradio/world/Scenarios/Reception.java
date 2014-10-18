@@ -4,6 +4,7 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.effects.*;
 import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
@@ -261,7 +262,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
 
              if (outputAntenneRx != null) {
                  
-                Float particleScale = spatial.getUserData("Scale");
+                Float particleScale = spatial.getUserData(AppGetter.USR_SCALE);
                 float normScale = spatial.getWorldScale().length()/particleScale;
                 updateSignalIntensity(normScale);
                 outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);

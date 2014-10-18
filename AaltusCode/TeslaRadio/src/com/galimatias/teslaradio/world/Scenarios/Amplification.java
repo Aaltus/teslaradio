@@ -4,6 +4,7 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.effects.*;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
@@ -278,7 +279,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
              outputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
          } else if(notifierId.equals("OutputWireAmpli")) {
              Float scale = new Float(spatial.getWorldScale().length());
-             spatial.setUserData("Scale", scale);
+             spatial.setUserData(AppGetter.USR_SCALE, scale);
              //System.out.println("Before addition : " + spatial.getWorldScale());
              outputModule.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
          }   
