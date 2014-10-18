@@ -233,6 +233,9 @@ public final class SoundCapture extends Scenario {
         micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, ModulationCommon.minBaseParticleScale, 
                                                                   ModulationCommon.maxBaseParticleScale, true));
         micWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
+        
+        this.particlePerWave = 4;
+        this.waveTime = 1;
     }
     
     @Override

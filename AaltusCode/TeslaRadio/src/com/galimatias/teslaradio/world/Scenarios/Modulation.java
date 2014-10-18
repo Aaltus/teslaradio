@@ -3,11 +3,13 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.galimatias.teslaradio.world.effects.Arrows;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.FadeControl;
+import com.galimatias.teslaradio.world.effects.ImageBox;
 import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
+import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
@@ -18,11 +20,13 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Batcave on 2014-09-09.
  */
-public final class Modulation extends ModulationCommon {
+public final class Modulation extends Scenario implements EmitterObserver {
     
     private final static String TAG = "Modulation";
     
@@ -198,6 +202,8 @@ public final class Modulation extends ModulationCommon {
         
         this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 10, ModulationCommon.minBaseParticleScale, 
                                                                    ModulationCommon.maxBaseParticleScale, true));
+        this.waveTime = 1;
+        this.particlePerWave = 4;
     }
     
     @Override
