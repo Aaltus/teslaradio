@@ -5,7 +5,11 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.*;
+import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 
+import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 
 import com.jme3.font.BitmapFont;
@@ -46,11 +50,6 @@ public final class Amplification extends Scenario implements EmitterObserver{
     private Arrows moveArrow;
     
     private Boolean isFM = true;
-     /**
-     * TODO Remove this bool and associated code in simpleUpdate when it works
-     * on Android. Only for debug purposes.
-     */
-    private final static boolean DEBUG_ANGLE = false;
     
     
     // TextBox of the scene
@@ -235,7 +234,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
 
     @Override
     protected boolean simpleUpdate(float tpf) {
-        moveArrow.simpleUpdate(tpf);
+		moveArrow.simpleUpdate(tpf);
 
         if (DEBUG_ANGLE) {
             tpfCumul = tpf+ tpfCumul;
@@ -243,7 +242,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
         } else {
             float trackableAngle = this.getUserData("angleX");
             ampliButtonRotation(trackableAngle);
-            invRotScenario(trackableAngle + (pi / 2));
+			invRotScenario(trackableAngle + (pi / 2));
         }
         return false;
     }

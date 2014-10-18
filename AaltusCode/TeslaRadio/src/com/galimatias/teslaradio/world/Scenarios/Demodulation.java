@@ -52,10 +52,11 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     private String titleText = "La Démodulation";
     
      //Variable for switch
-    private float initAngleSwitch;
+    private Quaternion initAngleSwitch = new Quaternion();
+    private Quaternion endAngleSwitch = new Quaternion();
+    private float stepAngleSwitch = 0;
     private float tpfCumulSwitch = 0;
     private float tpfCumulButton = 0;
-    private Quaternion rotationXSwitch = new Quaternion();
     
     private Boolean isFM = true;
     private Boolean switchIsToggled = false;
@@ -129,10 +130,11 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         initParticlesEmitter(inputDemodulation, pathOutputPeg, outputPegPath, null);
         initPatternGenerator();
         
-        // Set names for the emitters  // VOir si utile dans ce module
+        // Set names for the emitters  
         inputModule.setName("InputModule");
         inputDemodulation.setName("InputDemodulation");
 
+      
         inputModule.getControl(ParticleEmitterControl.class).registerObserver(this);
         
     }
@@ -142,8 +144,10 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         demodulationButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
         peg = scene.getChild("Circle");
-        initAngleSwitch = actionSwitch.getLocalRotation().getX();
-
+        //0.22468638f
+        initAngleSwitch.fromAngleAxis(0.45f, Vector3f.UNIT_X);
+        endAngleSwitch.fromAngleAxis(-0.45f, Vector3f.UNIT_X);
+        System.out.println("initAngleSwitch :" + initAngleSwitch);
         //Assign touchable
         touchable = new Node();//(Node) scene.getParent().getChild("Touchable")
         touchable.attachChild(actionSwitch);
@@ -153,12 +157,16 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     //Dynamic move
     private void checkModulationMode(float tpf) {
         if (switchIsToggled) {
-            tpfCumulSwitch += 3 * tpf;
-            switchRotation(isFM, tpfCumulSwitch);
-            float currAngle = actionSwitch.getLocalRotation().getX();
-            if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
+            tpfCumulSwitch += tpf;
+            stepAngleSwitch = tpfCumulSwitch/0.35f;
+            switchRotation(isFM, stepAngleSwitch);
+            Quaternion currAngle = actionSwitch.getLocalRotation();
+            System.out.println("currAngle  " + currAngle.getX() + "initAngle  " + initAngleSwitch + "isFM  " + isFM);
+            if (stepAngleSwitch >= 1) {
+                System.out.println("in  " + stepAngleSwitch);
                 switchIsToggled = false;
                 tpfCumulSwitch = 0;
+       
             }
         }
     }
@@ -171,13 +179,16 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     }
     
     private void switchRotation(boolean isFM, float tpfCumul) {
+        Quaternion currRotation = new Quaternion();
         if (!isFM) {
-            rotationXSwitch.fromAngleAxis(angleRangeTwoPi(initAngleSwitch - tpfCumul), Vector3f.UNIT_X);
-            actionSwitch.setLocalRotation(rotationXSwitch);
+            //rotationXSwitch.fromAngleAxis(initAngleSwitch.subtractLocal(new Quaternion(tpfCumul, 0, 0, 0));
+            //actionSwitch.initAngleSwitch.subtractLocal(new Quaternion(tpfCumul, 0, 0, 0)));
+            actionSwitch.setLocalRotation(currRotation.slerp(initAngleSwitch, endAngleSwitch, tpfCumul));
         } else {
-            rotationXSwitch.fromAngleAxis(angleRangeTwoPi(-initAngleSwitch + tpfCumul), Vector3f.UNIT_X);
-            actionSwitch.setLocalRotation(rotationXSwitch);
+            //rotationXSwitch.fromAngleAxis(angleRangeTwoPi(-initAngleSwitch + tpfCumul), Vector3f.UNIT_X);
+            actionSwitch.setLocalRotation(currRotation.slerp(endAngleSwitch, initAngleSwitch, tpfCumul)); 
         }
+        System.out.println("currRotation " + currRotation);
     }
     
     //convert angle for range [0 ; 2pi]
@@ -373,7 +384,6 @@ public class Demodulation extends Scenario implements EmitterObserver  {
             autoGenParticle = new Geometry("MicTapParticle", sphere);
             autoGenParticle.setMaterial(mat1);
         }
-
         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle, 7, 0.25f, 2f, true));
         this.waveTime = 1;
         this.particlePerWave = 4;
