@@ -357,6 +357,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 if(scenario.getNeedsAutoGen()){
                     scenario.stopAutoGeneration();
                 }
+                scenario.stopBackgroundSound();
                 Node parent = scenario.getParent();
                 if(parent != null){
                     parent.detachChild(scenario);
@@ -379,6 +380,9 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                     Scenario scenario = getCurrentScenario().getScenarios().get(count);
                     if(count == 0 && scenario.getNeedsAutoGen()){
                         scenario.startAutoGeneration();
+                    }
+                    if(count == 1){
+                        scenario.startBackgroundSound();
                     }
                     if(node != null)
                     {

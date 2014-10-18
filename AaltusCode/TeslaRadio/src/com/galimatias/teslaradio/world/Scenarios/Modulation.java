@@ -1,5 +1,6 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.effects.Arrows;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.FadeControl;
@@ -87,7 +88,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
     
     public Modulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         
-        super(Camera, destinationHandle);
+        super(Camera, destinationHandle, "Sounds/capture.wav");
         
         this.cam = Camera;
         this.destinationHandle = destinationHandle;
@@ -547,8 +548,10 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         if (notifierId.equals("CarrierEmitter")) {
 
-            System.out.println("I am in " + notifierId);
+           // System.out.println("I am in " + notifierId);
             changeOuputParticles(spatial, notifierId);
+            
+            this.getParent().setUserData(AppGetter.USR_AUDIO_SCALE, spatial.getUserData(AppGetter.USR_NEXT_WAVE_SCALE));
             
         } else if (notifierId.equals("WirePCBEmitter")) {
 

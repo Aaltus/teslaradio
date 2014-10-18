@@ -79,8 +79,11 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     private Boolean isFM = true;
     
+  
+    
     public Reception(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
-        super(Camera, destinationHandle);
+        super(Camera, destinationHandle, "Sounds/reception.ogg" );
+       
 
         this.cam = Camera;
         this.destinationHandle = destinationHandle;
@@ -148,7 +151,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));    
         outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
         
-        this.getInputHandle().addControl(new SoundControl("Sounds/guitar.wav",false,1));
+        
         
         initModulatedParticles();
         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, ModulationCommon.minBaseParticleScale, 
@@ -213,7 +216,9 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     private void updateSignalIntensity(Float normScale) { 
         wifi.detachAllChildren();
-        this.getInputHandle().getControl(SoundControl.class).playSound(false, 1-normScale);
+        if(normScale < 1){
+            this.getControl(SoundControl.class).updateNoiseLevel(1-normScale);
+        }
         if (normScale >= 0 && normScale < 0.33f) {
             signalIntensity = 1;
         } else if (normScale >= 0.33f && normScale < 0.66f) {
@@ -228,13 +233,15 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         switch(signalIntensity) {
             case 1:
                 wifi.attachChild(wifiLogoLow);
+                
                 break;
             case 2:
                 wifi.attachChild(wifiLogoMedium);
+                
                 break;
             case 3:
                 wifi.attachChild(wifiLogoFull);
-                //this.getInputHandle().getControl(SoundControl.class).playSound(false, 0.3f);
+               
                 break;
             default:
                 wifi.attachChild(wifiLogoLow);
