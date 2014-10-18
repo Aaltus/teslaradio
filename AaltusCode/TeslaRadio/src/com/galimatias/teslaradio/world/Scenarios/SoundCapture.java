@@ -62,6 +62,7 @@ public final class SoundCapture extends Scenario {
     
     //Arrows
     private Arrows micArrow;
+    private Arrows moveArrow;
        
     public SoundCapture(Camera Camera, Spatial destinationHandle)
     {
@@ -244,6 +245,7 @@ public final class SoundCapture extends Scenario {
 
         //touchEffectEmitter.simpleUpdate(tpf);
         micArrow.simpleUpdate(tpf);
+        moveArrow.simpleUpdate(tpf);
         
         if(Camera != null) {
             Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
@@ -312,6 +314,8 @@ public final class SoundCapture extends Scenario {
         LookAtCameraControl control = new LookAtCameraControl(Camera);
         micArrow.addControl(control);
         scene.attachChild(micArrow);
+        moveArrow = new Arrows("move", null, assetManager, 10);
+        this.attachChild(moveArrow);
     }
     
         /**
