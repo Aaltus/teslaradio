@@ -89,7 +89,7 @@ public class Playback extends Scenario {
 
     @Override
     protected Spatial getInputHandle() {
-        return scene.getChild("Speaker.Handle.In");
+        return soundEmitter;
     }
 
     @Override

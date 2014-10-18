@@ -155,7 +155,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         scene.attachChild(touchable);
     }
 
-    private void initOutputSignals() {
+    protected void initOutputSignals() {
 
         this.outputSignal = new Node();
 

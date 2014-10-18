@@ -9,6 +9,7 @@ import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.font.BitmapFont;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 /**
@@ -27,6 +28,14 @@ public class Demodulation extends ModulationCommon  {
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();
+    }
+    
+    @Override
+    protected void initOutputSignals() {
+        
+        super.initOutputSignals();
+        
+        this.outputSignal.detachAllChildren();
     }
     
     @Override
@@ -73,23 +82,20 @@ public class Demodulation extends ModulationCommon  {
 
             //System.out.println("I am in " + notifierId);
             //changeOuputParticles(spatial, notifierId);
-            outputSignal.detachAllChildren();
             
         } else if (notifierId.equals("WirePCBEmitter")) {
 
             //System.out.println("I am in " + notifierId);
             
             if (pcbAmpEmitter != null && spatial != null) {
-                //Node clone = (Node)outputSignal.clone();
+                Node clone = (Node)outputSignal.clone();
                 
                 //ScenariosCommon.modulateFMorAM(clone, spatial, isFM);
                 
-                //clone.attachChild(spatial);
+                clone.attachChild(((Node)spatial).getChild(1));
                 
                 //System.out.println("Scaling : " + spatial.getLocalScale().toString());
-                pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(spatial.clone());
-                //clone.setUserData("CarrierShape", outputSignal.getChild(0).getName());
-                //clone.setUserData("isFM", isFM);
+                pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(clone);
             }
             
         }
