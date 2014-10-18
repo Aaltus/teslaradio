@@ -524,9 +524,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
         } else {
             //trackableAngle = 0;
             trackableAngle = this.getUserData("angleX");
-
-            List<Node> lstArrows = new ArrayList<Node>();
-            lstArrows.add(switchArrow);
             invRotScenario(trackableAngle + (pi / 2));
         }
 
