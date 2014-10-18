@@ -460,8 +460,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     protected void startAutoGeneration(){
         super.startAutoGeneration();
 
-
-    };
+    }
 
     @Override
     protected Spatial getInputHandle() {
@@ -481,11 +480,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
 
     @Override
     public void signalEndOfPath(Geometry caller, float magnitude) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void emitterObserverUpdate(Spatial spatial, String notifierId) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

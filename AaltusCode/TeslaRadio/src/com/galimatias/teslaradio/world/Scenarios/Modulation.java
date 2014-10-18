@@ -1,27 +1,14 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.galimatias.teslaradio.world.effects.Arrows;
-import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.FadeControl;
-import com.galimatias.teslaradio.world.effects.ImageBox;
-import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
-import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
-import com.galimatias.teslaradio.world.observer.EmitterObserver;
-import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
-import com.jme3.input.event.TouchEvent;
 import com.jme3.math.*;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Batcave on 2014-09-09.
