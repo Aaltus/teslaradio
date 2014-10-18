@@ -65,6 +65,10 @@ bool trackableFound[AALTUS_NBR_TARGET] = {false};
 // The projection matrix used for rendering virtual objects:
 QCAR::Matrix44F projectionMatrix;
 
+QCAR::CameraDevice::MODE qcarVideoMode = QCAR::CameraDevice::MODE_OPTIMIZE_SPEED;
+//QCAR::CameraDevice::MODE qcarVideoMode = QCAR::CameraDevice::MODE_DEFAULT;
+//enum qcarVideoMode = QCAR::CameraDevice::MODE_DEFAULT;
+
 // Constants:
 static const float kObjectScale = 3.f;
 
@@ -318,7 +322,8 @@ void configureVideoBackground()
 
     // Get the default video mode:
     QCAR::CameraDevice& cameraDevice = QCAR::CameraDevice::getInstance();
-    QCAR::VideoMode videoMode        = cameraDevice.getVideoMode(QCAR::CameraDevice::MODE_DEFAULT);
+    //QCAR::VideoMode videoMode        = cameraDevice.getVideoMode(QCAR::CameraDevice::MODE_DEFAULT);
+    QCAR::VideoMode videoMode        = cameraDevice.getVideoMode(qcarVideoMode);
 
     // Configure the video background
     QCAR::VideoBackgroundConfig config;
@@ -417,10 +422,10 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera(JNIEnv *env, jobje
     configureVideoBackground();
 
     // Select the default mode:
-    if (!cameraDevice.selectVideoMode(QCAR::CameraDevice::MODE_DEFAULT))
-        return;
-    //if (!cameraDevice.selectVideoMode(QCAR::CameraDevice::MODE_OPTIMIZE_SPEED))
+    //if (!cameraDevice.selectVideoMode(QCAR::CameraDevice::MODE_DEFAULT))
     //    return;
+    if (!cameraDevice.selectVideoMode(qcarVideoMode))
+        return;
 
 
 

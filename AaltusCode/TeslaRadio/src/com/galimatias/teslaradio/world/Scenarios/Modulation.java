@@ -21,6 +21,9 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Batcave on 2014-09-09.
  */
@@ -47,8 +50,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
     
     // Default text to be seen when scenario starts
     private String titleText = "La Modulation";
-    private float titleTextSize = 0.5f;
-    private ColorRGBA defaultTextColor = ColorRGBA.Green;
+    private ColorRGBA digitalTextColor = ColorRGBA.Green;
     
     // Signals emitters 
     private Node wirePcbEmitter = new Node();
@@ -76,7 +78,9 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private int direction = 1;
     
     //Variable for switch
-    private float initAngleSwitch;
+    private Quaternion initAngleSwitch = new Quaternion();
+    private Quaternion endAngleSwitch = new Quaternion();
+    private float stepAngleSwitch = 0;
     private float tpfCumulSwitch = 0;
     private float tpfCumul = 0;
     private Quaternion rotationXSwitch = new Quaternion();   
@@ -107,9 +111,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
         this.attachChild(scene);
         
         scene.setLocalTranslation(new Vector3f(2.5f, 0.0f, 0.5f));
-//        Quaternion rot = new Quaternion();
-//        rot.fromAngleAxis(-pi / 2, Vector3f.UNIT_Y);
-//        scene.setLocalRotation(rot);
 
         // Get the handles of the emitters
         Spatial pathInHandle = scene.getChild("Handle.Module.In");
@@ -144,17 +145,21 @@ public final class Modulation extends Scenario implements EmitterObserver {
         carrierEmitter.setName("CarrierEmitter");
         pcbAmpEmitter.setName("PCBAmpEmitter");
         
-        carrierEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
-        wirePcbEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
-        outputEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
-        pcbAmpEmitter.getControl(ParticleEmitterControl.class).registerObserver(outputEmitter.getControl(ParticleEmitterControl.class));
+        if(destinationHandle != null){
+            carrierEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
+            wirePcbEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
+            outputEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
+            pcbAmpEmitter.getControl(ParticleEmitterControl.class).registerObserver(outputEmitter.getControl(ParticleEmitterControl.class));
+        }
     }
     
     @Override
     protected void loadMovableObjects() {
         turnButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
-        initAngleSwitch = actionSwitch.getLocalRotation().getX();
+        
+        initAngleSwitch.fromAngleAxis(0.45f, Vector3f.UNIT_X);
+        endAngleSwitch.fromAngleAxis(-0.45f, Vector3f.UNIT_X);
         
         Spatial[] geom = ModulationCommon.initCarrierGeometries();
         cubeCarrier = geom[0];
@@ -207,25 +212,17 @@ public final class Modulation extends Scenario implements EmitterObserver {
     }
     @Override
     protected void initTitleBox() {
-        
-        boolean lookAtCamera = false;
-        boolean showDebugBox = false;
-        float textBoxWidth = 5.2f;
-        float textBoxHeight = 0.8f;
-        
-        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
-        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
-        TextBox titleTextBox = new TextBox(assetManager,
-                titleText,
-                titleTextSize,
-                titleTextColor,
-                titleBackColor,
-                textBoxWidth,
-                textBoxHeight,
-                "titleText",
-                BitmapFont.Align.Center.Center,
-                showDebugBox,
-                lookAtCamera);
+        TextBox titleTextBox = new TextBox(assetManager, 
+                                    titleText, 
+                                    TEXTSIZE,
+                                    TEXTCOLOR, 
+                                    TEXTBOXCOLOR,
+                                    TITLEWIDTH, 
+                                    TITLEHEIGHT, 
+                                    "titleText", 
+                                    BitmapFont.Align.Center, 
+                                    SHOWTEXTDEBUG, 
+                                    TEXTLOOKATCAMERA);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
@@ -239,15 +236,16 @@ public final class Modulation extends Scenario implements EmitterObserver {
 
         // Default configuration of the digital display
         digitalDisplay = new TextBox(assetManager,
-                sFM1061,
-                titleTextSize,
-                defaultTextColor,
-                new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f),
-                3.5f, 1.0f,
-                "DigitalDisplay",
-                BitmapFont.Align.Center.Center,
-                false,
-                false);
+                                    sFM1061,
+                                    TEXTSIZE,
+                                    digitalTextColor,
+                                    new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f),
+                                    3.5f, 
+                                    1.0f,
+                                    "DigitalDisplay",
+                                    BitmapFont.Align.Center.Center,
+                                    false,
+                                    false);
 
         // Get the digital display parameters
         Vector3f displayPosition = scene.getChild("Display").getLocalTranslation();
@@ -287,12 +285,13 @@ public final class Modulation extends Scenario implements EmitterObserver {
     //Dynamic move
     private void checkModulationMode(float tpf) {
         if (switchIsToggled) {
-            tpfCumulSwitch += 3 * tpf;
-            switchRotation(isFM, tpfCumulSwitch);
-            float currAngle = actionSwitch.getLocalRotation().getX();
-            if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
+            tpfCumulSwitch += tpf;
+            stepAngleSwitch = tpfCumulSwitch/0.35f; //permet de donner la vitesse
+            switchRotation(isFM, stepAngleSwitch);
+            Quaternion currAngle = actionSwitch.getLocalRotation();
+            if (stepAngleSwitch >= 1) {
                 switchIsToggled = false;
-                tpfCumulSwitch = 0;             
+                tpfCumulSwitch = 0;    
             }
             Spatial carrier = this.selectedCarrier.clone();
             carrier.setLocalScale(1);
@@ -321,46 +320,70 @@ public final class Modulation extends Scenario implements EmitterObserver {
         if (isFM) {
             switch (frequency) {
                 case 1:
-                    digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    // System.out.println(sFM1061);
+                    digitalDisplay.simpleUpdate(sFM1061,
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
                 case 2:
-                    digitalDisplay.simpleUpdate(sFM969, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    // System.out.println(sFM977);
+                    digitalDisplay.simpleUpdate(sFM969, 
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(2, tpf);
                     break;
                 case 3:
-                    digitalDisplay.simpleUpdate(sFM1027, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    // System.out.println(sFM952);
+                    digitalDisplay.simpleUpdate(sFM1027, 
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(3, tpf);
                     break;
                 default:
-                    digitalDisplay.simpleUpdate(sFM1061, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    // System.out.println(sFM1061);
+                    digitalDisplay.simpleUpdate(sFM1061,
+                            TEXTSIZE,
+                            digitalTextColor,
+                            Camera,
+                            Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
             }
         } else {
             switch (frequency) {
                 case 1:
-                    digitalDisplay.simpleUpdate(sAM600, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    //  System.out.println(sAM697);
+                    digitalDisplay.simpleUpdate(sAM600, 
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
                 case 2:
-                    digitalDisplay.simpleUpdate(sAM800, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    //  System.out.println(sAM498);
+                    digitalDisplay.simpleUpdate(sAM800, 
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(2, tpf);
                     break;
                 case 3:
-                    digitalDisplay.simpleUpdate(sAM1500, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    //  System.out.println(sAM707);
+                    digitalDisplay.simpleUpdate(sAM1500, 
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(3, tpf);
                     break;
                 default:
-                    digitalDisplay.simpleUpdate(sAM600, titleTextSize, defaultTextColor, Camera, Vector3f.UNIT_X);
-                    // System.out.println(sAM697);
+                    digitalDisplay.simpleUpdate(sAM600,
+                            TEXTSIZE,
+                            digitalTextColor,
+                            Camera,
+                            Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
             }
@@ -425,12 +448,12 @@ public final class Modulation extends Scenario implements EmitterObserver {
      * @param tpfCumul
      */
     private void switchRotation(boolean isFM, float tpfCumul) {
+        Quaternion currRotation = new Quaternion();
         if (!isFM) {
-            rotationXSwitch.fromAngleAxis(angleRangeTwoPi(initAngleSwitch - tpfCumul), Vector3f.UNIT_X);
-            actionSwitch.setLocalRotation(rotationXSwitch);
+            actionSwitch.setLocalRotation(currRotation.slerp(initAngleSwitch, endAngleSwitch, tpfCumul));
+
         } else {
-            rotationXSwitch.fromAngleAxis(angleRangeTwoPi(-initAngleSwitch + tpfCumul), Vector3f.UNIT_X);
-            actionSwitch.setLocalRotation(rotationXSwitch);
+            actionSwitch.setLocalRotation(currRotation.slerp(endAngleSwitch, initAngleSwitch, tpfCumul)); 
         }
     }
 
@@ -513,13 +536,13 @@ public final class Modulation extends Scenario implements EmitterObserver {
         } else {
             //trackableAngle = 0;
             trackableAngle = this.getUserData("angleX");
-            invRotScenario(trackableAngle + (pi / 2));
         }
 
         switchArrow.simpleUpdate(tpf);
         rotationArrow.simpleUpdate(tpf);
         
         checkTrackableAngle(trackableAngle, tpf);
+        invRotScenario(trackableAngle + (pi / 2));
         checkModulationMode(tpf);
         
         return false;
@@ -575,10 +598,10 @@ public final class Modulation extends Scenario implements EmitterObserver {
         }
     }
     private void loadArrows() {
-        switchArrow = new Arrows("touch", actionSwitch.getWorldTranslation(), assetManager, 1);
+        switchArrow = new Arrows("touch", actionSwitch.getLocalTranslation(), assetManager, 1);
         LookAtCameraControl control = new LookAtCameraControl(Camera);
         switchArrow.addControl(control);
-        this.attachChild(switchArrow);
+        scene.attachChild(switchArrow);
         
         rotationArrow = new Arrows("rotation", null, assetManager, 10);
         this.attachChild(rotationArrow);

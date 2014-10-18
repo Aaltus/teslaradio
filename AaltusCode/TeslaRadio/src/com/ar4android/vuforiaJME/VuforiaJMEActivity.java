@@ -23,6 +23,7 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Debug;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
@@ -111,6 +112,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     // Contextual Menu Options for Camera Flash - Autofocus
     private boolean mFlash = false;
     private boolean mContAutofocus = false;
+
+    public boolean manuallyPauseTracking = false;
 
     // The menu item for swapping data sets:
     private MenuItem mDataSetMenuItem = null;
@@ -240,8 +243,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     public void pauseTracking() {
 
         runOnUiThread(new Runnable() {
+
             @Override
             public void run() {
+                manuallyPauseTracking = true;
                 pauseQCARandTasks(false);
             }
         });
@@ -254,7 +259,54 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                manuallyPauseTracking = false;
                 resumeQCARandTasks();
+            }
+        });
+
+    }
+
+    @Override
+    public void hideInformativeMenu() {
+
+        runOnUiThread(new Runnable()
+        {
+            public void run()
+            {
+                FragmentManager fm = getSupportFragmentManager();
+                Fragment fragment  =    getInformativeMenuFragment();
+
+                if (fragment != null)
+                {
+                    FragmentTransaction ft = fm.beginTransaction();
+                    ft.hide(fragment);
+                    ft.commit();
+                }
+
+            }
+        });
+
+
+    }
+
+    @Override
+    public void showInformativeMenu() {
+
+        runOnUiThread(
+        new Runnable()
+        {
+            public void run()
+            {
+                FragmentManager fm = getSupportFragmentManager();
+                Fragment fragment  = getInformativeMenuFragment();
+
+                if (fragment != null)
+                {
+                    FragmentTransaction ft = fm.beginTransaction();
+                    ft.show(fragment);
+                    ft.commit();
+                }
+
             }
         });
 
@@ -560,6 +612,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
                 AppLogger.getInstance().i(TAG, "In APPSTATUS_INIT_LAYOUT");
                 initTopInformativeMenuFragment();
+                hideInformativeMenu();
                 updateApplicationStatus(APPSTATUS_INITED);
 
                 break;
@@ -798,6 +851,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 		// hierarchy
 		//view.setZOrderOnTop(true);
         resumeQCARandTasks();
+        if(this.manuallyPauseTracking){
+            pauseQCARandTasks(false);
+        }
 
 
     }
@@ -977,7 +1033,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     }
 
-    /**
+/*    *//**
      * Show the language dialog
      */
     private void showSplashscreenDialog()
@@ -985,7 +1041,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         AppLogger.getInstance().d(TAG, "Show splashscreen dialog");
         FragmentManager fm = getSupportFragmentManager();//getSupportFragmentManager();
-        SplashscreenDialogFragment  SplashscreenDialogFragment = new  SplashscreenDialogFragment();
+        SplashscreenDialogFragment SplashscreenDialogFragment = new  SplashscreenDialogFragment();
         SplashscreenDialogFragment.show(fm, ITEM_SPLASHSCREEN_FRAGMENT_TAG);
 
     }
