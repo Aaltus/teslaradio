@@ -293,6 +293,9 @@ public final class Modulation extends Scenario implements EmitterObserver {
                 switchIsToggled = false;
                 tpfCumulSwitch = 0;             
             }
+            Spatial carrier = this.selectedCarrier.clone();
+            carrier.setLocalScale(1);
+            ModulationCommon.notifyObservers(carrier, isFM);
         }
     }
     
@@ -302,6 +305,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
             isFM = !isFM;
             switchIsToggled = true;
         }
+        
     }
     
     private void turnTunerButton(float ZXangle) {
@@ -360,9 +364,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
                     break;
             }
         }
-        Spatial carrier = this.selectedCarrier.clone();
-        carrier.setLocalScale(1);
-        ModulationCommon.notifyObservers(carrier, isFM);
+        
     }
     
     private void changeOuputParticles(Spatial spatial, String emitterId) {
@@ -404,6 +406,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         if (trackableAngle >= 0 && trackableAngle < stepRange) {
             turnTunerButton(trackableAngle);
             changeModulation(1, isFM, tpf);
+            
         } else if (trackableAngle >= stepRange && trackableAngle < 2 * stepRange) {
             turnTunerButton(trackableAngle);
             changeModulation(2, isFM, tpf);
@@ -544,7 +547,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         if (notifierId.equals("CarrierEmitter")) {
 
-            //System.out.println("I am in " + notifierId);
+            System.out.println("I am in " + notifierId);
             changeOuputParticles(spatial, notifierId);
             
         } else if (notifierId.equals("WirePCBEmitter")) {

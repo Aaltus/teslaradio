@@ -168,28 +168,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         //Test Board
         generateParticle = scene.getChild("Board.001");
     }
-    
-    
-    
-    private void ampliButtonRotation(float ZXangle) {
-        Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
-        turnAmpliButton.setLocalRotation(rot);
-    }
-    //Scale handle of the particle
-    private Spatial particleAmplification(Spatial particle){
-        float angle = turnAmpliButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
-        float ampliScale = 1 + angle/(2*pi);
-        particle.scale(ampliScale/1.25f);
-        return particle;
-    }
-    
-     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
-        scene.attachChild(signalEmitter);
-        signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-        signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
-        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
-    }
+
     
      
         

@@ -66,6 +66,7 @@ public class ModulationCommon {
         cubeCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         cubeCarrier.setMaterial(m);
         cubeCarrier.scale(0.3f);
+        cubeCarrier.setName("CubeCarrier");
         
         pyramidCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation/Tetrahedron.j3o");
         Material m2 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
@@ -74,6 +75,7 @@ public class ModulationCommon {
         pyramidCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         pyramidCarrier.setMaterial(m2);
         pyramidCarrier.scale(0.4f);
+        pyramidCarrier.setName("PyramidCarrier");
         
         dodecagoneCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation/Dodecahedron.j3o");
         Material m3 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
@@ -82,6 +84,7 @@ public class ModulationCommon {
         dodecagoneCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         dodecagoneCarrier.setMaterial(m3);
         dodecagoneCarrier.scale(0.35f);
+        dodecagoneCarrier.setName("DodecagoneCarrier");
         
         return new Spatial[]{cubeCarrier,pyramidCarrier,dodecagoneCarrier};
     }
