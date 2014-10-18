@@ -227,11 +227,11 @@ public final class SoundCapture extends Scenario {
 
     @Override
     protected void initPatternGenerator() {
-        micTapParticle = ModulationCommon.initBaseGeneratorParticle();
+        micTapParticle = ScenariosCommon.initBaseGeneratorParticle();
 
         micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
-        micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, ModulationCommon.minBaseParticleScale, 
-                                                                  ModulationCommon.maxBaseParticleScale, true));
+        micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, ScenariosCommon.minBaseParticleScale, 
+                                                                  ScenariosCommon.maxBaseParticleScale, true));
         micWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
         
         this.particlePerWave = 4;
