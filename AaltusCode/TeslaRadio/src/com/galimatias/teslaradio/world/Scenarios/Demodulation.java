@@ -17,9 +17,6 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
 import static com.jme3.input.event.TouchEvent.Type.DOWN;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
@@ -28,9 +25,6 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Quad;
-import com.jme3.scene.shape.Sphere;
-import com.jme3.texture.Texture;
 
 /**
  *
@@ -398,8 +392,6 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         this.autoGenParticle = this.cubeSignal;
         
         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle, 7, 0.25f, 2f, true));
-        this.waveTime = 1;
-        this.particlePerWave = 4;
     }
 
     private void loadArrows() {

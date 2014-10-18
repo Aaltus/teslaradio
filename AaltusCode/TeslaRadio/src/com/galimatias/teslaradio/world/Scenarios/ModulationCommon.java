@@ -6,10 +6,13 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppGetter;
 import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
+import com.galimatias.teslaradio.world.observer.EmitterObserver;
+import com.jme3.input.event.TouchEvent;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -22,10 +25,15 @@ import com.jme3.texture.Texture;
  * Contains static methods used by Amplification and Modulation
  * @author Jean-Christophe
  */
-public class ModulationCommon {
+public abstract class ModulationCommon extends Scenario implements EmitterObserver {
     
     public static float minBaseParticleScale = 0.25f;
     public static float maxBaseParticleScale = 0.75f;
+    
+    ModulationCommon(Camera cam, Spatial destinationHandle) {
+        
+        super(cam, destinationHandle);
+    }
     
     public static Geometry initBaseGeneratorParticle(){
         Geometry baseGeom;
@@ -49,6 +57,7 @@ public class ModulationCommon {
         
         return baseGeom;
     }
+    
     public static Spatial[] initCarrierGeometries() {
         Spatial cubeCarrier;
         Spatial pyramidCarrier;

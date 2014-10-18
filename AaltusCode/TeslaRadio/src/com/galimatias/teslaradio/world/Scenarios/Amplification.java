@@ -217,8 +217,6 @@ public final class Amplification extends Scenario implements EmitterObserver{
         
         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, ModulationCommon.minBaseParticleScale, 
                                                                      ModulationCommon.maxBaseParticleScale, true));
-        this.waveTime = 1;
-        this.particlePerWave = 4;
        
     }
 
