@@ -10,19 +10,16 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Cylinder;
 
 /**
  *
  * @author Hugo
  */
-public class WireGeometryControl extends AbstractControl {
+public class WireGeometryControl extends Node{
 
     private Vector3f pathDirection = new Vector3f();
     private Quaternion wireRotQuat = new Quaternion();
@@ -48,37 +45,30 @@ public class WireGeometryControl extends AbstractControl {
         wireGeom.setMaterial(wireMat);
         wireGeom.setLocalTranslation(0, 0, 0.5f);
     }
-
-    @Override
-    public void setSpatial(Spatial spatial) {
-        ((Node) spatial).attachChild(this.wireGeom);
-        super.setSpatial(spatial);
-    }
     
-    @Override
-    protected void controlUpdate(float tpf) {
+    protected void pathUpdate(float tpf) {
         
         if(this.emitterHandle != null){
             // move wire dynamically
             if(AppGetter.hasRootNodeAsAncestor(this.destinationHandle) && AppGetter.hasRootNodeAsAncestor(this.emitterHandle)){
                 // attach wire if not attach
-                if(!this.wireGeom.hasAncestor((Node) this.spatial))
+                if(!this.wireGeom.hasAncestor(this))
                 {
-                    ((Node) this.spatial).attachChild(this.wireGeom);
+                    this.attachChild(this.wireGeom);
                 }
 
                 // get the new position of the emitter in world
                 emitterPos = emitterHandle.getWorldTranslation().divide(emitterHandle.getWorldScale());
                 
                 // update wire position
-                this.spatial.setLocalScale(1, 1, this.path.getLength());
-                this.spatial.setLocalTranslation(emitterPos);
+                this.setLocalScale(1, 1, this.path.getLength());
+                this.setLocalTranslation(emitterPos);
                 pathDirection = this.destinationHandle.getWorldTranslation().divide(emitterHandle.getWorldScale()).subtract(emitterPos);
-                this.spatial.setLocalRotation(findRotQuaternion(Vector3f.UNIT_Z,pathDirection,wireRotQuat));
+                this.setLocalRotation(findRotQuaternion(Vector3f.UNIT_Z,pathDirection,wireRotQuat));
             }
             else{
                 // detach if attached and emitter is not active
-                if(this.wireGeom.hasAncestor((Node) this.spatial))
+                if(this.wireGeom.hasAncestor(this))
                 {
                     this.wireGeom.removeFromParent();
                 }
@@ -95,11 +85,6 @@ public class WireGeometryControl extends AbstractControl {
     
     public void setEmitterHandle(Spatial emitterHandle){
         this.emitterHandle = emitterHandle;
-    }
-    
-    @Override
-    protected void controlRender(RenderManager rm, ViewPort vp) {
-       
     }
     
 }

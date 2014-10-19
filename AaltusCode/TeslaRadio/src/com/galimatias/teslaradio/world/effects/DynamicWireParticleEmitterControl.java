@@ -6,18 +6,13 @@ package com.galimatias.teslaradio.world.effects;
 
 import com.ar4android.vuforiaJME.AppGetter;
 import com.jme3.cinematic.MotionPath;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.shape.Cylinder;
 import java.util.ArrayList;
 
 /**
@@ -33,7 +28,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
     private Vector3f emitterPos = new Vector3f();
     
     // dynamic wire
-    private Node wireGeomNode = new Node();
+    private WireGeometryControl wireGeomNode;
     
     public DynamicWireParticleEmitterControl(Spatial destinationHandle, float speed)
     {
@@ -56,7 +51,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         
         // create a wire geom and attach the dynamic wire control to it
         if(wireIsVisible){
-            this.wireGeomNode.addControl(new WireGeometryControl( path, this.destinationHandle));
+            this.wireGeomNode = new WireGeometryControl( path, destinationHandle);
             this.dummyRootNodeScaled.attachChild(wireGeomNode);
         }
         else{
@@ -136,7 +131,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         
         // set the emitter handle to the wire control
         if(this.wireGeomNode != null) {
-            this.wireGeomNode.getControl(WireGeometryControl.class).setEmitterHandle(spatial);
+            this.wireGeomNode.setEmitterHandle(spatial);
         }
             
     }
@@ -164,6 +159,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         
         // update dynamic path
         this.pathUpdate();
+        if(wireGeomNode != null){this.wireGeomNode.pathUpdate(tpf);}
     }
 
 }
