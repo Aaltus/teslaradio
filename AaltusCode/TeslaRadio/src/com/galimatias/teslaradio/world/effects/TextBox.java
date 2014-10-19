@@ -41,6 +41,7 @@ public class TextBox extends Node {
     
     private boolean lookAtCamera = false;
     
+
     public TextBox(AssetManager assetManager, 
                    String textToDisplay, 
                    float size, 
@@ -50,7 +51,7 @@ public class TextBox extends Node {
                    float textBoxHeight, 
                    String textBoxName, 
                    BitmapFont.Align alignment, 
-                   boolean showBoxDebug,
+                   boolean showBoxDebug, 
                    boolean lookAtCamera)
     {
         this.detachAllChildren();
@@ -58,16 +59,7 @@ public class TextBox extends Node {
         fixFont(guiFont);
         text = new BitmapText(guiFont, false);
         this.setName(textBoxName);
-        init(assetManager, 
-                textToDisplay, 
-                size, 
-                color, 
-                backgroundColor, 
-                textBoxWidth, 
-                textBoxHeight, 
-                alignment, 
-                showBoxDebug, 
-                lookAtCamera);
+        init(assetManager, textToDisplay, size, color, backgroundColor, textBoxWidth, textBoxHeight, alignment, showBoxDebug, lookAtCamera);
     }
 
     /**
@@ -168,26 +160,32 @@ public class TextBox extends Node {
         
         //create text with the specified parameter
         text.setBox(new Rectangle(0, 0, textBoxWidth, textBoxHeight));
-        text.setQueueBucket(Bucket.Translucent);
+        text.setQueueBucket(Bucket.Transparent);
         text.setLineWrapMode(LineWrapMode.Word);
         text.setColor(color);
         text.setAlignment(alignment);
         text.setSize(size);
         text.setText(textToDisplay);
+
         //move the text to the center of the box to make it rotate around its center instaed of its left side
         text.move(-textBoxWidth /2.0f,0,0);
         
         //Add an invisible geometry in front of the textbox to make it clickable/touchable
-        Quad quad    = new Quad(textBoxWidth, textBoxHeight);
+        Quad quad = new Quad(textBoxWidth, textBoxHeight);
         overTouchBox = new Geometry("quad", quad);
         
+        Quad backgroundQuad = new Quad(textBoxWidth, textBoxHeight);
+        backgroundBox = new Geometry("backgoundBox", backgroundQuad);
+
+
+
         Material boxMat;
         //Create a red box in behind  the text for debugging purpose
         if (showBoxDebug)
         {
             //Red box for debugging purpose
             boxMat = assetManager.loadMaterial("Common/Materials/RedColor.j3m");
-            overTouchBox.setLocalTranslation(0, -textBoxHeight, -0.01f);
+            overTouchBox.setLocalTranslation(0, -textBoxHeight, -0.0001f);
         }
         //Create a invisible geometry in front of the text to make it clickable/touchable
         else
@@ -195,23 +193,20 @@ public class TextBox extends Node {
             //Create a invisible geometry
             boxMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             boxMat.setColor("Color", new ColorRGBA(0, 0, 0, 0f));
-            overTouchBox.setLocalTranslation(0, -textBoxHeight, 0.01f);
+            overTouchBox.setLocalTranslation(0, -textBoxHeight, 0.0001f);
         }
         boxMat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
-        overTouchBox.setQueueBucket(Bucket.Translucent);
+        overTouchBox.setQueueBucket(Bucket.Transparent);
         overTouchBox.setMaterial(boxMat);
         //move the box to the center of the box to make it rotate around its center instead of its left side
         overTouchBox.move(-textBoxWidth / 2.0f, 0, 0);
         
-        
-        Quad backgroundQuad = new Quad(textBoxWidth, textBoxHeight);
-        backgroundBox       = new Geometry("backgoundBox", backgroundQuad);
         Material backgroundBoxMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         backgroundBoxMat.setColor("Color", backgroundColor);
         backgroundBoxMat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         backgroundBox.setQueueBucket(Bucket.Transparent);
         backgroundBox.setMaterial(backgroundBoxMat);
-        backgroundBox.setLocalTranslation(0, -textBoxHeight, -0.01f);
+        backgroundBox.setLocalTranslation(0, -textBoxHeight, -0.1f);//-0.2f);
         backgroundBox.move(-textBoxWidth / 2.0f, 0, 0);
 
         //Attach both element to the textBox node

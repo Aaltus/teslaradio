@@ -59,6 +59,8 @@ public final class SoundCapture extends Scenario {
     
     // Default text to be seen when scenario starts
     private String titleText = "La Capture du Son";
+    private float titleTextSize = 0.5f;
+    private ColorRGBA defaultTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
     
     //Arrows
     private Arrows micArrow;
@@ -129,22 +131,21 @@ public final class SoundCapture extends Scenario {
         scene.attachChild(wireDestinationEmitter);
         
         //System.out.println(destinationHandle.getName());
-        if(this.destinationHandle != null){
-            wireDestinationEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, cam));
-
-            wireDestinationEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
-            micWireEmitter.getControl(ParticleEmitterControl.class).registerObserver(wireDestinationEmitter.getControl(ParticleEmitterControl.class));
-
-            wireDestinationEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
-            micWireEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
-
-            micTapParticle = ModulationCommon.initBaseGeneratorParticle();
-
-            micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
-            micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, ModulationCommon.minBaseParticleScale, 
-                                                                  ModulationCommon.maxBaseParticleScale, true));
-            micWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
-        }
+        
+        wireDestinationEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, cam));
+        
+        wireDestinationEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
+        micWireEmitter.getControl(ParticleEmitterControl.class).registerObserver(wireDestinationEmitter.getControl(ParticleEmitterControl.class));
+        
+        wireDestinationEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+        micWireEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+        
+        micTapParticle = ModulationCommon.initBaseGeneratorParticle();
+        
+        micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
+        micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, ModulationCommon.minBaseParticleScale, 
+                                                              ModulationCommon.maxBaseParticleScale, true));
+        micWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
         this.particlePerWave = 4;
         this.waveTime = 1;
     }
@@ -220,17 +221,14 @@ public final class SoundCapture extends Scenario {
                         if (nameToCompare.equals(micro.getName()))
                         {
                             this.microTouchEffect();
-                            break;
                         }
-                        else if (nameToCompare.equals(titleTextBox.getName()))
+                        else if (nameToCompare.equals(microphoneTextBox.getName()))
                         {
                             showInformativeMenu = true;
-                            break;
                         }
 
                 }
             }
-            break;
         }
     }
 
@@ -288,17 +286,14 @@ public final class SoundCapture extends Scenario {
 
     @Override
     protected void initTitleBox() {
-        titleTextBox = new TextBox(assetManager, 
-                                    titleText, 
-                                    TEXTSIZE,
-                                    TEXTCOLOR, 
-                                    TEXTBOXCOLOR,
-                                    TITLEWIDTH, 
-                                    TITLEHEIGHT, 
-                                    "titleText", 
-                                    BitmapFont.Align.Center, 
-                                    SHOWTEXTDEBUG, 
-                                    TEXTLOOKATCAMERA);
+        boolean lookAtCamera = false;
+        boolean showDebugBox = false;
+        float textBoxWidth = 5.2f;
+        float textBoxHeight = 0.8f;
+        
+        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
+        titleTextBox = new TextBox(assetManager, titleText, titleTextSize, defaultTextColor, titleBackColor, textBoxWidth, textBoxHeight, "titleText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
         
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
@@ -313,7 +308,7 @@ public final class SoundCapture extends Scenario {
         micArrow = new Arrows("touch", micHandleInPosition, assetManager, 1);
         LookAtCameraControl control = new LookAtCameraControl(Camera);
         micArrow.addControl(control);
-        scene.attachChild(micArrow);
+        this.attachChild(micArrow);
         moveArrow = new Arrows("move", null, assetManager, 10);
         this.attachChild(moveArrow);
     }

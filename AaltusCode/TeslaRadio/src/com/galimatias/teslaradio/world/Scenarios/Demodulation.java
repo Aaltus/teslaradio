@@ -51,13 +51,13 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
 
     // Default text to be seen when scenario starts
     private String titleText = "La Démodulation";
+    private float titleTextSize = 0.5f;
     
      //Variable for switch
-    private Quaternion initAngleSwitch = new Quaternion();
-    private Quaternion endAngleSwitch = new Quaternion();
-    private float stepAngleSwitch = 0;
+    private float initAngleSwitch;
     private float tpfCumulSwitch = 0;
     private float tpfCumulButton = 0;
+    private Quaternion rotationXSwitch = new Quaternion();
     
     private Boolean isFM = true;
     private Boolean switchIsToggled = false;
@@ -138,11 +138,10 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
         initParticlesEmitter(inputDemodulation, pathOutputPeg, outputPegPath, null);
         initModulatedParticles();
         
-        // Set names for the emitters  
+        // Set names for the emitters  // VOir si utile dans ce module
         inputModule.setName("InputModule");
         inputDemodulation.setName("InputDemodulation");
 
-      
         inputModule.getControl(ParticleEmitterControl.class).registerObserver(this);
         
          this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, 0.25f, 2f, true));
@@ -154,10 +153,8 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
         demodulationButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
         peg = scene.getChild("Circle");
-        //0.22468638f
-        initAngleSwitch.fromAngleAxis(0.45f, Vector3f.UNIT_X);
-        endAngleSwitch.fromAngleAxis(-0.45f, Vector3f.UNIT_X);
-        System.out.println("initAngleSwitch :" + initAngleSwitch);
+        initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
+
         //Assign touchable
         touchable = new Node();//(Node) scene.getParent().getChild("Touchable")
         touchable.attachChild(actionSwitch);
@@ -167,16 +164,12 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     //Dynamic move
     private void checkModulationMode(float tpf) {
         if (switchIsToggled) {
-            tpfCumulSwitch += tpf;
-            stepAngleSwitch = tpfCumulSwitch/0.35f;
-            switchRotation(isFM, stepAngleSwitch);
-            Quaternion currAngle = actionSwitch.getLocalRotation();
-            System.out.println("currAngle  " + currAngle.getX() + "initAngle  " + initAngleSwitch + "isFM  " + isFM);
-            if (stepAngleSwitch >= 1) {
-                System.out.println("in  " + stepAngleSwitch);
+            tpfCumulSwitch += 3 * tpf;
+            switchRotation(isFM, tpfCumulSwitch);
+            float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
+            if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
                 switchIsToggled = false;
                 tpfCumulSwitch = 0;
-       
             }
         }
     }
@@ -189,16 +182,13 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     }
     
     private void switchRotation(boolean isFM, float tpfCumul) {
-        Quaternion currRotation = new Quaternion();
         if (!isFM) {
-            //rotationXSwitch.fromAngleAxis(initAngleSwitch.subtractLocal(new Quaternion(tpfCumul, 0, 0, 0));
-            //actionSwitch.initAngleSwitch.subtractLocal(new Quaternion(tpfCumul, 0, 0, 0)));
-            actionSwitch.setLocalRotation(currRotation.slerp(initAngleSwitch, endAngleSwitch, tpfCumul));
+            rotationXSwitch.fromAngleAxis(angleRangeTwoPi(initAngleSwitch - tpfCumul), Vector3f.UNIT_X);
+            actionSwitch.setLocalRotation(rotationXSwitch);
         } else {
-            //rotationXSwitch.fromAngleAxis(angleRangeTwoPi(-initAngleSwitch + tpfCumul), Vector3f.UNIT_X);
-            actionSwitch.setLocalRotation(currRotation.slerp(endAngleSwitch, initAngleSwitch, tpfCumul)); 
+            rotationXSwitch.fromAngleAxis(angleRangeTwoPi(-initAngleSwitch + tpfCumul), Vector3f.UNIT_X);
+            actionSwitch.setLocalRotation(rotationXSwitch);
         }
-        System.out.println("currRotation " + currRotation);
     }
     
     //convert angle for range [0 ; 2pi]
@@ -356,17 +346,25 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     
     @Override
     protected void initTitleBox() {
-        titleTextBox = new TextBox(assetManager, 
-                                    titleText, 
-                                    TEXTSIZE,
-                                    TEXTCOLOR, 
-                                    TEXTBOXCOLOR,
-                                    TITLEWIDTH, 
-                                    TITLEHEIGHT, 
-                                    "titleText", 
-                                    BitmapFont.Align.Center, 
-                                    SHOWTEXTDEBUG, 
-                                    TEXTLOOKATCAMERA);
+
+        boolean lookAtCamera = false;
+        boolean showDebugBox = false;
+        float textBoxWidth = 5.2f;
+        float textBoxHeight = 0.8f;
+
+        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
+        titleTextBox = new TextBox(assetManager,
+               titleText,
+               titleTextSize,
+               titleTextColor,
+               titleBackColor,
+               textBoxWidth,
+               textBoxHeight,
+               "titleText",
+               BitmapFont.Align.Center.Center,
+               showDebugBox,
+               lookAtCamera);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
@@ -401,6 +399,7 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
         this.dodecagoneSignal.attachChild(baseGeom.clone());
         this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
         this.dodecagoneSignal.setUserData("isFM", isFM);
+
         this.autoGenParticle = this.cubeSignal;
        
     }
@@ -421,10 +420,10 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     }
     
     private void loadArrows() {
-        switchArrow = new Arrows("touch", actionSwitch.getLocalTranslation(), assetManager, 1);
+        switchArrow = new Arrows("touch", actionSwitch.getWorldTranslation(), assetManager, 1);
         LookAtCameraControl control = new LookAtCameraControl(cam);
         switchArrow.addControl(control);
-        scene.attachChild(switchArrow);
+        this.attachChild(switchArrow);
         
         rotationArrow = new Arrows("rotation", null, assetManager, 10);
         this.attachChild(rotationArrow);

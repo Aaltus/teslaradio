@@ -9,9 +9,7 @@ import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.SoundControl;
 import com.galimatias.teslaradio.world.observer.SignalObserver;
 import com.jme3.asset.AssetManager;
-import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -105,18 +103,6 @@ public abstract class Scenario extends Node implements SignalObserver {
      * We always want a assetmanager and a camera
      */
         
-    /**
-     * Default parameters for textBoxes
-     */
-    protected final float TEXTSIZE             = 0.5f;
-    protected final ColorRGBA TEXTCOLOR        = new ColorRGBA(125/255f, 249/255f, 255/255f, 1f);  
-    protected final ColorRGBA TEXTBOXCOLOR     = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);;
-    protected final float TITLEWIDTH           = 5.2f; 
-    protected final float TITLEHEIGHT          = 0.8f;
-    protected final BitmapFont.Align ALIGNEMENT = BitmapFont.Align.Center;
-    protected final boolean SHOWTEXTDEBUG      = false;
-    protected final boolean TEXTLOOKATCAMERA   = false;
-    
     private Scenario()
     {
 

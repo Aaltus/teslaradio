@@ -49,9 +49,13 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     private Node cubeSignal;
     private Node pyramidSignal;
     private Node dodecagoneSignal;
-    private Arrows moveArrow;
     
     private Boolean isFM = true;
+     /**
+     * TODO Remove this bool and associated code in simpleUpdate when it works
+     * on Android. Only for debug purposes.
+     */
+    private final static boolean DEBUG_ANGLE = false;
     
     
     // TextBox of the scene
@@ -59,6 +63,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     
     // Default text to be seen when scenario starts
     private String titleText = "L'Amplification";
+    private float titleTextSize = 0.5f;
+    private ColorRGBA defaultTextColor = ColorRGBA.Green;
 
     // Signals emitters 
     private Node inputWireAmpli = new Node();
@@ -89,7 +95,6 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         this.cam = Camera;
         loadUnmovableObjects();
         loadMovableObjects();
-        loadArrows();
     }
     
     @Override
@@ -133,18 +138,15 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         
         scene.attachChild(outputModule);
+        outputModule.setLocalTranslation(pathAntenneTx.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 20, 13, mat2));
+        outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
+        outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
         
-        if(this.destinationHandle != null){
-            outputModule.setLocalTranslation(pathAntenneTx.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-            outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 20, 13, mat2));
-            outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
-            outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
-
-      //-------------------------------AirParticleEmitterControl------------------
-
-            inputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
-            outputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
-        }
+  //-------------------------------AirParticleEmitterControl------------------
+        
+        inputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
+        outputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
         
         
         this.initModulatedParticles();
@@ -168,11 +170,6 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         generateParticle = scene.getChild("Board.001");
     }
 
-    private void loadArrows()
-    {
-        moveArrow = new Arrows("move", null, assetManager, 10);
-        this.attachChild(moveArrow);
-    }
     
     private void ampliButtonRotation(float ZXangle) {
         Quaternion rot = new Quaternion();
@@ -242,15 +239,13 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
 
     @Override
     protected boolean simpleUpdate(float tpf) {
-		moveArrow.simpleUpdate(tpf);
-
         if (DEBUG_ANGLE) {
             tpfCumul = tpf+ tpfCumul;
             ampliButtonRotation(tpfCumul);
         } else {
             float trackableAngle = this.getUserData("angleX");
             ampliButtonRotation(trackableAngle);
-			invRotScenario(trackableAngle + (pi / 2));
+            invRotScenario(trackableAngle + (pi / 2));
         }
         return false;
     }
@@ -299,17 +294,25 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     
     @Override
     protected void initTitleBox() {
-        titleTextBox = new TextBox(assetManager, 
-                                    titleText, 
-                                    TEXTSIZE,
-                                    TEXTCOLOR, 
-                                    TEXTBOXCOLOR,
-                                    TITLEWIDTH, 
-                                    TITLEHEIGHT, 
-                                    "titleText", 
-                                    BitmapFont.Align.Center, 
-                                    SHOWTEXTDEBUG, 
-                                    TEXTLOOKATCAMERA);
+
+        boolean lookAtCamera = false;
+        boolean showDebugBox = false;
+        float textBoxWidth = 5.2f;
+        float textBoxHeight = 0.8f;
+
+        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
+        titleTextBox = new TextBox(assetManager,
+                titleText,
+                titleTextSize,
+                titleTextColor,
+                titleBackColor,
+                textBoxWidth,
+                textBoxHeight,
+                "titleText",
+                BitmapFont.Align.Center.Center,
+                showDebugBox,
+                lookAtCamera);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
