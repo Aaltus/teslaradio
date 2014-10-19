@@ -42,9 +42,12 @@ public class Arrows extends Node{
         if (name.equals("touch")){
             imageGeom = new Geometry(name ,new Box(0.5f, 0.5f, Float.MIN_VALUE));
             imageGeom.move(Vector3f.UNIT_Y);
+            imageGeom.setQueueBucket(RenderQueue.Bucket.Translucent);
         }
         else{
             imageGeom = new Geometry(name ,new Box(1f,Float.MIN_VALUE,1f));
+            imageGeom.move(new Vector3f(0f, -0.01f, 0f));
+            imageGeom.setQueueBucket(RenderQueue.Bucket.Opaque);
         }
         
         Material imageMat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
@@ -55,7 +58,6 @@ public class Arrows extends Node{
         if (location != null){
             this.move(location);
         }
-        imageGeom.setQueueBucket(RenderQueue.Bucket.Transparent);
         imageGeom.setMaterial(imageMat);
         this.addControl(fade);
         this.attachChild(imageGeom);
@@ -76,7 +78,7 @@ public class Arrows extends Node{
     public void simpleUpdate(float tpf)
     {
         timeLastTouch += tpf;
-        cumulatedTime+=tpf;
+        cumulatedTime += tpf;
 
         if (timeLastTouch >= maxTimeRefreshHint)
         {

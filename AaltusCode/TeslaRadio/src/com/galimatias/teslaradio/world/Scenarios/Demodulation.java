@@ -54,10 +54,12 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     private float titleTextSize = 0.5f;
     
      //Variable for switch
-    private float initAngleSwitch;
+    private Quaternion initAngleSwitch = new Quaternion();
+    private Quaternion endAngleSwitch = new Quaternion();
+    private float stepAngleSwitch = 0;
     private float tpfCumulSwitch = 0;
     private float tpfCumulButton = 0;
-    private Quaternion rotationXSwitch = new Quaternion();
+
     
     private Boolean isFM = true;
     private Boolean switchIsToggled = false;
@@ -153,8 +155,8 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
         demodulationButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
         peg = scene.getChild("Circle");
-        initAngleSwitch = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
-
+        initAngleSwitch.fromAngleAxis(0.45f, Vector3f.UNIT_X);
+        endAngleSwitch.fromAngleAxis(-0.45f, Vector3f.UNIT_X);
         //Assign touchable
         touchable = new Node();//(Node) scene.getParent().getChild("Touchable")
         touchable.attachChild(actionSwitch);
@@ -164,10 +166,13 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     //Dynamic move
     private void checkModulationMode(float tpf) {
         if (switchIsToggled) {
-            tpfCumulSwitch += 3 * tpf;
-            switchRotation(isFM, tpfCumulSwitch);
-            float currAngle = actionSwitch.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
-            if (currAngle >= initAngleSwitch && currAngle <= (2 * pi - initAngleSwitch)) {
+            tpfCumulSwitch += tpf;
+            stepAngleSwitch = tpfCumulSwitch/0.35f;
+            switchRotation(isFM, stepAngleSwitch);
+            Quaternion currAngle = actionSwitch.getLocalRotation();
+            System.out.println("currAngle  " + currAngle.getX() + "initAngle  " + initAngleSwitch + "isFM  " + isFM);
+            if (stepAngleSwitch >= 1) {
+                System.out.println("in  " + stepAngleSwitch);
                 switchIsToggled = false;
                 tpfCumulSwitch = 0;
             }
@@ -182,12 +187,14 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     }
     
     private void switchRotation(boolean isFM, float tpfCumul) {
+        Quaternion currRotation = new Quaternion();
         if (!isFM) {
-            rotationXSwitch.fromAngleAxis(angleRangeTwoPi(initAngleSwitch - tpfCumul), Vector3f.UNIT_X);
-            actionSwitch.setLocalRotation(rotationXSwitch);
+            //rotationXSwitch.fromAngleAxis(initAngleSwitch.subtractLocal(new Quaternion(tpfCumul, 0, 0, 0));
+            //actionSwitch.initAngleSwitch.subtractLocal(new Quaternion(tpfCumul, 0, 0, 0)));
+            actionSwitch.setLocalRotation(currRotation.slerp(initAngleSwitch, endAngleSwitch, tpfCumul));
         } else {
-            rotationXSwitch.fromAngleAxis(angleRangeTwoPi(-initAngleSwitch + tpfCumul), Vector3f.UNIT_X);
-            actionSwitch.setLocalRotation(rotationXSwitch);
+            //rotationXSwitch.fromAngleAxis(angleRangeTwoPi(-initAngleSwitch + tpfCumul), Vector3f.UNIT_X);
+            actionSwitch.setLocalRotation(currRotation.slerp(endAngleSwitch, initAngleSwitch, tpfCumul)); 
         }
     }
     
@@ -420,10 +427,10 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     }
     
     private void loadArrows() {
-        switchArrow = new Arrows("touch", actionSwitch.getWorldTranslation(), assetManager, 1);
+        switchArrow = new Arrows("touch", actionSwitch.getLocalTranslation(), assetManager, 1);
         LookAtCameraControl control = new LookAtCameraControl(cam);
         switchArrow.addControl(control);
-        this.attachChild(switchArrow);
+        scene.attachChild(switchArrow);
         
         rotationArrow = new Arrows("rotation", null, assetManager, 10);
         this.attachChild(rotationArrow);

@@ -19,6 +19,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.utils.AppLogger;
 
 /**
  *
@@ -70,6 +71,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     private Node cubeSignal;
     private Node pyramidSignal;
     private Node dodecagoneSignal;
+
+    private Arrows moveArrow;
     
     private Boolean isFM = true;
     
@@ -84,6 +87,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         this.needAutoGenIfMain = true;
         loadUnmovableObjects();
         loadMovableObjects();
+        loadArrows();
         
         //Generate try particle
         Box cube = new Box(0.25f, 0.25f, 0.25f);
@@ -134,17 +138,20 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         scene.attachChild(outputModule);
         System.out.println(outputHandle.getLocalTranslation().toString());
         outputModule.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-        outputModule.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
-        outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
+        if(this.destinationHandle != null){
+            outputModule.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
+            outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
+        }
 
         // Set names for the emitters  // VOir si utile dans ce module
         // inputAntenneRx.setName("InputAntenneRx");
         outputAntenneRx.setName("OutputAntenneRx");
 
         // inputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
-        outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));    
-        outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
-        
+        if(this.destinationHandle != null){
+            outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));    
+            outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
+        }
         
         
         initModulatedParticles();
@@ -154,7 +161,15 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         this.particlePerWave = 4;
         
         this.updateSignalIntensity(0.3f);
+ 	}
+
+    private void loadArrows()
+    {
+        moveArrow = new Arrows("move", null, assetManager, 10);
+        this.attachChild(moveArrow);
     }
+   
+    
    
     private void addWifiControl(ImageBox wifiLogo) {
         LookAtCameraControl lookAtControl = new LookAtCameraControl(Camera);
@@ -185,7 +200,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
 
     @Override
     protected boolean simpleUpdate(float tpf) {
-        
+
+        moveArrow.simpleUpdate(tpf);
         updateWifiLogos(signalIntensity);
         return false;
     }

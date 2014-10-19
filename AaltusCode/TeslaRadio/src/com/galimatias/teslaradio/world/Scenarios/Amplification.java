@@ -49,6 +49,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     private Node cubeSignal;
     private Node pyramidSignal;
     private Node dodecagoneSignal;
+    private Arrows moveArrow;
     
     private Boolean isFM = true;
      /**
@@ -95,6 +96,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         this.cam = Camera;
         loadUnmovableObjects();
         loadMovableObjects();
+        loadArrows();
     }
     
     @Override
@@ -138,15 +140,18 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         
         scene.attachChild(outputModule);
-        outputModule.setLocalTranslation(pathAntenneTx.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-        outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 20, 13, mat2));
-        outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
-        outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
         
-  //-------------------------------AirParticleEmitterControl------------------
-        
-        inputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
-        outputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
+        if(this.destinationHandle != null){
+            outputModule.setLocalTranslation(pathAntenneTx.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+            outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 20, 13, mat2));
+            outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
+            outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
+
+      //-------------------------------AirParticleEmitterControl------------------
+
+            inputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
+            outputWireAmpli.getControl(ParticleEmitterControl.class).registerObserver(this);
+        }
         
         
         this.initModulatedParticles();
@@ -170,6 +175,11 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         generateParticle = scene.getChild("Board.001");
     }
 
+    private void loadArrows()
+    {
+        moveArrow = new Arrows("move", null, assetManager, 10);
+        this.attachChild(moveArrow);
+    }
     
     private void ampliButtonRotation(float ZXangle) {
         Quaternion rot = new Quaternion();
@@ -239,6 +249,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
 
     @Override
     protected boolean simpleUpdate(float tpf) {
+		moveArrow.simpleUpdate(tpf);
+
         if (DEBUG_ANGLE) {
             tpfCumul = tpf+ tpfCumul;
             ampliButtonRotation(tpfCumul);

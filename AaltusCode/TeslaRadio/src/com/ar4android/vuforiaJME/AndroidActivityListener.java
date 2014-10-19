@@ -15,5 +15,8 @@ public interface AndroidActivityListener {
 
    public void startTracking();
 
+   public void hideInformativeMenu();
+
+   public void showInformativeMenu();
 
 }
