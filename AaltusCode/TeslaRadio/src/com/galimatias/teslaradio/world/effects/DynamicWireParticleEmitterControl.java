@@ -6,15 +6,18 @@ package com.galimatias.teslaradio.world.effects;
 
 import com.ar4android.vuforiaJME.AppGetter;
 import com.jme3.cinematic.MotionPath;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.utils.AppLogger;
+import com.jme3.scene.shape.Cylinder;
 import java.util.ArrayList;
 
 /**
@@ -25,15 +28,23 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
     
     private MotionPath path;
     private Spatial destinationHandle;
-    private Quaternion localRotMem = new Quaternion();
     private Node dummyRootNodeScaled = new Node();
-
+    
+    private Vector3f emitterPos = new Vector3f();
+    
+    // dynamic wire
+    private Node wireGeomNode = new Node();
+    
     public DynamicWireParticleEmitterControl(Spatial destinationHandle, float speed)
     {
         this(destinationHandle, speed, null);
     }
     
-    public DynamicWireParticleEmitterControl(Spatial destinationHandle, float speed, Camera cam)
+    public DynamicWireParticleEmitterControl(Spatial destinationHandle, float speed, Camera cam){
+        this(destinationHandle, speed, cam, false);
+    }
+               
+    public DynamicWireParticleEmitterControl(Spatial destinationHandle, float speed, Camera cam, boolean wireIsVisible)
     {
         spatialToSendBuffer = new ArrayList();
         path = new MotionPath();
@@ -41,23 +52,39 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         this.speed = speed;
         this.destinationHandle = destinationHandle;
         this.cam = cam;
+        
+        
+        // create a wire geom and attach the dynamic wire control to it
+        if(wireIsVisible){
+            this.wireGeomNode.addControl(new WireGeometryControl( path, this.destinationHandle));
+            this.dummyRootNodeScaled.attachChild(wireGeomNode);
+        }
+        else{
+            this.wireGeomNode = null;
+        }
     }
     
     protected void pathUpdate() {
 
+        // get the new position of the emitter in world
+        emitterPos = this.spatial.getWorldTranslation().divide(this.spatial.getWorldScale());
+        
         // validate that the handle is valid
         //TODO: Maybe do something more bulletproof than getting the rootnode from AppGetter
         if(AppGetter.hasRootNodeAsAncestor(this.destinationHandle))
         {
+            // create new path at each frame
             this.path.clearWayPoints();
-            this.path.addWayPoint(this.spatial.getWorldTranslation().divide(this.spatial.getWorldScale().x));
-            this.path.addWayPoint(this.destinationHandle.getWorldTranslation().divide(this.spatial.getWorldScale().x));
+            this.path.addWayPoint(emitterPos);
+            this.path.addWayPoint(this.destinationHandle.getWorldTranslation().divide(this.spatial.getWorldScale()));
         }
         else
         {
+            // delete path if there is no destination
             this.path.clearWayPoints();
         }
-    }    
+        
+    }
         
     @Override
     public void emitParticle(Spatial spatialToSend) {
@@ -106,6 +133,12 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         AppGetter.attachToRootNode(this.dummyRootNodeScaled);
         this.dummyRootNodeScaled.scale(AppGetter.getWorldScalingDefault());
         super.setSpatial(spatial);
+        
+        // set the emitter handle to the wire control
+        if(this.wireGeomNode != null) {
+            this.wireGeomNode.getControl(WireGeometryControl.class).setEmitterHandle(spatial);
+        }
+            
     }
 
     @Override
