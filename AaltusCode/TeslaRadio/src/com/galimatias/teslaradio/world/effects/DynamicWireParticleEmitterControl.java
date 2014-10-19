@@ -28,7 +28,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
     private Vector3f emitterPos = new Vector3f();
     
     // dynamic wire
-    private WireGeometryControl wireGeomNode;
+    private Node wireGeomNode;
     
     public DynamicWireParticleEmitterControl(Spatial destinationHandle, float speed)
     {
@@ -51,7 +51,8 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         
         // create a wire geom and attach the dynamic wire control to it
         if(wireIsVisible){
-            this.wireGeomNode = new WireGeometryControl( path, destinationHandle);
+            this.wireGeomNode = new Node();
+            this.wireGeomNode.addControl(new WireGeometryControl(path, this.destinationHandle));
             this.dummyRootNodeScaled.attachChild(wireGeomNode);
         }
         else{
@@ -131,7 +132,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         
         // set the emitter handle to the wire control
         if(this.wireGeomNode != null) {
-            this.wireGeomNode.setEmitterHandle(spatial);
+            this.wireGeomNode.getControl(WireGeometryControl.class).setEmitterHandle(spatial);
         }
             
     }
@@ -159,7 +160,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         
         // update dynamic path
         this.pathUpdate();
-        if(wireGeomNode != null){this.wireGeomNode.pathUpdate(tpf);}
+        if(wireGeomNode != null){this.wireGeomNode.getControl(WireGeometryControl.class).wirePositionUpdate(tpf);}
     }
 
 }
