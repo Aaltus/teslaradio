@@ -84,7 +84,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     
     @Override
     protected void loadUnmovableObjects() {
-        scene = (Node) assetManager.loadModel("Models/Modulation/modulation.j3o");
+        scene = (Node) assetManager.loadModel("Models/Modulation_Demodulation/modulation.j3o");
         scene.setName("Modulation");
         this.attachChild(scene);
 
