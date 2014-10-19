@@ -53,6 +53,7 @@ public class Arrows extends Node{
         Material imageMat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         imageMat.setTexture("ColorMap", assetManager.loadTexture("Textures/"+name+".png"));
         imageMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        imageMat.getAdditionalRenderState().setDepthWrite(false);
         FadeControl fade = new FadeControl(hintFadingTime);
         if (location != null){
             this.move(location);

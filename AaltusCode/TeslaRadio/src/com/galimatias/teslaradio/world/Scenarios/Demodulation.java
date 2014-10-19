@@ -11,6 +11,7 @@ import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
+import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -37,7 +38,7 @@ import com.jme3.texture.Texture;
  * @author Barliber
  */
 
-public class Demodulation extends Scenario implements EmitterObserver  {
+public class Demodulation extends Scenario implements EmitterObserver, AutoGenObserver  {
 
     
     // 3D objects of the scene
@@ -50,6 +51,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
 
     // Default text to be seen when scenario starts
     private String titleText = "La Démodulation";
+    private float titleTextSize = 0.5f;
     
      //Variable for switch
     private Quaternion initAngleSwitch = new Quaternion();
@@ -57,6 +59,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     private float stepAngleSwitch = 0;
     private float tpfCumulSwitch = 0;
     private float tpfCumulButton = 0;
+
     
     private Boolean isFM = true;
     private Boolean switchIsToggled = false;
@@ -74,7 +77,13 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     private Geometry inputPegPath;
     private Geometry outputPegPath;
     
+    private Node autoGenParticle;
     
+    private Node cubeSignal;
+    private Node pyramidSignal;
+    private Node dodecagoneSignal;
+    
+  
     // this is PIIIIIII! (kick persian)
     private final float pi = (float) Math.PI;
     
@@ -83,16 +92,15 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     
     private String pegFilter = "";
     private float stepRangePeg = 2 * pi / 3;
-    
+
     //arrows
     private Arrows switchArrow;
     private Arrows rotationArrow;
 	
-    private Geometry autoGenParticle;
     
     
     public Demodulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle){
-        super(Camera, destinationHandle);
+        super(Camera, destinationHandle,"Sounds/demodulation.ogg");
 
         this.cam = Camera;
         this.destinationHandle = destinationHandle;
@@ -100,6 +108,8 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         loadUnmovableObjects();
         loadMovableObjects();   
         loadArrows();
+        ModulationCommon.registerObserver(this);
+        
     }
     
     
@@ -128,14 +138,15 @@ public class Demodulation extends Scenario implements EmitterObserver  {
        
         initParticlesEmitter(inputModule, pathInputPeg, inputPegPath, null);
         initParticlesEmitter(inputDemodulation, pathOutputPeg, outputPegPath, null);
-        initPatternGenerator();
+        initModulatedParticles();
         
-        // Set names for the emitters  
+        // Set names for the emitters  // VOir si utile dans ce module
         inputModule.setName("InputModule");
         inputDemodulation.setName("InputDemodulation");
 
-      
         inputModule.getControl(ParticleEmitterControl.class).registerObserver(this);
+        
+         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, 0.25f, 2f, true));
         
     }
 
@@ -144,10 +155,8 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         demodulationButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
         peg = scene.getChild("Circle");
-        //0.22468638f
         initAngleSwitch.fromAngleAxis(0.45f, Vector3f.UNIT_X);
         endAngleSwitch.fromAngleAxis(-0.45f, Vector3f.UNIT_X);
-        System.out.println("initAngleSwitch :" + initAngleSwitch);
         //Assign touchable
         touchable = new Node();//(Node) scene.getParent().getChild("Touchable")
         touchable.attachChild(actionSwitch);
@@ -166,7 +175,6 @@ public class Demodulation extends Scenario implements EmitterObserver  {
                 System.out.println("in  " + stepAngleSwitch);
                 switchIsToggled = false;
                 tpfCumulSwitch = 0;
-       
             }
         }
     }
@@ -188,7 +196,6 @@ public class Demodulation extends Scenario implements EmitterObserver  {
             //rotationXSwitch.fromAngleAxis(angleRangeTwoPi(-initAngleSwitch + tpfCumul), Vector3f.UNIT_X);
             actionSwitch.setLocalRotation(currRotation.slerp(endAngleSwitch, initAngleSwitch, tpfCumul)); 
         }
-        System.out.println("currRotation " + currRotation);
     }
     
     //convert angle for range [0 ; 2pi]
@@ -208,6 +215,7 @@ public class Demodulation extends Scenario implements EmitterObserver  {
             isFM = !isFM;
             switchIsToggled = true;
         }
+        this.autoGenObserverUpdate(this.autoGenParticle.getChild(0), isFM);
     }
 
     @Override
@@ -345,17 +353,25 @@ public class Demodulation extends Scenario implements EmitterObserver  {
     
     @Override
     protected void initTitleBox() {
-        titleTextBox = new TextBox(assetManager, 
-                                    titleText, 
-                                    TEXTSIZE,
-                                    TEXTCOLOR, 
-                                    TEXTBOXCOLOR,
-                                    TITLEWIDTH, 
-                                    TITLEHEIGHT, 
-                                    "titleText", 
-                                    BitmapFont.Align.Center, 
-                                    SHOWTEXTDEBUG, 
-                                    TEXTLOOKATCAMERA);
+
+        boolean lookAtCamera = false;
+        boolean showDebugBox = false;
+        float textBoxWidth = 5.2f;
+        float textBoxHeight = 0.8f;
+
+        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
+        titleTextBox = new TextBox(assetManager,
+               titleText,
+               titleTextSize,
+               titleTextColor,
+               titleBackColor,
+               textBoxWidth,
+               textBoxHeight,
+               "titleText",
+               BitmapFont.Align.Center.Center,
+               showDebugBox,
+               lookAtCamera);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
@@ -365,30 +381,51 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         this.attachChild(titleTextBox);
     }
     
-    private void initPatternGenerator(){
+   private void initModulatedParticles(){
+        Geometry baseGeom = ModulationCommon.initBaseGeneratorParticle();
+        Spatial[] carrier = ModulationCommon.initCarrierGeometries();
+                
+        this.cubeSignal = new Node();
+        this.cubeSignal.attachChild(carrier[0].clone());
+        ModulationCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
+        this.cubeSignal.attachChild(baseGeom.clone());
+        this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
+        this.cubeSignal.setUserData("isFM", isFM);
         
-        if (DEBUG_ANGLE) {
-            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-            //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
-            Texture nyan = assetManager.loadTexture("Textures/Nyan_Cat.png");
-            mat1.setTexture("ColorMap", nyan);
-            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-            Quad rect = new Quad(1.0f, 1.0f);
-            autoGenParticle = new Geometry("MicTapParticle", rect);
-            autoGenParticle.setMaterial(mat1);
-        } else {
-            Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-            mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
-            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-            Sphere sphere = new Sphere(10, 10, 0.4f);
-            autoGenParticle = new Geometry("MicTapParticle", sphere);
-            autoGenParticle.setMaterial(mat1);
-        }
-        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle, 7, 0.25f, 2f, true));
-        this.waveTime = 1;
-        this.particlePerWave = 4;
+       
+        this.pyramidSignal = new Node();
+        this.pyramidSignal.attachChild(carrier[0].clone());
+        ModulationCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
+        this.pyramidSignal.attachChild(baseGeom.clone());
+        this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
+        this.pyramidSignal.setUserData("isFM", isFM);
+       
+        this.dodecagoneSignal = new Node();
+        this.dodecagoneSignal.attachChild(carrier[0].clone());
+        ModulationCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
+        this.dodecagoneSignal.attachChild(baseGeom.clone());
+        this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
+        this.dodecagoneSignal.setUserData("isFM", isFM);
+
+        this.autoGenParticle = this.cubeSignal;
+       
     }
 
+    @Override
+    public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
+        this.isFM = isFm;
+        this.initModulatedParticles();
+        if(newCarrier.getName().equals("CubeCarrier")){
+             this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
+        }
+        else if(newCarrier.getName().equals("PyramidCarrier")){
+            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.pyramidSignal);
+        }
+        else if(newCarrier.getName().equals("DodecagoneCarrier")){
+            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.dodecagoneSignal);
+        }
+    }
+    
     private void loadArrows() {
         switchArrow = new Arrows("touch", actionSwitch.getLocalTranslation(), assetManager, 1);
         LookAtCameraControl control = new LookAtCameraControl(cam);
@@ -407,6 +444,6 @@ public class Demodulation extends Scenario implements EmitterObserver  {
         switchArrow.getControl(FadeControl.class).setShowImage(false);
         switchArrow.resetTimeLastTouch();
     }
-
-            
 }
+               
+

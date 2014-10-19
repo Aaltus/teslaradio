@@ -6,11 +6,10 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
+import com.galimatias.teslaradio.world.effects.SoundControl;
 import com.galimatias.teslaradio.world.observer.SignalObserver;
 import com.jme3.asset.AssetManager;
-import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -96,23 +95,14 @@ public abstract class Scenario extends Node implements SignalObserver {
      */
     protected float waveTime = 1;
     
+    /*Path of the background sound*/
+    protected String backgroundSound = null;
+    
     /**
      * We make the default constructor private to prevent its use.
      * We always want a assetmanager and a camera
      */
-    
-    /**
-     * Default parameters for textBoxes
-     */
-    protected final float TEXTSIZE             = 0.5f;
-    protected final ColorRGBA TEXTCOLOR        = new ColorRGBA(125/255f, 249/255f, 255/255f, 1f);  
-    protected final ColorRGBA TEXTBOXCOLOR     = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);;
-    protected final float TITLEWIDTH           = 5.2f; 
-    protected final float TITLEHEIGHT          = 0.8f;
-    protected final BitmapFont.Align ALIGNEMENT = BitmapFont.Align.Center;
-    protected final boolean SHOWTEXTDEBUG      = false;
-    protected final boolean TEXTLOOKATCAMERA   = false;
-    
+        
     private Scenario()
     {
 
@@ -123,8 +113,19 @@ public abstract class Scenario extends Node implements SignalObserver {
         assetManager = AppGetter.getAssetManager();
         this.Camera = Camera;
         this.destinationHandle = destinationHandle;
-        this.setUserData("angleX", 0.0f);
-        
+        this.setUserData("angleX", 0f);
+    }
+    
+    public Scenario(com.jme3.renderer.Camera Camera, Spatial destinationHandle, String bgm)
+    {
+        this.backgroundSound = bgm;
+        assetManager = AppGetter.getAssetManager();
+        this.Camera = Camera;
+        this.destinationHandle = destinationHandle;
+        this.setUserData("angleX", 0f);
+        if(this.backgroundSound != null){
+            this.addControl(new SoundControl(this.backgroundSound,false,1));
+        }
     }
 
     /**
@@ -211,6 +212,19 @@ public abstract class Scenario extends Node implements SignalObserver {
         return this.needAutoGenIfMain;
     }
 
+    public void startBackgroundSound(){
+        if(this.backgroundSound != null){
+            this.getControl(SoundControl.class).playSound(true);
+            this.getControl(SoundControl.class).setEnabled(true);
+        }
+    }
+    
+    public void stopBackgroundSound(){
+        if(this.backgroundSound != null){
+            this.getControl(SoundControl.class).stopSound();
+            this.getControl(SoundControl.class).setEnabled(false);
+        }
+    }
 
     /**
      * This method will apply an opposite trackable rotation on the model, preventing it from rotating
