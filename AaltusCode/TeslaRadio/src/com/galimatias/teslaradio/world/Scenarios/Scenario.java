@@ -31,7 +31,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     private float cumulatedRot = 0;
     
 
-    protected final static boolean DEBUG_ANGLE = true;
+    protected final static boolean DEBUG_ANGLE = false;
     /**
      * Set to true to start autogeneration when scenario is the main scenario
      */
@@ -127,7 +127,7 @@ public abstract class Scenario extends Node implements SignalObserver {
         assetManager = AppGetter.getAssetManager();
         this.Camera = Camera;
         this.destinationHandle = destinationHandle;
-        this.setUserData("angleX", 3.14f);
+        this.setUserData("angleX", 0f);
     }
     
     public Scenario(com.jme3.renderer.Camera Camera, Spatial destinationHandle, String bgm)

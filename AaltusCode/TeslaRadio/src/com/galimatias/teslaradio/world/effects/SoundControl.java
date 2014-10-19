@@ -28,7 +28,7 @@ public class SoundControl extends AbstractControl {
     private float noiseLevel;
     public SoundControl(String wavPath, boolean isStream, float volume){
         this.audio = new AudioNode(AppGetter.getAssetManager(),wavPath,isStream);
-        this.noise = new AudioNode(AppGetter.getAssetManager(),"Sounds/noise.wav",isStream);
+        this.noise = new AudioNode(AppGetter.getAssetManager(),"Sounds/noise.ogg",isStream);
         this.noise.setVolume(0f);
         this.audio.setVolume(volume);
         this.audio.setPositional(false);
@@ -76,13 +76,13 @@ public class SoundControl extends AbstractControl {
     }
     
     public void updateNoiseLevel(float noiseLevel){
-        this.audio.setVolume(this.volume - noiseLevel*this.volume);
-        this.noise.setVolume(noiseLevel*this.volume);
+        this.spatial.setUserData(AppGetter.USR_AUDIO_SCALE,this.volume - noiseLevel*this.volume);
+        this.spatial.setUserData(AppGetter.USR_NOISE_LEVEL,noiseLevel*this.volume);
         
     }
     public void updateVolume(float volume){
-        this.audio.setVolume(volume - this.noiseLevel*this.volume);
-        this.noise.setVolume(this.noiseLevel*this.volume);
+        this.spatial.setUserData(AppGetter.USR_AUDIO_SCALE, volume-this.noiseLevel*this.volume);
+        this.spatial.setUserData(AppGetter.USR_NOISE_LEVEL, this.noiseLevel*this.volume);
     }
    
     @Override
@@ -98,11 +98,9 @@ public class SoundControl extends AbstractControl {
            this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, false);
        }
       else{
-          float newScale = (Float)this.spatial.getUserData(AppGetter.USR_AUDIO_SCALE);
-          this.audio.setVolume(newScale);
-        
-          
          
+          this.audio.setVolume((Float)this.spatial.getUserData(AppGetter.USR_AUDIO_SCALE));
+          this.noise.setVolume((Float)this.spatial.getUserData(AppGetter.USR_NOISE_LEVEL));
       }
        
         
