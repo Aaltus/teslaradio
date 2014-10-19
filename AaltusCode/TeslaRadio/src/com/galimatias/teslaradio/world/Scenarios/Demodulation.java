@@ -78,24 +78,13 @@ public class Demodulation extends ModulationCommon  {
 
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
-        if (notifierId.equals("CarrierEmitter")) {
-
-            //System.out.println("I am in " + notifierId);
-            //changeOuputParticles(spatial, notifierId);
-            
-        } else if (notifierId.equals("WirePCBEmitter")) {
-
-            //System.out.println("I am in " + notifierId);
+        if (notifierId.equals("WirePCBEmitter")) {
             
             if (pcbAmpEmitter != null && spatial != null) {
-                Node clone = (Node)outputSignal.clone();
-                
-                //ScenariosCommon.modulateFMorAM(clone, spatial, isFM);
-                
-                clone.attachChild(((Node)spatial).getChild(1));
-                
-                //System.out.println("Scaling : " + spatial.getLocalScale().toString());
-                pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(clone);
+                //Node clone = (Node)outputSignal.clone();
+
+                ((Node)spatial).getChild(1).setLocalScale(((Node)spatial).getChild(1).getWorldScale());
+                pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(((Node)spatial).getChild(1));
             }
             
         }
