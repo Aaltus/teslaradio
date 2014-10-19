@@ -66,7 +66,7 @@ public class SoundControl extends AbstractControl {
   
     }
     public void stopSound(){
-        this.audio.stop();
+        this.audio.pause();
         this.noise.stop();
         ((Node)this.spatial).detachChild(audio);
         ((Node)this.spatial).detachChild(noise);
@@ -98,9 +98,9 @@ public class SoundControl extends AbstractControl {
            this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, false);
        }
       else{
-          float newScale = (Float)this.spatial.getUserData(AppGetter.USR_SCALE);
-          this.audio.setVolume(newScale/this.audio.getVolume());
-          this.noise.setVolume(newScale/this.noise.getVolume());
+          float newScale = (Float)this.spatial.getUserData(AppGetter.USR_AUDIO_SCALE);
+          this.audio.setVolume(newScale);
+        
           
          
       }
@@ -119,6 +119,7 @@ public class SoundControl extends AbstractControl {
         this.spatial.setUserData(AppGetter.USR_NOISE_LEVEL, 0f);
         this.spatial.setUserData(AppGetter.USR_NEXT_WAVE_SCALE, 0f);
         this.spatial.setUserData(AppGetter.USR_SCALE, 1f);
+        this.spatial.setUserData(AppGetter.USR_AUDIO_SCALE, 1f);
         
   
     }

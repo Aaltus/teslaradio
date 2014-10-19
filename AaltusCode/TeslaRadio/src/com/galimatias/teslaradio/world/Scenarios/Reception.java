@@ -158,6 +158,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
                                                                      ModulationCommon.maxBaseParticleScale, true));
         this.waveTime = 1;
         this.particlePerWave = 4;
+        
+        this.updateSignalIntensity(0.3f);
     }
 
     private void loadArrows()

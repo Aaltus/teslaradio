@@ -92,7 +92,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
     
     public Modulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         
-        super(Camera, destinationHandle, "Sounds/capture.wav");
+        super(Camera, destinationHandle, "Sounds/modulation.ogg");
         
         this.cam = Camera;
         this.destinationHandle = destinationHandle;

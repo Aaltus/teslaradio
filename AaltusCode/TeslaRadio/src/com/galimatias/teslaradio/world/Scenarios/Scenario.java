@@ -31,7 +31,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     private float cumulatedRot = 0;
     
 
-    protected final static boolean DEBUG_ANGLE = false;
+    protected final static boolean DEBUG_ANGLE = true;
     /**
      * Set to true to start autogeneration when scenario is the main scenario
      */
@@ -127,7 +127,7 @@ public abstract class Scenario extends Node implements SignalObserver {
         assetManager = AppGetter.getAssetManager();
         this.Camera = Camera;
         this.destinationHandle = destinationHandle;
-        this.setUserData("angleX", 0.0f);
+        this.setUserData("angleX", 3.14f);
     }
     
     public Scenario(com.jme3.renderer.Camera Camera, Spatial destinationHandle, String bgm)
@@ -136,7 +136,7 @@ public abstract class Scenario extends Node implements SignalObserver {
         assetManager = AppGetter.getAssetManager();
         this.Camera = Camera;
         this.destinationHandle = destinationHandle;
-        this.setUserData("angleX", 0.0f);
+        this.setUserData("angleX", 0f);
         if(this.backgroundSound != null){
             this.addControl(new SoundControl(this.backgroundSound,false,1));
         }
@@ -229,12 +229,14 @@ public abstract class Scenario extends Node implements SignalObserver {
     public void startBackgroundSound(){
         if(this.backgroundSound != null){
             this.getControl(SoundControl.class).playSound(true);
+            this.getControl(SoundControl.class).setEnabled(true);
         }
     }
     
     public void stopBackgroundSound(){
         if(this.backgroundSound != null){
             this.getControl(SoundControl.class).stopSound();
+            this.getControl(SoundControl.class).setEnabled(false);
         }
     }
 

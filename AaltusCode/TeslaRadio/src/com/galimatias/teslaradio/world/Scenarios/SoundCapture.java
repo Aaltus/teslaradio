@@ -120,7 +120,7 @@ public final class SoundCapture extends Scenario {
         //Geometry tmpGeom = (Geometry)micWire_geom;//.scale(1/ScenarioManager.WORLD_SCALE_DEFAULT);
         
         micWireEmitter.addControl(new StaticWireParticleEmitterControl(micWire_geom.getMesh(), 3.5f, cam));
-        micWireEmitter.addControl(new SoundControl("Sounds/micro_sound.wav", false, 2));
+      //  micWireEmitter.addControl(new SoundControl("Sounds/micro_sound.wav", false, 2));
         
         wireDestinationEmitter = new Node();
         wireDestinationEmitter.setName("WireDestinationEmitter");

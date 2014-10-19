@@ -98,7 +98,7 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     
     
     public Demodulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle){
-        super(Camera, destinationHandle);
+        super(Camera, destinationHandle,"Sounds/demodulation.ogg");
 
         this.cam = Camera;
         this.destinationHandle = destinationHandle;

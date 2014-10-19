@@ -129,6 +129,7 @@ public class PatternGeneratorControl extends AbstractControl {
         if(this.autoPlayThread != null){
             this.autoPlayThread.cancel(true);
             this.autoPlayThread = null;
+            this.geomList.clear();
         }
     }
     

@@ -83,7 +83,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     private Geometry particle;
     
     public Amplification(Camera Camera, Spatial destinationHandle){
-        super(Camera, destinationHandle);
+        super(Camera, destinationHandle, "Sounds/amplification.ogg");
         this.needAutoGenIfMain = true;
         this.destinationHandle = destinationHandle;
         this.cam = Camera;
@@ -174,6 +174,27 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         this.attachChild(moveArrow);
     }
     
+    private void ampliButtonRotation(float ZXangle) {
+        Quaternion rot = new Quaternion();
+        rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
+        turnAmpliButton.setLocalRotation(rot);
+    }
+    //Scale handle of the particle
+    private Spatial particleAmplification(Spatial particle){
+        float angle = turnAmpliButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
+        float ampliScale = 1 + angle/(2*pi);
+        particle.scale(ampliScale/1.25f);
+        this.setUserData(AppGetter.USR_AUDIO_SCALE, ampliScale-1);
+        return particle;
+    }
+    
+     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
+        scene.attachChild(signalEmitter);
+        signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
+        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
+    }
+    
      
         
     private void initModulatedParticles(){
@@ -204,26 +225,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         this.autoGenParticle = this.cubeSignal;
        
     }
-    private void ampliButtonRotation(float ZXangle) {
-        Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
-        turnAmpliButton.setLocalRotation(rot);
-    }
-    //Scale handle of the particle
-    private Spatial particleAmplification(Spatial particle){
-        float angle = turnAmpliButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
-        float ampliScale = 1+ angle/(2*pi);
-        particle.setLocalScale(ampliScale, ampliScale, ampliScale);
-        return particle;
-    }
-    
-     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
-        scene.attachChild(signalEmitter);
-        signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-        signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
-        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
-    }
-    
+
      
         
     
