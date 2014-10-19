@@ -47,7 +47,7 @@ public abstract class Scenario extends Node implements SignalObserver {
      *
      */
     protected AssetManager assetManager;
-
+    
     /**
      * Camera linked to the scenario. All "LookAt" and camera-dependant effect
      * will use this camera.
@@ -183,43 +183,69 @@ public abstract class Scenario extends Node implements SignalObserver {
      */
     protected abstract void initTitleBox();
 
+    /**
+     * Call all of the methods when scenario is on Node A, can be override for 
+     * certain scenarios.
+     */
+    protected void onFirstNodeActions() {
+        startAutoGeneration();
+    }
+    
+    /**
+     * Call all of the methods when scenario is on Node B, can be override for 
+     * certain scenarios.
+     */
+    protected void onSecondNodeActions() {
+        startBackgroundSound();
+    }
+    
+    /**
+     * Called when the scenario is detached from one of the two nodes
+     */
+    protected void notOnNodeActions() {
+        if (this.needAutoGenIfMain) {
+            stopAutoGeneration();
+        }
+        
+        stopBackgroundSound();
+    }
     
     /**
      * Start the auto generation of particles
      */
-    protected void startAutoGeneration(){
+    private void startAutoGeneration() {
         this.getInputHandle().getControl(PatternGeneratorControl.class).startAutoPlay(1,this.particlePerWave);
     };
     
     /**
      * Stop the auto generation of particles
      */
-    protected void stopAutoGeneration(){
-       if(this.getInputHandle() != null){ 
-       this.getInputHandle().getControl(PatternGeneratorControl.class).stopAutoPlay();
+    private void stopAutoGeneration() {
+       if(this.getInputHandle() != null) { 
+            this.getInputHandle().getControl(PatternGeneratorControl.class).stopAutoPlay();
        }
     };
     
     /**
      * Sets the base particle for auto-generation
      */
-    protected void setAutoGenerationParticle(Geometry particle){
+    protected void setAutoGenerationParticle(Geometry particle) {
       this.getInputHandle().getControl(PatternGeneratorControl.class).
               setBaseParticle(particle);
     };
     
-    public boolean getNeedsAutoGen(){
+    public boolean getNeedsAutoGen() {
         return this.needAutoGenIfMain;
     }
 
-    public void startBackgroundSound(){
+    private void startBackgroundSound() {
         if(this.backgroundSound != null){
             this.getControl(SoundControl.class).playSound(true);
             this.getControl(SoundControl.class).setEnabled(true);
         }
     }
     
-    public void stopBackgroundSound(){
+    private void stopBackgroundSound() {
         if(this.backgroundSound != null){
             this.getControl(SoundControl.class).stopSound();
             this.getControl(SoundControl.class).setEnabled(false);

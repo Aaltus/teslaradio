@@ -249,7 +249,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
                 break;
             case 2:
                 wifi.attachChild(wifiLogoMedium);
-                
+
                 break;
             case 3:
                 wifi.attachChild(wifiLogoFull);
@@ -290,8 +290,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     }
     
     @Override
-    protected void startAutoGeneration(){
-        super.startAutoGeneration();
+    protected void onFirstNodeActions(){
+        super.onFirstNodeActions();
         
         scene.detachChild(wifi);
     };
