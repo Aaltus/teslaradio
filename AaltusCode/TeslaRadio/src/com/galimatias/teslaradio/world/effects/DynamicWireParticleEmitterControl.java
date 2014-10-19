@@ -60,9 +60,9 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         
         if(wireIsVisible){
             Geometry wireGeom = new Geometry();
-            wireGeom.setMesh(new Cylinder(10, 10, 0.1f, 1, true));
+            wireGeom.setMesh(new Cylinder(4, 4, 0.04f, 1, true));
             Material wireMat = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-            wireMat.setColor("Color", new ColorRGBA(1, 0, 1, 1));
+            wireMat.setColor("Color", new ColorRGBA(0, 0, 0, 1));
             wireGeom.setMaterial(wireMat);
             wireGeom.setLocalTranslation(0, 0, 0.5f);
             this.wireGeomNode.attachChild(wireGeom);
