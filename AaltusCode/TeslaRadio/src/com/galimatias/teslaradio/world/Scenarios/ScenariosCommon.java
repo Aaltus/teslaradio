@@ -30,8 +30,8 @@ public class ScenariosCommon {
     public static float minBaseParticleScale = 0.25f;
     public static float maxBaseParticleScale = 0.75f;
     
-    public static Geometry initBaseGeneratorParticle(){
-        Geometry baseGeom;
+    public static Spatial initBaseGeneratorParticle(){
+        Spatial baseGeom;
         if (DEBUG_ANGLE) {
             Material mat1 = new Material(AppGetter.getAssetManager(),"Common/MatDefs/Misc/Unshaded.j3md");
             //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
@@ -50,7 +50,7 @@ public class ScenariosCommon {
             baseGeom.setMaterial(mat1);
         }
         
-        return baseGeom;
+        return (Spatial)baseGeom;
     }
     public static Spatial[] initCarrierGeometries() {
         Spatial cubeCarrier;

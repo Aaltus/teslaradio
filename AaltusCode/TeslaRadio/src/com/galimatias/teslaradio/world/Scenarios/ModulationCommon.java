@@ -57,7 +57,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     protected Node outputSignal;
 
     //Pattern Geometry
-    private Geometry micTapParticle;
+    protected Spatial micTapParticle;
 
     //Angle for test purposes
     private float trackableAngle = 0;
@@ -452,12 +452,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     }
 
     @Override
-    protected void startAutoGeneration(){
-        super.startAutoGeneration();
-
-    }
-
-    @Override
     protected Spatial getInputHandle() {
         return wirePcbEmitter;
     }
@@ -466,9 +460,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     protected void initPatternGenerator() {
 
         micTapParticle = ScenariosCommon.initBaseGeneratorParticle();
-
-        this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 10, ScenariosCommon.minBaseParticleScale,
-                ScenariosCommon.maxBaseParticleScale, true));
     }
 
     @Override
@@ -487,7 +478,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     }
 
     @Override
-    protected void setAutoGenerationParticle(Geometry particle){
+    protected void setAutoGenerationParticle(Spatial particle){
         this.micTapParticle = particle;
         this.wirePcbEmitter.getControl(PatternGeneratorControl.class).
                 setBaseParticle(this.micTapParticle);

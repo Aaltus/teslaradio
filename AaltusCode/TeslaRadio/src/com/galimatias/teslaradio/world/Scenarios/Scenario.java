@@ -96,7 +96,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     /**
      * Defines the number of particle per auto-gen wave
      */
-    protected int particlePerWave = 1;
+    protected int particlePerWave = 4;
     /**
      * Defines the time between 2 auto-wave emission
      */
@@ -213,7 +213,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     /**
      * Sets the base particle for auto-generation
      */
-    protected void setAutoGenerationParticle(Geometry particle){
+    protected void setAutoGenerationParticle(Spatial particle){
       this.getInputHandle().getControl(PatternGeneratorControl.class).
               setBaseParticle(particle);
     };

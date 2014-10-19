@@ -1,6 +1,7 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.font.BitmapFont;
 import com.jme3.math.*;
@@ -83,7 +84,16 @@ public final class Modulation extends ModulationCommon {
         return resultat;
     }
 
+    @Override
+    protected void initPatternGenerator() {
+        super.initPatternGenerator(); 
+        
+        this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 10, ScenariosCommon.minBaseParticleScale,
+                ScenariosCommon.maxBaseParticleScale, true));
+    }
 
+
+    
     /**
      * Called when receiving an event from the observable emitter
      *

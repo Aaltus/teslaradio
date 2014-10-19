@@ -32,7 +32,7 @@ public class Filter extends Scenario implements EmitterObserver {
     private String titleText = "Le filtrage";
     
     //Pattern Geometry
-    private Geometry micTapParticle;
+    private Spatial micTapParticle;
     
     private Node inputEmitter = new Node();
     private Node outFilterEmitter = new Node();

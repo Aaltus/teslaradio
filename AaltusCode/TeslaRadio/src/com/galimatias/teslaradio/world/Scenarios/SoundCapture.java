@@ -45,7 +45,7 @@ public final class SoundCapture extends Scenario {
     private Spatial micro;
     private Spatial micHandleIn;
 
-    private Geometry micTapParticle;
+    private Spatial micTapParticle;
     
     // Emitters of the scenario
     private Node micWireEmitter;
