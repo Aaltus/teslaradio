@@ -81,8 +81,6 @@ public class Demodulation extends ModulationCommon  {
         if (notifierId.equals("WirePCBEmitter")) {
             
             if (pcbAmpEmitter != null && spatial != null) {
-                //Node clone = (Node)outputSignal.clone();
-
                 ((Node)spatial).getChild(1).setLocalScale(((Node)spatial).getChild(1).getWorldScale());
                 pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(((Node)spatial).getChild(1));
             }

@@ -33,11 +33,11 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     protected Boolean switchIsToggled = false;
     
     // 3D objects of the scene
-    protected Spatial turnButton;
-    protected Spatial actionSwitch;
+    private Spatial turnButton;
+    private Spatial actionSwitch;
     
     // TextBox of the scene
-    protected TextBox digitalDisplay;
+    private TextBox digitalDisplay;
 
     protected ColorRGBA digitalTextColor = ColorRGBA.Green;
 
@@ -48,32 +48,34 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     protected Node outputEmitter = new Node();
 
     // Geometry of the carrier signals
-    protected Spatial cubeCarrier;
-    protected Spatial pyramidCarrier;
-    protected Spatial dodecagoneCarrier; // Really...
+    private Spatial cubeCarrier;
+    private Spatial pyramidCarrier;
+    private Spatial dodecagoneCarrier; // Really...
 
     // Current carrier signal and his associated output
-    protected Spatial selectedCarrier;
+    private Spatial selectedCarrier;
     protected Node outputSignal;
 
     //Pattern Geometry
-    protected Geometry micTapParticle;
+    private Geometry micTapParticle;
 
     //Angle for test purposes
-    protected float trackableAngle = 0;
-    protected int direction = 1;
+    private float trackableAngle = 0;
+    private int direction = 1;
 
     //Variable for switch
-    protected Quaternion initAngleSwitch = new Quaternion();
-    protected Quaternion endAngleSwitch = new Quaternion();
-    protected float stepAngleSwitch = 0;
-    protected float tpfCumulSwitch = 0;
-    protected float tpfCumul = 0;
-    protected Quaternion rotationXSwitch = new Quaternion();
+    private Quaternion initAngleSwitch = new Quaternion();
+    private Quaternion endAngleSwitch = new Quaternion();
+    private float stepAngleSwitch = 0;
+    private float tpfCumulSwitch = 0;
+    private float tpfCumul = 0;
+    private Quaternion rotationXSwitch = new Quaternion();
 
     //Arrows
-    protected Arrows rotationArrow;
-    protected Arrows switchArrow;
+    private Arrows rotationArrow;
+    private Arrows switchArrow;
+    
+    protected int frequency = 0;
     
     ModulationCommon(Camera cam, Spatial destinationHandle) {
         
@@ -85,7 +87,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     @Override
     protected void loadUnmovableObjects() {
         scene = (Node) assetManager.loadModel("Models/Modulation_Demodulation/modulation.j3o");
-        scene.setName("Modulation");
+        scene.setName("Modulation_Demodulation");
         this.attachChild(scene);
 
         scene.setLocalTranslation(new Vector3f(2.5f, 0.0f, 0.5f));
@@ -107,9 +109,9 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         initDigitalDisplay();
         initTitleBox();
 
-        initParticlesEmitter(wirePcbEmitter, pathInHandle, pathIn, cam);
-        initParticlesEmitter(carrierEmitter, pathCarrierHandle, pathCarrier, null);
-        initParticlesEmitter(pcbAmpEmitter, pathOutChipHandle, pathOut, null);
+        initStaticParticlesEmitter(wirePcbEmitter, pathInHandle, pathIn, cam);
+        initStaticParticlesEmitter(carrierEmitter, pathCarrierHandle, pathCarrier, null);
+        initStaticParticlesEmitter(pcbAmpEmitter, pathOutChipHandle, pathOut, null);
         initPatternGenerator();
 
         scene.attachChild(outputEmitter);
@@ -167,14 +169,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         //pyramidOutputSignal = pyramidCarrier.clone();
 
         //dodecagoneOutputSignal = dodecagoneCarrier.clone();
-    }
-
-    private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
-
-        scene.attachChild(signalEmitter);
-        signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-        signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
-        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
 
     private void initDigitalDisplay() {
@@ -323,6 +317,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     private void changeCarrierParticles(int frequency, float tpf) {
 
         tpfCumul += tpf;
+        this.frequency = frequency;
 
         switch (frequency) {
             case 1:
@@ -474,8 +469,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
 
         this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 10, ScenariosCommon.minBaseParticleScale,
                 ScenariosCommon.maxBaseParticleScale, true));
-        this.waveTime = 1;
-        this.particlePerWave = 4;
     }
 
     @Override
