@@ -534,13 +534,6 @@ public final class Modulation extends Scenario implements EmitterObserver {
     }
     
     @Override
-    protected void startAutoGeneration(){
-        super.startAutoGeneration();
-        
-        
-    };
-    
-    @Override
     protected Spatial getInputHandle() {
         return wirePcbEmitter;
     }
