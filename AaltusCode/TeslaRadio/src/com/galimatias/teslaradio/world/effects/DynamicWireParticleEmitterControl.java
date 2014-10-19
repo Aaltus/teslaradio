@@ -18,7 +18,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Cylinder;
-import com.utils.AppLogger;
 import java.util.ArrayList;
 
 /**
@@ -29,15 +28,12 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
     
     private MotionPath path;
     private Spatial destinationHandle;
-    private Quaternion localRotMem = new Quaternion();
     private Node dummyRootNodeScaled = new Node();
     
-    private Vector3f emitterPos;
+    private Vector3f emitterPos = new Vector3f();
     
     // dynamic wire
     private Node wireGeomNode = new Node();
-    private Vector3f pathDirection = new Vector3f();
-    private Quaternion wireRotQuat = new Quaternion();
     
     public DynamicWireParticleEmitterControl(Spatial destinationHandle, float speed)
     {
@@ -58,14 +54,9 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         this.cam = cam;
         
         
+        // create a wire geom and attach the dynamic wire control to it
         if(wireIsVisible){
-            Geometry wireGeom = new Geometry();
-            wireGeom.setMesh(new Cylinder(4, 4, 0.04f, 1, true));
-            Material wireMat = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-            wireMat.setColor("Color", new ColorRGBA(0, 0, 0, 1));
-            wireGeom.setMaterial(wireMat);
-            wireGeom.setLocalTranslation(0, 0, 0.5f);
-            this.wireGeomNode.attachChild(wireGeom);
+            this.wireGeomNode.addControl(new WireGeometryControl( path, this.destinationHandle));
             this.dummyRootNodeScaled.attachChild(wireGeomNode);
         }
         else{
@@ -82,28 +73,17 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         //TODO: Maybe do something more bulletproof than getting the rootnode from AppGetter
         if(AppGetter.hasRootNodeAsAncestor(this.destinationHandle))
         {
+            // create new path at each frame
             this.path.clearWayPoints();
             this.path.addWayPoint(emitterPos);
             this.path.addWayPoint(this.destinationHandle.getWorldTranslation().divide(this.spatial.getWorldScale()));
         }
         else
         {
+            // delete path if there is no destination
             this.path.clearWayPoints();
         }
         
-        if(wireGeomNode != null){
-            this.wireGeomNode.setLocalScale(1, 1, this.path.getLength());
-            this.wireGeomNode.setLocalTranslation(emitterPos);
-            pathDirection = this.destinationHandle.getWorldTranslation().divide(this.spatial.getWorldScale()).subtract(emitterPos);
-            this.wireGeomNode.setLocalRotation(findRotQuaternion(Vector3f.UNIT_Z,pathDirection,wireRotQuat));
-        }
-    }
-    
-    private Quaternion findRotQuaternion(Vector3f v1, Vector3f v2, Quaternion returnQuat)
-    {
-        Vector3f rotAxis = v1.cross(v2);
-        returnQuat.fromAngleAxis(v1.normalizeLocal().angleBetween(v2.normalizeLocal()),rotAxis.normalizeLocal());
-        return returnQuat;
     }
         
     @Override
@@ -153,6 +133,12 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         AppGetter.attachToRootNode(this.dummyRootNodeScaled);
         this.dummyRootNodeScaled.scale(AppGetter.getWorldScalingDefault());
         super.setSpatial(spatial);
+        
+        // set the emitter handle to the wire control
+        if(this.wireGeomNode != null) {
+            this.wireGeomNode.getControl(WireGeometryControl.class).setEmitterHandle(spatial);
+        }
+            
     }
 
     @Override
