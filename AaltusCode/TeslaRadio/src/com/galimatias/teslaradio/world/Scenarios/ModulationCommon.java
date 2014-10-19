@@ -6,6 +6,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppGetter;
 import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
+import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
@@ -17,12 +18,16 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains static methods used by Amplification and Modulation
  * @author Jean-Christophe
  */
 public class ModulationCommon {
+    
+    private static List<AutoGenObserver> observerList = new ArrayList<AutoGenObserver>();
     
     public static float minBaseParticleScale = 0.25f;
     public static float maxBaseParticleScale = 0.75f;
@@ -55,31 +60,31 @@ public class ModulationCommon {
         Spatial dodecagoneCarrier;
         
         cubeCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation/Cube.j3o");
-        cubeCarrier.setName("CubeCarrier");
         Material m = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         m.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation/Edgemap_square.png"));
         m.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         cubeCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         cubeCarrier.setMaterial(m);
         cubeCarrier.scale(0.3f);
+        cubeCarrier.setName("CubeCarrier");
         
         pyramidCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation/Tetrahedron.j3o");
-        pyramidCarrier.setName("PyramidCarrier");
         Material m2 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         m2.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation/Edgemap_triangle.png"));
         m2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         pyramidCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         pyramidCarrier.setMaterial(m2);
         pyramidCarrier.scale(0.4f);
+        pyramidCarrier.setName("PyramidCarrier");
         
         dodecagoneCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation/Dodecahedron.j3o");
-        dodecagoneCarrier.setName("DodecagoneCarrier");
         Material m3 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         m3.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation/Edgemap_square.png"));
         m3.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         dodecagoneCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         dodecagoneCarrier.setMaterial(m3);
         dodecagoneCarrier.scale(0.35f);
+        dodecagoneCarrier.setName("DodecagoneCarrier");
         
         return new Spatial[]{cubeCarrier,pyramidCarrier,dodecagoneCarrier};
     }
@@ -116,5 +121,19 @@ public class ModulationCommon {
             clone.getChild(0).setLocalScale(scaleFM);
             clone.scale(0.5f);
         }
+    }
+
+    
+    public static void registerObserver(AutoGenObserver observer) {
+        observerList.add(observer);
+    }
+
+    // observable method to notify whoever wants to know that a particle as ended his path
+   
+    public static void notifyObservers(Spatial newCarrier, boolean isFm) {
+        for(AutoGenObserver observer : observerList)
+        {
+            observer.autoGenObserverUpdate(newCarrier, isFm);
+        }        
     }
 }

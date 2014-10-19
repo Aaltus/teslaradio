@@ -4,12 +4,14 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.effects.*;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
+import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 
 import com.jme3.font.BitmapFont;
@@ -31,7 +33,7 @@ import com.jme3.scene.shape.Box;
  *
  * @author Barliber
  */
-public final class Amplification extends Scenario implements EmitterObserver{
+public final class Amplification extends Scenario implements EmitterObserver, AutoGenObserver{
     
     private final static String TAG = "Amplification";
     
@@ -50,6 +52,11 @@ public final class Amplification extends Scenario implements EmitterObserver{
     private Arrows moveArrow;
     
     private Boolean isFM = true;
+     /**
+     * TODO Remove this bool and associated code in simpleUpdate when it works
+     * on Android. Only for debug purposes.
+     */
+    private final static boolean DEBUG_ANGLE = false;
     
     
     // TextBox of the scene
@@ -57,6 +64,8 @@ public final class Amplification extends Scenario implements EmitterObserver{
     
     // Default text to be seen when scenario starts
     private String titleText = "L'Amplification";
+    private float titleTextSize = 0.5f;
+    private ColorRGBA defaultTextColor = ColorRGBA.Green;
 
     // Signals emitters 
     private Node inputWireAmpli = new Node();
@@ -81,7 +90,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
     private Geometry particle;
     
     public Amplification(Camera Camera, Spatial destinationHandle){
-        super(Camera, destinationHandle);
+        super(Camera, destinationHandle, "Sounds/amplification.ogg");
         this.needAutoGenIfMain = true;
         this.destinationHandle = destinationHandle;
         this.cam = Camera;
@@ -148,6 +157,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
         this.initModulatedParticles();
         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, ModulationCommon.minBaseParticleScale, 
                                                                      ModulationCommon.maxBaseParticleScale, true));
+        ModulationCommon.registerObserver(this);
         this.waveTime = 1;
         this.particlePerWave = 4;
    
@@ -181,6 +191,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
         float angle = turnAmpliButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
         float ampliScale = 1 + angle/(2*pi);
         particle.scale(ampliScale/1.25f);
+        this.setUserData(AppGetter.USR_AUDIO_SCALE, ampliScale-1);
         return particle;
     }
     
@@ -222,6 +233,10 @@ public final class Amplification extends Scenario implements EmitterObserver{
        
     }
 
+     
+        
+    
+
     @Override
     public void restartScenario() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -242,7 +257,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
         } else {
             float trackableAngle = this.getUserData("angleX");
             ampliButtonRotation(trackableAngle);
-			invRotScenario(trackableAngle + (pi / 2));
+            invRotScenario(trackableAngle + (pi / 2));
         }
         return false;
     }
@@ -273,7 +288,7 @@ public final class Amplification extends Scenario implements EmitterObserver{
              outputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
          } else if(notifierId.equals("OutputWireAmpli")) {
              Float scale = new Float(spatial.getWorldScale().length());
-             spatial.setUserData("Scale", scale);
+             spatial.setUserData(AppGetter.USR_SCALE, scale);
              //System.out.println("Before addition : " + spatial.getWorldScale());
              outputModule.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
          }   
@@ -291,17 +306,25 @@ public final class Amplification extends Scenario implements EmitterObserver{
     
     @Override
     protected void initTitleBox() {
-        titleTextBox = new TextBox(assetManager, 
-                                    titleText, 
-                                    TEXTSIZE,
-                                    TEXTCOLOR, 
-                                    TEXTBOXCOLOR,
-                                    TITLEWIDTH, 
-                                    TITLEHEIGHT, 
-                                    "titleText", 
-                                    BitmapFont.Align.Center, 
-                                    SHOWTEXTDEBUG, 
-                                    TEXTLOOKATCAMERA);
+
+        boolean lookAtCamera = false;
+        boolean showDebugBox = false;
+        float textBoxWidth = 5.2f;
+        float textBoxHeight = 0.8f;
+
+        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
+        titleTextBox = new TextBox(assetManager,
+                titleText,
+                titleTextSize,
+                titleTextColor,
+                titleBackColor,
+                textBoxWidth,
+                textBoxHeight,
+                "titleText",
+                BitmapFont.Align.Center.Center,
+                showDebugBox,
+                lookAtCamera);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
@@ -311,11 +334,20 @@ public final class Amplification extends Scenario implements EmitterObserver{
         this.attachChild(titleTextBox);
     }
     
-   /* @Override
-    protected void setAutoGenerationParticle(Geometry particle){
-       // this.micTapParticle = particle;
-        //this.wirePcbEmitter.getControl(PatternGeneratorControl.class).
-          //      setBaseParticle(this.micTapParticle);
-    };*/
+    @Override
+    public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
+        this.isFM = isFm;
+        this.initModulatedParticles();
+        if(newCarrier.getName().equals("CubeCarrier")){
+             this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
+        }
+        else if(newCarrier.getName().equals("PyramidCarrier")){
+            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.pyramidSignal);
+        }
+        else if(newCarrier.getName().equals("DodecagoneCarrier")){
+            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.dodecagoneSignal);
+            
+        }
+    }
     
 }

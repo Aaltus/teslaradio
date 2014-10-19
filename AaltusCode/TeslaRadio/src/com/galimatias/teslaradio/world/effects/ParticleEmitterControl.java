@@ -78,6 +78,7 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId)
     {
+        
         this.emitParticle(spatial);
     }
 
