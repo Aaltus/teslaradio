@@ -7,12 +7,9 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
-import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.observer.SignalObserver;
 import com.jme3.asset.AssetManager;
-import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -50,7 +47,7 @@ public abstract class Scenario extends Node implements SignalObserver {
      *
      */
     protected AssetManager assetManager;
-
+    
     /**
      * Camera linked to the scenario. All "LookAt" and camera-dependant effect
      * will use this camera.
@@ -102,23 +99,14 @@ public abstract class Scenario extends Node implements SignalObserver {
      */
     protected float waveTime = 1;
     
+    /*Path of the background sound*/
+    protected String backgroundSound = null;
+    
     /**
      * We make the default constructor private to prevent its use.
      * We always want a assetmanager and a camera
      */
-    
-    /**
-     * Default parameters for textBoxes
-     */
-    protected final float TEXTSIZE             = 0.5f;
-    protected final ColorRGBA TEXTCOLOR        = new ColorRGBA(125/255f, 249/255f, 255/255f, 1f);  
-    protected final ColorRGBA TEXTBOXCOLOR     = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);;
-    protected final float TITLEWIDTH           = 5.2f; 
-    protected final float TITLEHEIGHT          = 0.8f;
-    protected final BitmapFont.Align ALIGNEMENT = BitmapFont.Align.Center;
-    protected final boolean SHOWTEXTDEBUG      = false;
-    protected final boolean TEXTLOOKATCAMERA   = false;
-    
+        
     private Scenario()
     {
 
@@ -129,8 +117,19 @@ public abstract class Scenario extends Node implements SignalObserver {
         assetManager = AppGetter.getAssetManager();
         this.Camera = Camera;
         this.destinationHandle = destinationHandle;
-        this.setUserData("angleX", 0.0f);
-        
+        this.setUserData("angleX", 0f);
+    }
+    
+    public Scenario(com.jme3.renderer.Camera Camera, Spatial destinationHandle, String bgm)
+    {
+        this.backgroundSound = bgm;
+        assetManager = AppGetter.getAssetManager();
+        this.Camera = Camera;
+        this.destinationHandle = destinationHandle;
+        this.setUserData("angleX", 0f);
+        if(this.backgroundSound != null){
+            this.addControl(new SoundControl(this.backgroundSound,false,1));
+        }
     }
 
     /**
@@ -193,20 +192,46 @@ public abstract class Scenario extends Node implements SignalObserver {
      */
     protected abstract void initPatternGenerator();
 
+    /**
+     * Call all of the methods when scenario is on Node A, can be override for 
+     * certain scenarios.
+     */
+    protected void onFirstNodeActions() {
+        startAutoGeneration();
+    }
+    
+    /**
+     * Call all of the methods when scenario is on Node B, can be override for 
+     * certain scenarios.
+     */
+    protected void onSecondNodeActions() {
+        startBackgroundSound();
+    }
+    
+    /**
+     * Called when the scenario is detached from one of the two nodes
+     */
+    protected void notOnNodeActions() {
+        if (this.needAutoGenIfMain) {
+            stopAutoGeneration();
+        }
+        
+        stopBackgroundSound();
+    }
     
     /**
      * Start the auto generation of particles
      */
-    protected void startAutoGeneration(){
+    private void startAutoGeneration() {
         this.getInputHandle().getControl(PatternGeneratorControl.class).startAutoPlay(1,this.particlePerWave);
     };
     
     /**
      * Stop the auto generation of particles
      */
-    protected void stopAutoGeneration(){
-       if(this.getInputHandle() != null){ 
-       this.getInputHandle().getControl(PatternGeneratorControl.class).stopAutoPlay();
+    private void stopAutoGeneration() {
+       if(this.getInputHandle() != null) { 
+            this.getInputHandle().getControl(PatternGeneratorControl.class).stopAutoPlay();
        }
     };
     
@@ -218,10 +243,23 @@ public abstract class Scenario extends Node implements SignalObserver {
               setBaseParticle(particle);
     };
     
-    public boolean getNeedsAutoGen(){
+    public boolean getNeedsAutoGen() {
         return this.needAutoGenIfMain;
     }
 
+    private void startBackgroundSound() {
+        if(this.backgroundSound != null){
+            this.getControl(SoundControl.class).playSound(true);
+            this.getControl(SoundControl.class).setEnabled(true);
+        }
+    }
+    
+    private void stopBackgroundSound() {
+        if(this.backgroundSound != null){
+            this.getControl(SoundControl.class).stopSound();
+            this.getControl(SoundControl.class).setEnabled(false);
+        }
+    }
 
     /**
      * This method will apply an opposite trackable rotation on the model, preventing it from rotating

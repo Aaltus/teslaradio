@@ -38,6 +38,7 @@ public class PatternGeneratorControl extends AbstractControl {
     protected Future autoPlayThread;
     private final boolean isRandom;
     private int particlePerAutoWave;
+    private String id;
     
    /**
     * 
@@ -49,8 +50,9 @@ public class PatternGeneratorControl extends AbstractControl {
     * @param isRandom If set to true, the scale will be randomly taken from the list
     */
     public PatternGeneratorControl(float waveMinDelay, Spatial baseGeom,
-            int scaleStep, float minScale, float maxScale, boolean isRandom){
+            int scaleStep, float minScale, float maxScale, boolean isRandom ){
         
+       // this.id = id;
         this.minWaveDelay = waveMinDelay;
         this.waveIterator = 0;
         this.lastCall = 0;
@@ -127,6 +129,7 @@ public class PatternGeneratorControl extends AbstractControl {
         if(this.autoPlayThread != null){
             this.autoPlayThread.cancel(true);
             this.autoPlayThread = null;
+            this.geomList.clear();
         }
     }
     
@@ -164,7 +167,7 @@ public class PatternGeneratorControl extends AbstractControl {
         Spatial geom = this.baseParticle.clone();
         geom.scale(scale);
         Float fs = geom.getWorldScale().length();
-        geom.setUserData("Scale", fs);
+        geom.setUserData(AppGetter.USR_SCALE, fs);
         //The Queue will always have a size of 1 or 0, we don't want to queue
         //more than the minimum delay
         this.geomList.addLast(geom);
@@ -182,7 +185,8 @@ public class PatternGeneratorControl extends AbstractControl {
         {
             ParticleEmitterControl emitter = this.spatial.getControl(
                ParticleEmitterControl.class);
-            emitter.emitParticle(this.geomList.pollFirst());     
+            emitter.emitParticle(this.geomList.pollFirst()); 
+            
         }
         this.lastCall = 0;
             

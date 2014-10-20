@@ -4,7 +4,9 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.effects.*;
+import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
@@ -23,13 +25,15 @@ import com.utils.AppLogger;
  *
  * @author Barliber
  */
-public final class Reception extends Scenario implements EmitterObserver  {
+public final class Reception extends Scenario implements EmitterObserver, AutoGenObserver  {
     
     // TextBox of the scene
     private TextBox titleTextBox;
     
     // Default text to be seen when scenario starts
     private String titleText = "La Réception";
+    private float titleTextSize = 0.5f;
+    private ColorRGBA defaultTextColor = ColorRGBA.Green;
 
     //Test 
     private Spatial antenne;
@@ -72,8 +76,11 @@ public final class Reception extends Scenario implements EmitterObserver  {
     
     private Boolean isFM = true;
     
+  
+    
     public Reception(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
-        super(Camera, destinationHandle);
+        super(Camera, destinationHandle, "Sounds/reception.ogg" );
+       
 
         this.cam = Camera;
         this.destinationHandle = destinationHandle;
@@ -91,6 +98,7 @@ public final class Reception extends Scenario implements EmitterObserver  {
         particle.setMaterial(mat1);
         particle.setUserData("CarrierShape", "CubeCarrier");
         particle.setUserData("isFM", true);
+        ModulationCommon.registerObserver(this);
     }
 
     @Override
@@ -155,6 +163,8 @@ public final class Reception extends Scenario implements EmitterObserver  {
         this.attachChild(moveArrow);
     }
    
+    
+   
     private void addWifiControl(ImageBox wifiLogo) {
         LookAtCameraControl lookAtControl = new LookAtCameraControl(Camera);
         wifiLogo.addControl(lookAtControl);
@@ -212,6 +222,9 @@ public final class Reception extends Scenario implements EmitterObserver  {
     
     private void updateSignalIntensity(Float normScale) { 
         wifi.detachAllChildren();
+        if(normScale < 1){
+            this.getControl(SoundControl.class).updateNoiseLevel(1-normScale);
+        }
         if (normScale >= 0 && normScale < 0.33f) {
             signalIntensity = 1;
         } else if (normScale >= 0.33f && normScale < 0.66f) {
@@ -226,12 +239,15 @@ public final class Reception extends Scenario implements EmitterObserver  {
         switch(signalIntensity) {
             case 1:
                 wifi.attachChild(wifiLogoLow);
+                
                 break;
             case 2:
                 wifi.attachChild(wifiLogoMedium);
+
                 break;
             case 3:
                 wifi.attachChild(wifiLogoFull);
+               
                 break;
             default:
                 wifi.attachChild(wifiLogoLow);
@@ -245,8 +261,15 @@ public final class Reception extends Scenario implements EmitterObserver  {
 
              if (outputAntenneRx != null) {
                  
-                Float particleScale = spatial.getUserData("Scale");
+                Float particleScale = spatial.getUserData(AppGetter.USR_SCALE);
+                 
+                //System.out.println("Scale before emission : " + particleScale.toString());
+                //System.out.println("Scale when received : " + spatial.getLocalScale().toString());
+                
                 float normScale = spatial.getWorldScale().length()/particleScale;
+                
+                //System.out.println("Normalized scale : " + normScale);
+                
                 updateSignalIntensity(normScale);
                 outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
              }
@@ -261,25 +284,40 @@ public final class Reception extends Scenario implements EmitterObserver  {
     }
     
     @Override
-    protected void startAutoGeneration(){
-        super.startAutoGeneration();
+    protected void onFirstNodeActions(){
+        super.onFirstNodeActions();
         
         scene.detachChild(wifi);
     }
 
     @Override
+    protected void onSecondNodeActions() {
+        super.onSecondNodeActions();
+        
+        scene.attachChild(wifi);
+    }
+    
+    @Override
     protected void initTitleBox() {
-       titleTextBox = new TextBox(assetManager, 
-                                    titleText, 
-                                    TEXTSIZE,
-                                    TEXTCOLOR, 
-                                    TEXTBOXCOLOR,
-                                    TITLEWIDTH, 
-                                    TITLEHEIGHT, 
-                                    "titleText", 
-                                    BitmapFont.Align.Center, 
-                                    SHOWTEXTDEBUG, 
-                                    TEXTLOOKATCAMERA);
+
+       boolean lookAtCamera = false;
+       boolean showDebugBox = false;
+       float textBoxWidth = 5.2f;
+       float textBoxHeight = 0.8f;
+
+       ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+       ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
+       titleTextBox = new TextBox(assetManager,
+               titleText,
+               titleTextSize,
+               titleTextColor,
+               titleBackColor,
+               textBoxWidth,
+               textBoxHeight,
+               "titleText",
+               BitmapFont.Align.Center.Center,
+               showDebugBox,
+               lookAtCamera);
 
        //move the text on the ground without moving
        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
@@ -320,5 +358,21 @@ public final class Reception extends Scenario implements EmitterObserver  {
         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, ScenariosCommon.minBaseParticleScale, 
                                                                      ScenariosCommon.maxBaseParticleScale, true));
        
+    }
+    
+    @Override
+    public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
+        this.isFM = isFm;
+        this.initModulatedParticles();
+        if(newCarrier.getName().equals("CubeCarrier")){
+             this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
+        }
+        else if(newCarrier.getName().equals("PyramidCarrier")){
+            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.pyramidSignal);
+        }
+        else if(newCarrier.getName().equals("DodecagoneCarrier")){
+            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.dodecagoneSignal);
+            
+        }
     }
 }

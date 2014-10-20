@@ -1,5 +1,6 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
@@ -9,7 +10,6 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-
 
 /**
  * Created by Batcave on 2014-09-09.
@@ -24,7 +24,7 @@ public final class Modulation extends ModulationCommon {
     
     public Modulation(Camera Camera, Spatial destinationHandle) {
         
-        super(Camera, destinationHandle);
+        super(Camera, destinationHandle, "Sounds/modulation.ogg");
         
         loadUnmovableObjects();
         loadMovableObjects();
@@ -33,17 +33,25 @@ public final class Modulation extends ModulationCommon {
 
     @Override
     protected void initTitleBox() {
+        
+        boolean lookAtCamera = false;
+        boolean showDebugBox = false;
+        float textBoxWidth = 5.2f;
+        float textBoxHeight = 0.8f;
+        
+        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
         TextBox titleTextBox = new TextBox(assetManager,
-                                    titleText,
-                                    TEXTSIZE,
-                                    TEXTCOLOR,
-                                    TEXTBOXCOLOR,
-                                    TITLEWIDTH,
-                                    TITLEHEIGHT,
-                                    "titleText",
-                                    BitmapFont.Align.Center,
-                                    SHOWTEXTDEBUG,
-                                    TEXTLOOKATCAMERA);
+                                    titleText, 
+                titleTextSize,
+                titleTextColor,
+                titleBackColor,
+                textBoxWidth,
+                textBoxHeight,
+                                    "titleText", 
+                BitmapFont.Align.Center.Center,
+                showDebugBox,
+                lookAtCamera);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
@@ -105,8 +113,10 @@ public final class Modulation extends ModulationCommon {
         
         if (notifierId.equals("CarrierEmitter")) {
 
-            //System.out.println("I am in " + notifierId);
+           // System.out.println("I am in " + notifierId);
             changeOuputParticles(spatial, notifierId);
+            
+            this.getParent().setUserData(AppGetter.USR_SCALE, spatial.getUserData(AppGetter.USR_NEXT_WAVE_SCALE));
             
         } else if (notifierId.equals("WirePCBEmitter")) {
 
@@ -118,6 +128,7 @@ public final class Modulation extends ModulationCommon {
                 ScenariosCommon.modulateFMorAM(clone, spatial, isFM);
                 
                 clone.attachChild(spatial);
+               
                 
                 //System.out.println("Scaling : " + spatial.getLocalScale().toString());
                 pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(clone);

@@ -365,9 +365,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         if(getCurrentScenario() != null){
             for(Scenario scenario : getCurrentScenario().getScenarios() )
             {
-                if(scenario.getNeedsAutoGen()){
-                    scenario.stopAutoGeneration();
-                }
+                scenario.notOnNodeActions();
                 Node parent = scenario.getParent();
                 if(parent != null){
                     parent.detachChild(scenario);
@@ -389,7 +387,10 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 if(count < size){
                     Scenario scenario = getCurrentScenario().getScenarios().get(count);
                     if(count == 0 && scenario.getNeedsAutoGen()){
-                        scenario.startAutoGeneration();
+                        scenario.onFirstNodeActions();
+                    }
+                    if(count == 1){
+                        scenario.onSecondNodeActions();
                     }
                     if(node != null)
                     {

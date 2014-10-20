@@ -59,9 +59,12 @@ public final class SoundCapture extends Scenario {
     
     // Default text to be seen when scenario starts
     private String titleText = "La Capture du Son";
+    private float titleTextSize = 0.5f;
+    private ColorRGBA defaultTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
     
     //Arrows
     private Arrows micArrow;
+    private Arrows moveArrow;
        
     public SoundCapture(Camera Camera, Spatial destinationHandle)
     {
@@ -119,7 +122,7 @@ public final class SoundCapture extends Scenario {
         //Geometry tmpGeom = (Geometry)micWire_geom;//.scale(1/ScenarioManager.WORLD_SCALE_DEFAULT);
         
         micWireEmitter.addControl(new StaticWireParticleEmitterControl(micWire_geom.getMesh(), 3.5f, cam));
-        micWireEmitter.addControl(new SoundControl("Sounds/micro_sound.wav", false, 2));
+      //  micWireEmitter.addControl(new SoundControl("Sounds/micro_sound.wav", false, 2));
         
         wireDestinationEmitter = new Node();
         wireDestinationEmitter.setName("WireDestinationEmitter");
@@ -246,6 +249,7 @@ public final class SoundCapture extends Scenario {
 
         //touchEffectEmitter.simpleUpdate(tpf);
         micArrow.simpleUpdate(tpf);
+        moveArrow.simpleUpdate(tpf);
         
         if(Camera != null) {
             Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
@@ -288,17 +292,14 @@ public final class SoundCapture extends Scenario {
 
     @Override
     protected void initTitleBox() {
-        titleTextBox = new TextBox(assetManager, 
-                                    titleText, 
-                                    TEXTSIZE,
-                                    TEXTCOLOR, 
-                                    TEXTBOXCOLOR,
-                                    TITLEWIDTH, 
-                                    TITLEHEIGHT, 
-                                    "titleText", 
-                                    BitmapFont.Align.Center, 
-                                    SHOWTEXTDEBUG, 
-                                    TEXTLOOKATCAMERA);
+        boolean lookAtCamera = false;
+        boolean showDebugBox = false;
+        float textBoxWidth = 5.2f;
+        float textBoxHeight = 0.8f;
+        
+        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
+        titleTextBox = new TextBox(assetManager, titleText, titleTextSize, defaultTextColor, titleBackColor, textBoxWidth, textBoxHeight, "titleText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
         
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
@@ -314,6 +315,8 @@ public final class SoundCapture extends Scenario {
         LookAtCameraControl control = new LookAtCameraControl(Camera);
         micArrow.addControl(control);
         scene.attachChild(micArrow);
+        moveArrow = new Arrows("move", null, assetManager, 10);
+        this.attachChild(moveArrow);
     }
     
         /**

@@ -1,5 +1,6 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 import com.galimatias.teslaradio.world.effects.*;
 import com.jme3.collision.CollisionResults;
@@ -49,6 +50,7 @@ public final class SoundEmission extends Scenario {
 
       // Default text to be seen when scenario starts
     private String titleText = "L'émission du son";
+    private float titleTextSize = 0.5f;
     
     //Arrows
     Arrows moveArrow;
@@ -57,8 +59,8 @@ public final class SoundEmission extends Scenario {
 
     public SoundEmission(com.jme3.renderer.Camera Camera, Spatial destinationHandle)
     {
+
         super(Camera, destinationHandle);
-        
         touchable = new Node();
         touchable.setName("Touchable");
         this.attachChild(touchable);
@@ -201,17 +203,14 @@ public final class SoundEmission extends Scenario {
     @Override
     protected void initTitleBox()
     {
-        titleTextBox = new TextBox(assetManager, 
-                                    titleText, 
-                                    TEXTSIZE,
-                                    TEXTCOLOR, 
-                                    TEXTBOXCOLOR,
-                                    TITLEWIDTH, 
-                                    TITLEHEIGHT, 
-                                    "titleText", 
-                                    BitmapFont.Align.Center, 
-                                    SHOWTEXTDEBUG, 
-                                    TEXTLOOKATCAMERA);
+        boolean lookAtCamera = false;
+        boolean showDebugBox = false;
+        float textBoxWidth = 5.2f;
+        float textBoxHeight = 0.8f;
+
+        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
+        titleTextBox = new TextBox(assetManager, titleText, titleTextSize, titleTextColor, titleBackColor, textBoxWidth, textBoxHeight, "titleText", BitmapFont.Align.Center, showDebugBox, lookAtCamera);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
