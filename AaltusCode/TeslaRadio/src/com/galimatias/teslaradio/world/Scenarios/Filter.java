@@ -34,7 +34,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     private String titleText = "Le filtrage";
     
     private boolean isFM = true;
-    private boolean hasTurned = false;
     private int lastFrequency = 1;
     
     //Pattern Geometry
@@ -321,8 +320,10 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         System.out.println("Received carrier ; " + carrier);
         System.out.println("Carrier returned by the wheel : " + this.carrier);
         
-        if (!carrier.equals(this.carrier)) {
-           scene.detachChild(spatial);
+        if (carrier.equals(this.carrier)) {
+            if (outFilterEmitter != null) {
+                outFilterEmitter.getControl(ParticleEmitterControl.class).emitParticle(spatial);
+            }
         }
     }
 
@@ -330,10 +331,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
         if (notifierId.equals("Input")) {
             filter(((Node)spatial).getChild(0).getName(), spatial);
-            
-            if (outFilterEmitter != null) {
-                outFilterEmitter.getControl(ParticleEmitterControl.class).emitParticle(spatial);
-            }
         }
     }
 }
