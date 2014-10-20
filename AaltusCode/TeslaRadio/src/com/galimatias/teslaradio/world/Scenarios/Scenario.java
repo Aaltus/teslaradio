@@ -9,7 +9,9 @@ import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.SoundControl;
 import com.galimatias.teslaradio.world.observer.SignalObserver;
 import com.jme3.asset.AssetManager;
+import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -47,7 +49,7 @@ public abstract class Scenario extends Node implements SignalObserver {
      *
      */
     protected AssetManager assetManager;
-
+    
     /**
      * Camera linked to the scenario. All "LookAt" and camera-dependant effect
      * will use this camera.
@@ -97,6 +99,18 @@ public abstract class Scenario extends Node implements SignalObserver {
     
     /*Path of the background sound*/
     protected String backgroundSound = null;
+    
+    /**
+     * Default parameters for textBoxes
+     */
+    protected final float TEXTSIZE             = 0.5f;
+    protected final ColorRGBA TEXTCOLOR        = new ColorRGBA(125/255f, 249/255f, 255/255f, 1f);  
+    protected final ColorRGBA TEXTBOXCOLOR     = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);;
+    protected final float TITLEWIDTH           = 5.2f; 
+    protected final float TITLEHEIGHT          = 0.8f;
+    protected final BitmapFont.Align ALIGNEMENT = BitmapFont.Align.Center;
+    protected final boolean SHOWTEXTDEBUG      = false;
+    protected final boolean TEXTLOOKATCAMERA   = false;
     
     /**
      * We make the default constructor private to prevent its use.
@@ -183,43 +197,69 @@ public abstract class Scenario extends Node implements SignalObserver {
      */
     protected abstract void initTitleBox();
 
+    /**
+     * Call all of the methods when scenario is on Node A, can be override for 
+     * certain scenarios.
+     */
+    protected void onFirstNodeActions() {
+        startAutoGeneration();
+    }
+    
+    /**
+     * Call all of the methods when scenario is on Node B, can be override for 
+     * certain scenarios.
+     */
+    protected void onSecondNodeActions() {
+        startBackgroundSound();
+    }
+    
+    /**
+     * Called when the scenario is detached from one of the two nodes
+     */
+    protected void notOnNodeActions() {
+        if (this.needAutoGenIfMain) {
+            stopAutoGeneration();
+        }
+        
+        stopBackgroundSound();
+    }
     
     /**
      * Start the auto generation of particles
      */
-    protected void startAutoGeneration(){
+    private void startAutoGeneration() {
         this.getInputHandle().getControl(PatternGeneratorControl.class).startAutoPlay(1,this.particlePerWave);
     };
     
     /**
      * Stop the auto generation of particles
      */
-    protected void stopAutoGeneration(){
-       if(this.getInputHandle() != null){ 
-       this.getInputHandle().getControl(PatternGeneratorControl.class).stopAutoPlay();
+    private void stopAutoGeneration() {
+       if(this.getInputHandle() != null) { 
+            this.getInputHandle().getControl(PatternGeneratorControl.class).stopAutoPlay();
        }
     };
     
     /**
      * Sets the base particle for auto-generation
      */
-    protected void setAutoGenerationParticle(Geometry particle){
+    protected void setAutoGenerationParticle(Geometry particle) {
       this.getInputHandle().getControl(PatternGeneratorControl.class).
               setBaseParticle(particle);
     };
     
-    public boolean getNeedsAutoGen(){
+    public boolean getNeedsAutoGen() {
         return this.needAutoGenIfMain;
     }
 
-    public void startBackgroundSound(){
+    private void startBackgroundSound() {
         if(this.backgroundSound != null){
             this.getControl(SoundControl.class).playSound(true);
             this.getControl(SoundControl.class).setEnabled(true);
         }
     }
     
-    public void stopBackgroundSound(){
+    private void stopBackgroundSound() {
         if(this.backgroundSound != null){
             this.getControl(SoundControl.class).stopSound();
             this.getControl(SoundControl.class).setEnabled(false);
