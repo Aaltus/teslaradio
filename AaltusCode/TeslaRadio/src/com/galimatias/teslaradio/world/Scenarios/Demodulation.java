@@ -51,7 +51,6 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
 
     // Default text to be seen when scenario starts
     private String titleText = "La Démodulation";
-    private float titleTextSize = 0.5f;
     
      //Variable for switch
     private Quaternion initAngleSwitch = new Quaternion();
@@ -353,25 +352,17 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     
     @Override
     protected void initTitleBox() {
-
-        boolean lookAtCamera = false;
-        boolean showDebugBox = false;
-        float textBoxWidth = 5.2f;
-        float textBoxHeight = 0.8f;
-
-        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
-        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
-        titleTextBox = new TextBox(assetManager,
-               titleText,
-               titleTextSize,
-               titleTextColor,
-               titleBackColor,
-               textBoxWidth,
-               textBoxHeight,
-               "titleText",
-               BitmapFont.Align.Center.Center,
-               showDebugBox,
-               lookAtCamera);
+        titleTextBox = new TextBox(assetManager, 
+                                    titleText, 
+                                    TEXTSIZE,
+                                    TEXTCOLOR, 
+                                    TEXTBOXCOLOR,
+                                    TITLEWIDTH, 
+                                    TITLEHEIGHT, 
+                                    "titleText", 
+                                    BitmapFont.Align.Center, 
+                                    SHOWTEXTDEBUG, 
+                                    TEXTLOOKATCAMERA);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
