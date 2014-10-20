@@ -15,7 +15,7 @@
 
 #define AALTUS_NBR_TARGET 2
 
-static int logLevel = LOG_NONE;
+static int logLevel = LOG_ERROR;
 
 inline void LOGI(const char *text ...)
 {

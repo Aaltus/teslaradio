@@ -70,8 +70,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
     {
 
         AppGetter.setInstance(this);
-        // Where the AppLogger is called for the first time and the log level is set
-        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.NONE);
+
 
         AppLogger.getInstance().i(TAG, "simpleInitApp");
 
@@ -293,6 +292,8 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         this.getStateManager().detach(vuforiaJMEState);
 
     }
+
+
 
 
 }
