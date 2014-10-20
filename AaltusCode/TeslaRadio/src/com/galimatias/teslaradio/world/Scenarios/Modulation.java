@@ -33,7 +33,7 @@ public final class Modulation extends ModulationCommon {
 
     @Override
     protected void initTitleBox() {
-        TextBox titleTextBox = new TextBox(assetManager, 
+        titleTextBox = new TextBox(assetManager, 
                                     titleText, 
                                     TEXTSIZE,
                                     TEXTCOLOR, 

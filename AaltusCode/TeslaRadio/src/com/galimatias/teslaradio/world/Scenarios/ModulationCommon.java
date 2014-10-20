@@ -39,6 +39,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     
     // TextBox of the scene
     private TextBox digitalDisplay;
+    protected TextBox titleTextBox;
 
     protected float titleTextSize = 0.5f;
     protected ColorRGBA digitalTextColor = ColorRGBA.Green;
@@ -427,6 +428,11 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
 
                         if (nameToCompare.equals(this.getChild("Switch").getName())) {
                             toggleModulationMode();
+                        }
+                        else if (nameToCompare.equals(titleTextBox.getName()))
+                        {
+                            showInformativeMenu = true;
+                            break;
                         }
                     }
                 }
