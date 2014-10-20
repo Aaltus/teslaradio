@@ -61,24 +61,17 @@ public class Demodulation extends ModulationCommon  {
 
     @Override
     protected void initTitleBox() {
-        boolean lookAtCamera = false;
-        boolean showDebugBox = false;
-        float textBoxWidth = 5.2f;
-        float textBoxHeight = 0.8f;
-
-        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
-        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
-        TextBox titleTextBox = new TextBox(assetManager,
+        titleTextBox = new TextBox(assetManager, 
                                     titleText, 
-                                    titleTextSize,
-                                    titleTextColor,
-                                    titleBackColor,
-                                    textBoxWidth,
-                                    textBoxHeight,
+                                    TEXTSIZE,
+                                    TEXTCOLOR, 
+                                    TEXTBOXCOLOR,
+                                    TITLEWIDTH, 
+                                    TITLEHEIGHT, 
                                     "titleText", 
-                                    BitmapFont.Align.Center.Center,
-                                    showDebugBox,
-                                    lookAtCamera);
+                                    BitmapFont.Align.Center, 
+                                    SHOWTEXTDEBUG, 
+                                    TEXTLOOKATCAMERA);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);

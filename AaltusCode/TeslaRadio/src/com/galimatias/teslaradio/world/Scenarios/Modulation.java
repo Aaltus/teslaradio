@@ -20,7 +20,7 @@ public final class Modulation extends ModulationCommon {
     
     // Default text to be seen when scenario starts
     private String titleText = "La Modulation";
-    private float titleTextSize = 0.5f;
+    private ColorRGBA digitalTextColor = ColorRGBA.Green;
     
     public Modulation(Camera Camera, Spatial destinationHandle) {
         
@@ -33,25 +33,17 @@ public final class Modulation extends ModulationCommon {
 
     @Override
     protected void initTitleBox() {
-        
-        boolean lookAtCamera = false;
-        boolean showDebugBox = false;
-        float textBoxWidth = 5.2f;
-        float textBoxHeight = 0.8f;
-        
-        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
-        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
-        TextBox titleTextBox = new TextBox(assetManager,
+        TextBox titleTextBox = new TextBox(assetManager, 
                                     titleText, 
-                titleTextSize,
-                titleTextColor,
-                titleBackColor,
-                textBoxWidth,
-                textBoxHeight,
+                                    TEXTSIZE,
+                                    TEXTCOLOR, 
+                                    TEXTBOXCOLOR,
+                                    TITLEWIDTH, 
+                                    TITLEHEIGHT, 
                                     "titleText", 
-                BitmapFont.Align.Center.Center,
-                showDebugBox,
-                lookAtCamera);
+                                    BitmapFont.Align.Center, 
+                                    SHOWTEXTDEBUG, 
+                                    TEXTLOOKATCAMERA);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
@@ -81,6 +73,46 @@ public final class Modulation extends ModulationCommon {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+                    digitalDisplay.simpleUpdate(sFM1061,
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sFM969, 
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sFM1027, 
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sFM1061,
+                                                TEXTSIZE,
+                                                digitalTextColor,
+                                                Camera,
+                                                Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sAM600, 
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sAM800, 
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sAM1500, 
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sAM600,
+                            TEXTSIZE,
+                            digitalTextColor,
+                            Camera,
+                            Vector3f.UNIT_X);
     //convert angle for range [0 ; 2pi]
     private float angleRangeTwoPi(float angle) {
         float resultat = 0;
