@@ -112,6 +112,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     @Override
     protected void loadMovableObjects() {
         filterWheel = scene.getChild("Circle");
+        filterWheel.setLocalRotation(new Quaternion().fromAngleAxis(2f*pi/3f, Vector3f.UNIT_Y));
         
         initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
         endAngleWheel.fromAngleAxis(pi/3f, Vector3f.UNIT_Y);
@@ -320,10 +321,8 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         System.out.println("Received carrier ; " + carrier);
         System.out.println("Carrier returned by the wheel : " + this.carrier);
         
-        if (carrier.equals(this.carrier)) {
-            ((Node)spatial).detachChild(((Node)spatial).getChild(0));
-        } else {
-            scene.detachChild(spatial);
+        if (!carrier.equals(this.carrier)) {
+           scene.detachChild(spatial);
         }
     }
 
@@ -331,6 +330,10 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
         if (notifierId.equals("Input")) {
             filter(((Node)spatial).getChild(0).getName(), spatial);
+            
+            if (outFilterEmitter != null) {
+                outFilterEmitter.getControl(ParticleEmitterControl.class).emitParticle(spatial);
+            }
         }
     }
 }
