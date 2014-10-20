@@ -212,19 +212,19 @@ public class Filter extends Scenario implements EmitterObserver {
         switch(frequency) {
             case 1:
                 initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(stepRange, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(stepRange/2f, Vector3f.UNIT_Y);
                 break;
             case 2:
                 initAngleWheel.fromAngleAxis(stepRange, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(2*stepRange, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(3*stepRange/2f, Vector3f.UNIT_Y);
                 break;
             case 3:
                 initAngleWheel.fromAngleAxis(2*stepRange, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(3*stepRange, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(5*stepRange/2f, Vector3f.UNIT_Y);
                 break;
             default:
                 initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(stepRange, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(stepRange/2f, Vector3f.UNIT_Y);
                 break;       
         }
         

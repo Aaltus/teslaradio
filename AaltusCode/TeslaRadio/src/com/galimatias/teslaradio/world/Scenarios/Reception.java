@@ -214,7 +214,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     private void updateSignalIntensity(Float normScale) { 
         wifi.detachAllChildren();
-        if(normScale < 1){
+        if(normScale < 1) {
             this.getControl(SoundControl.class).updateNoiseLevel(1-normScale);
         }
         if (normScale >= 0 && normScale < 0.33f) {
