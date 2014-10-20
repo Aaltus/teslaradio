@@ -5,6 +5,7 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.galimatias.teslaradio.world.effects.*;
+import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -20,7 +21,7 @@ import com.jme3.scene.Spatial;
  *
  * @author Batcave
  */
-public abstract class ModulationCommon extends Scenario implements EmitterObserver {
+public abstract class ModulationCommon extends Scenario implements EmitterObserver, AutoGenObserver {
 
     // Values displayed on the digital screen of the PCB 3D object
     protected final String sFM1061 = "FM 106.1MHz";
@@ -220,6 +221,9 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                 switchIsToggled = false;
                 tpfCumulSwitch = 0;
             }
+            Spatial carrier = this.selectedCarrier.clone();
+            carrier.setLocalScale(1);
+            ScenariosCommon.notifyObservers(carrier, isFM);
         }
     }
 
@@ -229,6 +233,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
             isFM = !isFM;
             switchIsToggled = true;
         }
+        this.autoGenObserverUpdate(this.micTapParticle, isFM);
     }
 
     private void turnTunerButton(float ZXangle) {
@@ -482,12 +487,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     }
 
     @Override
-    protected void initPatternGenerator() {
-
-        micTapParticle = ScenariosCommon.initBaseGeneratorParticle();
-    }
-
-    @Override
     public void signalEndOfPath(Geometry caller, float magnitude) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -504,7 +503,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
 
     @Override
     protected void setAutoGenerationParticle(Spatial particle){
-        this.micTapParticle = particle;
+        this.micTapParticle = (Node) particle;
         this.wirePcbEmitter.getControl(PatternGeneratorControl.class).
                 setBaseParticle(this.micTapParticle);
 
@@ -517,6 +516,5 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     {
         switchArrow.getControl(FadeControl.class).setShowImage(false);
         switchArrow.resetTimeLastTouch();
-    }
-    
+    }    
 }

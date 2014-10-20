@@ -86,7 +86,7 @@ public final class Modulation extends ModulationCommon {
 
     @Override
     protected void initPatternGenerator() {
-        super.initPatternGenerator(); 
+        micTapParticle = ScenariosCommon.initBaseGeneratorParticle();
         
         this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 10, ScenariosCommon.minBaseParticleScale,
                 ScenariosCommon.maxBaseParticleScale, true));
@@ -128,5 +128,10 @@ public final class Modulation extends ModulationCommon {
             }
             
         }
+    }
+
+    @Override
+    public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
+        
     }
 }

@@ -123,7 +123,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         outputAntenneRx.setName("OutputAntenneRx");
         
         initPatternGenerator();
-        
+        ScenariosCommon.registerObserver(this);
     }
 
     private void loadArrows()

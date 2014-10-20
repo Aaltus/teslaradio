@@ -33,7 +33,7 @@ import com.jme3.scene.shape.Box;
  *
  * @author Barliber
  */
-public final class Amplification extends Scenario implements EmitterObserver, AutoGenObserver{
+public final class Amplification extends Scenario implements EmitterObserver, AutoGenObserver {
     
     private final static String TAG = "Amplification";
     

@@ -93,6 +93,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         outputEmitter.setName("Output");
         
         initPatternGenerator();
+        ScenariosCommon.registerObserver(this);
         
         scene.attachChild(outputEmitter);
         outputEmitter.setLocalTranslation(outputHandle.getLocalTranslation());

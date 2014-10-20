@@ -83,33 +83,8 @@ public class Demodulation extends ModulationCommon  {
 
     @Override
     protected void initPatternGenerator() {
-        super.initPatternGenerator();
         
-        Spatial baseGeom = ScenariosCommon.initBaseGeneratorParticle();
-        Spatial[] carrier = ScenariosCommon.initCarrierGeometries();
-              
-        this.cubeSignal = new Node();
-        this.cubeSignal.attachChild(carrier[0].clone());
-        ScenariosCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
-        this.cubeSignal.attachChild(baseGeom.clone());
-        this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
-        this.cubeSignal.setUserData("isFM", isFM);
-        
-        this.pyramidSignal = new Node();
-        this.pyramidSignal.attachChild(carrier[0].clone());
-        ScenariosCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
-        this.pyramidSignal.attachChild(baseGeom.clone());
-        this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
-        this.pyramidSignal.setUserData("isFM", isFM);
-       
-        this.dodecagoneSignal = new Node();
-        this.dodecagoneSignal.attachChild(carrier[0].clone());
-        ScenariosCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
-        this.dodecagoneSignal.attachChild(baseGeom.clone());
-        this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
-        this.dodecagoneSignal.setUserData("isFM", isFM);
-        
-        this.micTapParticle = this.cubeSignal;
+        micTapParticle = ScenariosCommon.initBaseGeneratorParticle();
         
         this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 10, ScenariosCommon.minBaseParticleScale,
                 ScenariosCommon.maxBaseParticleScale, true));
@@ -128,7 +103,23 @@ public class Demodulation extends ModulationCommon  {
             }
             
         }
-    }         
+    }
+    
+    @Override
+    public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
+        this.isFM = isFm;
+        this.initPatternGenerator();
+        if(newCarrier.getName().equals("CubeCarrier")){
+             this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
+        }
+        else if(newCarrier.getName().equals("PyramidCarrier")){
+            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.pyramidSignal);
+        }
+        else if(newCarrier.getName().equals("DodecagoneCarrier")){
+            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.dodecagoneSignal);
+            
+        }
+    }
 }
                
 
