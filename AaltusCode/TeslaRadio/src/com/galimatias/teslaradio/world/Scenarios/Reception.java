@@ -27,9 +27,6 @@ import com.utils.AppLogger;
  */
 public final class Reception extends Scenario implements EmitterObserver, AutoGenObserver  {
     
-    // TextBox of the scene
-    private TextBox titleTextBox;
-    
     // Default text to be seen when scenario starts
     private String titleText = "La Réception";
 
@@ -289,7 +286,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     @Override
     protected void initTitleBox() {
-       titleTextBox = new TextBox(assetManager, 
+       TextBox titleTextBox = new TextBox(assetManager, 
                                     titleText, 
                                     TEXTSIZE,
                                     TEXTCOLOR, 

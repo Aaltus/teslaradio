@@ -184,9 +184,9 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         // Default configuration of the digital display
         digitalDisplay = new TextBox(assetManager,
                 sFM1061,
-                titleTextSize,
-                digitalTextColor,
-                new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f),
+                TEXTSIZE,
+                TEXTCOLOR,
+                TEXTBOXCOLOR,
                 3.5f,
                 1.0f,
                 "DigitalDisplay",

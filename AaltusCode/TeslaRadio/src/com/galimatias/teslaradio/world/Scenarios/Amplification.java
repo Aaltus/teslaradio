@@ -52,15 +52,6 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     private Arrows moveArrow;
     
     private Boolean isFM = true;
-     /**
-     * TODO Remove this bool and associated code in simpleUpdate when it works
-     * on Android. Only for debug purposes.
-     */
-    private final static boolean DEBUG_ANGLE = false;
-    
-    
-    // TextBox of the scene
-    private TextBox titleTextBox;
     
     // Default text to be seen when scenario starts
     private String titleText = "L'Amplification";
@@ -302,7 +293,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     
     @Override
     protected void initTitleBox() {
-        titleTextBox = new TextBox(assetManager, 
+        TextBox titleTextBox = new TextBox(assetManager, 
                                     titleText, 
                                     TEXTSIZE,
                                     TEXTCOLOR, 
