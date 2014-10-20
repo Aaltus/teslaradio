@@ -29,7 +29,7 @@ public class Demodulation extends ModulationCommon  {
     
     Demodulation(Camera cam, Spatial destinationHandle) {
         
-        super(cam, destinationHandle);
+        super(cam, destinationHandle, "Sounds/demodulation.ogg");
         
         loadUnmovableObjects();
         loadMovableObjects();
