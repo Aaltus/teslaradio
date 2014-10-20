@@ -27,7 +27,6 @@ public class Playback extends Scenario {
     
     private Node soundEmitter = new Node();
     
-    private TextBox titleTextBox;
     private String titleText = "Envoi du son";
     private float titleTextSize = 0.5f;
     
