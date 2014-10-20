@@ -81,8 +81,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     public Amplification(Camera Camera, Spatial destinationHandle){
         super(Camera, destinationHandle, "Sounds/amplification.ogg");
         this.needAutoGenIfMain = true;
-        this.destinationHandle = destinationHandle;
-        this.cam = Camera;
+
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();

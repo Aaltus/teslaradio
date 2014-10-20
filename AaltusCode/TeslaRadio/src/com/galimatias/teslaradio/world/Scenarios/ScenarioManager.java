@@ -155,8 +155,13 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         demodulation.setName("Demodulation");
         scenarios.add(demodulation);
         
+        // Init Filtering scenario
+        Filter filter = new Filter(cam, demodulation.getInputHandle());
+        filter.setName("Filter");
+        scenarios.add(filter);
+        
         //Init Reception scenario
-        Reception reception = new Reception(cam, demodulation.getInputHandle());
+        Reception reception = new Reception(cam, filter.getInputHandle());
         reception.setName("Reception");
         scenarios.add(reception);
         
@@ -205,8 +210,14 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         scenarioList.addScenario(ScenarioEnum.RECEPTION,receptionList);
         
         //Add fifth scenario
+        List<Scenario> filterList = new ArrayList<Scenario>();
+        filterList.add(reception);
+        filterList.add(filter);
+        scenarioList.addScenario(ScenarioEnum.FILTER,filterList);
+        
+        //Add sixth scenario
         List<Scenario> demodulationList = new ArrayList<Scenario>();
-        demodulationList.add(reception);
+        demodulationList.add(filter);
         demodulationList.add(demodulation);
         scenarioList.addScenario(ScenarioEnum.DEMODULATION,demodulationList);
         

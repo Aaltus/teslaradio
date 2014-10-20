@@ -243,6 +243,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         if (isFM) {
             switch (frequency) {
                 case 1:
+                case 2:
                     digitalDisplay.simpleUpdate(sFM1061,
                                                 TEXTSIZE, 
                                                 digitalTextColor, 
@@ -250,7 +251,8 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                                                 Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
-                case 2:
+                case 3:
+                case 4:
                     digitalDisplay.simpleUpdate(sFM969, 
                                                 TEXTSIZE, 
                                                 digitalTextColor, 
@@ -258,7 +260,8 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                                                 Vector3f.UNIT_X);
                     changeCarrierParticles(2, tpf);
                     break;
-                case 3:
+                case 5:
+                case 6:
                     digitalDisplay.simpleUpdate(sFM1027, 
                                                 TEXTSIZE, 
                                                 digitalTextColor, 
@@ -278,6 +281,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         } else {
             switch (frequency) {
                 case 1:
+                case 2:
                     digitalDisplay.simpleUpdate(sAM600, 
                                                 TEXTSIZE, 
                                                 digitalTextColor, 
@@ -285,14 +289,16 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                                                 Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
-                case 2:
+                case 3:
+                case 4:
                     digitalDisplay.simpleUpdate(sAM800, 
                                                 TEXTSIZE, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
                     break;
-                case 3:
+                case 5:
+                case 6:
                     digitalDisplay.simpleUpdate(sAM1500, 
                                                 TEXTSIZE, 
                                                 digitalTextColor, 
@@ -328,12 +334,15 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
 
         switch (frequency) {
             case 1:
+            case 2:
                 selectedCarrier = cubeCarrier;
                 break;
-            case 2:
+            case 3:
+            case 4:
                 selectedCarrier = pyramidCarrier;
                 break;
-            case 3:
+            case 5:
+            case 6:
                 selectedCarrier = dodecagoneCarrier;
                 break;
         }
@@ -347,7 +356,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
 
     private void checkTrackableAngle(float trackableAngle, float tpf) {
 
-        float stepRange = 2 * pi / 3;
+        float stepRange = pi / 3;
 
         if (trackableAngle >= 0 && trackableAngle < stepRange) {
             turnTunerButton(trackableAngle);
@@ -358,6 +367,15 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         } else if (trackableAngle >= 2 * stepRange && trackableAngle < 3 * stepRange) {
             turnTunerButton(trackableAngle);
             changeModulation(3, isFM, tpf);
+        } else if (trackableAngle >= 3 * stepRange && trackableAngle < 4 * stepRange) {
+            turnTunerButton(trackableAngle);
+            changeModulation(4, isFM, tpf);
+        } else if (trackableAngle >= 4 * stepRange && trackableAngle < 5 * stepRange) {
+            turnTunerButton(trackableAngle);
+            changeModulation(5, isFM, tpf);
+        } else if (trackableAngle >= 5 * stepRange && trackableAngle < 6 * stepRange) {
+            turnTunerButton(trackableAngle);
+            changeModulation(6, isFM, tpf);
         }
     }
 

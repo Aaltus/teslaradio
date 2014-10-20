@@ -8,6 +8,7 @@ import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
+import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
@@ -23,7 +24,7 @@ import com.jme3.scene.Spatial;
  *
  * @author Batcave
  */
-public class Filter extends Scenario implements EmitterObserver {
+public class Filter extends Scenario implements EmitterObserver, AutoGenObserver {
 
     private float trackableAngle = 0;
     private float direction = 1;
@@ -31,10 +32,16 @@ public class Filter extends Scenario implements EmitterObserver {
     private Spatial filterWheel;
     
     private String titleText = "Le filtrage";
-    private float titleTextSize = 0.5f;
+    
+    private boolean isFM = true;
+    private boolean hasTurned = false;
+    private int lastFrequency = 1;
     
     //Pattern Geometry
-    private Spatial micTapParticle;
+    private Node micTapParticle;
+    private Node cubeSignal;
+    private Node pyramidSignal;
+    private Node dodecagoneSignal;
     
     private Node inputEmitter = new Node();
     private Node outFilterEmitter = new Node();
@@ -52,18 +59,23 @@ public class Filter extends Scenario implements EmitterObserver {
         super(cam, destinationHandle);
         
         this.needAutoGenIfMain = true;
+        
+        loadUnmovableObjects();
+        loadMovableObjects();
     }
     
     @Override
     protected void loadUnmovableObjects() { 
-        scene = (Node) assetManager.loadModel("Models/Modulation_Demodulation/modulation.j3o");
-        scene.setName("Modulation_Demodulation");
+        scene = (Node) assetManager.loadModel("Models/Filter/Filtre.j3o");
+        scene.setName("Filter");
         this.attachChild(scene);
         
+        scene.setLocalRotation(new Quaternion().fromAngleAxis(-pi/2f, Vector3f.UNIT_Y));
+        
         // Get the handles of the emitters
-        Spatial pathInHandle = scene.getChild("Handle.Module.In");
-        Spatial pathOutFilterHandle = scene.getChild("Handle.Chip.Out");
-        Spatial outputHandle = scene.getChild("Handle.Module.Out");
+        Spatial pathInHandle = scene.getChild("Handle.In");
+        Spatial pathOutFilterHandle = scene.getChild("Handle.Filtre.In");
+        Spatial outputHandle = scene.getChild("Handle.Out");
         
         // Get the different paths
         Node wirePcb_node = (Node) scene.getChild("Path.In.Object");
@@ -83,20 +95,20 @@ public class Filter extends Scenario implements EmitterObserver {
         initPatternGenerator();
         
         scene.attachChild(outputEmitter);
-        outputEmitter.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-        outputEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
-        outputEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
+        outputEmitter.setLocalTranslation(outputHandle.getLocalTranslation());
         
-        if(destinationHandle != null){
+        if(destinationHandle != null) {
+            outputEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
             inputEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
             outFilterEmitter.getControl(ParticleEmitterControl.class).registerObserver(outputEmitter.getControl(ParticleEmitterControl.class));
+            outputEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
             outputEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
         }
     }
 
     @Override
     protected void loadMovableObjects() {
-        filterWheel = scene.getChild("Button");
+        filterWheel = scene.getChild("Circle");
         
         initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
         endAngleWheel.fromAngleAxis(2f*pi/3f, Vector3f.UNIT_Y);
@@ -109,7 +121,7 @@ public class Filter extends Scenario implements EmitterObserver {
 
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     @Override
@@ -171,11 +183,57 @@ public class Filter extends Scenario implements EmitterObserver {
     }
 
     @Override
-    protected void initPatternGenerator() {
-        micTapParticle = ScenariosCommon.initBaseGeneratorParticle();
+    protected void initPatternGenerator() {        
+        Spatial baseGeom = ScenariosCommon.initBaseGeneratorParticle();
+        Spatial[] carrier = ScenariosCommon.initCarrierGeometries();
+              
+        this.cubeSignal = new Node();
+        this.cubeSignal.attachChild(carrier[0].clone());
+        ScenariosCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
+        this.cubeSignal.attachChild(baseGeom.clone());
+        this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
+        this.cubeSignal.setUserData("isFM", isFM);
+        this.cubeSignal.setUserData("Frequency", frequency);
+        
+        this.pyramidSignal = new Node();
+        this.pyramidSignal.attachChild(carrier[0].clone());
+        ScenariosCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
+        this.pyramidSignal.attachChild(baseGeom.clone());
+        this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
+        this.pyramidSignal.setUserData("isFM", isFM);
+        this.pyramidSignal.setUserData("Frequency", frequency);
+       
+        this.dodecagoneSignal = new Node();
+        this.dodecagoneSignal.attachChild(carrier[0].clone());
+        ScenariosCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
+        this.dodecagoneSignal.attachChild(baseGeom.clone());
+        this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
+        this.dodecagoneSignal.setUserData("isFM", isFM);
+        this.dodecagoneSignal.setUserData("Frequency", frequency);
+        
+        this.micTapParticle = this.cubeSignal;
+        
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, micTapParticle.clone(), 7, ScenariosCommon.minBaseParticleScale, 
+                                                                     ScenariosCommon.maxBaseParticleScale, true));
 
         this.inputEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 10, ScenariosCommon.minBaseParticleScale,
                 ScenariosCommon.maxBaseParticleScale, true));    
+    }
+    
+    @Override
+    public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
+        this.isFM = isFm;
+        this.initPatternGenerator();
+        if(newCarrier.getName().equals("CubeCarrier")){
+             this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
+        }
+        else if(newCarrier.getName().equals("PyramidCarrier")){
+            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.pyramidSignal);
+        }
+        else if(newCarrier.getName().equals("DodecagoneCarrier")){
+            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.dodecagoneSignal);
+            
+        }
     }
 
     @Override
@@ -185,7 +243,7 @@ public class Filter extends Scenario implements EmitterObserver {
     
     private void checkTrackableAngle(float trackableAngle) {
 
-        float stepRange = 2 * pi / 3;
+        float stepRange = pi / 3;
 
         if (trackableAngle >= 0 && trackableAngle < stepRange) {
             frequency = 1;
@@ -193,6 +251,12 @@ public class Filter extends Scenario implements EmitterObserver {
             frequency = 2;
         } else if (trackableAngle >= 2 * stepRange && trackableAngle < 3 * stepRange) {
             frequency = 3;
+        } else if (trackableAngle >= 3 * stepRange && trackableAngle < 4 * stepRange) {
+            frequency = 4;
+        } else if (trackableAngle >= 4 * stepRange && trackableAngle < 5 * stepRange) {
+            frequency = 5;
+        } else if (trackableAngle >= 5 * stepRange && trackableAngle < 6 * stepRange) {
+            frequency = 6;
         }
         
         turnTunerButton(stepRange);
@@ -205,23 +269,39 @@ public class Filter extends Scenario implements EmitterObserver {
         switch(frequency) {
             case 1:
                 initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(stepRange/2f, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(stepRange, Vector3f.UNIT_Y);
                 break;
             case 2:
                 initAngleWheel.fromAngleAxis(stepRange, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(3*stepRange/2f, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(2*stepRange, Vector3f.UNIT_Y);
                 break;
             case 3:
                 initAngleWheel.fromAngleAxis(2*stepRange, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(5*stepRange/2f, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(3*stepRange, Vector3f.UNIT_Y);
                 break;
+            case 4:
+                initAngleWheel.fromAngleAxis(3*stepRange, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(4*stepRange, Vector3f.UNIT_Y);
+                break;
+            case 5:
+                initAngleWheel.fromAngleAxis(4*stepRange, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(5*stepRange, Vector3f.UNIT_Y);
+                break;
+            case 6:
+                initAngleWheel.fromAngleAxis(5*stepRange, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(6*stepRange, Vector3f.UNIT_Y);
+                break;    
             default:
                 initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
                 endAngleWheel.fromAngleAxis(stepRange/2f, Vector3f.UNIT_Y);
                 break;       
         }
         
-        filterWheel.setLocalRotation(rot.slerp(initAngleWheel, endAngleWheel, tpfCumul));
+        if (lastFrequency != frequency) {
+            filterWheel.setLocalRotation(rot.slerp(initAngleWheel, endAngleWheel, tpfCumul));
+        }
+        
+        lastFrequency = frequency;
     }
     
     private void filter(int frequency, Spatial spatial) {

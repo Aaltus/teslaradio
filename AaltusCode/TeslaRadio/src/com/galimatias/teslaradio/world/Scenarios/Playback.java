@@ -34,9 +34,6 @@ public class Playback extends Scenario {
         
         super(Camera, destinationHandle);
         
-        this.cam = Camera;
-        this.destinationHandle = destinationHandle;
-        
         loadUnmovableObjects();
         loadMovableObjects();
     }

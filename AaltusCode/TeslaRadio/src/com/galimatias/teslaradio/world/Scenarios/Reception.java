@@ -12,6 +12,7 @@ import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -37,7 +38,6 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     private final float pi = (float) Math.PI;
     
     // Signals emitters 
-    private Node inputAntenneRx = new Node();
     private Node outputAntenneRx = new Node();
     private Node outputModule = new Node();
     
@@ -45,14 +45,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     private Spatial pathAntenneRx;
     private Spatial outputHandle;
     
-    //Test
-    // Output signals
-    private Geometry cubeOutputSignal;
-    
     // Paths
     private Geometry antenneRxPath;
-    //try particle
-    private Geometry particle;
     
     // Wifi logo related
     int signalIntensity = 0;
@@ -75,25 +69,12 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     public Reception(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         super(Camera, destinationHandle, "Sounds/reception.ogg" );
-       
-
-        this.cam = Camera;
-        this.destinationHandle = destinationHandle;
+        
         this.needAutoGenIfMain = true;
+        
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();
-        
-        //Generate try particle
-        Box cube = new Box(0.25f, 0.25f, 0.25f);
-        particle = new Geometry("CubeCarrier", cube);
-        Material mat1 = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", ColorRGBA.Blue);
-        particle.setMaterial(mat1);
-        particle.setUserData("CarrierShape", "CubeCarrier");
-        particle.setUserData("isFM", true);
-        ScenariosCommon.registerObserver(this);
     }
 
     @Override
@@ -138,8 +119,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
             outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
         }
 
-        // Set names for the emitters  // VOir si utile dans ce module
-        // inputAntenneRx.setName("InputAntenneRx");
+        // Set names for the emitters
         outputAntenneRx.setName("OutputAntenneRx");
         
         initPatternGenerator();
@@ -226,15 +206,12 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         switch(signalIntensity) {
             case 1:
                 wifi.attachChild(wifiLogoLow);
-                
                 break;
             case 2:
                 wifi.attachChild(wifiLogoMedium);
-
                 break;
             case 3:
                 wifi.attachChild(wifiLogoFull);
-               
                 break;
             default:
                 wifi.attachChild(wifiLogoLow);
@@ -300,7 +277,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
 
        //move the text on the ground without moving
        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
-       titleTextBox.rotate((float) -Math.PI / 2, 0, 0);
+       titleTextBox.rotate((float) -FastMath.PI / 2, 0, 0);
 
        titleTextBox.move(titleTextPosition);
        this.attachChild(titleTextBox);

@@ -68,9 +68,8 @@ public final class SoundCapture extends Scenario {
     {
         super(Camera, destinationHandle);
         
-        this.destinationHandle = destinationHandle;
-        this.cam = Camera;
         this.needAutoGenIfMain = true;
+        
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();

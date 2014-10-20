@@ -64,8 +64,6 @@ public final class SoundEmission extends Scenario {
         touchable.setName("Touchable");
         this.attachChild(touchable);
 
-        this.destinationHandle = destinationHandle;
-
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();
