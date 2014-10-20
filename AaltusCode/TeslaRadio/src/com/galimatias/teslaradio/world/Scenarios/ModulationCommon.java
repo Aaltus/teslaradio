@@ -244,69 +244,68 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
             switch (frequency) {
                 case 1:
                     digitalDisplay.simpleUpdate(sFM1061,
-                            titleTextSize,
-                            digitalTextColor,
-                            Camera,
-                            Vector3f.UNIT_X);
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
                 case 2:
-                    digitalDisplay.simpleUpdate(sFM969,
-                            titleTextSize,
-                            digitalTextColor,
-                            Camera,
-                            Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sFM969, 
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(2, tpf);
                     break;
                 case 3:
-                    digitalDisplay.simpleUpdate(sFM1027,
-                            titleTextSize,
-                            digitalTextColor,
-                            Camera,
-                            Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sFM1027, 
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(3, tpf);
                     break;
                 default:
                     digitalDisplay.simpleUpdate(sFM1061,
-                            titleTextSize,
-                            digitalTextColor,
-                            Camera,
-                            Vector3f.UNIT_X);
+                                                TEXTSIZE,
+                                                digitalTextColor,
+                                                Camera,
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
             }
         } else {
             switch (frequency) {
                 case 1:
-                    digitalDisplay.simpleUpdate(sAM600,
-                            titleTextSize,
-                            digitalTextColor,
-                            Camera,
-                            Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sAM600, 
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
                 case 2:
-                    digitalDisplay.simpleUpdate(sAM800,
-                            titleTextSize,
-                            digitalTextColor,
-                            Camera,
-                            Vector3f.UNIT_X);
-                    changeCarrierParticles(2, tpf);
+                    digitalDisplay.simpleUpdate(sAM800, 
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     break;
                 case 3:
-                    digitalDisplay.simpleUpdate(sAM1500,
-                            titleTextSize,
-                            digitalTextColor,
-                            Camera,
-                            Vector3f.UNIT_X);
+                    digitalDisplay.simpleUpdate(sAM1500, 
+                                                TEXTSIZE, 
+                                                digitalTextColor, 
+                                                Camera, 
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(3, tpf);
                     break;
                 default:
                     digitalDisplay.simpleUpdate(sAM600,
-                            titleTextSize,
-                            digitalTextColor,
-                            Camera,
-                            Vector3f.UNIT_X);
+                                                TEXTSIZE,
+                                                digitalTextColor,
+                                                Camera,
+                                                Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
             }

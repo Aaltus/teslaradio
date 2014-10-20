@@ -61,7 +61,7 @@ public class Demodulation extends ModulationCommon  {
 
     @Override
     protected void initTitleBox() {
-        titleTextBox = new TextBox(assetManager, 
+        TextBox titleTextBox = new TextBox(assetManager, 
                                     titleText, 
                                     TEXTSIZE,
                                     TEXTCOLOR, 

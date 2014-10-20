@@ -73,46 +73,6 @@ public final class Modulation extends ModulationCommon {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-                    digitalDisplay.simpleUpdate(sFM1061,
-                                                TEXTSIZE, 
-                                                digitalTextColor, 
-                                                Camera, 
-                                                Vector3f.UNIT_X);
-                    digitalDisplay.simpleUpdate(sFM969, 
-                                                TEXTSIZE, 
-                                                digitalTextColor, 
-                                                Camera, 
-                                                Vector3f.UNIT_X);
-                    digitalDisplay.simpleUpdate(sFM1027, 
-                                                TEXTSIZE, 
-                                                digitalTextColor, 
-                                                Camera, 
-                                                Vector3f.UNIT_X);
-                    digitalDisplay.simpleUpdate(sFM1061,
-                                                TEXTSIZE,
-                                                digitalTextColor,
-                                                Camera,
-                                                Vector3f.UNIT_X);
-                    digitalDisplay.simpleUpdate(sAM600, 
-                                                TEXTSIZE, 
-                                                digitalTextColor, 
-                                                Camera, 
-                                                Vector3f.UNIT_X);
-                    digitalDisplay.simpleUpdate(sAM800, 
-                                                TEXTSIZE, 
-                                                digitalTextColor, 
-                                                Camera, 
-                                                Vector3f.UNIT_X);
-                    digitalDisplay.simpleUpdate(sAM1500, 
-                                                TEXTSIZE, 
-                                                digitalTextColor, 
-                                                Camera, 
-                                                Vector3f.UNIT_X);
-                    digitalDisplay.simpleUpdate(sAM600,
-                            TEXTSIZE,
-                            digitalTextColor,
-                            Camera,
-                            Vector3f.UNIT_X);
     //convert angle for range [0 ; 2pi]
     private float angleRangeTwoPi(float angle) {
         float resultat = 0;
@@ -132,8 +92,6 @@ public final class Modulation extends ModulationCommon {
                 ScenariosCommon.maxBaseParticleScale, true));
     }
 
-
-    
     /**
      * Called when receiving an event from the observable emitter
      *
