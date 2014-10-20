@@ -11,6 +11,7 @@ import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -30,6 +31,7 @@ public class Filter extends Scenario implements EmitterObserver {
     private Spatial filterWheel;
     
     private String titleText = "Le filtrage";
+    private float titleTextSize = 0.5f;
     
     //Pattern Geometry
     private Spatial micTapParticle;
@@ -148,17 +150,24 @@ public class Filter extends Scenario implements EmitterObserver {
 
     @Override
     protected void initTitleBox() {
+        boolean lookAtCamera = false;
+        boolean showDebugBox = false;
+        float textBoxWidth = 5.2f;
+        float textBoxHeight = 0.8f;
+
+        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
         TextBox titleTextBox = new TextBox(assetManager,
-                                    titleText,
-                                    TEXTSIZE,
-                                    TEXTCOLOR,
-                                    TEXTBOXCOLOR,
-                                    TITLEWIDTH,
-                                    TITLEHEIGHT,
-                                    "titleText",
-                                    BitmapFont.Align.Center,
-                                    SHOWTEXTDEBUG,
-                                    TEXTLOOKATCAMERA);
+                                    titleText, 
+                                    titleTextSize,
+                                    titleTextColor,
+                                    titleBackColor,
+                                    textBoxWidth,
+                                    textBoxHeight,
+                                    "titleText", 
+                                    BitmapFont.Align.Center.Center,
+                                    showDebugBox,
+                                    lookAtCamera);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);

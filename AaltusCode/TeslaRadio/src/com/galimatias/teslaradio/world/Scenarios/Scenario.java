@@ -7,6 +7,8 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
+import com.galimatias.teslaradio.world.effects.SoundControl;
+import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.observer.SignalObserver;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.event.TouchEvent;
@@ -28,7 +30,6 @@ public abstract class Scenario extends Node implements SignalObserver {
 
     private float cumulatedRot = 0;
     
-
     protected final static boolean DEBUG_ANGLE = false;
     /**
      * Set to true to start autogeneration when scenario is the main scenario

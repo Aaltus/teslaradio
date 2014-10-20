@@ -39,6 +39,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     // TextBox of the scene
     private TextBox digitalDisplay;
 
+    protected float titleTextSize = 0.5f;
     protected ColorRGBA digitalTextColor = ColorRGBA.Green;
 
     // Signals emitters
@@ -80,6 +81,13 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     ModulationCommon(Camera cam, Spatial destinationHandle) {
         
         super(cam, destinationHandle);
+        
+        this.needAutoGenIfMain = true;
+    }
+    
+    ModulationCommon(Camera cam, Spatial destinationHandle, String bgm) {
+        
+        super(cam, destinationHandle, bgm);
         
         this.needAutoGenIfMain = true;
     }
@@ -176,7 +184,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         // Default configuration of the digital display
         digitalDisplay = new TextBox(assetManager,
                 sFM1061,
-                TEXTSIZE,
+                titleTextSize,
                 digitalTextColor,
                 new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f),
                 3.5f,
@@ -236,7 +244,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
             switch (frequency) {
                 case 1:
                     digitalDisplay.simpleUpdate(sFM1061,
-                            TEXTSIZE,
+                            titleTextSize,
                             digitalTextColor,
                             Camera,
                             Vector3f.UNIT_X);
@@ -244,7 +252,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                     break;
                 case 2:
                     digitalDisplay.simpleUpdate(sFM969,
-                            TEXTSIZE,
+                            titleTextSize,
                             digitalTextColor,
                             Camera,
                             Vector3f.UNIT_X);
@@ -252,7 +260,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sFM1027,
-                            TEXTSIZE,
+                            titleTextSize,
                             digitalTextColor,
                             Camera,
                             Vector3f.UNIT_X);
@@ -260,7 +268,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                     break;
                 default:
                     digitalDisplay.simpleUpdate(sFM1061,
-                            TEXTSIZE,
+                            titleTextSize,
                             digitalTextColor,
                             Camera,
                             Vector3f.UNIT_X);
@@ -271,7 +279,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
             switch (frequency) {
                 case 1:
                     digitalDisplay.simpleUpdate(sAM600,
-                            TEXTSIZE,
+                            titleTextSize,
                             digitalTextColor,
                             Camera,
                             Vector3f.UNIT_X);
@@ -279,7 +287,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                     break;
                 case 2:
                     digitalDisplay.simpleUpdate(sAM800,
-                            TEXTSIZE,
+                            titleTextSize,
                             digitalTextColor,
                             Camera,
                             Vector3f.UNIT_X);
@@ -287,7 +295,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sAM1500,
-                            TEXTSIZE,
+                            titleTextSize,
                             digitalTextColor,
                             Camera,
                             Vector3f.UNIT_X);
@@ -295,7 +303,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                     break;
                 default:
                     digitalDisplay.simpleUpdate(sAM600,
-                            TEXTSIZE,
+                            titleTextSize,
                             digitalTextColor,
                             Camera,
                             Vector3f.UNIT_X);

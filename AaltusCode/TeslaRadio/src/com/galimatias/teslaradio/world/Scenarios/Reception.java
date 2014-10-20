@@ -98,7 +98,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         particle.setMaterial(mat1);
         particle.setUserData("CarrierShape", "CubeCarrier");
         particle.setUserData("isFM", true);
-        ModulationCommon.registerObserver(this);
+        ScenariosCommon.registerObserver(this);
     }
 
     @Override
@@ -363,7 +363,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     @Override
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
         this.isFM = isFm;
-        this.initModulatedParticles();
+        this.initPatternGenerator();
         if(newCarrier.getName().equals("CubeCarrier")){
              this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
         }

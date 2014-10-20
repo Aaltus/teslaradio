@@ -29,6 +29,7 @@ public class Playback extends Scenario {
     
     private TextBox titleTextBox;
     private String titleText = "Envoi du son";
+    private float titleTextSize = 0.5f;
     
     Playback(Camera Camera, Spatial destinationHandle) {
         
@@ -95,28 +96,31 @@ public class Playback extends Scenario {
     @Override
     protected void initTitleBox() {
         
-        titleTextBox = new TextBox(assetManager, 
+        boolean lookAtCamera = false;
+        boolean showDebugBox = false;
+        float textBoxWidth = 5.2f;
+        float textBoxHeight = 0.8f;
+
+        ColorRGBA titleTextColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
+        TextBox titleTextBox = new TextBox(assetManager,
                                     titleText, 
-                                    TEXTSIZE,
-                                    TEXTCOLOR, 
-                                    TEXTBOXCOLOR,
-                                    TITLEWIDTH, 
-                                    TITLEHEIGHT, 
+                                    titleTextSize,
+                                    titleTextColor,
+                                    titleBackColor,
+                                    textBoxWidth,
+                                    textBoxHeight,
                                     "titleText", 
-                                    BitmapFont.Align.Center, 
-                                    SHOWTEXTDEBUG, 
-                                    TEXTLOOKATCAMERA);
+                                    BitmapFont.Align.Center.Center,
+                                    showDebugBox,
+                                    lookAtCamera);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
-        titleTextBox.rotate((float)-Math.PI/2, 0, 0);
-
-        //Was in its position when in the air and rotating
-        //Vector3f titleTextPosition = new Vector3f(0f, 8f, 0f);
+        titleTextBox.rotate((float) -Math.PI / 2, 0, 0);
 
         titleTextBox.move(titleTextPosition);
-
-        touchable.attachChild(titleTextBox);
+        this.attachChild(titleTextBox);
     }
 
     @Override

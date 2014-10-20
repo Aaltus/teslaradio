@@ -6,13 +6,11 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppGetter;
 import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
-import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
+import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -20,6 +18,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains static methods used by Amplification and Modulation
@@ -27,11 +27,13 @@ import com.jme3.texture.Texture;
  */
 public class ScenariosCommon {
     
+    private static List<AutoGenObserver> observerList = new ArrayList<AutoGenObserver>();
+    
     public static float minBaseParticleScale = 0.25f;
     public static float maxBaseParticleScale = 0.75f;
     
-    public static Spatial initBaseGeneratorParticle(){
-        Spatial baseGeom;
+    public static Geometry initBaseGeneratorParticle(){
+        Geometry baseGeom;
         if (DEBUG_ANGLE) {
             Material mat1 = new Material(AppGetter.getAssetManager(),"Common/MatDefs/Misc/Unshaded.j3md");
             //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
@@ -50,7 +52,7 @@ public class ScenariosCommon {
             baseGeom.setMaterial(mat1);
         }
         
-        return (Spatial)baseGeom;
+        return baseGeom;
     }
     public static Spatial[] initCarrierGeometries() {
         Spatial cubeCarrier;
@@ -58,31 +60,31 @@ public class ScenariosCommon {
         Spatial dodecagoneCarrier;
         
         cubeCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation_Demodulation/Cube.j3o");
-        cubeCarrier.setName("CubeCarrier");
         Material m = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         m.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation_Demodulation/Edgemap_square.png"));
         m.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         cubeCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         cubeCarrier.setMaterial(m);
         cubeCarrier.scale(0.3f);
+        cubeCarrier.setName("CubeCarrier");
         
         pyramidCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation_Demodulation/Tetrahedron.j3o");
-        pyramidCarrier.setName("PyramidCarrier");
         Material m2 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         m2.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation_Demodulation/Edgemap_triangle.png"));
         m2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         pyramidCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         pyramidCarrier.setMaterial(m2);
         pyramidCarrier.scale(0.4f);
+        pyramidCarrier.setName("PyramidCarrier");
         
         dodecagoneCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation_Demodulation/Dodecahedron.j3o");
-        dodecagoneCarrier.setName("DodecagoneCarrier");
         Material m3 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         m3.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation_Demodulation/Edgemap_square.png"));
         m3.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         dodecagoneCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         dodecagoneCarrier.setMaterial(m3);
         dodecagoneCarrier.scale(0.35f);
+        dodecagoneCarrier.setName("DodecagoneCarrier");
         
         return new Spatial[]{cubeCarrier,pyramidCarrier,dodecagoneCarrier};
     }
@@ -119,5 +121,19 @@ public class ScenariosCommon {
             clone.getChild(0).setLocalScale(scaleFM);
             clone.scale(0.5f);
         }
+    }
+
+    
+    public static void registerObserver(AutoGenObserver observer) {
+        observerList.add(observer);
+    }
+
+    // observable method to notify whoever wants to know that a particle as ended his path
+   
+    public static void notifyObservers(Spatial newCarrier, boolean isFm) {
+        for(AutoGenObserver observer : observerList)
+        {
+            observer.autoGenObserverUpdate(newCarrier, isFm);
+        }        
     }
 }

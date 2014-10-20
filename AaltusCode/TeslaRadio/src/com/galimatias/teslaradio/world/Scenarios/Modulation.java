@@ -20,7 +20,7 @@ public final class Modulation extends ModulationCommon {
     
     // Default text to be seen when scenario starts
     private String titleText = "La Modulation";
-
+    private float titleTextSize = 0.5f;
     
     public Modulation(Camera Camera, Spatial destinationHandle) {
         

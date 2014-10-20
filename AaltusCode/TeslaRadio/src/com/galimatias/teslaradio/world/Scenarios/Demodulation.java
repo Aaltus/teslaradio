@@ -8,6 +8,7 @@ import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.font.BitmapFont;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
@@ -69,15 +70,15 @@ public class Demodulation extends ModulationCommon  {
         ColorRGBA titleBackColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.5f);
         TextBox titleTextBox = new TextBox(assetManager,
                                     titleText, 
-               titleTextSize,
-               titleTextColor,
-               titleBackColor,
-               textBoxWidth,
-               textBoxHeight,
+                                    titleTextSize,
+                                    titleTextColor,
+                                    titleBackColor,
+                                    textBoxWidth,
+                                    textBoxHeight,
                                     "titleText", 
-               BitmapFont.Align.Center.Center,
-               showDebugBox,
-               lookAtCamera);
+                                    BitmapFont.Align.Center.Center,
+                                    showDebugBox,
+                                    lookAtCamera);
 
         //move the text on the ground without moving
         Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);

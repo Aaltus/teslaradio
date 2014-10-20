@@ -155,7 +155,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         
         
         this.initPatternGenerator();   
-        ModulationCommon.registerObserver(this);
+        ScenariosCommon.registerObserver(this);
     }
 
     @Override
@@ -335,7 +335,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     @Override
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
         this.isFM = isFm;
-        this.initModulatedParticles();
+        this.initPatternGenerator();
         if(newCarrier.getName().equals("CubeCarrier")){
              this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
         }
