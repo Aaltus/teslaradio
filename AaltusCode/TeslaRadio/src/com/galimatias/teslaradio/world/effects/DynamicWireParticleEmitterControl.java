@@ -77,6 +77,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
             this.path.clearWayPoints();
             this.path.addWayPoint(emitterPos);
             this.path.addWayPoint(this.destinationHandle.getWorldTranslation().divide(this.spatial.getWorldScale()));
+            if(wireGeomNode != null){this.wireGeomNode.getControl(WireGeometryControl.class).wirePositionUpdate();}
         }
         else
         {

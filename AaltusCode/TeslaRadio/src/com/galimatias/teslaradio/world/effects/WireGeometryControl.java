@@ -66,15 +66,6 @@ public class WireGeometryControl extends AbstractControl {
                 {
                     ((Node) this.spatial).attachChild(this.wireGeom);
                 }
-
-                // get the new position of the emitter in world
-                emitterPos = emitterHandle.getWorldTranslation().divide(emitterHandle.getWorldScale());
-                
-                // update wire position
-                this.spatial.setLocalScale(1, 1, this.path.getLength());
-                this.spatial.setLocalTranslation(emitterPos);
-                pathDirection = this.destinationHandle.getWorldTranslation().divide(emitterHandle.getWorldScale()).subtract(emitterPos);
-                this.spatial.setLocalRotation(findRotQuaternion(Vector3f.UNIT_Z,pathDirection,wireRotQuat));
             }
             else{
                 // detach if attached and emitter is not active
@@ -83,6 +74,21 @@ public class WireGeometryControl extends AbstractControl {
                     this.wireGeom.removeFromParent();
                 }
             }
+        }
+    }
+    
+    // called by emitter after his own update
+    public void wirePositionUpdate()
+    {
+        if(this.emitterHandle != null && AppGetter.hasRootNodeAsAncestor(this.destinationHandle) && AppGetter.hasRootNodeAsAncestor(this.emitterHandle)){
+            // get the new position of the emitter in world
+            emitterPos = emitterHandle.getWorldTranslation().divide(emitterHandle.getWorldScale());
+
+            // update wire position
+            this.spatial.setLocalScale(1, 1, this.path.getLength());
+            this.spatial.setLocalTranslation(emitterPos);
+            pathDirection = this.destinationHandle.getWorldTranslation().divide(emitterHandle.getWorldScale()).subtract(emitterPos);
+            this.spatial.setLocalRotation(findRotQuaternion(Vector3f.UNIT_Z,pathDirection,wireRotQuat));       
         }
     }
  
