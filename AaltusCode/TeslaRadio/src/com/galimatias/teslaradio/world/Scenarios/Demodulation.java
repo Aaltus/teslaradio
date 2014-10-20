@@ -90,8 +90,6 @@ public class Demodulation extends ModulationCommon  {
                 ScenariosCommon.maxBaseParticleScale, true));
     }
 
-    
-    
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
         if (notifierId.equals("WirePCBEmitter")) { 

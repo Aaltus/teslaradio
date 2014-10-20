@@ -64,9 +64,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     private Arrows moveArrow;
     
     private Boolean isFM = true;
-    
-  
-    
+
     public Reception(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         super(Camera, destinationHandle, "Sounds/reception.ogg" );
         

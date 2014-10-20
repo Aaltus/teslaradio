@@ -219,10 +219,6 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
        
     }
 
-     
-        
-    
-
     @Override
     public void restartScenario() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

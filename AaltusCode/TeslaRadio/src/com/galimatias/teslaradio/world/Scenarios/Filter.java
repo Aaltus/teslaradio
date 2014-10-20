@@ -50,9 +50,11 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     private Quaternion initAngleWheel = new Quaternion();
     private Quaternion endAngleWheel = new Quaternion();
     
-    private int frequency = 0;
+    private int frequency = 1;
+    private String carrier = "CubeCarrier";
     
     private float tpfCumul = 0;
+    private float stepAngle = 0;
     
     Filter(Camera cam, Spatial destinationHandle) {
         
@@ -112,7 +114,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         filterWheel = scene.getChild("Circle");
         
         initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
-        endAngleWheel.fromAngleAxis(2f*pi/3f, Vector3f.UNIT_Y);
+        endAngleWheel.fromAngleAxis(pi/3f, Vector3f.UNIT_Y);
     }
 
     @Override
@@ -194,7 +196,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         this.cubeSignal.attachChild(baseGeom.clone());
         this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
         this.cubeSignal.setUserData("isFM", isFM);
-        this.cubeSignal.setUserData("Frequency", frequency);
         
         this.pyramidSignal = new Node();
         this.pyramidSignal.attachChild(carrier[0].clone());
@@ -202,7 +203,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         this.pyramidSignal.attachChild(baseGeom.clone());
         this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
         this.pyramidSignal.setUserData("isFM", isFM);
-        this.pyramidSignal.setUserData("Frequency", frequency);
        
         this.dodecagoneSignal = new Node();
         this.dodecagoneSignal.attachChild(carrier[0].clone());
@@ -210,15 +210,11 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         this.dodecagoneSignal.attachChild(baseGeom.clone());
         this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
         this.dodecagoneSignal.setUserData("isFM", isFM);
-        this.dodecagoneSignal.setUserData("Frequency", frequency);
         
         this.micTapParticle = this.cubeSignal;
         
         this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, micTapParticle.clone(), 7, ScenariosCommon.minBaseParticleScale, 
-                                                                     ScenariosCommon.maxBaseParticleScale, true));
-
-        this.inputEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 10, ScenariosCommon.minBaseParticleScale,
-                ScenariosCommon.maxBaseParticleScale, true));    
+                                                                     ScenariosCommon.maxBaseParticleScale, true));    
     }
     
     @Override
@@ -244,80 +240,97 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     
     private void checkTrackableAngle(float trackableAngle) {
 
-        float stepRange = pi / 3;
+        float stepRange = pi / 3f;
 
         if (trackableAngle >= 0 && trackableAngle < stepRange) {
             frequency = 1;
+            this.carrier = "CubeCarrier";
         } else if (trackableAngle >= stepRange && trackableAngle < 2 * stepRange) {
             frequency = 2;
+            this.carrier = "CubeCarrier";
         } else if (trackableAngle >= 2 * stepRange && trackableAngle < 3 * stepRange) {
             frequency = 3;
+            this.carrier = "PyramidCarrier";
         } else if (trackableAngle >= 3 * stepRange && trackableAngle < 4 * stepRange) {
             frequency = 4;
+            this.carrier = "PyramidCarrier";
         } else if (trackableAngle >= 4 * stepRange && trackableAngle < 5 * stepRange) {
             frequency = 5;
+            this.carrier = "DodecagoneCarrier";
         } else if (trackableAngle >= 5 * stepRange && trackableAngle < 6 * stepRange) {
             frequency = 6;
+            this.carrier = "DodecagoneCarrier";
         }
+
+        stepAngle = tpfCumul/0.35f; 
+        turnTunerButton(frequency);
         
-        turnTunerButton(stepRange);
+        if (stepAngle >= 1) {
+            tpfCumul = 0;
+        }
     }
     
-    private void turnTunerButton(float stepRange) {
-
-        Quaternion rot = new Quaternion();
+    private void turnTunerButton(int frequency) {
+        
+        float stepAngle = pi / 3f;
         
         switch(frequency) {
+            
             case 1:
                 initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(stepRange, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(stepAngle, Vector3f.UNIT_Y);
                 break;
             case 2:
-                initAngleWheel.fromAngleAxis(stepRange, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(2*stepRange, Vector3f.UNIT_Y);
+                initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(2*stepAngle, Vector3f.UNIT_Y);
                 break;
             case 3:
-                initAngleWheel.fromAngleAxis(2*stepRange, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(3*stepRange, Vector3f.UNIT_Y);
+                initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(3*stepAngle, Vector3f.UNIT_Y);
                 break;
             case 4:
-                initAngleWheel.fromAngleAxis(3*stepRange, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(4*stepRange, Vector3f.UNIT_Y);
+                initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(4*stepAngle, Vector3f.UNIT_Y);
                 break;
             case 5:
-                initAngleWheel.fromAngleAxis(4*stepRange, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(5*stepRange, Vector3f.UNIT_Y);
+                initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(5*stepAngle, Vector3f.UNIT_Y);
                 break;
             case 6:
-                initAngleWheel.fromAngleAxis(5*stepRange, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(6*stepRange, Vector3f.UNIT_Y);
-                break;    
+                initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
+                endAngleWheel.fromAngleAxis(6*stepAngle, Vector3f.UNIT_Y);
+                break;
             default:
                 initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(stepRange/2f, Vector3f.UNIT_Y);
-                break;       
+                endAngleWheel.fromAngleAxis(stepAngle, Vector3f.UNIT_Y);
+                break;
+            
         }
         
         if (lastFrequency != frequency) {
-            filterWheel.setLocalRotation(rot.slerp(initAngleWheel, endAngleWheel, tpfCumul));
+            Quaternion rot = new Quaternion();            
+            filterWheel.setLocalRotation(rot.slerp(initAngleWheel, endAngleWheel, stepAngle));
         }
         
         lastFrequency = frequency;
     }
     
-    private void filter(int frequency, Spatial spatial) {
+    private void filter(String carrier, Spatial spatial) {
         
-        if (frequency != this.frequency) {
-            
-        } else {
+        System.out.println("Received carrier ; " + carrier);
+        System.out.println("Carrier returned by the wheel : " + this.carrier);
+        
+        if (carrier.equals(this.carrier)) {
             ((Node)spatial).detachChild(((Node)spatial).getChild(0));
+        } else {
+            scene.detachChild(spatial);
         }
     }
 
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
-        if (notifierId.equals("Input")) {      
-            filter((int)spatial.getUserData("Frequency"), spatial);
+        if (notifierId.equals("Input")) {
+            filter(((Node)spatial).getChild(0).getName(), spatial);
         }
     }
 }

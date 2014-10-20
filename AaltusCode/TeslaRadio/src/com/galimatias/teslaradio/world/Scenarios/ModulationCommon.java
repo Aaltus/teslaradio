@@ -77,7 +77,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     private Arrows rotationArrow;
     private Arrows switchArrow;
     
-    protected int frequency = 0;
+    protected int frequency = 1;
     
     ModulationCommon(Camera cam, Spatial destinationHandle) {
         
@@ -216,7 +216,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
             tpfCumulSwitch += tpf;
             stepAngleSwitch = tpfCumulSwitch/0.35f; //permet de donner la vitesse
             switchRotation(isFM, stepAngleSwitch);
-            Quaternion currAngle = actionSwitch.getLocalRotation();
             if (stepAngleSwitch >= 1) {
                 switchIsToggled = false;
                 tpfCumulSwitch = 0;
@@ -233,7 +232,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
             isFM = !isFM;
             switchIsToggled = true;
         }
-        this.autoGenObserverUpdate(this.micTapParticle, isFM);
     }
 
     private void turnTunerButton(float ZXangle) {
@@ -248,7 +246,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         if (isFM) {
             switch (frequency) {
                 case 1:
-                case 2:
                     digitalDisplay.simpleUpdate(sFM1061,
                                                 TEXTSIZE, 
                                                 digitalTextColor, 
@@ -256,8 +253,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                                                 Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
-                case 3:
-                case 4:
+                case 2:
                     digitalDisplay.simpleUpdate(sFM969, 
                                                 TEXTSIZE, 
                                                 digitalTextColor, 
@@ -265,8 +261,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                                                 Vector3f.UNIT_X);
                     changeCarrierParticles(2, tpf);
                     break;
-                case 5:
-                case 6:
+                case 3:
                     digitalDisplay.simpleUpdate(sFM1027, 
                                                 TEXTSIZE, 
                                                 digitalTextColor, 
@@ -286,7 +281,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         } else {
             switch (frequency) {
                 case 1:
-                case 2:
                     digitalDisplay.simpleUpdate(sAM600, 
                                                 TEXTSIZE, 
                                                 digitalTextColor, 
@@ -294,16 +288,14 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                                                 Vector3f.UNIT_X);
                     changeCarrierParticles(1, tpf);
                     break;
-                case 3:
-                case 4:
+                case 2:
                     digitalDisplay.simpleUpdate(sAM800, 
                                                 TEXTSIZE, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
                     break;
-                case 5:
-                case 6:
+                case 3:
                     digitalDisplay.simpleUpdate(sAM1500, 
                                                 TEXTSIZE, 
                                                 digitalTextColor, 
@@ -326,7 +318,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     protected void changeOuputParticles(Spatial spatial, String emitterId) {
 
         if (spatial != null && emitterId.equals("CarrierEmitter")) {
-
             outputSignal.detachAllChildren();
             outputSignal.attachChild(spatial);
         }
@@ -339,15 +330,12 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
 
         switch (frequency) {
             case 1:
-            case 2:
                 selectedCarrier = cubeCarrier;
                 break;
-            case 3:
-            case 4:
+            case 2:
                 selectedCarrier = pyramidCarrier;
                 break;
-            case 5:
-            case 6:
+            case 3:
                 selectedCarrier = dodecagoneCarrier;
                 break;
         }
@@ -372,15 +360,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         } else if (trackableAngle >= 2 * stepRange && trackableAngle < 3 * stepRange) {
             turnTunerButton(trackableAngle);
             changeModulation(3, isFM, tpf);
-        } else if (trackableAngle >= 3 * stepRange && trackableAngle < 4 * stepRange) {
-            turnTunerButton(trackableAngle);
-            changeModulation(4, isFM, tpf);
-        } else if (trackableAngle >= 4 * stepRange && trackableAngle < 5 * stepRange) {
-            turnTunerButton(trackableAngle);
-            changeModulation(5, isFM, tpf);
-        } else if (trackableAngle >= 5 * stepRange && trackableAngle < 6 * stepRange) {
-            turnTunerButton(trackableAngle);
-            changeModulation(6, isFM, tpf);
         }
     }
 
