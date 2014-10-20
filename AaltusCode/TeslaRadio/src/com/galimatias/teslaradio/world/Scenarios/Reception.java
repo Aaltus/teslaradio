@@ -294,8 +294,15 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         super.onFirstNodeActions();
         
         scene.detachChild(wifi);
-    };
+    }
 
+    @Override
+    protected void onSecondNodeActions() {
+        super.onSecondNodeActions();
+        
+        scene.attachChild(wifi);
+    }
+    
     @Override
     protected void initTitleBox() {
 
