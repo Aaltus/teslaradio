@@ -22,6 +22,13 @@
                                          android:layout_height="wrap_content"
                                          myapp:url="file:///android_asset/Gifs/Pression.html"
                 />
+        <!--EXAMPLE FOR SIMON-->
+        <!--<com.example.untitled.CustomVideoView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/videoView"
+                myapp:uri="android.resource://com.example.untitled/raw/mouse"
+                />-->
 
     <!--<ImageView-->
             <!--android:id="@+id/imageView1"-->
