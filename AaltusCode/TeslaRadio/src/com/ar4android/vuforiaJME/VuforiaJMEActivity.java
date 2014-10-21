@@ -45,7 +45,6 @@ import com.jme3.texture.Image;
 import com.qualcomm.QCAR.QCAR;
 import com.utils.AppLogger;
 import com.utils.LanguageLocaleChanger;
-import org.acra.ACRA;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.Callable;
@@ -55,7 +54,7 @@ import java.util.concurrent.Callable;
  * Center of the Android side of the application. All Android view and specific thing are here.
  * It also initialize vuforia library and jme app.
  */
-public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements AndroidActivityListener, IScenarioSwitcher {
+public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements AndroidActivityListener, IScenarioSwitcher, VuforiaCallback {
 
     // Boolean to use the profiler. If it's set to true, you can get the tracefile on your phone /sdcard/traceFile.trace
     private static final boolean UseProfiler = false;
@@ -83,6 +82,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     // Name of the native dynamic libraries to load:
     private static final String NATIVE_LIB_SAMPLE = "VuforiaNative";
     private static final String NATIVE_LIB_QCAR = "Vuforia";
+
+    private VuforiaCaller vuforiaCaller = new VuforiaCallerNative(this);
 
     // Display size of the device:
     private int mScreenWidth = 0;
@@ -120,43 +121,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     private MenuItem mDataSetMenuItem = null;
     private boolean mIsStonesAndChipsDataSetActive  = false;
     private RelativeLayout mUILayout;
-
-    /** Native tracker initialization and deinitialization. */
-    public native int initTracker();
-    public native void deinitTracker();
-
-    /** Native functions to load and destroy tracking data. */
-    public native int loadTrackerData();
-    public native void destroyTrackerData();
-
-    /** Native sample initialization. */
-    public native void onQCARInitializedNative(int loggerLvl);
-
-    /** Native methods for starting and stopping the camera. */
-    private native void startCamera();
-    private native void stopCamera();
-
-    /** Native method for setting / updating the projection matrix
-     * for AR content rendering */
-    private native void setProjectionMatrix();
-
-    /** Native function to initialize the application. */
-    private native void initApplicationNative(int width, int height);
-
-    /** Native function to deinitialize the application.*/
-    private native void deinitApplicationNative();
-
-    /** Tells native code whether we are in portait or landscape mode */
-    private native void setActivityPortraitMode(boolean isPortrait);
-
-    /** Tells native code to switch dataset as soon as possible*/
-    private native void switchDatasetAsap();
-
-    private native boolean autofocus();
-    private native boolean setFocusMode(int mode);
-
-    /** Activates the Flash */
-    private native boolean activateFlash(boolean flash);
 
     private boolean mCreatedBefore = false;
 
@@ -452,7 +416,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             synchronized (mShutdownLock)
             {
                 // Load the tracker data set:
-                return (loadTrackerData() > 0);
+                return (vuforiaCaller.loadTrackerData() > 0);
             }
         }
 
@@ -513,7 +477,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                // mRenderer.updateRendering(mScreenWidth, mScreenHeight);
 
                 // Update projection matrix:
-                setProjectionMatrix();
+                vuforiaCaller.setProjectionMatrix();
 
                 // Cache last rotation used for setting projection matrix:
                 mLastScreenRotation = currentScreenRotation;
@@ -572,7 +536,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             case APPSTATUS_INIT_TRACKER:
                 // Initialize the ImageTracker:
                 AppLogger.getInstance().i(TAG, "In APPSTATUS_INIT_TRACKER");
-                if (initTracker() > 0)
+                if (vuforiaCaller.initTracker() > 0)
                 {
                     // Proceed to next application initialization status:
                     updateApplicationStatus(APPSTATUS_INIT_APP_AR);
@@ -631,7 +595,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 //System.gc();
 
                 // Native post initialization:
-                onQCARInitializedNative(AppLogger.getInstance().getLogLvl().ordinal());
+                vuforiaCaller.onQCARInitializedNative(AppLogger.getInstance().getLogLvl().ordinal());
 
                 // Start the camera:
                 updateApplicationStatus(APPSTATUS_CAMERA_RUNNING);
@@ -641,14 +605,14 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             case APPSTATUS_CAMERA_STOPPED:
                 AppLogger.getInstance().i(TAG, "In APPSTATUS_CAMERA_STOPPED");
                 // Call the native function to stop the camera:
-                stopCamera();
+                vuforiaCaller.stopCamera();
                 break;
 
             case APPSTATUS_CAMERA_RUNNING:
 
                 AppLogger.getInstance().i(TAG, "In APPSTATUS_CAMERA_RUNNING");
                 // Call the native function to start the camera:
-                startCamera();
+                vuforiaCaller.startCamera();
 
                 // Sets the layout background to transparent
             //   mUILayout.setBackgroundColor(Color.TRANSPARENT);
@@ -658,10 +622,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 // otherwise default back to regular auto-focus mode.
                 // This will be activated by a tap to the screen in this
                 // application.
-                if (!setFocusMode(FOCUS_MODE_CONTINUOUS_AUTO))
+                if (!vuforiaCaller.setFocusMode(FOCUS_MODE_CONTINUOUS_AUTO))
                 {
                     mContAutofocus = false;
-                    setFocusMode(FOCUS_MODE_NORMAL);
+                    vuforiaCaller.setFocusMode(FOCUS_MODE_NORMAL);
                 }
                 else
                 {
@@ -731,7 +695,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         AppLogger.getInstance().d(TAG, "initApplicationAR");
         // Do application initialization in native code (e.g. registering
         // callbacks, etc.):
-        initApplicationNative(mScreenWidth, mScreenHeight);
+        vuforiaCaller.initApplicationNative(mScreenWidth, mScreenHeight);
 
         /*
         // Create OpenGL ES view:
@@ -896,7 +860,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         if (mFlash)
         {
             mFlash = false;
-            activateFlash(mFlash);
+            vuforiaCaller.activateFlash(mFlash);
         }
 
         // QCAR-specific pause operation
@@ -950,13 +914,13 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         {
 
             // Do application deinitialization in native code:
-            deinitApplicationNative();
+            vuforiaCaller.deinitApplicationNative();
 
             // Destroy the tracking data set:
-            destroyTrackerData();
+            vuforiaCaller.destroyTrackerData();
 
             // Deinit the tracker:
-            deinitTracker();
+            vuforiaCaller.deinitTracker();
 
             // Deinitialize QCAR SDK:
             QCAR.deinit();

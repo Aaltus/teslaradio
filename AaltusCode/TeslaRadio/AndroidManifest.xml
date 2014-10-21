@@ -52,6 +52,7 @@
                   android:name="com.ar4android.vuforiaJME.VuforiaJMEActivity"
                   android:configChanges="keyboardHidden|screenLayout|orientation|screenSize"
                   android:screenOrientation="landscape"
+                  android:debuggable="true"
                 >
 
             <intent-filter>
