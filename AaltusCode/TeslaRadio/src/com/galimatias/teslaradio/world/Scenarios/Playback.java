@@ -65,7 +65,6 @@ public class Playback extends Scenario {
 
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

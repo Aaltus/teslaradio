@@ -266,41 +266,11 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     
     private void turnTunerButton(int frequency) {
         
-        float stepAngle = pi / 3f;
+        float stepAngle = pi / 3f; //Variable instance ?? Constante
         Quaternion rot = new Quaternion();
         
-        switch(frequency) {
-            
-            case 1:
-                initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(stepAngle, Vector3f.UNIT_Y);
-                break;
-            case 2:
-                initAngleWheel.fromAngleAxis(stepAngle, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(2*stepAngle, Vector3f.UNIT_Y);
-                break;
-            case 3:
-                initAngleWheel.fromAngleAxis(2*stepAngle, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(3*stepAngle, Vector3f.UNIT_Y);
-                break;
-            case 4:
-                initAngleWheel.fromAngleAxis(3*stepAngle, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(4*stepAngle, Vector3f.UNIT_Y);
-                break;
-            case 5:
-                initAngleWheel.fromAngleAxis(4*stepAngle, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(5*stepAngle, Vector3f.UNIT_Y);
-                break;
-            case 6:
-                initAngleWheel.fromAngleAxis(5*stepAngle, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(6*stepAngle, Vector3f.UNIT_Y);
-                break;
-            default:
-                initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(stepAngle, Vector3f.UNIT_Y);
-                break;
-            
-        }
+        initAngleWheel.fromAngleAxis((frequency-1) * stepAngle, Vector3f.UNIT_Y);
+        endAngleWheel.fromAngleAxis(frequency * stepAngle, Vector3f.UNIT_Y);
         
         if (lastFrequency != frequency) {
             needTurnin = true;

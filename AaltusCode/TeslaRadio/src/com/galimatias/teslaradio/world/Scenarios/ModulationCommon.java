@@ -295,6 +295,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
+                    changeCarrierParticles(2, tpf);
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sAM1500, 
@@ -350,7 +351,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
 
     private void checkTrackableAngle(float trackableAngle, float tpf) {
 
-        float stepRange = pi / 3;
+        float stepRange = 2f * pi / 3;
 
         if (trackableAngle >= 0 && trackableAngle < stepRange) {
             turnTunerButton(trackableAngle);
