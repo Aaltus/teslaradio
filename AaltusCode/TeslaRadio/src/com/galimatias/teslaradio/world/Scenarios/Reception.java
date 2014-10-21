@@ -113,7 +113,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         outputModule.setLocalTranslation(outputHandle.getLocalTranslation());
         
         if(this.destinationHandle != null){
-            outputModule.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
+            outputModule.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null, true));
             outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
         }
 

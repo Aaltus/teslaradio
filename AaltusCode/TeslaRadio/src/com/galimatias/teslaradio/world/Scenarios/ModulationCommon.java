@@ -127,8 +127,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         scene.attachChild(outputEmitter);
         outputEmitter.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
         //System.out.println("translation " + outputHandle.getLocalTranslation());
-        outputEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
-        outputEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
 
         // Set names for the emitters
         wirePcbEmitter.setName("WirePCBEmitter");
@@ -136,9 +134,11 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         pcbAmpEmitter.setName("PCBAmpEmitter");
 
         if(destinationHandle != null){
+            outputEmitter.addControl(new DynamicWireParticleEmitterControl((Node)this.destinationHandle, 3.5f, null, true));
+            outputEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
             carrierEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
             wirePcbEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
-            outputEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
+            outputEmitter.getControl(ParticleEmitterControl.class).registerObserver(((Node)this.destinationHandle).getControl(ParticleEmitterControl.class));
             pcbAmpEmitter.getControl(ParticleEmitterControl.class).registerObserver(outputEmitter.getControl(ParticleEmitterControl.class));
         }
     }

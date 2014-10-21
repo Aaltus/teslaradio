@@ -12,7 +12,6 @@ import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -100,7 +99,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         outputEmitter.setLocalTranslation(outputHandle.getLocalTranslation());
         
         if(destinationHandle != null) {
-            outputEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
+            outputEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null, true));
             inputEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
             outFilterEmitter.getControl(ParticleEmitterControl.class).registerObserver(outputEmitter.getControl(ParticleEmitterControl.class));
             outputEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
