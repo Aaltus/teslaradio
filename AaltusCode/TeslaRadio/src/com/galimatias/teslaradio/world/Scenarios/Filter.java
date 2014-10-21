@@ -56,7 +56,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     
     Filter(Camera cam, Spatial destinationHandle) {
         
-        super(cam, destinationHandle);
+        super(cam, destinationHandle, "Tunak Tunak Tun.ogg");
         
         this.needAutoGenIfMain = true; 
         ScenarioCommon.registerObserver(this);
