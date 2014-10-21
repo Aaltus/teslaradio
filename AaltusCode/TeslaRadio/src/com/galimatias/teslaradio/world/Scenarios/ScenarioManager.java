@@ -151,7 +151,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         scenarios.add(playback);
         
         //Init Demodulation scenario
-        Demodulation demodulation = new Demodulation(cam, playback.getInputHandle());
+        Demodulation demodulation = new Demodulation(cam, null);
         demodulation.setName("Demodulation");
         scenarios.add(demodulation);
         
@@ -161,7 +161,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         scenarios.add(filter);
         
         //Init Reception scenario
-        Reception reception = new Reception(cam, filter.getInputHandle());
+        Reception reception = new Reception(cam, demodulation.getInputHandle());
         reception.setName("Reception");
         scenarios.add(reception);
         

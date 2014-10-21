@@ -168,7 +168,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     private Spatial particleAmplification(Spatial particle){
         float angle = turnAmpliButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
         float ampliScale = 1 + angle/(2*pi);
-        particle.scale(ampliScale/1.25f);
+        particle.scale(ampliScale);
         this.setUserData(AppGetter.USR_AUDIO_SCALE, ampliScale-1);
         return particle;
     }

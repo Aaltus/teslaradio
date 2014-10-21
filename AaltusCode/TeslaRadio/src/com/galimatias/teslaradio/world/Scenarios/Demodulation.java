@@ -130,7 +130,6 @@ public class Demodulation extends ModulationCommon  {
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
         this.isFM = isFm;
         this.initPatternGenerator();
-        System.out.println(newCarrier.getName());
         if(newCarrier.getName().equals("CubeCarrier")){
              this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
         }
