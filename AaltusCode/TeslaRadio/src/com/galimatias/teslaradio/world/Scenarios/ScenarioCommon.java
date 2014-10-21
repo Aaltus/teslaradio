@@ -25,7 +25,7 @@ import java.util.List;
  * Contains static methods used by Amplification and Modulation
  * @author Jean-Christophe
  */
-public class ScenariosCommon {
+public class ScenarioCommon {
     
     private static List<AutoGenObserver> observerList = new ArrayList<AutoGenObserver>();
     
@@ -95,7 +95,7 @@ public class ScenariosCommon {
             clone.getChild(0).setLocalScale(spatial.getLocalScale().mult(scale));
         } else {
             float scaleFactor = 1.25f;
-            float midScaleValue = (ScenariosCommon.minBaseParticleScale + ScenariosCommon.maxBaseParticleScale)/2.0f;
+            float midScaleValue = (ScenarioCommon.minBaseParticleScale + ScenarioCommon.maxBaseParticleScale)/2.0f;
             Vector3f midScale = new Vector3f(midScaleValue,midScaleValue,midScaleValue);
             
             if (spatial.getLocalScale().length() < midScale.length()) {
