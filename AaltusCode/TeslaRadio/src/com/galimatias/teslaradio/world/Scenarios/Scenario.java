@@ -33,7 +33,7 @@ public abstract class Scenario extends Node implements SignalObserver {
 
     private float cumulatedRot = 0;
     
-    protected final static boolean DEBUG_ANGLE = true;
+    protected final static boolean DEBUG_ANGLE = false;
     /**
      * Set to true to start autogeneration when scenario is the main scenario
      */

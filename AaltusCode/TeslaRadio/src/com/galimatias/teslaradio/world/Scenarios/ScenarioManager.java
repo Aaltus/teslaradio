@@ -161,7 +161,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         scenarios.add(filter);
         
         //Init Reception scenario
-        Reception reception = new Reception(cam, demodulation.getInputHandle());
+        Reception reception = new Reception(cam, filter.getInputHandle());
         reception.setName("Reception");
         scenarios.add(reception);
         
