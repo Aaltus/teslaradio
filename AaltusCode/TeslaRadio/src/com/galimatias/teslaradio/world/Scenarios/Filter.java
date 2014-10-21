@@ -278,14 +278,10 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
                 initAngleWheel.fromAngleAxis((frequency-1) * stepAngle, Vector3f.UNIT_Y);
                 endAngleWheel.fromAngleAxis(frequency * stepAngle, Vector3f.UNIT_Y);
                 filterWheel.setLocalRotation(rot.slerp(initAngleWheel, endAngleWheel, tpfCumul));
-                System.out.println("true");
-                System.out.println("last frequency " + lastFrequency + "new " + frequency);
             } else {
                 initAngleWheel.fromAngleAxis((frequency) * stepAngle, Vector3f.UNIT_Y);
                 endAngleWheel.fromAngleAxis(lastFrequency * stepAngle, Vector3f.UNIT_Y);
                 filterWheel.setLocalRotation(rot.slerp(endAngleWheel, initAngleWheel, tpfCumul));
-                System.out.println("false");
-                System.out.println("last frequency " + lastFrequency + "new " + frequency);
             }
         } else {
             needTurnin = false;
