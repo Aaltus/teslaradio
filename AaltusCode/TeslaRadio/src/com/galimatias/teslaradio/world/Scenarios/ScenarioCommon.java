@@ -61,7 +61,7 @@ public class ScenarioCommon {
         
         cubeCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation_Demodulation/Cube.j3o");
         Material m = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        m.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation_Demodulation/Edgemap_square.png"));
+        m.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Commons/Edgemap_square.png"));
         m.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         cubeCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         cubeCarrier.setMaterial(m);
@@ -70,7 +70,7 @@ public class ScenarioCommon {
         
         pyramidCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation_Demodulation/Tetrahedron.j3o");
         Material m2 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        m2.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation_Demodulation/Edgemap_triangle.png"));
+        m2.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Commons/Edgemap_triangle.png"));
         m2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         pyramidCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         pyramidCarrier.setMaterial(m2);
@@ -79,7 +79,7 @@ public class ScenarioCommon {
         
         dodecagoneCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation_Demodulation/Dodecahedron_rupee.j3o");
         Material m3 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        m3.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation_Demodulation/Edgemap_square.png"));
+        m3.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Commons/Edgemap_square.png"));
         m3.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         dodecagoneCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         dodecagoneCarrier.setMaterial(m3);

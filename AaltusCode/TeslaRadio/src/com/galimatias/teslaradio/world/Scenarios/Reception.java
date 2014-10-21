@@ -81,9 +81,9 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         
         initTitleBox();
         
-        wifiLogoLow = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Low", "Models/Reception/wifi-logo_low.png", 0.0f);
-        wifiLogoMedium = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Medium", "Models/Reception/wifi-logo_medium.png", 0.0f);
-        wifiLogoFull = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Full", "Models/Reception/wifi-logo_full.png", 0.0f);
+        wifiLogoLow = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Low", "Models/Commons/wifi-logo_low.png", 0.0f);
+        wifiLogoMedium = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Medium", "Models/Commons/wifi-logo_medium.png", 0.0f);
+        wifiLogoFull = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Full", "Models/Commons/wifi-logo_full.png", 0.0f);
         
         addWifiControl(wifiLogoLow);
         addWifiControl(wifiLogoMedium);
