@@ -5,6 +5,7 @@
 package com.galimatias.teslaradio.world.effects;
 
 import com.ar4android.vuforiaJME.AppGetter;
+import com.galimatias.teslaradio.world.Scenarios.DestinationHandleGetUpdateControl;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -40,6 +41,9 @@ public class WireGeometryControl extends AbstractControl {
     {
         this.path = path;
         this.destinationHandle = destinationHandle;
+        
+        // get an update from the destinationHandle
+        this.destinationHandle.addControl(new DestinationHandleGetUpdateControl(this));
         
         // create the wire geom
         wireGeom.setMesh(new Cylinder(4, 4, 0.04f, 1, true));
@@ -78,7 +82,7 @@ public class WireGeometryControl extends AbstractControl {
     }
     
     // called by emitter after his own update
-    public void wirePositionUpdate(float tpf)
+    public void wirePositionUpdate()
     {
         if(this.emitterHandle != null && AppGetter.hasRootNodeAsAncestor(this.destinationHandle) && AppGetter.hasRootNodeAsAncestor(this.emitterHandle)){
             // get the new position of the emitter in world
@@ -87,9 +91,16 @@ public class WireGeometryControl extends AbstractControl {
             // update wire position
             this.spatial.setLocalScale(1, 1, this.path.getLength());
             this.spatial.setLocalTranslation(emitterPos);
-            pathDirection = this.destinationHandle.getWorldTranslation().divide(emitterHandle.getWorldScale()).subtract(emitterPos);
-            this.spatial.setLocalRotation(findRotQuaternion(Vector3f.UNIT_Z,pathDirection,wireRotQuat));       
         }
+    }
+    
+    // called by receiver handle control after his own update
+    public void wireRotationUpdate()
+    {
+        if(this.emitterHandle != null && AppGetter.hasRootNodeAsAncestor(this.destinationHandle) && AppGetter.hasRootNodeAsAncestor(this.emitterHandle)){
+            pathDirection = this.destinationHandle.getWorldTranslation().divide(emitterHandle.getWorldScale()).subtract(emitterPos);
+            this.spatial.setLocalRotation(findRotQuaternion(Vector3f.UNIT_Z,pathDirection,wireRotQuat));
+        }        
     }
  
     private Quaternion findRotQuaternion(Vector3f v1, Vector3f v2, Quaternion returnQuat)

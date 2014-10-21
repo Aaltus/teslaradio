@@ -45,6 +45,7 @@ import com.jme3.texture.Image;
 import com.qualcomm.QCAR.QCAR;
 import com.utils.AppLogger;
 import com.utils.LanguageLocaleChanger;
+import org.acra.ACRA;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.Callable;
@@ -817,6 +818,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 	// needed for camera preview
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+
+        // Where the AppLogger is called for the first time and the log level is set
+        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ERROR);
 
         AppLogger.getInstance().i(TAG, "onCreate");
 

@@ -73,6 +73,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
             this.path.clearWayPoints();
             this.path.addWayPoint(emitterPos);
             this.path.addWayPoint(this.destinationHandle.getWorldTranslation().divide(this.spatial.getWorldScale()));
+            if(wireGeomNode != null){this.wireGeomNode.getControl(WireGeometryControl.class).wirePositionUpdate();}
         }
         else
         {
@@ -111,7 +112,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         toBeDeletedSpatial.setLocalTranslation(0, 0, 0);
 
         // notify Registered observers of the ParticleEmitter
-        this.notifyObservers(toBeDeletedSpatial, this.spatial.getName());
+        if(this.path.getLength() != 0f){this.notifyObservers(toBeDeletedSpatial, this.spatial.getName());}
     }
 
     @Override
@@ -160,7 +161,6 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
         
         // update dynamic path
         this.pathUpdate();
-        if(wireGeomNode != null){this.wireGeomNode.getControl(WireGeometryControl.class).wirePositionUpdate(tpf);}
     }
 
 }
