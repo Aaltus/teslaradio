@@ -58,7 +58,8 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         
         super(cam, destinationHandle);
         
-        this.needAutoGenIfMain = true;
+        this.needAutoGenIfMain = true; 
+        ScenariosCommon.registerObserver(this);
         
         loadUnmovableObjects();
         loadMovableObjects();
@@ -93,7 +94,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         outputEmitter.setName("Output");
         
         initPatternGenerator();
-        ScenariosCommon.registerObserver(this);
         
         scene.attachChild(outputEmitter);
         outputEmitter.setLocalTranslation(outputHandle.getLocalTranslation());

@@ -68,7 +68,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     public Reception(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         super(Camera, destinationHandle, "Sounds/reception.ogg" );
         
-        this.needAutoGenIfMain = true;
+        this.needAutoGenIfMain = true;     
+        ScenariosCommon.registerObserver(this);
         
         loadUnmovableObjects();
         loadMovableObjects();
@@ -121,7 +122,6 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         outputAntenneRx.setName("OutputAntenneRx");
         
         initPatternGenerator();
-        ScenariosCommon.registerObserver(this);
     }
 
     private void loadArrows()
