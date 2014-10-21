@@ -93,6 +93,8 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         outFilterEmitter.setName("Output Filter");
         outputEmitter.setName("Output");
         
+        inputEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
+        
         initPatternGenerator();
         
         scene.attachChild(outputEmitter);
@@ -100,7 +102,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         
         if(destinationHandle != null) {
             outputEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null, true));
-            inputEmitter.getControl(ParticleEmitterControl.class).registerObserver(this);
             outFilterEmitter.getControl(ParticleEmitterControl.class).registerObserver(outputEmitter.getControl(ParticleEmitterControl.class));
             outputEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
             outputEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
@@ -292,7 +293,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     }
     
     private void filter(String carrier, Spatial spatial) {
-        
         if (carrier.equals(this.carrier)) {
             if (outFilterEmitter != null) {
                 outFilterEmitter.getControl(ParticleEmitterControl.class).emitParticle(spatial);

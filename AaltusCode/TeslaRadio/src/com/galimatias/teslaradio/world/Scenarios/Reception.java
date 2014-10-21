@@ -109,6 +109,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         antenneRxPath = (Geometry)((Node) pathAntenneRx).getChild("NurbsPath.005");
        
         initParticlesEmitter(outputAntenneRx, pathAntenneRx, antenneRxPath, null);
+        outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
         
         scene.attachChild(outputModule);
         outputModule.setLocalTranslation(outputHandle.getLocalTranslation());
@@ -116,6 +117,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         if(this.destinationHandle != null){
             outputModule.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null, true));
             outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
+            outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
+
         }
 
         // Set names for the emitters
