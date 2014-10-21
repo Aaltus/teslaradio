@@ -151,7 +151,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         initAngleSwitch.fromAngleAxis(0.45f, Vector3f.UNIT_X);
         endAngleSwitch.fromAngleAxis(-0.45f, Vector3f.UNIT_X);
 
-        Spatial[] geom = ScenariosCommon.initCarrierGeometries();
+        Spatial[] geom = ScenarioCommon.initCarrierGeometries();
         cubeCarrier = geom[0];
         pyramidCarrier = geom[1];
         dodecagoneCarrier = geom[2];
@@ -223,7 +223,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
             }
             Spatial carrier = this.selectedCarrier.clone();
             carrier.setLocalScale(1);
-            ScenariosCommon.notifyObservers(carrier, isFM);
+            ScenarioCommon.notifyObservers(carrier, isFM);
         }
     }
 

@@ -86,10 +86,10 @@ public final class Modulation extends ModulationCommon {
 
     @Override
     protected void initPatternGenerator() {
-        micTapParticle = ScenariosCommon.initBaseGeneratorParticle();
+        micTapParticle = ScenarioCommon.initBaseGeneratorParticle();
         
-        this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 10, ScenariosCommon.minBaseParticleScale,
-                ScenariosCommon.maxBaseParticleScale, true));
+        this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 10, ScenarioCommon.minBaseParticleScale,
+                ScenarioCommon.maxBaseParticleScale, true));
     }
 
     /**
@@ -115,7 +115,7 @@ public final class Modulation extends ModulationCommon {
             if (pcbAmpEmitter != null && spatial != null) {
                 Node clone = (Node)outputSignal.clone();
                 
-                ScenariosCommon.modulateFMorAM(clone, spatial, isFM);
+                ScenarioCommon.modulateFMorAM(clone, spatial, isFM);
                 
                 clone.attachChild(spatial);
                
