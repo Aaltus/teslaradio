@@ -58,6 +58,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     private AppSettings settings;
     private ApplicationType applicationType;
     private boolean scenePreloaded =false;
+    private ScenarioCommon scenarioCommon = new ScenarioCommon();
 
     public void setApplicationType(ApplicationType applicationType){
         this.applicationType = applicationType;
@@ -146,32 +147,32 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
         //Init Demodulation scenario
-        Demodulation demodulation = new Demodulation(cam, null);
+        Demodulation demodulation = new Demodulation(this.scenarioCommon,cam, null);
         demodulation.setName("Demodulation");
         scenarios.add(demodulation);
         
         //Init Reception scenario
-        Reception reception = new Reception(cam, demodulation.getInputHandle());
+        Reception reception = new Reception(this.scenarioCommon,cam, demodulation.getInputHandle());
         reception.setName("Reception");
         scenarios.add(reception);
         
         //Init Amplification scenario
-        Amplification amplification = new Amplification(cam,reception.getInputHandle());
+        Amplification amplification = new Amplification(this.scenarioCommon,cam,reception.getInputHandle());
         amplification.setName("Amplification");
         scenarios.add(amplification);
         
         //Init Modulation scenario
-        Modulation modulation = new Modulation(cam, amplification.getInputHandle());
+        Modulation modulation = new Modulation(this.scenarioCommon,cam, amplification.getInputHandle());
         modulation.setName("Modulation");
         scenarios.add(modulation);
         
         //Init SoundCapture scenario
-        Scenario soundCapture = new SoundCapture(cam, modulation.getInputHandle());
+        Scenario soundCapture = new SoundCapture(this.scenarioCommon,cam, modulation.getInputHandle());
         soundCapture.setName("SoundCapture");
         scenarios.add(soundCapture);
         
         // Init SoundEmission scenario
-        SoundEmission soundEmission = new SoundEmission(cam, soundCapture.getInputHandle());
+        SoundEmission soundEmission = new SoundEmission(this.scenarioCommon,cam, soundCapture.getInputHandle());
         soundEmission.setName("SoundEmission");
         scenarios.add(soundEmission);
         
@@ -210,11 +211,13 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
       //  scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
     //    scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
 
+       
         //setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));
         setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDCAPTURE));
 
         setNodeList(node);
         initGuiNode(settings, assetManager);
+        
 
     }
 
@@ -418,7 +421,6 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
       removeInputMapping();
       
       // unregister all my listeners, detach all my nodes, etc.../*
-      
       
     }
 

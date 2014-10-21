@@ -27,6 +27,7 @@ public class Main extends SimpleApplication implements StateSwitcher
     {
         Main app = new Main();
         app.start();
+        AppGetter.getInstance().stopThreadExecutor();
     }
     private ScreenState startScreenState;
     

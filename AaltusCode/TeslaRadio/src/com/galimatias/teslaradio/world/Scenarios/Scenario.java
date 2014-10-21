@@ -30,8 +30,9 @@ public abstract class Scenario extends Node implements SignalObserver {
 
     private float cumulatedRot = 0;
     
+    protected ScenarioCommon scenarioCommon = null;
 
-    protected final static boolean DEBUG_ANGLE = false;
+    protected final static boolean DEBUG_ANGLE = true;
     /**
      * Set to true to start autogeneration when scenario is the main scenario
      */
@@ -122,17 +123,19 @@ public abstract class Scenario extends Node implements SignalObserver {
 
     }
 
-    public Scenario(com.jme3.renderer.Camera Camera, Spatial destinationHandle)
+    public Scenario(ScenarioCommon sc, com.jme3.renderer.Camera Camera, Spatial destinationHandle)
     {
         assetManager = AppGetter.getAssetManager();
         this.Camera = Camera;
         this.destinationHandle = destinationHandle;
         this.setUserData("angleX", 0f);
+        this.scenarioCommon = sc;
     }
     
-    public Scenario(com.jme3.renderer.Camera Camera, Spatial destinationHandle, String bgm)
+    public Scenario(ScenarioCommon sc, com.jme3.renderer.Camera Camera, Spatial destinationHandle, String bgm)
     {
         this.backgroundSound = bgm;
+        this.scenarioCommon = sc;
         assetManager = AppGetter.getAssetManager();
         this.Camera = Camera;
         this.destinationHandle = destinationHandle;
@@ -278,5 +281,7 @@ public abstract class Scenario extends Node implements SignalObserver {
             cumulatedRot = ZXangle;
         }
     }
+    
+  
 }
 
