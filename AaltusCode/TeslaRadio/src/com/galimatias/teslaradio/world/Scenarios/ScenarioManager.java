@@ -146,12 +146,12 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
         // Init the playback scenario, this is the last of them! yayyyyy!
-        Playback playback = new Playback(cam,null);
+        /*Playback playback = new Playback(cam,null);
         playback.setName("Playback");
-        scenarios.add(playback);
+        scenarios.add(playback);*/
         
         //Init Demodulation scenario
-        Demodulation demodulation = new Demodulation(cam, playback.getInputHandle());
+        Demodulation demodulation = new Demodulation(cam, null);
         demodulation.setName("Demodulation");
         scenarios.add(demodulation);
         
@@ -161,7 +161,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         scenarios.add(filter);
         
         //Init Reception scenario
-        Reception reception = new Reception(cam, filter.getInputHandle());
+        Reception reception = new Reception(cam, demodulation.getInputHandle());
         reception.setName("Reception");
         scenarios.add(reception);
         
@@ -222,10 +222,10 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         scenarioList.addScenario(ScenarioEnum.DEMODULATION,demodulationList);
         
         //Add last scenario
-        List<Scenario> playbackList = new ArrayList<Scenario>();
+        /*List<Scenario> playbackList = new ArrayList<Scenario>();
         playbackList.add(demodulation);
         playbackList.add(playback);
-        scenarioList.addScenario(ScenarioEnum.PLAYBACK,playbackList);
+        scenarioList.addScenario(ScenarioEnum.PLAYBACK,playbackList);*/
 
         //Only for debugging purpose deactivate it please.
         // scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
