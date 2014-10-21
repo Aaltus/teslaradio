@@ -278,16 +278,16 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         
         if (needTurnin && tpfCumul <= 1) {
             if (lastFrequency <= frequency) {
-                filterWheel.setLocalRotation(rot.slerp(initAngleWheel, endAngleWheel, tpfCumul));
+                filterWheel.setLocalRotation(rot.slerp(initAngleWheel, endAngleWheel, tpfCumul));          
             } else {
                 filterWheel.setLocalRotation(rot.slerp(endAngleWheel, initAngleWheel, tpfCumul));
             }
         } else {
             needTurnin = false;
             tpfCumul = 0;
+            lastFrequency = frequency;
         }
-        
-        lastFrequency = frequency;
+
     }
     
     private void filter(String carrier, Spatial spatial) {
