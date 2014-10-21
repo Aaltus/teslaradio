@@ -151,7 +151,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         scenarios.add(playback);
         
         //Init Demodulation scenario
-        Demodulation demodulation = new Demodulation(cam, null);
+        Demodulation demodulation = new Demodulation(cam, playback.getInputHandle());
         demodulation.setName("Demodulation");
         scenarios.add(demodulation);
         
