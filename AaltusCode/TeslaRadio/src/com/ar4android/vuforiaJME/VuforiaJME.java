@@ -57,6 +57,11 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
     //A Applistener that we will be using for callback
     private AndroidActivityListener androidActivityListener;
 
+    @Override
+    public void destroy() {
+        super.destroy(); //To change body of generated methods, choose Tools | Templates.
+        AppGetter.getInstance().stopThreadPool();
+    }
     //A way to register to the androidActivityListener
     @Override
     public void setAndroidActivityListener(AndroidActivityListener androidActivityListener)
