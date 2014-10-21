@@ -72,8 +72,8 @@ public final class SoundEmission extends Scenario {
     @Override
     protected void loadUnmovableObjects() {
 
-        Node sceneDrum = (Node) assetManager.loadModel("Models/SoundCapture/Tambour.j3o");
-        Node sceneGuit = (Node) assetManager.loadModel("Models/SoundCapture/Guitare.j3o");
+        Node sceneDrum = (Node) assetManager.loadModel("Models/SoundEmission/Tambour.j3o");
+        Node sceneGuit = (Node) assetManager.loadModel("Models/SoundEmission/Guitare.j3o");
         
         float movementValue  = 2.5f;
 
