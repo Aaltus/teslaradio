@@ -163,6 +163,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
         turnAmpliButton.setLocalRotation(rot);
     }
+    
     //Scale handle of the particle
     private Spatial particleAmplification(Spatial particle){
         float angle = turnAmpliButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);

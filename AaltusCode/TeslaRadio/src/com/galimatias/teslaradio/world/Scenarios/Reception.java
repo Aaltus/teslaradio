@@ -275,13 +275,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
              if (outputAntenneRx != null) {
                  
                 Float particleScale = spatial.getUserData(AppGetter.USR_SCALE);
-                 
-                //System.out.println("Scale before emission : " + particleScale.toString());
-                //System.out.println("Scale when received : " + spatial.getLocalScale().toString());
                 
                 float normScale = spatial.getWorldScale().length()/particleScale;
-                
-                //System.out.println("Normalized scale : " + normScale);
                 
                 updateSignalIntensity(normScale);
                 outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
@@ -291,7 +286,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
         scene.attachChild(signalEmitter);
-        signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        signalEmitter.setLocalTranslation(handle.getLocalTranslation());
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
     }
