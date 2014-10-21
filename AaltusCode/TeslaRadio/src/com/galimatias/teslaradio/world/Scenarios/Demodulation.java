@@ -386,14 +386,14 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
         
        
         this.pyramidSignal = new Node();
-        this.pyramidSignal.attachChild(carrier[0].clone());
+        this.pyramidSignal.attachChild(carrier[1].clone());
         scenarioCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
         this.pyramidSignal.attachChild(baseGeom.clone());
         this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
         this.pyramidSignal.setUserData("isFM", isFM);
        
         this.dodecagoneSignal = new Node();
-        this.dodecagoneSignal.attachChild(carrier[0].clone());
+        this.dodecagoneSignal.attachChild(carrier[2].clone());
         scenarioCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
         this.dodecagoneSignal.attachChild(baseGeom.clone());
         this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
