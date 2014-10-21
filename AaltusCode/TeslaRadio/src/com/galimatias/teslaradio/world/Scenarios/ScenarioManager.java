@@ -150,16 +150,19 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         Demodulation demodulation = new Demodulation(this.scenarioCommon,cam, null);
         demodulation.setName("Demodulation");
         scenarios.add(demodulation);
+        this.scenarioCommon.registerObserver(demodulation);
         
         //Init Reception scenario
         Reception reception = new Reception(this.scenarioCommon,cam, demodulation.getInputHandle());
         reception.setName("Reception");
         scenarios.add(reception);
+        this.scenarioCommon.registerObserver(reception);
         
         //Init Amplification scenario
         Amplification amplification = new Amplification(this.scenarioCommon,cam,reception.getInputHandle());
         amplification.setName("Amplification");
         scenarios.add(amplification);
+        this.scenarioCommon.registerObserver(amplification);
         
         //Init Modulation scenario
         Modulation modulation = new Modulation(this.scenarioCommon,cam, amplification.getInputHandle());
