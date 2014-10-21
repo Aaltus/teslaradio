@@ -15,12 +15,9 @@ import com.jme3.scene.Spatial;
  * Created by Batcave on 2014-09-09.
  */
 public final class Modulation extends ModulationCommon {
-    
-    private final static String TAG = "Modulation";
-    
+        
     // Default text to be seen when scenario starts
     private String titleText = "La Modulation";
-    private ColorRGBA digitalTextColor = ColorRGBA.Green;
     
     public Modulation(Camera Camera, Spatial destinationHandle) {
         
