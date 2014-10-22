@@ -212,7 +212,7 @@ Java_com_ar4android_vuforiaJME_VuforiaCallerNative_onQCARInitializedNative(JNIEn
 // RENDERING CALL
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEState_updateTracking(JNIEnv *env, jobject obj)
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_updateTracking(JNIEnv *env, jobject obj)
 {
     jclass activityClass = env->GetObjectClass(obj);
     jmethodID setCameraPerspectiveMethod = env->GetMethodID(activityClass,"setCameraPerspectiveNative", "(FF)V");
@@ -520,7 +520,7 @@ Java_com_ar4android_vuforiaJME_VuforiaCallerNative_setFocusMode(JNIEnv*, jobject
 }
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEState_initTracking(
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_initTracking(
                         JNIEnv* env, jobject obj, jint width, jint height)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEState_initTracking");

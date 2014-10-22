@@ -19,6 +19,7 @@ public class AaltusTrackable {
     Vec4F     _poseFromOrigin;
     AaltusTrackable	_origin;
 
+    public int getId(){return _id;}
     public Matrix44F   getPoseMatrix(){return _poseMVMatrix;}
     public Matrix44F   getInverseMV(){return _inverseMV;}
     public Matrix44F   getInvTranspMV(){return _invTranspMV;}
