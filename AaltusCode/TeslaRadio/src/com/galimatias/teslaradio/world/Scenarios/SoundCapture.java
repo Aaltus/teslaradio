@@ -61,9 +61,9 @@ public final class SoundCapture extends Scenario {
     private Arrows micArrow;
     private Arrows moveArrow;
        
-    public SoundCapture(Camera Camera, Spatial destinationHandle)
+    public SoundCapture(ScenarioCommon sc,Camera Camera, Spatial destinationHandle)
     {
-        super(Camera, destinationHandle);
+        super(sc,Camera, destinationHandle);
         
         this.needAutoGenIfMain = true;
         

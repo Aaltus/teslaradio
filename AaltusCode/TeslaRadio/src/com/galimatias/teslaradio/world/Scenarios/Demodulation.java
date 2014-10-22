@@ -25,14 +25,13 @@ public class Demodulation extends ModulationCommon2  {
     private Node cubeSignal;
     private Node pyramidSignal;
     private Node dodecagoneSignal;
-    
-    Demodulation(Camera cam, Spatial destinationHandle) {
-        
-        super(cam, destinationHandle, "Sounds/demodulation.ogg");
+    public Demodulation(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle){
+        super(sc,Camera, destinationHandle,"Sounds/demodulation.ogg");
         
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();
+        
     }
     
     @Override
@@ -88,21 +87,21 @@ public class Demodulation extends ModulationCommon2  {
               
         this.cubeSignal = new Node();
         this.cubeSignal.attachChild(carrier[0].clone());
-        ScenarioCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
+        scenarioCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
         this.cubeSignal.attachChild(baseGeom.clone());
         this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
         this.cubeSignal.setUserData("isFM", isFM);
         
         this.pyramidSignal = new Node();
-        this.pyramidSignal.attachChild(carrier[0].clone());
-        ScenarioCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
+        this.pyramidSignal.attachChild(carrier[1].clone());
+        scenarioCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
         this.pyramidSignal.attachChild(baseGeom.clone());
         this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
         this.pyramidSignal.setUserData("isFM", isFM);
        
         this.dodecagoneSignal = new Node();
-        this.dodecagoneSignal.attachChild(carrier[0].clone());
-        ScenarioCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
+        this.dodecagoneSignal.attachChild(carrier[2].clone());
+        scenarioCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
         this.dodecagoneSignal.attachChild(baseGeom.clone());
         this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
         this.dodecagoneSignal.setUserData("isFM", isFM);

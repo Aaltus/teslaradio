@@ -27,12 +27,15 @@ import java.util.List;
  */
 public class ScenarioCommon {
     
-    private static List<AutoGenObserver> observerList = new ArrayList<AutoGenObserver>();
+    private List<AutoGenObserver> observerList = new ArrayList<AutoGenObserver>();
     
-    public static float minBaseParticleScale = 0.25f;
-    public static float maxBaseParticleScale = 0.75f;
+    public float minBaseParticleScale = 0.25f;
+    public float maxBaseParticleScale = 0.75f;
     
-    public static Spatial initBaseGeneratorParticle(){
+    public ScenarioCommon(){
+        observerList = new ArrayList<AutoGenObserver>();
+    }
+    public Spatial initBaseGeneratorParticle(){
         Spatial baseGeom;
         if (DEBUG_ANGLE) {
             Material mat1 = new Material(AppGetter.getAssetManager(),"Common/MatDefs/Misc/Unshaded.j3md");
@@ -89,13 +92,13 @@ public class ScenarioCommon {
         return new Spatial[]{cubeCarrier,pyramidCarrier,dodecagoneCarrier};
     }
     
-    public static void modulateFMorAM(Node clone, Spatial spatial, boolean isFm) {
+    public  void modulateFMorAM(Node clone, Spatial spatial, boolean isFm) {
         if (!isFm) {
             float scale = 1.25f;
             clone.getChild(0).setLocalScale(spatial.getLocalScale().mult(scale));
         } else {
             float scaleFactor = 1.25f;
-            float midScaleValue = (ScenarioCommon.minBaseParticleScale + ScenarioCommon.maxBaseParticleScale)/2.0f;
+            float midScaleValue = (minBaseParticleScale + maxBaseParticleScale)/2.0f;
             Vector3f midScale = new Vector3f(midScaleValue,midScaleValue,midScaleValue);
             
             if (spatial.getLocalScale().length() < midScale.length()) {
@@ -124,16 +127,20 @@ public class ScenarioCommon {
     }
 
     
-    public static void registerObserver(AutoGenObserver observer) {
+    public  void registerObserver(AutoGenObserver observer) {
         observerList.add(observer);
     }
 
     // observable method to notify whoever wants to know that a particle as ended his path
    
-    public static void notifyObservers(Spatial newCarrier, boolean isFm) {
-        for(AutoGenObserver observer : observerList)
-        {
-            observer.autoGenObserverUpdate(newCarrier, isFm);
-        }        
+    public  void notifyObservers(Spatial newCarrier, boolean isFm) {
+        if(observerList != null){
+            
+            for(AutoGenObserver observer : observerList)
+            {
+                observer.autoGenObserverUpdate(newCarrier, isFm);
+            }
+        }
     }
+    
 }

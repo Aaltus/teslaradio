@@ -18,10 +18,10 @@ public final class Modulation extends ModulationCommon2 {
         
     // Default text to be seen when scenario starts
     private String titleText = "La Modulation";
-    
-    public Modulation(Camera Camera, Spatial destinationHandle) {
+
+    public Modulation(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         
-        super(Camera, destinationHandle, "Sounds/modulation.ogg");
+        super(sc,Camera, destinationHandle, "Sounds/modulation.ogg");
         
         loadUnmovableObjects();
         loadMovableObjects();
@@ -70,6 +70,9 @@ public final class Modulation extends ModulationCommon2 {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+        /*Update next scenarios*/
+        
+            scenarioCommon.notifyObservers(selectedCarrier.clone(), isFM);
     //convert angle for range [0 ; 2pi]
     private float angleRangeTwoPi(float angle) {
         float resultat = 0;
@@ -112,7 +115,7 @@ public final class Modulation extends ModulationCommon2 {
             if (pcbAmpEmitter != null && spatial != null) {
                 Node clone = (Node)outputSignal.clone();
                 
-                ScenarioCommon.modulateFMorAM(clone, spatial, isFM);
+                scenarioCommon.modulateFMorAM(clone, spatial, isFM);
                 
                 clone.attachChild(spatial);
                

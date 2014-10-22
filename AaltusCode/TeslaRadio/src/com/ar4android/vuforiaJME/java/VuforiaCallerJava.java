@@ -1,0 +1,341 @@
+package com.ar4android.vuforiaJME.java;
+
+import android.app.Activity;
+import com.ar4android.vuforiaJME.VuforiaCallback;
+import com.ar4android.vuforiaJME.VuforiaCaller;
+import com.qualcomm.vuforia.*;
+
+import java.nio.ByteBuffer;
+
+/**
+ * Created by jimbojd72 on 10/21/14.
+ */
+public class VuforiaCallerJava implements VuforiaCaller, Vuforia.UpdateCallbackInterface {
+
+    private static final String TAG = VuforiaCallerJava.class.getSimpleName();
+
+    private World world;
+    private final int numberOfDataSet          = 2;
+    private int qcarVideoMode = CameraDevice.MODE.MODE_OPTIMIZE_SPEED;
+    private Matrix44F projectionMatrix;
+    private int screenWidth;
+    private int screenHeight;
+    private boolean switchDataSetAsap = false;
+    // Indicates whether screen is in portrait (true) or landscape (false) mode
+    private boolean isActivityInPortraitMode   = false;
+    //QCAR::CameraDevice::MODE qcarVideoMode = QCAR::CameraDevice::MODE_DEFAULT;
+
+    private VuforiaCallback vuforiaCallback;
+
+    public VuforiaCallerJava(VuforiaCallback vuforiaCallback)
+    {
+        this.vuforiaCallback = vuforiaCallback;
+    }
+
+    @Override
+    public void setRGB565CameraImage(byte[] buffer, int width, int height)
+    {
+        this.vuforiaCallback.setRGB565CameraImage(buffer,width,height);
+    }
+
+    @Override
+    public int initTracker() {
+        this.world = World.CinitWorld();
+        return World.CinitTracker(world);
+    }
+
+    @Override
+    public void deinitTracker() {
+        World.CdeInitTracker(world);
+    }
+
+    @Override
+    public int loadTrackerData() {
+        return World.CloadTrackers(world);
+    }
+
+    @Override
+    public int destroyTrackerData() {
+        return World.CdestroyTrackerData(world);
+    }
+
+    @Override
+    public void onQCARInitializedNative(int loggerLvl) {
+        // Register the update callback where we handle the data set swap:
+        Vuforia.registerCallback(this);
+
+        // Comment in to enable tracking of up to 2 targets simultaneously and
+        // split the work over multiple frames:
+        Vuforia.setHint(HINT.HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, numberOfDataSet);
+
+    }
+
+    @Override
+    public void startCamera() {
+
+        // Select the camera to open, set this to QCAR::CameraDevice::CAMERA_FRONT
+        // to activate the front camera instead.
+        int camera = CameraDevice.CAMERA.CAMERA_BACK;
+        CameraDevice cameraDevice = CameraDevice.getInstance();
+
+        // Initialize the camera:
+        if (!cameraDevice.init(camera))
+            return;
+
+        // Configure the video background
+        configureVideoBackground();
+
+        // Select the default mode:
+        //if (!cameraDevice.selectVideoMode(QCAR::CameraDevice::MODE_DEFAULT))
+        //    return;
+        if (!cameraDevice.selectVideoMode(qcarVideoMode))
+            return;
+
+
+
+        // Start the camera:
+        if (!cameraDevice.start())
+            return;
+
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
+
+
+        // Start the tracker:
+        TrackerManager trackerManager = TrackerManager.getInstance();
+        Tracker imageTracker = trackerManager.getTracker(ImageTracker.getClassType());
+        if(imageTracker != null)
+            imageTracker.start();
+
+    }
+
+    @Override
+    public void stopCamera() {
+
+        // Stop the tracker:
+        TrackerManager trackerManager = TrackerManager.getInstance();
+        Tracker imageTracker = trackerManager.getTracker(ImageTracker.getClassType());
+        if(imageTracker != null)
+            imageTracker.stop();
+
+        CameraDevice.getInstance().stop();
+        CameraDevice.getInstance().deinit();
+    }
+
+    @Override
+    public void setProjectionMatrix() {
+
+        // Cache the projection matrix:
+        final CameraCalibration cameraCalibration = CameraDevice.getInstance().getCameraCalibration();
+        projectionMatrix = Tool.getProjectionGL(cameraCalibration, 2.0f, 2500.0f);
+    }
+
+    private void configureVideoBackground(){
+
+        //LOGI("configureVideoBackground");
+
+        // Get the default video mode:
+        CameraDevice cameraDevice = CameraDevice.getInstance();
+        //QCAR::VideoMode videoMode        = cameraDevice.getVideoMode(QCAR::CameraDevice::MODE_DEFAULT);
+        VideoMode videoMode        = cameraDevice.getVideoMode(qcarVideoMode);
+
+        // Configure the video background
+        //VideoBackgroundConfig config;
+        VideoBackgroundConfig config = new VideoBackgroundConfig();
+
+        //config.mEnabled = false;
+        config.setEnabled(false);
+
+        //Jonathan Desmarais: I change this to optimize the FPS of the App the rendering frame
+        // and the camera frame are not synchronized making the code must effective.
+        //config.mSynchronous = true;
+        //config.mSynchronous = false;
+        //config.mPosition.data[0] = 0.0f;
+        //config.mPosition.data[1] = 0.0f;
+        config.setSynchronous(false);
+        config.setPosition(new Vec2I(0,0));
+        //config.getPosition().getData()[0] = 0.0f;
+
+        if (isActivityInPortraitMode)
+        {
+            //LOG("configureVideoBackground PORTRAIT");
+            config.setSize(new Vec2I(Math.round(videoMode.getHeight()* (screenHeight / (float)videoMode.getWidth())),screenHeight));
+            //config.mSize.data[0] = videoMode.mHeight
+            //        * (screenHeight / (float)videoMode.mWidth);
+            //config.mSize.data[1] = screenHeight;
+
+            if(config.getSize().getData()[0] < screenWidth)
+            {
+                //LOGI("Correcting rendering background size to handle missmatch between screen and video aspect ratios.");
+                config.getSize().getData()[0] = screenWidth;
+                config.getSize().getData()[1] = Math.round(screenWidth *(videoMode.getWidth() / (float)videoMode.getHeight()));
+            }
+        }
+        else
+        {
+            //LOG("configureVideoBackground LANDSCAPE");
+            config.getSize().getData()[0] = screenWidth;
+            config.getSize().getData()[1] = Math.round(videoMode.getHeight() * (screenWidth / (float)videoMode.getWidth()));
+
+            if(config.getSize().getData()[1] < screenHeight)
+            {
+               //LOGI("Correcting rendering background size to handle missmatch between screen and video aspect ratios.");
+                config.getSize().getData()[0] = Math.round(screenHeight * (videoMode.getWidth() / (float)videoMode.getHeight()));
+                config.getSize().getData()[1] = screenHeight;
+            }
+        }
+
+        // Set the config:
+        Renderer.getInstance().setVideoBackgroundConfig(config);
+
+        //AppLogger.getInstance().i(TAG, "Configure Video Background : Video (%d,%d), Screen (%d,%d), mSize (%d,%d)", videoMode.mWidth, videoMode.mHeight, screenWidth, screenHeight, config.mSize.data[0], config.mSize.data[1]);
+
+
+    }
+
+    @Override
+    public void initApplicationNative(int width, int height) {
+
+        // Store screen dimensions
+        this.screenWidth = width;
+        this.screenHeight = height;
+
+        // Handle to the activity class:
+        /*
+        env->GetJavaVM(&javaVM);
+        activityObj = env->NewGlobalRef(obj);
+        LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative finished");
+        */
+    }
+
+    @Override
+    public void deinitApplicationNative() {
+
+
+        //empty for the moment
+    }
+
+    @Override
+    public void setActivityPortraitMode(boolean isPortrait) {
+        throw new UnsupportedOperationException("setActivityPortraitMode not supported yet");
+    }
+
+    @Override
+    public void switchDatasetAsap() {
+        switchDataSetAsap = true;
+    }
+
+    @Override
+    public boolean autofocus() {
+        return CameraDevice.getInstance().setFocusMode(CameraDevice.FOCUS_MODE.FOCUS_MODE_CONTINUOUSAUTO) ? true : false;
+    }
+
+    @Override
+    public boolean setFocusMode(int mode) {
+        int qcarFocusMode;
+
+        //TODO: Refactor stupid test case here
+        switch ((int)mode)
+        {
+            case 0:
+                qcarFocusMode = CameraDevice.FOCUS_MODE.FOCUS_MODE_NORMAL;
+                break;
+
+            case 1:
+                qcarFocusMode = CameraDevice.FOCUS_MODE.FOCUS_MODE_CONTINUOUSAUTO;
+                break;
+
+            case 2:
+                qcarFocusMode = CameraDevice.FOCUS_MODE.FOCUS_MODE_INFINITY;
+                break;
+
+            case 3:
+                qcarFocusMode = CameraDevice.FOCUS_MODE.FOCUS_MODE_MACRO;
+                break;
+
+            default:
+                return false;
+        }
+
+        return CameraDevice.getInstance().setFocusMode(qcarFocusMode) ? true : false;
+    }
+
+    @Override
+    public boolean activateFlash(boolean flash) {
+        return CameraDevice.getInstance().setFlashTorchMode(flash==true) ? true : false;
+    }
+
+    @Override
+    public int QCARinit() {
+        return Vuforia.init();
+    }
+
+    @Override
+    public void QCARdeinit() {
+        Vuforia.deinit();
+    }
+
+    @Override
+    public void QCARonPause() {
+        Vuforia.onPause();
+    }
+
+    @Override
+    public void QCARonResume() {
+        Vuforia.onResume();
+
+    }
+
+    @Override
+    public boolean QCARisInitialized() {
+        return Vuforia.isInitialized();
+
+    }
+
+    @Override
+    public void QCARsetInitParameters(Activity activity, int mQCARFlags) {
+        Vuforia.setInitParameters(activity,mQCARFlags);
+    }
+
+    @Override
+    public void QCAR_onUpdate(State state) {
+
+        //from
+        //https://developer.vuforia.com/forum/faq/android-how-can-i-access-camera-image
+        Image imageRGB565 = null;
+        Frame frame = state.getFrame();
+
+        for (int i = 0; i < frame.getNumImages(); ++i) {
+            final Image image = frame.getImage(i);
+            if (image.getFormat() == PIXEL_FORMAT.RGB565) {
+                imageRGB565 = /*(Image)*/image;
+
+                break;
+            }
+        }
+
+        if (imageRGB565 != null) {
+            //JNIEnv* env = 0;
+
+            //if ((javaVM != 0) && (activityObj != 0) && (javaVM->GetEnv((void**)&env, JNI_VERSION_1_4) == JNI_OK)) {
+
+                ByteBuffer pixels = imageRGB565.getPixels();
+                int width = imageRGB565.getWidth();
+                int height = imageRGB565.getHeight();
+                int numPixels = width * height;
+                this.setRGB565CameraImage(pixels.array(),width,height);
+                //LOGD("Update video image... !OnUpdate!");
+            /*
+                jbyteArray pixelArray = env->NewByteArray(numPixels * 2);
+                env->SetByteArrayRegion(pixelArray, 0, numPixels * 2, (const jbyte*) pixels);
+                jclass javaClass = env->GetObjectClass(activityObj);
+                jmethodID method = env-> GetMethodID(javaClass, "setRGB565CameraImage", "([BII)V");
+                env->CallVoidMethod(activityObj, method, pixelArray, width, height);
+
+                env->DeleteLocalRef(pixelArray);
+                */
+
+           // }
+        }
+
+    }
+}

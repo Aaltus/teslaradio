@@ -75,8 +75,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     //try particle
     private Geometry particle;
     
-    public Amplification(Camera Camera, Spatial destinationHandle){
-        super(Camera, destinationHandle, "Sounds/amplification.ogg");
+    public Amplification(ScenarioCommon sc,Camera Camera, Spatial destinationHandle){
+        super(sc, Camera, destinationHandle, "Sounds/amplification.ogg");
         this.needAutoGenIfMain = true;
         ScenarioCommon.registerObserver(this);
 
@@ -129,7 +129,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         
         if(this.destinationHandle != null){
             outputModule.setLocalTranslation(pathAntenneTx.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
-            outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 20, 13, mat2));
+            outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 20, 25, mat2));
             outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
             outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
 
@@ -168,7 +168,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     private Spatial particleAmplification(Spatial particle){
         float angle = turnAmpliButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
         float ampliScale = 1 + angle/(2*pi);
-        particle.scale(ampliScale);
+        particle.scale(ampliScale/1.25f);
         this.setUserData(AppGetter.USR_AUDIO_SCALE, ampliScale-1);
         return particle;
     }
@@ -188,21 +188,21 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
                 
         this.cubeSignal = new Node();
         this.cubeSignal.attachChild(carrier[0].clone());
-        ScenarioCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
+        scenarioCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
         this.cubeSignal.attachChild(baseGeom.clone());
         this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
         this.cubeSignal.setUserData("isFM", isFM);
         
         this.pyramidSignal = new Node();
-        this.pyramidSignal.attachChild(carrier[0].clone());
-        ScenarioCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
+        this.pyramidSignal.attachChild(carrier[1].clone());
+        scenarioCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
         this.pyramidSignal.attachChild(baseGeom.clone());
         this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
         this.pyramidSignal.setUserData("isFM", isFM);
        
         this.dodecagoneSignal = new Node();
-        this.dodecagoneSignal.attachChild(carrier[0].clone());
-        ScenarioCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
+        this.dodecagoneSignal.attachChild(carrier[2].clone());
+        scenarioCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
         this.dodecagoneSignal.attachChild(baseGeom.clone());
         this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
         this.dodecagoneSignal.setUserData("isFM", isFM);
@@ -362,7 +362,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         this.isFM = isFm;
         this.initPatternGenerator();
         if(newCarrier.getName().equals("CubeCarrier")){
-             this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
+            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
         }
         else if(newCarrier.getName().equals("PyramidCarrier")){
             this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.pyramidSignal);

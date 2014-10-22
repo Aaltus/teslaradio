@@ -15,6 +15,12 @@ import com.utils.AppLogger;
 
 public class Main extends SimpleApplication implements StateSwitcher
 {
+
+    @Override
+    public void destroy() {
+        super.destroy(); //To change body of generated methods, choose Tools | Templates.
+        AppGetter.getInstance().stopThreadPool();
+    }
     
     private ScenarioManager scenarioManager;
     private DevFrameworkMainState mainState;
@@ -27,6 +33,7 @@ public class Main extends SimpleApplication implements StateSwitcher
     {
         Main app = new Main();
         app.start();
+        //AppGetter.getInstance().stopThreadExecutor();
     }
     private ScreenState startScreenState;
     
@@ -91,6 +98,7 @@ public class Main extends SimpleApplication implements StateSwitcher
     @Override
     public void endGame() {
         this.stop();
+         AppGetter.getInstance().stopThreadPool();
     }
 
     @Override
