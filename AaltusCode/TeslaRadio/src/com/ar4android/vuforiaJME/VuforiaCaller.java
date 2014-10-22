@@ -11,7 +11,7 @@ public interface VuforiaCaller extends VuforiaCallback, QCARInterface {
 
     /** Native functions to load and destroy tracking data. */
     public int loadTrackerData();
-    public void destroyTrackerData();
+    public int destroyTrackerData();
 
     /** Native sample initialization. */
     public void onQCARInitializedNative(int loggerLvl);
