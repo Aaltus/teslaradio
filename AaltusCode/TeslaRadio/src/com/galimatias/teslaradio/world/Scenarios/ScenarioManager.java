@@ -3,7 +3,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.ar4android.vuforiaJME.AndroidActivityListener;
 import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
-import com.galimatias.teslaradio.world.effects.ScenarioSwitchAnimControl;
+import com.galimatias.teslaradio.world.effects.ScenarioTranslationAnimControl;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -182,7 +182,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         
         // add translation control to each scenarios
         for(Scenario scenario : scenarios){
-            scenario.addControl(new ScenarioSwitchAnimControl(node, 100));
+            scenario.addControl(new ScenarioTranslationAnimControl(node, 100));
         }
         
         //Add first scenario
@@ -369,7 +369,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             {
                 int index = 0;
                 for(Scenario scenario : getCurrentScenario().getScenarios() ){
-                    scenario.getControl(ScenarioSwitchAnimControl.class).startTranslationPrevious(index);
+                    scenario.getControl(ScenarioTranslationAnimControl.class).startTranslationPrevious(index);
                     index ++;
                 }               
             }
@@ -378,7 +378,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             {
                 int index = 0;
                 for(Scenario scenario : getCurrentScenario().getScenarios() ){
-                    scenario.getControl(ScenarioSwitchAnimControl.class).startTranslationNext(index);
+                    scenario.getControl(ScenarioTranslationAnimControl.class).startTranslationNext(index);
                     index ++;
                 }               
             }

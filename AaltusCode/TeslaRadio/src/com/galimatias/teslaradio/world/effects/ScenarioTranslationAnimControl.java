@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Hugo
  */
-public class ScenarioSwitchAnimControl extends AbstractControl{
+public class ScenarioTranslationAnimControl extends AbstractControl{
 
     // Node to create base path
     private final List<Node> trackables;
@@ -38,7 +38,7 @@ public class ScenarioSwitchAnimControl extends AbstractControl{
     
 
     
-    public ScenarioSwitchAnimControl(List<Node> trackables, float speed){
+    public ScenarioTranslationAnimControl(List<Node> trackables, float speed){
 
         this.trackables = trackables;
         this.speed = speed*AppGetter.getWorldScalingDefault();
@@ -84,6 +84,9 @@ public class ScenarioSwitchAnimControl extends AbstractControl{
                 this.pathIsReverse = true;
             }
         }
+        
+        // update the path before first frame
+        updatePath();
         
         // enable the control updates
         this.setEnabled(true);
