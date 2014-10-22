@@ -93,6 +93,7 @@ public class ScenarioCommon {
     }
     
     public  void modulateFMorAM(Node clone, Spatial spatial, boolean isFm) {
+        
         if (!isFm) {
             float scale = 1.25f;
             clone.getChild(0).setLocalScale(spatial.getLocalScale().mult(scale));
@@ -122,8 +123,10 @@ public class ScenarioCommon {
 
             //System.out.println("New FM signal scale : " + scaleFM.toString());
             clone.getChild(0).setLocalScale(scaleFM);
-            clone.scale(0.5f);
+            //clone.scale(0.5f);
         }
+       // clone.attachChild(spatial);
+      
     }
 
     
@@ -141,6 +144,22 @@ public class ScenarioCommon {
                 observer.autoGenObserverUpdate(newCarrier, isFm);
             }
         }
+    }
+    
+    public List<Spatial> generateModulatedWaves(Node baseNode, Spatial carrier, boolean isFm,
+            int step, float minScale, float maxScale){
+        
+        List<Spatial> lst = new ArrayList<Spatial>();
+        float scale = (maxScale-minScale)/step;
+        for(int i = 0; i < step;i++){
+            Node clone = (Node) baseNode.clone();
+            for(Spatial sp : clone.getChildren()){
+                sp.setLocalScale(scale*i);
+            }
+            this.modulateFMorAM(clone, carrier, isFm);
+            lst.add(clone);
+        }
+        return lst;
     }
     
 }

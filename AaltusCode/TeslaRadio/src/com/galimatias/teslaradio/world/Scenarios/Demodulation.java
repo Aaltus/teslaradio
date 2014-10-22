@@ -32,6 +32,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
+import java.util.List;
 
 /**
  *
@@ -406,16 +407,12 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
     @Override
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
         this.isFM = isFm;
-        this.initModulatedParticles();
-        if(newCarrier.getName().equals("CubeCarrier")){
-             this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
-        }
-        else if(newCarrier.getName().equals("PyramidCarrier")){
-            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.pyramidSignal);
-        }
-        else if(newCarrier.getName().equals("DodecagoneCarrier")){
-            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.dodecagoneSignal);
-        }
+        Node node = new Node();
+        Geometry baseGeom = scenarioCommon.initBaseGeneratorParticle();
+        node.attachChild(baseGeom);
+        List<Spatial> lst = scenarioCommon.generateModulatedWaves(
+               node , newCarrier, isFm, 7,scenarioCommon.minBaseParticleScale ,scenarioCommon.maxBaseParticleScale);
+        this.getInputHandle().getControl(PatternGeneratorControl.class).setParticleList(lst);
     }
     
     private void loadArrows() {

@@ -32,7 +32,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     
     protected ScenarioCommon scenarioCommon = null;
 
-    protected final static boolean DEBUG_ANGLE = true;
+    protected final static boolean DEBUG_ANGLE = false;
     /**
      * Set to true to start autogeneration when scenario is the main scenario
      */
@@ -128,7 +128,7 @@ public abstract class Scenario extends Node implements SignalObserver {
         assetManager = AppGetter.getAssetManager();
         this.Camera = Camera;
         this.destinationHandle = destinationHandle;
-        this.setUserData("angleX", 0f);
+        this.setUserData("angleX", 6.18f);
         this.scenarioCommon = sc;
     }
     
@@ -139,7 +139,7 @@ public abstract class Scenario extends Node implements SignalObserver {
         assetManager = AppGetter.getAssetManager();
         this.Camera = Camera;
         this.destinationHandle = destinationHandle;
-        this.setUserData("angleX", 0f);
+        this.setUserData("angleX", 6.18f);
         if(this.backgroundSound != null){
             this.addControl(new SoundControl(this.backgroundSound,false,1));
         }

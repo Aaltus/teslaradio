@@ -27,6 +27,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import java.util.List;
 
 
 /**
@@ -277,14 +278,21 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
 
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
+        Spatial carrier = spatial;//null;
+        /*for(Spatial sp : ((Node) spatial).getChildren()){
+            if(sp.getName().contains("Carrier")){
+                carrier =  sp;
+            }
+        }*/
          if (notifierId.equals("InputWireAmpli")) {
           //Change Scale
-             outputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
+             carrier = this.particleAmplification(carrier);
+             outputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(spatial);
          } else if(notifierId.equals("OutputWireAmpli")) {
              Float scale = new Float(spatial.getWorldScale().length());
              spatial.setUserData(AppGetter.USR_SCALE, scale);
-             //System.out.println("Before addition : " + spatial.getWorldScale());
-             outputModule.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
+             carrier = this.particleAmplification(carrier);
+             outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
          }   
     }
 
@@ -323,17 +331,13 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     @Override
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
         this.isFM = isFm;
-        this.initModulatedParticles();
-        if(newCarrier.getName().equals("CubeCarrier")){
-            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
-        }
-        else if(newCarrier.getName().equals("PyramidCarrier")){
-            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.pyramidSignal);
-        }
-        else if(newCarrier.getName().equals("DodecagoneCarrier")){
-            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.dodecagoneSignal);
-            
-        }
+        Node node = new Node();
+        Geometry baseGeom = scenarioCommon.initBaseGeneratorParticle();
+        node.attachChild(baseGeom);
+        List<Spatial> lst = scenarioCommon.generateModulatedWaves(
+               node , newCarrier, isFm, 7,scenarioCommon.minBaseParticleScale ,scenarioCommon.maxBaseParticleScale);
+        node.attachChild(newCarrier);
+        this.getInputHandle().getControl(PatternGeneratorControl.class).setParticleList(lst);
     }
     
 }

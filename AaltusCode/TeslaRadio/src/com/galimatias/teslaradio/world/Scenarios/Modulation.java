@@ -418,7 +418,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         if (carrierEmitter != null && tpfCumul >= 1.0f) {
             carrierEmitter.getControl(ParticleEmitterControl.class).emitParticle(selectedCarrier.clone());
-            scenarioCommon.notifyObservers(selectedCarrier.clone(), isFM);
+            
             tpfCumul = 0;
         }
         
@@ -568,7 +568,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
 
            // System.out.println("I am in " + notifierId);
             changeOuputParticles(spatial, notifierId);
-            
+            scenarioCommon.notifyObservers(spatial, this.isFM);
             this.getParent().setUserData(AppGetter.USR_SCALE, spatial.getUserData(AppGetter.USR_NEXT_WAVE_SCALE));
             
         } else if (notifierId.equals("WirePCBEmitter")) {
@@ -579,10 +579,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
                 Node clone = (Node)outputSignal.clone();
                 
                 scenarioCommon.modulateFMorAM(clone, spatial, isFM);
-                
                 clone.attachChild(spatial);
-               
-                
+              
                 //System.out.println("Scaling : " + spatial.getLocalScale().toString());
                 pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(clone);
                 clone.setUserData("CarrierShape", outputSignal.getChild(0).getName());

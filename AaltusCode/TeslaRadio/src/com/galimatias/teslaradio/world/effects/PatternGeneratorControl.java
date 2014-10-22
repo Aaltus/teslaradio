@@ -29,6 +29,7 @@ public class PatternGeneratorControl extends AbstractControl {
     protected float autoWaveDelay;
     protected float lastCall;
     protected ArrayDeque<Spatial> geomList = new ArrayDeque<Spatial>();
+    protected List<Spatial> outsideList = null;
     protected List<Float>     scaleList;
     protected Spatial baseParticle;
     protected float maxScale;
@@ -36,7 +37,7 @@ public class PatternGeneratorControl extends AbstractControl {
     protected int   scaleStep;
     protected int   waveIterator;
     protected Future autoPlayThread;
-    private final boolean isRandom;
+    private  boolean isRandom;
     private int particlePerAutoWave;
     private String id;
     
@@ -138,23 +139,34 @@ public class PatternGeneratorControl extends AbstractControl {
      */
     public void toggleNewWave(int wavesPerToggle)
     {   
-        {
-            this.geomList.clear();
-            float scale = this.scaleList.get(this.waveIterator);
+        this.geomList.clear();
+        if(this.outsideList == null){
+            float tmpScale = this.scaleList.get(this.waveIterator);
             this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, true);
-            this.spatial.setUserData(AppGetter.USR_NEXT_WAVE_SCALE, scale/this.maxScale);
-        }
+            this.spatial.setUserData(AppGetter.USR_NEXT_WAVE_SCALE, tmpScale/this.maxScale);
         
-        for (int i=0; i<wavesPerToggle; i++) {
-            float scale = this.scaleList.get(this.waveIterator);
-            if(++this.waveIterator == this.scaleStep){
-                this.waveIterator = 0;
-                if(this.isRandom){
-                   Collections.shuffle(this.scaleList);
+            for (int i=0; i<wavesPerToggle; i++) {
+                float scale = this.scaleList.get(this.waveIterator);
+                if(++this.waveIterator == this.scaleStep){
+                    this.waveIterator = 0;
+                    if(this.isRandom){
+                    Collections.shuffle(this.scaleList);
+                    }
+                }
+            this.toggleNewWave(scale);
+            }
+        }
+        else{
+            for(int i=0; i < wavesPerToggle;i++){
+                Spatial sp = this.outsideList.get(++this.waveIterator);
+                this.geomList.add(sp);
+                if(this.waveIterator == this.outsideList.size()){
+                    this.waveIterator = 0;
+                    if(isRandom){
+                        Collections.shuffle(this.outsideList);
+                    }
                 }
             }
-
-            this.toggleNewWave(scale);
         }
      }
     
@@ -175,7 +187,6 @@ public class PatternGeneratorControl extends AbstractControl {
     @Override
     protected void controlUpdate(float tpf) {
          
-        
         if(this.lastCall < this.minWaveDelay)
         {
             this.lastCall += tpf;
@@ -193,6 +204,12 @@ public class PatternGeneratorControl extends AbstractControl {
     }
     public void setBaseParticle(Spatial newParticle){
         this.baseParticle =  newParticle;
+    }
+    
+    public void setParticleList(List<Spatial> newList){
+        this.isRandom = isRandom;
+        this.outsideList = newList;
+        this.waveIterator = 0;
     }
     @Override 
     protected void controlRender(RenderManager rm, ViewPort vp) {
