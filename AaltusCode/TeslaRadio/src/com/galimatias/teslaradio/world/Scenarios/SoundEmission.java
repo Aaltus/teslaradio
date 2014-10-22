@@ -56,10 +56,10 @@ public final class SoundEmission extends Scenario {
     Arrows drumArrow;
     Arrows guitarArrow;
 
-    public SoundEmission(com.jme3.renderer.Camera Camera, Spatial destinationHandle)
+    public SoundEmission(ScenarioCommon sc, com.jme3.renderer.Camera Camera, Spatial destinationHandle)
     {
 
-        super(Camera, destinationHandle);
+        super(sc,Camera, destinationHandle);
         touchable = new Node();
         touchable.setName("Touchable");
         this.attachChild(touchable);

@@ -111,4 +111,8 @@ public class AppGetter {
     private AppGetter(SimpleApplication app) {
         this.app = app;
     }
+    
+    public void stopThreadPool(){
+        this.executor.shutdownNow();
+    }
 }

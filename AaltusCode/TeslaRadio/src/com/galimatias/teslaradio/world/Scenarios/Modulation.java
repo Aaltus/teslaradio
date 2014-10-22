@@ -87,9 +87,9 @@ public final class Modulation extends Scenario implements EmitterObserver {
     private Arrows switchArrow;
 
     
-    public Modulation(com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
+    public Modulation(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         
-        super(Camera, destinationHandle, "Sounds/modulation.ogg");
+        super(sc,Camera, destinationHandle, "Sounds/modulation.ogg");
         
         this.cam = Camera;
         this.destinationHandle = destinationHandle;
@@ -161,7 +161,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         initAngleSwitch.fromAngleAxis(0.45f, Vector3f.UNIT_X);
         endAngleSwitch.fromAngleAxis(-0.45f, Vector3f.UNIT_X);
         
-        Spatial[] geom = ModulationCommon.initCarrierGeometries();
+        Spatial[] geom = ScenarioCommon.initCarrierGeometries();
         cubeCarrier = geom[0];
         pyramidCarrier = geom[1];
         dodecagoneCarrier = geom[2];
@@ -203,10 +203,10 @@ public final class Modulation extends Scenario implements EmitterObserver {
     
     private void initPatternGenerator(){
         
-        micTapParticle = ModulationCommon.initBaseGeneratorParticle();
+        micTapParticle = scenarioCommon.initBaseGeneratorParticle();
         
-        this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 10, ModulationCommon.minBaseParticleScale, 
-                                                                   ModulationCommon.maxBaseParticleScale, true));
+        this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 10, scenarioCommon.minBaseParticleScale, 
+                                                                   scenarioCommon.maxBaseParticleScale, true));
         this.waveTime = 1;
         this.particlePerWave = 4;
     }
@@ -293,9 +293,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
                 switchIsToggled = false;
                 tpfCumulSwitch = 0;    
             }
-            Spatial carrier = this.selectedCarrier.clone();
-            carrier.setLocalScale(1);
-            ModulationCommon.notifyObservers(carrier, isFM);
+           
         }
     }
     
@@ -388,6 +386,8 @@ public final class Modulation extends Scenario implements EmitterObserver {
                     break;
             }
         }
+        /*Update next scenarios*/
+        
         
     }
     
@@ -418,6 +418,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
         
         if (carrierEmitter != null && tpfCumul >= 1.0f) {
             carrierEmitter.getControl(ParticleEmitterControl.class).emitParticle(selectedCarrier.clone());
+            scenarioCommon.notifyObservers(selectedCarrier.clone(), isFM);
             tpfCumul = 0;
         }
         
@@ -577,7 +578,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
             if (pcbAmpEmitter != null && spatial != null) {
                 Node clone = (Node)outputSignal.clone();
                 
-                ModulationCommon.modulateFMorAM(clone, spatial, isFM);
+                scenarioCommon.modulateFMorAM(clone, spatial, isFM);
                 
                 clone.attachChild(spatial);
                

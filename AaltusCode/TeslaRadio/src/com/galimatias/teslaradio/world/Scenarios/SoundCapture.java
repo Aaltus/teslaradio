@@ -64,9 +64,9 @@ public final class SoundCapture extends Scenario {
     private Arrows micArrow;
     private Arrows moveArrow;
        
-    public SoundCapture(Camera Camera, Spatial destinationHandle)
+    public SoundCapture(ScenarioCommon sc,Camera Camera, Spatial destinationHandle)
     {
-        super(Camera, destinationHandle);
+        super(sc,Camera, destinationHandle);
         
         this.destinationHandle = destinationHandle;
         this.cam = Camera;
@@ -138,11 +138,11 @@ public final class SoundCapture extends Scenario {
             wireDestinationEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
             micWireEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
 
-            micTapParticle = ModulationCommon.initBaseGeneratorParticle();
+            micTapParticle = scenarioCommon.initBaseGeneratorParticle();
 
             micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
-            micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, ModulationCommon.minBaseParticleScale, 
-                                                                  ModulationCommon.maxBaseParticleScale, true));
+            micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, scenarioCommon.minBaseParticleScale, 
+                                                                  scenarioCommon.maxBaseParticleScale, true));
             micWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
         }
         this.particlePerWave = 4;

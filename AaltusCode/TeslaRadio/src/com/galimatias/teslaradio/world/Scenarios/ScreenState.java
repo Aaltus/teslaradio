@@ -49,6 +49,7 @@ public class ScreenState extends AbstractAppState implements ScreenController, C
     private ViewPort guiViewPort;
     private AudioRenderer audioRenderer;
     private InputManager inputManager;
+    private ScenarioCommon scenarioCommon = new ScenarioCommon();
     
     //For the loading screen
     private boolean load = false;
@@ -118,14 +119,14 @@ public class ScreenState extends AbstractAppState implements ScreenController, C
                 Element element = nifty.getScreen("loadlevel").findElementByName("loadingtext");
                 textRenderer = element.getRenderer(TextRenderer.class);
                 
-                Demodulation demodulation = new Demodulation(null, null);
+                Demodulation demodulation = new Demodulation(this.scenarioCommon,null, null);
                 demodulation.setName("Demodulation");
                 setProgress(0.1f, "Loading " + demodulation.getName() + "...");
                 renderManager.preloadScene(demodulation);
  
             } else if (frameCount == 2) {
                 //Init Reception scenario
-                Reception reception = new Reception(null,null);
+                Reception reception = new Reception(this.scenarioCommon,null,null);
                 reception.setName("Reception");
                 setProgress(0.2f, "Loading " + reception.getName() + "...");
                 renderManager.preloadScene(reception);
@@ -135,7 +136,7 @@ public class ScreenState extends AbstractAppState implements ScreenController, C
             } else if (frameCount == 3) {
                 
                 //Init Amplification scenario
-                Amplification amplification = new Amplification(null,null);
+                Amplification amplification = new Amplification(this.scenarioCommon,null,null);
                 amplification.setName("Amplification");
                 setProgress(0.3f, "Loading " + amplification.getName() + "...");
                 renderManager.preloadScene(amplification);
@@ -144,7 +145,7 @@ public class ScreenState extends AbstractAppState implements ScreenController, C
             } else if (frameCount == 4) {
                 
                 //Init Modulation scenario
-                Modulation modulation = new Modulation(null, null);
+                Modulation modulation = new Modulation(this.scenarioCommon,null, null);
                 modulation.setName("Modulation");
                 setProgress(0.4f, "Loading " + modulation.getName() + "...");
                 renderManager.preloadScene(modulation);
@@ -153,7 +154,7 @@ public class ScreenState extends AbstractAppState implements ScreenController, C
  
             } else if (frameCount == 5) {
                 //Init SoundCapture scenario
-                Scenario soundCapture = new SoundCapture(null,null);
+                Scenario soundCapture = new SoundCapture(this.scenarioCommon,null,null);
                 soundCapture.setName("SoundCapture");
                 setProgress(0.5f, "Loading " + soundCapture.getName() + "...");
                 renderManager.preloadScene(soundCapture);
@@ -162,7 +163,7 @@ public class ScreenState extends AbstractAppState implements ScreenController, C
             } else if (frameCount == 6) {
 
                 // Init SoundEmission scenario
-                SoundEmission soundEmission = new SoundEmission(null,null);
+                SoundEmission soundEmission = new SoundEmission(this.scenarioCommon,null,null);
                 soundEmission.setName("SoundEmission");
                 setProgress(0.6f, "Loading " + soundEmission.getName() + "...");
                 renderManager.preloadScene(soundEmission);

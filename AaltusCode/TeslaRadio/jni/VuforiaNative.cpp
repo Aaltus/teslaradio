@@ -143,7 +143,7 @@ VuforiaJME_UpdateCallback updateCallback;
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setActivityPortraitMode(JNIEnv *, jobject, jboolean isPortrait)
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_setActivityPortraitMode(JNIEnv *, jobject, jboolean isPortrait)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setActivityPortraitMode");
     isActivityInPortraitMode = isPortrait;
@@ -152,14 +152,14 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setActivityPortraitMode(JNIEnv
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_switchDatasetAsap(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_switchDatasetAsap(JNIEnv *, jobject)
 {
     switchDataSetAsap = true;
 }
 
 
 JNIEXPORT int JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initTracker(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_initTracker(JNIEnv *, jobject)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initTracker");
     world = CinitWorld();
@@ -169,7 +169,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initTracker(JNIEnv *, jobject)
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitTracker(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_deinitTracker(JNIEnv *, jobject)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitTracker");
     CdeInitTracker(world);
@@ -177,7 +177,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitTracker(JNIEnv *, jobjec
 
 
 JNIEXPORT int JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_loadTrackerData(JNIEnv *, jobject)
 {
 
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData");
@@ -187,7 +187,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_loadTrackerData(JNIEnv *, jobj
 
 
 JNIEXPORT int JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_destroyTrackerData(JNIEnv *, jobject)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData");
     return CdestroyTrackerData(world);
@@ -196,7 +196,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_destroyTrackerData(JNIEnv *, j
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_onQCARInitializedNative(JNIEnv *, jobject, jint loggerLvl)
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_onQCARInitializedNative(JNIEnv *, jobject, jint loggerLvl)
 {
     logLevel = loggerLvl;
 
@@ -377,7 +377,7 @@ void configureVideoBackground()
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative(
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_initApplicationNative(
                             JNIEnv* env, jobject obj, jint width, jint height)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative");
@@ -395,7 +395,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_initApplicationNative(
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitApplicationNative(
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_deinitApplicationNative(
                                                         JNIEnv* env, jobject obj)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitApplicationNative");
@@ -405,7 +405,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_deinitApplicationNative(
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera(JNIEnv *env, jobject obj)
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_startCamera(JNIEnv *env, jobject obj)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera");
     
@@ -445,7 +445,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_startCamera(JNIEnv *env, jobje
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_stopCamera(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_stopCamera(JNIEnv *, jobject)
 {
     LOGI("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_stopCamera");
 
@@ -461,7 +461,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_stopCamera(JNIEnv *, jobject)
 
 
 JNIEXPORT void JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setProjectionMatrix(JNIEnv *, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_setProjectionMatrix(JNIEnv *, jobject)
 {
     LOGD("Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setProjectionMatrix");
 
@@ -474,14 +474,14 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setProjectionMatrix(JNIEnv *, 
 // Activates Camera Flash
 // ----------------------------------------------------------------------------
 JNIEXPORT jboolean JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_activateFlash(JNIEnv*, jobject, jboolean flash)
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_activateFlash(JNIEnv*, jobject, jboolean flash)
 {
     //LOGD("com_ar4android_vuforiaJME_VuforiaJMEActivity_activateFlash");
     return QCAR::CameraDevice::getInstance().setFlashTorchMode((flash==JNI_TRUE)) ? JNI_TRUE : JNI_FALSE;
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_autofocus(JNIEnv*, jobject)
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_autofocus(JNIEnv*, jobject)
 {
     //LOGD("com_ar4android_vuforiaJME_VuforiaJMEActivity_autofocus");
     return QCAR::CameraDevice::getInstance().setFocusMode(QCAR::CameraDevice::FOCUS_MODE_TRIGGERAUTO) ? JNI_TRUE : JNI_FALSE;
@@ -489,7 +489,7 @@ Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_autofocus(JNIEnv*, jobject)
 
 
 JNIEXPORT jboolean JNICALL
-Java_com_ar4android_vuforiaJME_VuforiaJMEActivity_setFocusMode(JNIEnv*, jobject, jint mode)
+Java_com_ar4android_vuforiaJME_VuforiaCallerNative_setFocusMode(JNIEnv*, jobject, jint mode)
 {
     //LOGD("com_ar4android_vuforiaJME_VuforiaJMEActivity_setFocusMode");
     int qcarFocusMode;
