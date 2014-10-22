@@ -1,5 +1,8 @@
 package com.ar4android.vuforiaJME;
 
+import android.app.Activity;
+import com.qualcomm.QCAR.QCAR;
+
 /**
  * Created by jimbojd72 on 10/21/14.
  */
@@ -60,4 +63,36 @@ public class VuforiaCallerNative implements VuforiaCaller {
     }
 
 
+    @Override
+    public int QCARinit() {
+       return QCAR.init();
+    }
+
+    @Override
+    public void QCARdeinit() {
+        QCAR.deinit();
+    }
+
+    @Override
+    public void QCARonPause() {
+        QCAR.onPause();
+    }
+
+    @Override
+    public void QCARonResume() {
+        QCAR.onResume();
+
+    }
+
+    @Override
+    public boolean QCARisInitialized() {
+        return QCAR.isInitialized();
+
+    }
+
+    @Override
+    public void QCARsetInitParameters(Activity activity, int mQCARFlags) {
+        QCAR.setInitParameters(activity,mQCARFlags);
+
+    }
 }

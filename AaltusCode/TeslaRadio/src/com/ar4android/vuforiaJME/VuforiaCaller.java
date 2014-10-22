@@ -3,7 +3,7 @@ package com.ar4android.vuforiaJME;
 /**
  * Created by jimbojd72 on 10/21/14.
  */
-public interface VuforiaCaller extends VuforiaCallback {
+public interface VuforiaCaller extends VuforiaCallback, QCARInterface {
 
     /** Native tracker initialization and deinitialization. */
     public int initTracker();

@@ -361,7 +361,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             // Prevent the onDestroy() method to overlap with initialization:
             synchronized (mShutdownLock)
             {
-                QCAR.setInitParameters(VuforiaJMEActivity.this, mQCARFlags);
+                vuforiaCaller.QCARsetInitParameters(VuforiaJMEActivity.this, mQCARFlags);
 
                 do
                 {
@@ -370,7 +370,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                     // progress in percents (0 ... 100%).
                     // If QCAR.init() returns -1, it indicates an error.
                     // Initialization is done when progress has reached 100%.
-                    mProgressValue = QCAR.init();
+                    mProgressValue = vuforiaCaller.QCARinit();
 
                     // Publish the progress value:
                     publishProgress(mProgressValue);
@@ -465,7 +465,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         if (currentScreenRotation != mLastScreenRotation)
         {
             // Set projection matrix if there is already a valid one:
-            if (QCAR.isInitialized() && (mAppStatus == APPSTATUS_CAMERA_RUNNING))
+            if (vuforiaCaller.QCARisInitialized() && (mAppStatus == APPSTATUS_CAMERA_RUNNING))
             {
                 AppLogger.getInstance().d(TAG, "VuforiaJMEActivity::updateRenderView");
 
@@ -828,7 +828,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     private void resumeQCARandTasks() {
         // QCAR-specific resume operation
-        QCAR.onResume();
+        vuforiaCaller.QCARonResume();
 
         // We may start the camera only if the QCAR SDK has already been
         // initialized
@@ -865,7 +865,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         // QCAR-specific pause operation
         if(isQCARPause){
-            QCAR.onPause();
+            vuforiaCaller.QCARonPause();
         }
 
         firstTimeGetImage=true;
@@ -923,7 +923,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             vuforiaCaller.deinitTracker();
 
             // Deinitialize QCAR SDK:
-            QCAR.deinit();
+            vuforiaCaller.QCARdeinit();
         }
         //Jonathan: I commented this see reason why here:
         //https://stackoverflow.com/questions/2414105/why-is-it-bad-practice-to-call-system-gc
