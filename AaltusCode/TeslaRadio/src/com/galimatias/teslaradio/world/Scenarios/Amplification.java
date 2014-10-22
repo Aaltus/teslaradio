@@ -155,7 +155,6 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     private void loadArrows()
     {
         moveArrow = new Arrows("move", null, assetManager, 10);
-        this.attachChild(moveArrow);
     }
     
     private void ampliButtonRotation(float ZXangle) {
@@ -371,6 +370,18 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
             this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.dodecagoneSignal);
             
         }
+    }
+
+    @Override
+    protected void onFirstNodeActions() {
+        super.onFirstNodeActions(); //To change body of generated methods, choose Tools | Templates.
+        this.attachChild(moveArrow);
+    }
+
+    @Override
+    protected void onSecondNodeActions() {
+        super.onSecondNodeActions(); //To change body of generated methods, choose Tools | Templates.
+        this.detachChild(moveArrow);
     }
     
 }

@@ -123,7 +123,6 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     private void loadArrows()
     {
         moveArrow = new Arrows("move", null, assetManager, 10);
-        this.attachChild(moveArrow);
     }
 
     private void addWifiControl(ImageBox wifiLogo) {
@@ -292,6 +291,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         super.onFirstNodeActions();
         
         scene.detachChild(wifi);
+        this.detachChild(moveArrow);
     }
 
     @Override
@@ -299,6 +299,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         super.onSecondNodeActions();
         
         scene.attachChild(wifi);
+        this.attachChild(moveArrow);
     }
     
     @Override
@@ -373,4 +374,6 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
             
         }
     }
+    
+    
 }
