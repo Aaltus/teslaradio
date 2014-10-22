@@ -154,6 +154,7 @@ public class DynamicWireParticleEmitterControl extends ParticleEmitterControl {
                 control.setEnabled(true);
             }
             
+            spatialToAttach.setLocalTranslation(this.spatial.getWorldTranslation().divide(this.spatial.getWorldScale()));
             this.dummyRootNodeScaled.attachChild(spatialToAttach);
             //((Node) this.spatial).attachChild(spatialToAttach);
         }
