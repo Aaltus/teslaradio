@@ -21,7 +21,7 @@ public class VuforiaCallerNative implements VuforiaCaller {
 
     /** Native functions to load and destroy tracking data. */
     public native int loadTrackerData();
-    public native void destroyTrackerData();
+    public native int destroyTrackerData();
 
     /** Native sample initialization. */
     public native void onQCARInitializedNative(int loggerLvl);
@@ -93,6 +93,5 @@ public class VuforiaCallerNative implements VuforiaCaller {
     @Override
     public void QCARsetInitParameters(Activity activity, int mQCARFlags) {
         QCAR.setInitParameters(activity,mQCARFlags);
-
     }
 }
