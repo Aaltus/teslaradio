@@ -14,7 +14,7 @@ import com.jme3.scene.Spatial;
 /**
  * Created by Batcave on 2014-09-09.
  */
-public final class Modulation extends ModulationCommon {
+public final class Modulation extends ModulationCommon2 {
         
     // Default text to be seen when scenario starts
     private String titleText = "La Modulation";

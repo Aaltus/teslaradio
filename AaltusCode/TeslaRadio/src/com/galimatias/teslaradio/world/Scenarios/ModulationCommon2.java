@@ -21,7 +21,7 @@ import com.jme3.scene.Spatial;
  *
  * @author Batcave
  */
-public abstract class ModulationCommon extends Scenario implements EmitterObserver, AutoGenObserver {
+public abstract class ModulationCommon2 extends Scenario implements EmitterObserver, AutoGenObserver {
 
     // Values displayed on the digital screen of the PCB 3D object
     protected final String sFM1061 = "FM 106.1MHz";
@@ -80,14 +80,14 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     
     protected int frequency = 1;
     
-    ModulationCommon(Camera cam, Spatial destinationHandle) {
+    ModulationCommon2(Camera cam, Spatial destinationHandle) {
         
         super(cam, destinationHandle);
         
         this.needAutoGenIfMain = true;
     }
     
-    ModulationCommon(Camera cam, Spatial destinationHandle, String bgm) {
+    ModulationCommon2(Camera cam, Spatial destinationHandle, String bgm) {
         
         super(cam, destinationHandle, bgm);
         

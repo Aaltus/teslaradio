@@ -18,7 +18,7 @@ import com.jme3.scene.Spatial;
  * @author Barliber
  */
 
-public class Demodulation extends ModulationCommon  {
+public class Demodulation extends ModulationCommon2  {
 
     private String titleText = "La Démodulation";
     
