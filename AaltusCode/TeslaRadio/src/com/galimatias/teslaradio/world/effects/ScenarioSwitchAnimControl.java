@@ -84,14 +84,12 @@ public class ScenarioSwitchAnimControl extends AbstractControl{
                 this.pathIsReverse = true;
             }
         }
-
+        
+        // enable the control updates
         this.setEnabled(true);
         
-        
         // set the start position of the scenario
-        if(startNode != null){
-            this.spatial.setLocalTranslation(startNode.getWorldRotation().inverse().mult((startNode.getWorldTranslation().subtract(endNode.getWorldTranslation())).divide(endNode.getWorldScale())));
-        }
+        this.spatial.setLocalTranslation(startNode.getWorldRotation().inverse().mult((startNode.getWorldTranslation().subtract(endNode.getWorldTranslation())).divide(endNode.getWorldScale())));
 
     }
     
@@ -127,15 +125,17 @@ public class ScenarioSwitchAnimControl extends AbstractControl{
         
         // get the relative position of the destination in this referential
         if(startNode != null){
-            startPos = startNode.getWorldRotation().inverse().mult((startNode.getWorldTranslation().subtract(endNode.getWorldTranslation())).divide(endNode.getWorldScale()));
+            if(!this.pathIsReverse){
+                startPos = startNode.getWorldRotation().inverse().mult((startNode.getWorldTranslation().subtract(endNode.getWorldTranslation())).divide(endNode.getWorldScale()));
+            }
+            else{
+                startPos = endNode.getWorldRotation().inverse().mult((startNode.getWorldTranslation().subtract(endNode.getWorldTranslation())).divide(endNode.getWorldScale()));
+            }
+            // remove last waypoints and add new one
+            this.path.clearWayPoints();
+            this.path.addWayPoint(startPos);
+            this.path.addWayPoint(Vector3f.ZERO);
         }
-        else{
-            startPos = Vector3f.ZERO;
-        }
-        // remove last waypoints and add new one
-        this.path.clearWayPoints();
-        this.path.addWayPoint(startPos);
-        this.path.addWayPoint(Vector3f.ZERO);
     }
             
     @Override
