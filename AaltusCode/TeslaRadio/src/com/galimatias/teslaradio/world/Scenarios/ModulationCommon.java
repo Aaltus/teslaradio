@@ -56,7 +56,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     private Spatial dodecagoneCarrier; // Really...
 
     // Current carrier signal and his associated output
-    private Spatial selectedCarrier;
+    protected Spatial selectedCarrier;
     protected Node outputSignal;
 
     //Pattern Geometry

@@ -121,7 +121,6 @@ public final class Modulation extends ModulationCommon {
                 pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(clone);
                 clone.setUserData("CarrierShape", outputSignal.getChild(0).getName());
                 clone.setUserData("isFM", isFM);
-                clone.setUserData("Frequency", frequency);
             }
             
         }
