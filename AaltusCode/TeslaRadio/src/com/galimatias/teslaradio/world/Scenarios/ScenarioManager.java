@@ -146,14 +146,24 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         //to which environment we are in. Don't forget to add scenario in it. 
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
+        // Init the playback scenario, this is the last of them! yayyyyy!
+        Playback playback = new Playback(this.scenarioCommon, cam,null);
+        playback.setName("Playback");
+        scenarios.add(playback);
+        
         //Init Demodulation scenario
-        Demodulation demodulation = new Demodulation(this.scenarioCommon,cam, null);
+        Demodulation demodulation = new Demodulation(this.scenarioCommon,cam, playback.getInputHandle());
         demodulation.setName("Demodulation");
         scenarios.add(demodulation);
         this.scenarioCommon.registerObserver(demodulation);
         
+        // Init Filtering scenario
+        Filter filter = new Filter(this.scenarioCommon,cam, demodulation.getInputHandle());
+        filter.setName("Filter");
+        scenarios.add(filter);
+        
         //Init Reception scenario
-        Reception reception = new Reception(this.scenarioCommon,cam, demodulation.getInputHandle());
+        Reception reception = new Reception(this.scenarioCommon,cam, filter.getInputHandle());
         reception.setName("Reception");
         scenarios.add(reception);
         this.scenarioCommon.registerObserver(reception);
@@ -204,15 +214,27 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         scenarioList.addScenario(ScenarioEnum.RECEPTION,receptionList);
         
         //Add fifth scenario
+        List<Scenario> filterList = new ArrayList<Scenario>();
+        filterList.add(reception);
+        filterList.add(filter);
+        scenarioList.addScenario(ScenarioEnum.FILTER,filterList);
+        
+        //Add sixth scenario
         List<Scenario> demodulationList = new ArrayList<Scenario>();
-        demodulationList.add(reception);
+        demodulationList.add(filter);
         demodulationList.add(demodulation);
         scenarioList.addScenario(ScenarioEnum.DEMODULATION,demodulationList);
+        
+        //Add last scenario
+        List<Scenario> playbackList = new ArrayList<Scenario>();
+        playbackList.add(demodulation);
+        playbackList.add(playback);
+        scenarioList.addScenario(ScenarioEnum.PLAYBACK,playbackList);
 
         //Only for debugging purpose deactivate it please.
-        scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
-      //  scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
-    //    scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
+        // scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
+        // scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
+        // scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
 
        
         //setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));

@@ -5,13 +5,16 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppGetter;
+import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.SoundControl;
+import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.observer.SignalObserver;
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -31,7 +34,6 @@ public abstract class Scenario extends Node implements SignalObserver {
     private float cumulatedRot = 0;
     
     protected ScenarioCommon scenarioCommon = null;
-
     protected final static boolean DEBUG_ANGLE = true;
     /**
      * Set to true to start autogeneration when scenario is the main scenario
@@ -56,6 +58,10 @@ public abstract class Scenario extends Node implements SignalObserver {
      * will use this camera.
      */
     protected com.jme3.renderer.Camera Camera = null;
+    
+    // this is PIIIIIII! (kick persian)
+    protected final float pi = (float) FastMath.PI;
+    
     public void setCamera(Camera cam){
         this.Camera = cam;
     }
@@ -92,7 +98,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     /**
      * Defines the number of particle per auto-gen wave
      */
-    protected int particlePerWave = 1;
+    protected int particlePerWave = 4;
     /**
      * Defines the time between 2 auto-wave emission
      */
@@ -134,12 +140,10 @@ public abstract class Scenario extends Node implements SignalObserver {
     
     public Scenario(ScenarioCommon sc, com.jme3.renderer.Camera Camera, Spatial destinationHandle, String bgm)
     {
+        this(sc, Camera, destinationHandle);
+        
         this.backgroundSound = bgm;
         this.scenarioCommon = sc;
-        assetManager = AppGetter.getAssetManager();
-        this.Camera = Camera;
-        this.destinationHandle = destinationHandle;
-        this.setUserData("angleX", 0f);
         if(this.backgroundSound != null){
             this.addControl(new SoundControl(this.backgroundSound,false,1));
         }
@@ -199,6 +203,11 @@ public abstract class Scenario extends Node implements SignalObserver {
      * Initialization of the title boxes of a scenario.
      */
     protected abstract void initTitleBox();
+    
+    /**
+     * Initialize the pattern generators of a scenario.
+     */
+    protected abstract void initPatternGenerator();
 
     /**
      * Call all of the methods when scenario is on Node A, can be override for 
@@ -246,7 +255,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     /**
      * Sets the base particle for auto-generation
      */
-    protected void setAutoGenerationParticle(Geometry particle) {
+    protected void setAutoGenerationParticle(Spatial particle){
       this.getInputHandle().getControl(PatternGeneratorControl.class).
               setBaseParticle(particle);
     };
@@ -280,6 +289,14 @@ public abstract class Scenario extends Node implements SignalObserver {
             scene.setLocalRotation(rot);
             cumulatedRot = ZXangle;
         }
+    }
+
+    protected void initStaticParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
+
+        scene.attachChild(signalEmitter);
+        signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
+        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
     
   

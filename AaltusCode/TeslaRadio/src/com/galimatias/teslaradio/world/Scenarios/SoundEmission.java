@@ -64,8 +64,6 @@ public final class SoundEmission extends Scenario {
         touchable.setName("Touchable");
         this.attachChild(touchable);
 
-        this.destinationHandle = destinationHandle;
-
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();
@@ -74,8 +72,8 @@ public final class SoundEmission extends Scenario {
     @Override
     protected void loadUnmovableObjects() {
 
-        Node sceneDrum = (Node) assetManager.loadModel("Models/SoundCapture/Tambour.j3o");
-        Node sceneGuit = (Node) assetManager.loadModel("Models/SoundCapture/Guitare.j3o");
+        Node sceneDrum = (Node) assetManager.loadModel("Models/SoundEmission/Tambour.j3o");
+        Node sceneGuit = (Node) assetManager.loadModel("Models/SoundEmission/Guitare.j3o");
         
         float movementValue  = 2.5f;
 
@@ -413,5 +411,10 @@ public final class SoundEmission extends Scenario {
     @Override
     protected Spatial getInputHandle() {
         return null;
+    }
+
+    @Override
+    protected void initPatternGenerator() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
