@@ -4,6 +4,7 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -40,7 +41,7 @@ public class ScenarioSwitchAnimControl extends AbstractControl{
     public ScenarioSwitchAnimControl(List<Node> trackables, float speed){
 
         this.trackables = trackables;
-        this.speed = speed;
+        this.speed = speed*AppGetter.getWorldScalingDefault();
     }
     
     /** translation from node_i to node_i+1
