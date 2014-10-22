@@ -42,4 +42,6 @@ public interface VuforiaCaller extends VuforiaCallback, QCARInterface, ITrackerU
     /** Activates the Flash */
     public boolean activateFlash(boolean flash);
 
+    public void setICameraUpdate(ICameraUpdater iCameraUpdate);
+
 }

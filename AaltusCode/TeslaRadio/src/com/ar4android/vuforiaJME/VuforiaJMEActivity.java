@@ -83,7 +83,16 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     private static final String NATIVE_LIB_SAMPLE = "VuforiaNative";
     private static final String NATIVE_LIB_QCAR = "Vuforia";
 
-    private VuforiaCaller vuforiaCaller = new VuforiaCallerNative(this);
+    private VuforiaCaller vuforiaCaller;
+    @Override
+    public ITrackerUpdater getITrackerUpdater() {
+        return vuforiaCaller;
+    }
+
+    @Override
+    public void setICameraUpdater(ICameraUpdater iCameraUpdater) {
+        this.vuforiaCaller.setICameraUpdate(iCameraUpdater);
+    }
 
     // Display size of the device:
     private int mScreenWidth = 0;
@@ -276,6 +285,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         });
 
     }
+
+
 
     public InformativeMenuFragment getInformativeMenuFragment()
     {
@@ -803,6 +814,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         //Set an AndroidActivityListener to receive callbacks from VuforiaJME e.g. to show informative menu
         ((VuforiaJME) app).setAndroidActivityListener(this);
+        vuforiaCaller = new VuforiaCallerNative(this);
 
         showSplashscreenDialog();
 

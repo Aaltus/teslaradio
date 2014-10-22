@@ -27,7 +27,6 @@ public class VuforiaJMEState extends AbstractAppState implements ICameraUpdater
 {
     private static final String TAG = VuforiaJMEState.class.getName();
 
-
     private SimpleApplication app;
     private AssetManager assetManager;
     private AppSettings settings;
@@ -62,20 +61,25 @@ public class VuforiaJMEState extends AbstractAppState implements ICameraUpdater
 
     private float mForegroundCamFOVY = 30;
 
+    private ITrackerUpdater iTrackerUpdater;
 
 
-    public VuforiaJMEState(SimpleApplication app){
+
+
+    public VuforiaJMEState(SimpleApplication app, ITrackerUpdater iTrackerUpdater){
 
         this.app = app;
+
         this.settings = this.app.getContext().getSettings();
         this.assetManager = this.app.getAssetManager();
         this.renderManager = this.app.getRenderManager();
         this.rootNode = this.app.getRootNode();
+        this.iTrackerUpdater = iTrackerUpdater;
         this.fgCam    = fgCam;
 
         //Initialize a state manager
 
-        initTracking(settings.getWidth(), settings.getHeight());
+        this.iTrackerUpdater.initTracking(settings.getWidth(), settings.getHeight());
         initVideoBackground(settings.getWidth(), settings.getHeight());
         initBackgroundCamera(); //thats the problem
 
@@ -314,7 +318,7 @@ public class VuforiaJMEState extends AbstractAppState implements ICameraUpdater
     @Override
     public void update(float tpf) {
 
-        updateTracking();
+        this.iTrackerUpdater.updateTracking();
 
         try {
             if (mNewCameraFrameAvailable) {
