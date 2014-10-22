@@ -52,6 +52,12 @@ public class VuforiaCallerNative implements VuforiaCaller {
     /** Activates the Flash */
     public native boolean activateFlash(boolean flash);
 
+    /** Native function to update the renderer. */
+    public native void updateTracking();
+
+    /** Native function for initializing the renderer. */
+    public native void initTracking(int width, int height);
+
     @Override
     public void setRGB565CameraImage(byte[] buffer, int width, int height) {
 
@@ -94,4 +100,5 @@ public class VuforiaCallerNative implements VuforiaCaller {
     public void QCARsetInitParameters(Activity activity, int mQCARFlags) {
         QCAR.setInitParameters(activity,mQCARFlags);
     }
+
 }

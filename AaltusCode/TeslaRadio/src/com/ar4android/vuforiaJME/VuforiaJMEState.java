@@ -23,7 +23,7 @@ import com.utils.AppLogger;
 /**
  * Created by jimbojd72 on 10/10/14.
  */
-public class VuforiaJMEState extends AbstractAppState
+public class VuforiaJMEState extends AbstractAppState implements ICameraUpdater
 {
     private static final String TAG = VuforiaJMEState.class.getName();
 
@@ -62,11 +62,7 @@ public class VuforiaJMEState extends AbstractAppState
 
     private float mForegroundCamFOVY = 30;
 
-    /** Native function to update the renderer. */
-    public native void updateTracking();
 
-    /** Native function for initializing the renderer. */
-    public native void initTracking(int width, int height);
 
     public VuforiaJMEState(SimpleApplication app){
 
