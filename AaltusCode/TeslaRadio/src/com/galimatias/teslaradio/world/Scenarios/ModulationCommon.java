@@ -211,6 +211,14 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         scene.attachChild(digitalDisplay);
     }
 
+    @Override
+    protected void onFirstNodeActions() {
+        super.onFirstNodeActions();
+        
+        turnButton.setLocalRotation(new Quaternion().fromAngleAxis(pi, Vector3f.UNIT_Y));
+    }  
+    
+
     //Dynamic move
     private void checkModulationMode(float tpf) {
         if (switchIsToggled) {

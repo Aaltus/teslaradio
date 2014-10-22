@@ -11,12 +11,10 @@ import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
-import com.galimatias.teslaradio.world.effects.SoundControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -25,7 +23,6 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Sphere;
 
 //import com.galimatias.teslaradio.world.observer.ScenarioObserver;
 
@@ -105,6 +102,20 @@ public final class SoundCapture extends Scenario {
         initOnTouchEffect();
 
         this.attachChild(movableObjects);
+    }
+
+    @Override
+    protected void onFirstNodeActions() {
+        super.onFirstNodeActions();
+        
+        this.detachChild(moveArrow);
+    }
+    
+    @Override
+    protected void onSecondNodeActions() {
+        super.onSecondNodeActions();
+        
+        this.attachChild(moveArrow);
     }
 
        
@@ -316,7 +327,6 @@ public final class SoundCapture extends Scenario {
         micArrow.addControl(control);
         scene.attachChild(micArrow);
         moveArrow = new Arrows("move", null, assetManager, 10);
-        this.attachChild(moveArrow);
     }
     
         /**
