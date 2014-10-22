@@ -18,7 +18,7 @@ import com.jme3.scene.Spatial;
  * @author Barliber
  */
 
-public class Demodulation extends ModulationCommon2  {
+public class Demodulation extends ModulationCommon  {
 
     private String titleText = "La Démodulation";
     
@@ -82,8 +82,8 @@ public class Demodulation extends ModulationCommon2  {
     @Override
     protected void initPatternGenerator() {
         
-        Spatial baseGeom = ScenarioCommon.initBaseGeneratorParticle();
-        Spatial[] carrier = ScenarioCommon.initCarrierGeometries();
+        Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
+        Spatial[] carrier = scenarioCommon.initCarrierGeometries();
               
         this.cubeSignal = new Node();
         this.cubeSignal.attachChild(carrier[0].clone());
@@ -108,8 +108,8 @@ public class Demodulation extends ModulationCommon2  {
         
         this.micTapParticle = this.cubeSignal;
         
-        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, micTapParticle.clone(), 7, ScenarioCommon.minBaseParticleScale, 
-                                                                     ScenarioCommon.maxBaseParticleScale, true));
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, micTapParticle.clone(), 7, scenarioCommon.minBaseParticleScale, 
+                                                                     scenarioCommon.maxBaseParticleScale, true));
     }
 
     @Override

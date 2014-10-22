@@ -49,9 +49,9 @@ public class Playback extends Scenario implements EmitterObserver {
     private Node     speakerEmitter;
     private Node     speakerIn = new Node();
     
-    Playback(Camera Camera, Spatial destinationHandle) {
+    Playback(ScenarioCommon sc, Camera Camera, Spatial destinationHandle) {
         
-        super(Camera, destinationHandle, "Sounds/Nyan cat.ogg");
+        super(sc, Camera, destinationHandle, "Sounds/Nyan cat.ogg");
         touchable = new Node();
         touchable.setName("Touchable");
         this.attachChild(touchable);

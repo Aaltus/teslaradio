@@ -168,7 +168,7 @@ public class ScreenState extends AbstractAppState implements ScreenController, C
                             
             } else if (frameCount == 7) {
                 // Init PlayBack scenario
-                Playback playback = new Playback(null,null);
+                Playback playback = new Playback(this.scenarioCommon,null,null);
                 playback.setName("Playback");
                 setProgress(0.7f, "Loading " + playback.getName() + "...");
                 renderManager.preloadScene(playback);

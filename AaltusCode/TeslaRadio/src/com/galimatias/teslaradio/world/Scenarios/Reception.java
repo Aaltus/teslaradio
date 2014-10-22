@@ -61,7 +61,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         super(sc,Camera, destinationHandle, "Sounds/reception.ogg" );
         
         this.needAutoGenIfMain = true;     
-        ScenarioCommon.registerObserver(this);
+        scenarioCommon.registerObserver(this);
         
         loadUnmovableObjects();
         loadMovableObjects();
@@ -325,8 +325,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     @Override
     protected void initPatternGenerator() {
-        Spatial baseGeom = ScenarioCommon.initBaseGeneratorParticle();
-        Spatial[] carrier = ScenarioCommon.initCarrierGeometries();
+        Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
+        Spatial[] carrier = scenarioCommon.initCarrierGeometries();
               
         this.cubeSignal = new Node();
         this.cubeSignal.attachChild(carrier[0].clone());
@@ -351,8 +351,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         
         this.autoGenParticle = this.cubeSignal;
         
-        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, ScenarioCommon.minBaseParticleScale, 
-                                                                     ScenarioCommon.maxBaseParticleScale, true));
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, scenarioCommon.minBaseParticleScale, 
+                                                                     scenarioCommon.maxBaseParticleScale, true));
        
         this.updateSignalIntensity(0.3f);
 

@@ -14,7 +14,7 @@ import com.jme3.scene.Spatial;
 /**
  * Created by Batcave on 2014-09-09.
  */
-public final class Modulation extends ModulationCommon2 {
+public final class Modulation extends ModulationCommon {
         
     // Default text to be seen when scenario starts
     private String titleText = "La Modulation";
@@ -68,11 +68,8 @@ public final class Modulation extends ModulationCommon2 {
     @Override
     public void signalEndOfPath(Geometry caller, float magnitude) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-        /*Update next scenarios*/
-        
-            scenarioCommon.notifyObservers(selectedCarrier.clone(), isFM);
+    }        
+            
     //convert angle for range [0 ; 2pi]
     private float angleRangeTwoPi(float angle) {
         float resultat = 0;
@@ -86,10 +83,10 @@ public final class Modulation extends ModulationCommon2 {
 
     @Override
     protected void initPatternGenerator() {
-        micTapParticle = ScenarioCommon.initBaseGeneratorParticle();
+        micTapParticle = scenarioCommon.initBaseGeneratorParticle();
         
-        this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 10, ScenarioCommon.minBaseParticleScale,
-                ScenarioCommon.maxBaseParticleScale, true));
+        this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 10, scenarioCommon.minBaseParticleScale,
+                scenarioCommon.maxBaseParticleScale, true));
     }
 
     /**
@@ -105,7 +102,7 @@ public final class Modulation extends ModulationCommon2 {
 
            // System.out.println("I am in " + notifierId);
             changeOuputParticles(spatial, notifierId);
-            
+            scenarioCommon.notifyObservers(selectedCarrier.clone(), isFM);
             this.getParent().setUserData(AppGetter.USR_SCALE, spatial.getUserData(AppGetter.USR_NEXT_WAVE_SCALE));
             
         } else if (notifierId.equals("WirePCBEmitter")) {

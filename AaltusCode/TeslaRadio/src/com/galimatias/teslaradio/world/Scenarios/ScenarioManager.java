@@ -147,7 +147,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         List<Scenario> scenarios = new ArrayList<Scenario>();
         
         // Init the playback scenario, this is the last of them! yayyyyy!
-        Playback playback = new Playback(cam,null);
+        Playback playback = new Playback(this.scenarioCommon, cam,null);
         playback.setName("Playback");
         scenarios.add(playback);
         
@@ -158,7 +158,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         this.scenarioCommon.registerObserver(demodulation);
         
         // Init Filtering scenario
-        Filter filter = new Filter(cam, demodulation.getInputHandle());
+        Filter filter = new Filter(this.scenarioCommon,cam, demodulation.getInputHandle());
         filter.setName("Filter");
         scenarios.add(filter);
         

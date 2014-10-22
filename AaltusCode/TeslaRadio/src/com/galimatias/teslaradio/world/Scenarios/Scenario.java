@@ -140,7 +140,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     
     public Scenario(ScenarioCommon sc, com.jme3.renderer.Camera Camera, Spatial destinationHandle, String bgm)
     {
-        this(Camera, destinationHandle);
+        this(sc, Camera, destinationHandle);
         
         this.backgroundSound = bgm;
         this.scenarioCommon = sc;

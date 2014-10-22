@@ -78,7 +78,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     public Amplification(ScenarioCommon sc,Camera Camera, Spatial destinationHandle){
         super(sc, Camera, destinationHandle, "Sounds/amplification.ogg");
         this.needAutoGenIfMain = true;
-        ScenarioCommon.registerObserver(this);
+        scenarioCommon.registerObserver(this);
 
         loadUnmovableObjects();
         loadMovableObjects();
@@ -183,8 +183,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
      
     @Override
     protected void initPatternGenerator(){
-        Spatial baseGeom = ScenarioCommon.initBaseGeneratorParticle();
-        Spatial[] carrier = ScenarioCommon.initCarrierGeometries();
+        Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
+        Spatial[] carrier = scenarioCommon.initCarrierGeometries();
                 
         this.cubeSignal = new Node();
         this.cubeSignal.attachChild(carrier[0].clone());
@@ -209,8 +209,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         
         this.autoGenParticle = this.cubeSignal;
         
-        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, ScenarioCommon.minBaseParticleScale, 
-                                                                     ScenarioCommon.maxBaseParticleScale, true));
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, scenarioCommon.minBaseParticleScale, 
+                                                                     scenarioCommon.maxBaseParticleScale, true));
        
     }
 
