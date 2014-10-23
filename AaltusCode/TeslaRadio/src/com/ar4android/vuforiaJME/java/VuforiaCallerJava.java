@@ -6,6 +6,7 @@ import com.ar4android.vuforiaJME.ICameraUpdater;
 import com.ar4android.vuforiaJME.VuforiaCallback;
 import com.ar4android.vuforiaJME.VuforiaCaller;
 import com.qualcomm.vuforia.*;
+import com.utils.AppLogger;
 
 import java.nio.ByteBuffer;
 
@@ -32,10 +33,9 @@ public class VuforiaCallerJava implements VuforiaCaller, Vuforia.UpdateCallbackI
     private VuforiaCallback vuforiaCallback;
     private ICameraUpdater iCameraUpdater;
 
-    public VuforiaCallerJava(VuforiaCallback vuforiaCallback, ICameraUpdater iCameraUpdater)
+    public VuforiaCallerJava(VuforiaCallback vuforiaCallback)
     {
         this.vuforiaCallback = vuforiaCallback;
-        this.iCameraUpdater  = iCameraUpdater;
     }
 
     @Override
@@ -143,6 +143,8 @@ public class VuforiaCallerJava implements VuforiaCaller, Vuforia.UpdateCallbackI
         CameraDevice cameraDevice = CameraDevice.getInstance();
         //QCAR::VideoMode videoMode        = cameraDevice.getVideoMode(QCAR::CameraDevice::MODE_DEFAULT);
         VideoMode videoMode        = cameraDevice.getVideoMode(qcarVideoMode);
+        int videoModeHeight        = videoMode.getHeight();
+        int videoModeWidth         = videoMode.getWidth();
 
         // Configure the video background
         //VideoBackgroundConfig config;
@@ -161,39 +163,47 @@ public class VuforiaCallerJava implements VuforiaCaller, Vuforia.UpdateCallbackI
         config.setPosition(new Vec2I(0,0));
         //config.getPosition().getData()[0] = 0.0f;
 
+        int configSizeWidth  = 0;
+        int configSizeHeight = 0;
+
         if (isActivityInPortraitMode)
         {
             //LOG("configureVideoBackground PORTRAIT");
-            config.setSize(new Vec2I(Math.round(videoMode.getHeight()* (screenHeight / (float)videoMode.getWidth())),screenHeight));
+            configSizeWidth   = Math.round(videoModeHeight* (this.screenHeight / (float)videoModeWidth));
+            configSizeHeight  = this.screenHeight;
             //config.mSize.data[0] = videoMode.mHeight
             //        * (screenHeight / (float)videoMode.mWidth);
             //config.mSize.data[1] = screenHeight;
 
-            if(config.getSize().getData()[0] < screenWidth)
+            if(configSizeWidth < screenWidth)
             {
                 //LOGI("Correcting rendering background size to handle missmatch between screen and video aspect ratios.");
-                config.getSize().getData()[0] = screenWidth;
-                config.getSize().getData()[1] = Math.round(screenWidth *(videoMode.getWidth() / (float)videoMode.getHeight()));
+                configSizeWidth = screenWidth;
+                configSizeHeight = Math.round(screenWidth *(videoModeWidth / (float)videoModeHeight));
             }
         }
         else
         {
             //LOG("configureVideoBackground LANDSCAPE");
-            config.getSize().getData()[0] = screenWidth;
-            config.getSize().getData()[1] = Math.round(videoMode.getHeight() * (screenWidth / (float)videoMode.getWidth()));
+            configSizeWidth = screenWidth;
+            configSizeHeight = Math.round(videoModeHeight * (screenWidth / (float)videoModeWidth));
 
-            if(config.getSize().getData()[1] < screenHeight)
+            if(configSizeHeight < screenHeight)
             {
-               //LOGI("Correcting rendering background size to handle missmatch between screen and video aspect ratios.");
-                config.getSize().getData()[0] = Math.round(screenHeight * (videoMode.getWidth() / (float)videoMode.getHeight()));
-                config.getSize().getData()[1] = screenHeight;
+                //LOGI("Correcting rendering background size to handle missmatch between screen and video aspect ratios.");
+                configSizeWidth = Math.round(screenHeight * (videoModeWidth / (float)videoModeHeight));
+                configSizeHeight = screenHeight;
             }
         }
 
+        config.setSize(new Vec2I(configSizeWidth,configSizeHeight));
+
+        AppLogger.getInstance().i(TAG, String.format("Configure Video Background : Video (%d,%d), Screen (%d,%d), mSize (%d,%d)", videoModeWidth, videoModeHeight, screenWidth, screenHeight, config.getSize().getData()[0], config.getSize().getData()[1]));
         // Set the config:
         Renderer.getInstance().setVideoBackgroundConfig(config);
 
-        //AppLogger.getInstance().i(TAG, "Configure Video Background : Video (%d,%d), Screen (%d,%d), mSize (%d,%d)", videoMode.mWidth, videoMode.mHeight, screenWidth, screenHeight, config.mSize.data[0], config.mSize.data[1]);
+
+
 
 
     }
@@ -328,13 +338,20 @@ public class VuforiaCallerJava implements VuforiaCaller, Vuforia.UpdateCallbackI
             //JNIEnv* env = 0;
 
             //if ((javaVM != 0) && (activityObj != 0) && (javaVM->GetEnv((void**)&env, JNI_VERSION_1_4) == JNI_OK)) {
-
+            ByteBuffer pixels = imageRGB565.getPixels();
+            byte[] pixelArray = new byte[pixels.remaining()];
+            pixels.get(pixelArray, 0,pixelArray.length);
+            int imageWidth = imageRGB565.getWidth();
+            int imageHeight = imageRGB565.getHeight();
+            this.setRGB565CameraImage(pixelArray,imageWidth,imageHeight);
+            /*
                 ByteBuffer pixels = imageRGB565.getPixels();
                 int width = imageRGB565.getWidth();
                 int height = imageRGB565.getHeight();
                 int numPixels = width * height;
                 this.setRGB565CameraImage(pixels.array(),width,height);
-                //LOGD("Update video image... !OnUpdate!");
+                */
+            //LOGD("Update video image... !OnUpdate!");
             /*
                 jbyteArray pixelArray = env->NewByteArray(numPixels * 2);
                 env->SetByteArrayRegion(pixelArray, 0, numPixels * 2, (const jbyte*) pixels);
@@ -345,7 +362,7 @@ public class VuforiaCallerJava implements VuforiaCaller, Vuforia.UpdateCallbackI
                 env->DeleteLocalRef(pixelArray);
                 */
 
-           // }
+            // }
         }
 
     }
@@ -373,6 +390,7 @@ public class VuforiaCallerJava implements VuforiaCaller, Vuforia.UpdateCallbackI
         final CameraCalibration cameraCalibration = CameraDevice.getInstance().getCameraCalibration();
 
         VideoBackgroundConfig config = Renderer.getInstance().getVideoBackgroundConfig();
+
 
         float viewportWidth     = config.getSize().getData()[0];
         float viewportHeight    = config.getSize().getData()[1];
