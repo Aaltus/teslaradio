@@ -182,7 +182,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
     public void showAllChildFragments(boolean showFragment)
     {
-        toggleFragmentsVisibility(showFragment);
+        toggleDetailFragmentVisibility(showFragment);
         toggleItemListVisibility(showFragment);
     }
 
@@ -218,7 +218,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         ScenarioEnum scenarioEnum = SubjectContent.ITEM_MAP.get(id).getScenarioEnum();
         scenarioSwitcher.setScenarioByEnum(scenarioEnum);
 
-        toggleFragmentsVisibility(true);
+        toggleDetailFragmentVisibility(true);
 
     }
 
@@ -286,7 +286,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
             //When fragment x button is clicked, close the fragment
             case R.id.item_detail_fragment_close_button:
                 //Log.d(TAG, "OnClick Callback from detail fragment");
-                toggleFragmentsVisibility(false);
+                toggleDetailFragmentVisibility(false);
                 break;
         }
     }
@@ -330,7 +330,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     /**
      * Toggle the detailfragment and listfragment visibility.
      */
-    public void toggleFragmentsVisibility(boolean showFragment){
+    public void toggleDetailFragmentVisibility(boolean showFragment){
 
 
         FragmentManager fm                = getChildFragmentManager(); //getSupportFragmentManager();s
@@ -348,7 +348,8 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
             else
             {
                 Log.d(TAG,"Hiding detail fragment");
-                ft.hide(fragmentDetail);
+                //ft.hide(fragmentDetail);
+                ft.remove(fragmentDetail);
             }
             ft.commit();
         }
