@@ -22,12 +22,13 @@
                 style="@style/InformativeMenuTextStyle"
                 />
 
-      <!--  <com.utils.CustomVideoView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
+        <com.utils.CustomVideoView
+                android:layout_gravity="center_horizontal"
+                android:layout_height="400dp"
+                android:layout_width="fill_parent"
                 android:id="@+id/videoView"
                 myapp:uri="android.resource://com.galimatias.teslaradio/raw/pression"
-                />-->
+                />
         <!--android:background="@drawable/button_bg"-->
         <TextView
                 android:layout_width="wrap_content"
