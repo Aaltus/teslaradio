@@ -34,7 +34,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     private String titleText = "Le filtrage";
     
     private boolean isFM = true;
-    private int lastFrequency = 1;
     
     //Pattern Geometry
     private Node micTapParticle;
@@ -51,8 +50,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     
     private int frequency = 1;
     private String carrier = "CubeCarrier";
-    
-    private float tpfCumul = 0;
     
     Filter(ScenarioCommon sc, Camera cam, Spatial destinationHandle) {
         
@@ -129,7 +126,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
 
     @Override
     protected boolean simpleUpdate(float tpf) {
-        tpfCumul += tpf;
         
         if (this.DEBUG_ANGLE) { //In Scenario class !!
             trackableAngle += direction * (pi / 9) * tpf;
@@ -272,7 +268,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
                 break;
             case 4:
                 filterWheel.setLocalRotation(rot.fromAngleAxis(trackableAngle,Vector3f.UNIT_Y));
-                scene.setLocalRotation(rot.opposite());
                 break;
         }
 
