@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:myapp="http://schemas.android.com/apk/res/com.galimatias.teslaradio"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:padding="10dp"
+
+        >
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/test_layout"
+    android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/soundemissionp1"
+                style="@style/InformativeMenuTextStyle"
+                />
+
+      <!--  <com.utils.CustomVideoView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/videoView"
+                myapp:uri="android.resource://com.galimatias.teslaradio/raw/pression"
+                />-->
+        <!--android:background="@drawable/button_bg"-->
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/soundemissionp2"
+                style="@style/InformativeMenuTextStyle"
+                />
+        <ImageView
+                android:id="@+id/sound_capture_image"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/source_et_front_donde"
+
+                />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/soundemissionp3"
+                style="@style/InformativeMenuTextStyle"
+                />
+
+    </LinearLayout>
+</ScrollView>

@@ -201,13 +201,13 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         List<Scenario> soundCaptureList = new ArrayList<Scenario>();
         soundCaptureList.add(soundEmission);
         soundCaptureList.add(soundCapture);
-        scenarioList.addScenario(ScenarioEnum.SOUNDPRODUCTION,soundCaptureList);
+        scenarioList.addScenario(ScenarioEnum.SOUNDEMISSION,soundCaptureList);
         
         //Add second scenario
         List<Scenario> modulationList = new ArrayList<Scenario>();
         modulationList.add(soundCapture);
         modulationList.add(modulation);
-        scenarioList.addScenario(ScenarioEnum.AMMODULATION,modulationList);
+        scenarioList.addScenario(ScenarioEnum.MODULATION,modulationList);
         
         //Add third scenario
         List<Scenario> amplificationList = new ArrayList<Scenario>();
@@ -246,7 +246,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
 
        
         //setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));
-        setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDPRODUCTION));
+        setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDEMISSION));
 
         setNodeList(node);
         initGuiNode(settings, assetManager);
