@@ -49,11 +49,11 @@ public class CustomVideoView extends VideoView {
 
             try {
                 uri = a.getString(R.styleable.CustomVideoView_uri);
-                Log.e("Chat", "Test uri:" + uri);
+                //Log.e("Chat", "Test uri:" + uri);
                 //this.setVideoPath(uri);
                 this.setVideoURI(Uri.parse(uri));
-                this.start();
-                this.pause();
+                //this.start();
+                //this.pause();
 
             } finally {
                 a.recycle();
@@ -103,6 +103,7 @@ public class CustomVideoView extends VideoView {
             }
         });
     }
+
 
     public void setPlayPauseListener(PlayPauseListener listener) {
         mListener = listener;
