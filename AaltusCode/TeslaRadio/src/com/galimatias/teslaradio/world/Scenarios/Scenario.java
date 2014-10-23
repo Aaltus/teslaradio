@@ -134,7 +134,7 @@ public abstract class Scenario extends Node implements SignalObserver {
         assetManager = AppGetter.getAssetManager();
         this.Camera = Camera;
         this.destinationHandle = destinationHandle;
-        this.setUserData("angleX", 6.18f);
+        this.setUserData("angleX", 0f);
         this.scenarioCommon = sc;
     }
     
@@ -142,7 +142,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     {
         this(sc, Camera, destinationHandle);
         
-        //this.backgroundSound = bgm;
+        this.backgroundSound = bgm;
         this.scenarioCommon = sc;
         if(this.backgroundSound != null){
             this.addControl(new SoundControl(this.backgroundSound,false,1));

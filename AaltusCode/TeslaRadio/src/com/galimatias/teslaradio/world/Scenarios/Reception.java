@@ -46,6 +46,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     private ImageBox wifiLogoLow;
     private ImageBox wifiLogoMedium;
     private ImageBox wifiLogoFull;
+    private ImageBox wifiLogoNull;
     private Node wifi = new Node();
     
     //Autogen stuff
@@ -57,6 +58,9 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     private Arrows moveArrow;
     
     private Boolean isFM = true;
+    private Boolean newWave = false;
+    
+    private float tpf = 0f;
 
     public Reception(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         super(sc,Camera, destinationHandle, "Sounds/reception.ogg" );
@@ -86,6 +90,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         wifiLogoLow = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Low", "Models/Commons/wifi-logo_low.png", 0.0f);
         wifiLogoMedium = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Medium", "Models/Commons/wifi-logo_medium.png", 0.0f);
         wifiLogoFull = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Full", "Models/Commons/wifi-logo_full.png", 0.0f);
+        wifiLogoNull = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Full", "Models/Commons/wifi-logo_low_low.png", 0.0f);
+       
         
         addWifiControl(wifiLogoLow);
         addWifiControl(wifiLogoMedium);
@@ -207,6 +213,16 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     @Override
     protected boolean simpleUpdate(float tpf) {
 
+        if(this.newWave == false){   
+            if(tpf - this.tpf > 0.75f){
+                this.updateSignalIntensity(0f);
+                System.out.println("Set noise to 1");
+            }
+        }else
+        {
+            this.tpf = tpf;
+            this.newWave = false;
+        }
         moveArrow.simpleUpdate(tpf);
         updateWifiLogos(signalIntensity);
         return false;
@@ -237,7 +253,10 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         if(normScale < 1 && this.backgroundSound != null) {
             this.getControl(SoundControl.class).updateNoiseLevel(1-normScale);
         }
-        if (normScale >= 0 && normScale < 0.33f) {
+        if(normScale == 0){
+            signalIntensity = 0;
+        }
+        else if (normScale > 0 && normScale < 0.33f) {
             signalIntensity = 1;
         } else if (normScale >= 0.33f && normScale < 0.66f) {
             signalIntensity = 2;
@@ -259,7 +278,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
                 wifi.attachChild(wifiLogoFull);
                 break;
             default:
-                wifi.attachChild(wifiLogoLow);
+                wifi.attachChild(wifiLogoNull);
                 break;
         }
     }
@@ -267,7 +286,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
         if (notifierId.equals("OutputAntenneRx")) {
-
+            
              if (outputAntenneRx != null) {
                  
                 Float particleScale = spatial.getUserData(AppGetter.USR_SCALE);
@@ -276,6 +295,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
                 
                 updateSignalIntensity(normScale);
                 outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
+                this.newWave = true;
              }
         }
     }
