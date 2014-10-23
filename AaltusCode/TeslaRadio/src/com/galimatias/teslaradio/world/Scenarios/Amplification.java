@@ -52,7 +52,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     private Boolean isFM = true;
     
     // Default text to be seen when scenario starts
-    private String titleText = "L'Amplification";
+    private String titleText = "L'Amplification & Transmission";
 
     // Signals emitters 
     private Node inputWireAmpli = new Node();
@@ -349,8 +349,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
                                     TEXTSIZE,
                                     TEXTCOLOR, 
                                     TEXTBOXCOLOR,
-                                    TITLEWIDTH, 
-                                    TITLEHEIGHT, 
+                                    TITLEWIDTH * 1.1f, 
+                                    TITLEHEIGHT * 2f, 
                                     "titleText", 
                                     BitmapFont.Align.Center, 
                                     SHOWTEXTDEBUG, 

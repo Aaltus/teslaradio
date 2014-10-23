@@ -36,7 +36,7 @@ import com.jme3.texture.Texture;
  */
 public class Playback extends Scenario implements EmitterObserver {
         
-    private String titleText = "Envoi du son";
+    private String titleText = "Hautparleur";
     
     private Geometry soundParticle;
     
