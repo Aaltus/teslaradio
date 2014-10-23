@@ -28,7 +28,7 @@ public class SubjectContent {
     public static void addAllItems(Activity activity)
     {
 
-        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.SOUNDCAPTURE.ordinal(), activity.getString(R.string.sound_capture_title), new int[]{R.layout.sound_capture_page1,R.layout.sound_capture_page2},ScenarioEnum.SOUNDCAPTURE));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.SOUNDPRODUCTION.ordinal(), activity.getString(R.string.sound_production_title), new int[]{R.layout.sound_capture_page1,R.layout.sound_capture_page2},ScenarioEnum.SOUNDPRODUCTION));
         SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.AMMODULATION.ordinal(), activity.getString(R.string.modulation_am_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test},ScenarioEnum.AMMODULATION));
         SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.FMMODULATION.ordinal(), activity.getString(R.string.modulation_fm_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test},ScenarioEnum.FMMODULATION));
         SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.TRANSMIT.ordinal(), activity.getString(R.string.transmit_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test},ScenarioEnum.TRANSMIT));
