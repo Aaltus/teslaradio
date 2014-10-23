@@ -181,8 +181,10 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         scenarios.add(soundEmission);
         
         // add translation control to each scenarios
+        int id = 0;
         for(Scenario scenario : scenarios){
-            scenario.addControl(new ScenarioTranslationAnimControl(node, 100));
+            scenario.addControl(new ScenarioTranslationAnimControl(node, 100,id));
+            id ++;
         }
         
         //Add first scenario
@@ -368,7 +370,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             if(getCurrentScenario().getScenarios().get(0) == nextScenarios.get(1))
             {
                 int index = 0;
-                for(Scenario scenario : getCurrentScenario().getScenarios() ){
+                for(Scenario scenario : nextScenarios ){
                     scenario.getControl(ScenarioTranslationAnimControl.class).startTranslationPrevious(index);
                     index ++;
                 }               
@@ -377,7 +379,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             else if(getCurrentScenario().getScenarios().get(1) == nextScenarios.get(0))
             {
                 int index = 0;
-                for(Scenario scenario : getCurrentScenario().getScenarios() ){
+                for(Scenario scenario : nextScenarios ){
                     scenario.getControl(ScenarioTranslationAnimControl.class).startTranslationNext(index);
                     index ++;
                 }               

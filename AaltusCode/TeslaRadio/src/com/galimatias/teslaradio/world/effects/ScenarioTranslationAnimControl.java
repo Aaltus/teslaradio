@@ -25,7 +25,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
     private Node startNode;
     
     // path
-    private MotionPath path = new MotionPath();
+    private MotionPath path;
     private boolean pathIsReverse;
     
     // distance and speed on path
@@ -35,13 +35,17 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
     // position vector
     private Vector3f posVector = new Vector3f();
     private Vector3f startPos = new Vector3f();
+    private final int id;
     
 
     
-    public ScenarioTranslationAnimControl(List<Node> trackables, float speed){
+    public ScenarioTranslationAnimControl(List<Node> trackables, float speed, int id){
 
+        this.id = id;
         this.trackables = trackables;
         this.speed = speed*AppGetter.getWorldScalingDefault();
+        
+        this.path = new MotionPath();
     }
     
     /** translation from node_i to node_i+1
@@ -49,7 +53,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
      * @param currentNodeIndex
      */
     public void startTranslationNext(int currentNodeIndex){
-        startTranslation(currentNodeIndex, false);
+        startTranslation(currentNodeIndex, true);
     }
 
     /** translation from node_i to node_i-1
@@ -57,7 +61,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
      * @param currentNodeIndex
      */
     public void startTranslationPrevious(int currentNodeIndex){
-        startTranslation(currentNodeIndex, true);
+        startTranslation(currentNodeIndex, false);
     }
     
     public void startTranslation(int currentNodeIndex, boolean isNext){
@@ -85,8 +89,6 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
             }
         }
         
-        // update the path before first frame
-        updatePath();
         
         // enable the control updates
         this.setEnabled(true);
@@ -113,7 +115,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
                 
             // find the current position on path from the distance traveled
             path.getSpline().interpolate(path.getWayPointIndexForDistance(distanceTraveled).y,(int) (path.getWayPointIndexForDistance(distanceTraveled).x), posVector);
-            this.spatial.setLocalTranslation(posVector.negate());
+            this.spatial.setLocalTranslation(posVector);
         }
         else
         {
@@ -127,12 +129,12 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
     private void updatePath(){
         
         // get the relative position of the destination in this referential
-        if(startNode != null){
+        if(this.startNode != null){
             if(!this.pathIsReverse){
-                startPos = startNode.getWorldRotation().inverse().mult((startNode.getWorldTranslation().subtract(endNode.getWorldTranslation())).divide(endNode.getWorldScale()));
+                startPos = this.endNode.getWorldRotation().inverse().mult((this.startNode.getWorldTranslation().subtract(endNode.getWorldTranslation())).divide(endNode.getWorldScale()));
             }
             else{
-                startPos = endNode.getWorldRotation().inverse().mult((startNode.getWorldTranslation().subtract(endNode.getWorldTranslation())).divide(endNode.getWorldScale()));
+                startPos = this.endNode.getWorldRotation().inverse().mult((this.endNode.getWorldTranslation().subtract(startNode.getWorldTranslation())).divide(endNode.getWorldScale()));
             }
             // remove last waypoints and add new one
             this.path.clearWayPoints();
