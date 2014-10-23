@@ -125,7 +125,7 @@ public class ScenarioCommon {
             clone.getChild(0).setLocalScale(scaleFM);
             //clone.scale(0.5f);
         }
-       // clone.attachChild(spatial);
+        clone.attachChild(spatial);
       
     }
 
@@ -146,17 +146,22 @@ public class ScenarioCommon {
         }
     }
     
-    public List<Spatial> generateModulatedWaves(Node baseNode, Spatial carrier, boolean isFm,
+    public List<Spatial> generateModulatedWaves(Node baseNode, Spatial baseParticle, boolean isFm,
             int step, float minScale, float maxScale){
         
         List<Spatial> lst = new ArrayList<Spatial>();
         float scale = (maxScale-minScale)/step;
         for(int i = 0; i < step;i++){
             Node clone = (Node) baseNode.clone();
-            for(Spatial sp : clone.getChildren()){
-                sp.setLocalScale(scale*i);
-            }
-            this.modulateFMorAM(clone, carrier, isFm);
+            
+            
+            baseParticle.setLocalScale(scale*(i+1));
+            //clone.setLocalScale(scale);
+            clone.setUserData(AppGetter.USR_SCALE, scale*i);
+            this.modulateFMorAM(clone, baseParticle.clone(), isFm);
+           
+            clone.setUserData("CarrierShape", baseNode.getChild(0).getName());
+            clone.setUserData("isFM", isFm);
             lst.add(clone);
         }
         return lst;

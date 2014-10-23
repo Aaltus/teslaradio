@@ -158,9 +158,9 @@ public class PatternGeneratorControl extends AbstractControl {
         }
         else{
             for(int i=0; i < wavesPerToggle;i++){
-                Spatial sp = this.outsideList.get(++this.waveIterator);
-                this.geomList.add(sp);
-                if(this.waveIterator == this.outsideList.size()){
+                Spatial sp = this.outsideList.get(this.waveIterator);
+                this.geomList.add(sp.clone());
+                if(++this.waveIterator == this.outsideList.size()){
                     this.waveIterator = 0;
                     if(isRandom){
                         Collections.shuffle(this.outsideList);

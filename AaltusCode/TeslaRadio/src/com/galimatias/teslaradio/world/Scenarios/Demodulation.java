@@ -404,14 +404,15 @@ public class Demodulation extends Scenario implements EmitterObserver, AutoGenOb
        
     }
 
-    @Override
+   @Override
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
         this.isFM = isFm;
         Node node = new Node();
         Geometry baseGeom = scenarioCommon.initBaseGeneratorParticle();
-        node.attachChild(baseGeom);
+        node.attachChild(newCarrier.clone());
         List<Spatial> lst = scenarioCommon.generateModulatedWaves(
-               node , newCarrier, isFm, 7,scenarioCommon.minBaseParticleScale ,scenarioCommon.maxBaseParticleScale);
+               node , baseGeom, isFm, 10,scenarioCommon.minBaseParticleScale ,scenarioCommon.maxBaseParticleScale);
+        
         this.getInputHandle().getControl(PatternGeneratorControl.class).setParticleList(lst);
     }
     

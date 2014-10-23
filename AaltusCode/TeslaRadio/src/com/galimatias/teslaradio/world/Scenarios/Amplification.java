@@ -333,10 +333,10 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         this.isFM = isFm;
         Node node = new Node();
         Geometry baseGeom = scenarioCommon.initBaseGeneratorParticle();
-        node.attachChild(baseGeom);
+        node.attachChild(newCarrier.clone());
         List<Spatial> lst = scenarioCommon.generateModulatedWaves(
-               node , newCarrier, isFm, 7,scenarioCommon.minBaseParticleScale ,scenarioCommon.maxBaseParticleScale);
-        node.attachChild(newCarrier);
+               node , baseGeom, isFm, 10,scenarioCommon.minBaseParticleScale ,scenarioCommon.maxBaseParticleScale);
+        
         this.getInputHandle().getControl(PatternGeneratorControl.class).setParticleList(lst);
     }
     

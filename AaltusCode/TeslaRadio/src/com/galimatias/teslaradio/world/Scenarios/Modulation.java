@@ -300,7 +300,7 @@ public final class Modulation extends Scenario implements EmitterObserver {
     public void toggleModulationMode() {
         removeHintImages();
         if (!switchIsToggled) {
-            isFM = !isFM;
+            this.isFM = !isFM;
             switchIsToggled = true;
         }
         
@@ -579,12 +579,11 @@ public final class Modulation extends Scenario implements EmitterObserver {
                 Node clone = (Node)outputSignal.clone();
                 
                 scenarioCommon.modulateFMorAM(clone, spatial, isFM);
-                clone.attachChild(spatial);
+                
               
                 //System.out.println("Scaling : " + spatial.getLocalScale().toString());
                 pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(clone);
-                clone.setUserData("CarrierShape", outputSignal.getChild(0).getName());
-                clone.setUserData("isFM", isFM);
+                
                 
             }
             
