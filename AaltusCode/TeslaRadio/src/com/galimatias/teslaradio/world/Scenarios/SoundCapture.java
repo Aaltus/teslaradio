@@ -4,6 +4,7 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.effects.Arrows;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.FadeControl;
@@ -15,6 +16,9 @@ import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -130,6 +134,10 @@ public final class SoundCapture extends Scenario {
         //Geometry tmpGeom = (Geometry)micWire_geom;//.scale(1/ScenarioManager.WORLD_SCALE_DEFAULT);
         
         micWireEmitter.addControl(new StaticWireParticleEmitterControl(micWire_geom.getMesh(), 3.5f, cam));
+        Material mat1 = new Material(AppGetter.getAssetManager(),"Common/MatDefs/Misc/Unshaded.j3md");
+        mat1.setColor("Color", new ColorRGBA(1.0f,0.63f,0.0f,1.0f));
+        mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        micWireEmitter.getControl(ParticleEmitterControl.class).setDefaultMaterial(mat1);
       //  micWireEmitter.addControl(new SoundControl("Sounds/micro_sound.wav", false, 2));
         
         wireDestinationEmitter = new Node();
