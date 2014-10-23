@@ -193,7 +193,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         // add translation control to each scenarios
         int id = 0;
         for(Scenario scenario : scenarios){
-            scenario.addControl(new ScenarioTranslationAnimControl(node, 100,id));
+            scenario.addControl(new ScenarioTranslationAnimControl(node, 8,id));
             id ++;
         }
         
@@ -323,7 +323,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 renderManager.preloadScene(scenario);
             }
             
-            scenario.setLocalRotation(rot);
+            scenario.getControl(ScenarioTranslationAnimControl.class).setOffsetRotation(rot);
 
             //WORLD_SCALE_DEFAULT = 100;
             scenario.setLocalScale(AppGetter.getWorldScalingDefault());

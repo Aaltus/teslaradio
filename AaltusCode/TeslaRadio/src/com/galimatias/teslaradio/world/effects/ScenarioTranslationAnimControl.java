@@ -38,9 +38,9 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
     private Vector3f posVector = new Vector3f();
     private Vector3f startPos = new Vector3f();
     private Quaternion currentLocalRotation = new Quaternion();
+    private Quaternion offsetRotation;
     private final int id;
-    
-    
+
     public ScenarioTranslationAnimControl(List<Node> trackables, float speed, int id){
 
         this.id = id;
@@ -97,7 +97,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
         
         // set the start position of the scenario
         this.spatial.setLocalTranslation(getStartPositionVector(pathIsReverse));
-        this.spatial.setLocalRotation(getStartOrientationQuaternion());
+        this.spatial.setLocalRotation(getStartOrientationQuaternion().mult(offsetRotation));
 
     }
     
@@ -111,7 +111,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
     
     private void updatePosition(float tpf){    
         // compute the new distance traveled in the wire
-        distanceTraveled += tpf*speed;
+        distanceTraveled += tpf*speed*AppGetter.getWorldScalingDefault();
             
         // make sure the end of path is not reached
         if(distanceTraveled < path.getLength()){
@@ -126,7 +126,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
             // stop the translation by deactivating the control
             distanceTraveled = 0;
             this.spatial.setLocalTranslation(Vector3f.ZERO);
-            this.spatial.setLocalRotation(Quaternion.IDENTITY);
+            this.spatial.setLocalRotation(this.offsetRotation);
             this.setEnabled(false);
         }        
     }
@@ -144,7 +144,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
             this.path.addWayPoint(Vector3f.ZERO);
                       
             // get the relative rotation
-            this.currentLocalRotation.slerp(getStartOrientationQuaternion(), Quaternion.IDENTITY, this.distanceTraveled/this.path.getLength());
+            (this.currentLocalRotation.slerp(getStartOrientationQuaternion(), Quaternion.IDENTITY, this.distanceTraveled/this.path.getLength())).multLocal(this.offsetRotation);
         }
     }
        
@@ -167,9 +167,14 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
         
         return startOrientation;
     }
+
+    public void setOffsetRotation(Quaternion rot) {
+        this.offsetRotation = rot;
+    }
     
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
        
-    }  
+    }
+
 }
