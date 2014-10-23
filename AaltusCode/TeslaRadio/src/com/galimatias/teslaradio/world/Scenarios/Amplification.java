@@ -13,6 +13,7 @@ import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
+import com.jme3.collision.CollisionResults;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
@@ -21,6 +22,8 @@ import com.jme3.material.RenderState;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
@@ -38,7 +41,10 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     private final static String TAG = "Amplification";
     
       // 3D objects of the scene
-    private Spatial turnAmpliButton;
+    private Spatial ampliSlider;
+    private Vector3f translationIncrement;
+    private boolean isTouched = false;
+    private float ampliScale = 0.5f;
 
     private TextBox titleTextBox;
     
@@ -67,6 +73,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     // Paths
     private Geometry inputAmpPath;
     private Geometry outputAmpPath;
+    
+    private int touchCount = 0;
 
     
     // this is PIIIIIII! (kick persian)
@@ -142,15 +150,23 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         
         
         this.initPatternGenerator();
+        
+        Vector3f handleSliderBegin = scene.getChild("Slider.Handle.Begin").getLocalTranslation();
+        Vector3f handleSliderEnd = scene.getChild("Slider.Handle.End").getLocalTranslation();
+        translationIncrement = handleSliderEnd.subtract(handleSliderBegin).divide(4);
+        
     }
 
     @Override
     protected void loadMovableObjects() {
-         turnAmpliButton = scene.getChild("Button.001");      
+        ampliSlider = scene.getChild("Button.000");
+        ampliSlider.setName("Slider");
          //Test
         touchable = new Node();
         touchable.setName("Touchable");
         scene.attachChild(touchable);
+        
+        touchable.attachChild(ampliSlider);
     }
 
     private void loadArrows()
@@ -158,19 +174,45 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         moveArrow = new Arrows("move", null, assetManager, 10);
     }
     
-    private void ampliButtonRotation(float ZXangle) {
-        Quaternion rot = new Quaternion();
+    private void ampliSliderUpdate() {
+        /*Quaternion rot = new Quaternion();
         rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
-        turnAmpliButton.setLocalRotation(rot);
+        ampliSlider.setLocalRotation(rot);*/
+
+        if (isTouched) {
+            switch(touchCount) {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    ampliSlider.move(translationIncrement);
+                    ampliScale = touchCount*0.25f + 0.5f;
+                    break;
+                
+                case 5:
+                case 6:
+                case 7:
+                    ampliSlider.move(translationIncrement.negate());
+                    ampliScale = 2.5f - touchCount*0.25f;
+                    break;
+                case 8:
+                    ampliSlider.move(translationIncrement.negate());
+                    ampliScale = 2.5f - touchCount*0.25f;
+                    touchCount = 0;
+                    break;
+            }
+            
+            isTouched = false;
+        }
+        
+        this.getControl(SoundControl.class).updateVolume(ampliScale/1.5f);
+ 
     }
     
     //Scale handle of the particle
     private Spatial particleAmplification(Spatial particle){
-        float angle = turnAmpliButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
-        float ampliScale = 1 + angle/(2*pi);
-        particle.scale(ampliScale/1.25f);
-        this.setUserData(AppGetter.USR_AUDIO_SCALE, ampliScale-1);
-        return particle;
+
+        return particle.scale(ampliScale);
     }
     
      private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
@@ -221,7 +263,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
 
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
-        /*switch(touchEvent.getType()){
+        switch(touchEvent.getType()){
 
             //Checking for down event is very responsive
             case DOWN:
@@ -266,30 +308,29 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
                         String nameToCompare =
                                 results.getClosestCollision().getGeometry().getParent().getName();
 
-                        if (nameToCompare.equals(titleTextBox.getName()))
+                        /*if (nameToCompare.equals(titleTextBox.getName()))
                         {
                             showInformativeMenu = true;
                             break;
+                        }*/
+                        
+                        if (nameToCompare.equals("Slider")) {
+                            touchCount++;
+                            isTouched = true;
                         }
 
                 }
             }
             break;
-        }*/
+        }
     }
 
     @Override
     protected boolean simpleUpdate(float tpf) {
-		moveArrow.simpleUpdate(tpf);
+        moveArrow.simpleUpdate(tpf);
 
-        if (DEBUG_ANGLE) {
-            tpfCumul = tpf+ tpfCumul;
-            ampliButtonRotation(tpfCumul);
-        } else {
-            float trackableAngle = this.getUserData("angleX");
-            ampliButtonRotation(trackableAngle);
-            invRotScenario(trackableAngle + (pi / 2));
-        }
+        ampliSliderUpdate();
+        
         return false;
     }
 
