@@ -105,7 +105,7 @@ public class FadeControl extends AbstractControl {
                 fadeInMaterial(geo.getMaterial(), deltaScale); // YEA
             }
         } catch (Exception err) {
-        System.out.println("Exception ExtNode::updateMaterial() err: " + err + " | " + err.getLocalizedMessage() + " | " + err.getMessage() + " | " + err.toString());
+            System.out.println("Exception ExtNode::updateMaterial() err: " + err + " | " + err.getLocalizedMessage() + " | " + err.getMessage() + " | " + err.toString());
         }
     }
     

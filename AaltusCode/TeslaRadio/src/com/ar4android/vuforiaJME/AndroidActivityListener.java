@@ -19,5 +19,9 @@ public interface AndroidActivityListener {
 
    public void showInformativeMenu();
 
+   public ITrackerUpdater getITrackerUpdater();
+
+   public void setICameraUpdater(ICameraUpdater iCameraUpdater);
+
 
 }

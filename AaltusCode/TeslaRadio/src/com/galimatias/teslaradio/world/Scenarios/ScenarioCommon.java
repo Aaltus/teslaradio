@@ -35,8 +35,8 @@ public class ScenarioCommon {
     public ScenarioCommon(){
         observerList = new ArrayList<AutoGenObserver>();
     }
-    public Geometry initBaseGeneratorParticle(){
-        Geometry baseGeom;
+    public Spatial initBaseGeneratorParticle(){
+        Spatial baseGeom;
         if (DEBUG_ANGLE) {
             Material mat1 = new Material(AppGetter.getAssetManager(),"Common/MatDefs/Misc/Unshaded.j3md");
             //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
@@ -62,27 +62,27 @@ public class ScenarioCommon {
         Spatial pyramidCarrier;
         Spatial dodecagoneCarrier;
         
-        cubeCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation/Cube.j3o");
+        cubeCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation_Demodulation/Cube.j3o");
         Material m = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        m.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation/Edgemap_square.png"));
+        m.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Commons/Edgemap_square.png"));
         m.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         cubeCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         cubeCarrier.setMaterial(m);
         cubeCarrier.scale(0.3f);
         cubeCarrier.setName("CubeCarrier");
         
-        pyramidCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation/Tetrahedron.j3o");
+        pyramidCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation_Demodulation/Tetrahedron.j3o");
         Material m2 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        m2.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation/Edgemap_triangle.png"));
+        m2.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Commons/Edgemap_triangle.png"));
         m2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         pyramidCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         pyramidCarrier.setMaterial(m2);
         pyramidCarrier.scale(0.4f);
         pyramidCarrier.setName("PyramidCarrier");
         
-        dodecagoneCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation/Dodecahedron.j3o");
+        dodecagoneCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation_Demodulation/Dodecahedron_rupee.j3o");
         Material m3 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        m3.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation/Edgemap_square.png"));
+        m3.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Commons/Edgemap_square.png"));
         m3.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         dodecagoneCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         dodecagoneCarrier.setMaterial(m3);
