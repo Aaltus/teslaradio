@@ -229,9 +229,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                 switchIsToggled = false;
                 tpfCumulSwitch = 0;
             }
-            Spatial carrier = this.selectedCarrier.clone();
-            carrier.setLocalScale(1);
-            scenarioCommon.notifyObservers(carrier, isFM);
+           
         }
     }
 
