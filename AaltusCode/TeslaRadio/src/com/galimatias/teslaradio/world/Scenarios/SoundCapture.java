@@ -11,12 +11,10 @@ import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
-import com.galimatias.teslaradio.world.effects.SoundControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -25,7 +23,6 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Sphere;
 
 //import com.galimatias.teslaradio.world.observer.ScenarioObserver;
 
@@ -45,7 +42,7 @@ public final class SoundCapture extends Scenario {
     private Spatial micro;
     private Spatial micHandleIn;
 
-    private Geometry micTapParticle;
+    private Spatial micTapParticle;
     
     // Emitters of the scenario
     private Node micWireEmitter;
@@ -67,10 +64,9 @@ public final class SoundCapture extends Scenario {
     public SoundCapture(ScenarioCommon sc,Camera Camera, Spatial destinationHandle)
     {
         super(sc,Camera, destinationHandle);
-        
-        this.destinationHandle = destinationHandle;
-        this.cam = Camera;
+        this.setName("SoundCapture");
         this.needAutoGenIfMain = true;
+        
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();
@@ -108,6 +104,20 @@ public final class SoundCapture extends Scenario {
         this.attachChild(movableObjects);
     }
 
+    @Override
+    protected void onFirstNodeActions() {
+        super.onFirstNodeActions();
+        
+        this.detachChild(moveArrow);
+    }
+    
+    @Override
+    protected void onSecondNodeActions() {
+        super.onSecondNodeActions();
+        
+        this.attachChild(moveArrow);
+    }
+
        
     private void initMicWireParticlesEmitter()
     {
@@ -129,7 +139,7 @@ public final class SoundCapture extends Scenario {
         scene.attachChild(wireDestinationEmitter);
         
         //System.out.println(destinationHandle.getName());
-        if(this.destinationHandle != null){
+        if(this.destinationHandle != null) {
             wireDestinationEmitter.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, cam, true));
 
             wireDestinationEmitter.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
@@ -138,15 +148,8 @@ public final class SoundCapture extends Scenario {
             wireDestinationEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
             micWireEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
 
-            micTapParticle = scenarioCommon.initBaseGeneratorParticle();
-
-            micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
-            micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, scenarioCommon.minBaseParticleScale, 
-                                                                  scenarioCommon.maxBaseParticleScale, true));
-            micWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
+            initPatternGenerator();
         }
-        this.particlePerWave = 4;
-        this.waveTime = 1;
     }
      
         
@@ -160,8 +163,7 @@ public final class SoundCapture extends Scenario {
     protected void microTouchEffect() {
         removeHintImages();
         
-        int wavesPerTap = 4;
-        micWireEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(wavesPerTap);
+        micWireEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(particlePerWave);
     }
     
     private void textBoxesUpdate(Vector3f upVector)
@@ -234,6 +236,16 @@ public final class SoundCapture extends Scenario {
         }
     }
 
+    @Override
+    protected void initPatternGenerator() {
+        micTapParticle = scenarioCommon.initBaseGeneratorParticle();
+
+        micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
+        micWireEmitter.addControl(new PatternGeneratorControl(0.25f, micTapParticle, 10, scenarioCommon.minBaseParticleScale, 
+                                                                  scenarioCommon.maxBaseParticleScale, true));
+        micWireEmitter.getControl(PatternGeneratorControl.class).setEnabled(true);
+    }
+    
     @Override
     public void restartScenario() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -315,7 +327,6 @@ public final class SoundCapture extends Scenario {
         micArrow.addControl(control);
         scene.attachChild(micArrow);
         moveArrow = new Arrows("move", null, assetManager, 10);
-        this.attachChild(moveArrow);
     }
     
         /**

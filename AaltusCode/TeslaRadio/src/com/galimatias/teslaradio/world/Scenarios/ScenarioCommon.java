@@ -35,8 +35,8 @@ public class ScenarioCommon {
     public ScenarioCommon(){
         observerList = new ArrayList<AutoGenObserver>();
     }
-    public Geometry initBaseGeneratorParticle(){
-        Geometry baseGeom;
+    public Spatial initBaseGeneratorParticle(){
+        Spatial baseGeom;
         if (DEBUG_ANGLE) {
             Material mat1 = new Material(AppGetter.getAssetManager(),"Common/MatDefs/Misc/Unshaded.j3md");
             //mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,0.0f));
@@ -62,27 +62,27 @@ public class ScenarioCommon {
         Spatial pyramidCarrier;
         Spatial dodecagoneCarrier;
         
-        cubeCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation/Cube.j3o");
+        cubeCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation_Demodulation/Cube.j3o");
         Material m = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        m.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation/Edgemap_square.png"));
+        m.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Commons/Edgemap_square.png"));
         m.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         cubeCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         cubeCarrier.setMaterial(m);
         cubeCarrier.scale(0.3f);
         cubeCarrier.setName("CubeCarrier");
         
-        pyramidCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation/Tetrahedron.j3o");
+        pyramidCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation_Demodulation/Tetrahedron.j3o");
         Material m2 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        m2.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation/Edgemap_triangle.png"));
+        m2.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Commons/Edgemap_triangle.png"));
         m2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         pyramidCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         pyramidCarrier.setMaterial(m2);
         pyramidCarrier.scale(0.4f);
         pyramidCarrier.setName("PyramidCarrier");
         
-        dodecagoneCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation/Dodecahedron.j3o");
+        dodecagoneCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation_Demodulation/Dodecahedron_rupee.j3o");
         Material m3 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        m3.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Modulation/Edgemap_square.png"));
+        m3.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Commons/Edgemap_square.png"));
         m3.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         dodecagoneCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         dodecagoneCarrier.setMaterial(m3);
@@ -93,6 +93,7 @@ public class ScenarioCommon {
     }
     
     public  void modulateFMorAM(Node clone, Spatial spatial, boolean isFm) {
+        
         if (!isFm) {
             float scale = 1.25f;
             clone.getChild(0).setLocalScale(spatial.getLocalScale().mult(scale));
@@ -122,8 +123,10 @@ public class ScenarioCommon {
 
             //System.out.println("New FM signal scale : " + scaleFM.toString());
             clone.getChild(0).setLocalScale(scaleFM);
-            clone.scale(0.5f);
+            //clone.scale(0.5f);
         }
+        clone.attachChild(spatial);
+      
     }
 
     
@@ -141,6 +144,24 @@ public class ScenarioCommon {
                 observer.autoGenObserverUpdate(newCarrier, isFm);
             }
         }
+    }
+    
+    public List<Spatial> generateModulatedWaves(Node baseNode, Spatial baseParticle, boolean isFm,
+            int step, float minScale, float maxScale){
+        
+        List<Spatial> lst = new ArrayList<Spatial>();
+        float scale = (maxScale-minScale)/step;
+        for(int i = 0; i < step;i++){
+            Node clone = (Node) baseNode.clone();
+            baseParticle.setLocalScale(minScale+i*scale);
+            clone.setUserData(AppGetter.USR_SCALE, minScale+i*scale);
+            this.modulateFMorAM(clone, baseParticle.clone(), isFm);
+           
+            clone.setUserData("CarrierShape", baseNode.getChild(0).getName());
+            clone.setUserData("isFM", isFm);
+            lst.add(clone);
+        }
+        return lst;
     }
     
 }

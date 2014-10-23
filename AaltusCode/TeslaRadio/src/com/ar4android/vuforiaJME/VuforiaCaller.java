@@ -3,7 +3,7 @@ package com.ar4android.vuforiaJME;
 /**
  * Created by jimbojd72 on 10/21/14.
  */
-public interface VuforiaCaller extends VuforiaCallback, QCARInterface {
+public interface VuforiaCaller extends VuforiaCallback, QCARInterface, ITrackerUpdater {
 
     /** Native tracker initialization and deinitialization. */
     public int initTracker();
@@ -41,5 +41,7 @@ public interface VuforiaCaller extends VuforiaCallback, QCARInterface {
 
     /** Activates the Flash */
     public boolean activateFlash(boolean flash);
+
+    public void setICameraUpdate(ICameraUpdater iCameraUpdate);
 
 }

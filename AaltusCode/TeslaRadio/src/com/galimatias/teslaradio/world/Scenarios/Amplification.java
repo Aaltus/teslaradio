@@ -26,23 +26,21 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
+import java.util.List;
 
 
 /**
  *
  * @author Barliber
  */
-public final class Amplification extends Scenario implements EmitterObserver, AutoGenObserver{
+public final class Amplification extends Scenario implements EmitterObserver, AutoGenObserver {
     
     private final static String TAG = "Amplification";
     
       // 3D objects of the scene
     private Spatial turnAmpliButton;
 
-    //Test 
-    private Spatial generateParticle;
-    private Geometry cubeTestParticle;
+    private TextBox titleTextBox;
     
     private Node autoGenParticle;
     
@@ -53,13 +51,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     
     private Boolean isFM = true;
     
-    
-    
-    // TextBox of the scene
-    private TextBox titleTextBox;
-    
     // Default text to be seen when scenario starts
-    private String titleText = "L'Amplification";
+    private String titleText = "L'Amplification & Transmission";
 
     // Signals emitters 
     private Node inputWireAmpli = new Node();
@@ -86,8 +79,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     public Amplification(ScenarioCommon sc,Camera Camera, Spatial destinationHandle){
         super(sc, Camera, destinationHandle, "Sounds/amplification.ogg");
         this.needAutoGenIfMain = true;
-        this.destinationHandle = destinationHandle;
-        this.cam = Camera;
+        scenarioCommon.registerObserver(this);
+        this.setName("Amplification");
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();
@@ -148,13 +141,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         }
         
         
-        this.initModulatedParticles();
-        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, scenarioCommon.minBaseParticleScale, 
-                                                                     scenarioCommon.maxBaseParticleScale, true));
-        
-        this.waveTime = 1;
-        this.particlePerWave = 4;
-   
+        this.initPatternGenerator();
     }
 
     @Override
@@ -164,15 +151,11 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         touchable = new Node();
         touchable.setName("Touchable");
         scene.attachChild(touchable);
-        
-        //Test Board
-        generateParticle = scene.getChild("Board.001");
     }
 
     private void loadArrows()
     {
         moveArrow = new Arrows("move", null, assetManager, 10);
-        this.attachChild(moveArrow);
     }
     
     private void ampliButtonRotation(float ZXangle) {
@@ -180,6 +163,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
         turnAmpliButton.setLocalRotation(rot);
     }
+    
     //Scale handle of the particle
     private Spatial particleAmplification(Spatial particle){
         float angle = turnAmpliButton.getLocalRotation().toAngleAxis(Vector3f.UNIT_X);
@@ -193,13 +177,13 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         scene.attachChild(signalEmitter);
         signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
-        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
+        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
     
      
-        
-    private void initModulatedParticles(){
-        Geometry baseGeom = scenarioCommon.initBaseGeneratorParticle();
+    @Override
+    protected void initPatternGenerator(){
+        Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
         Spatial[] carrier = scenarioCommon.initCarrierGeometries();
                 
         this.cubeSignal = new Node();
@@ -224,12 +208,11 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         this.dodecagoneSignal.setUserData("isFM", isFM);
         
         this.autoGenParticle = this.cubeSignal;
+        
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, scenarioCommon.minBaseParticleScale, 
+                                                                     scenarioCommon.maxBaseParticleScale, true));
        
     }
-
-     
-        
-    
 
     @Override
     public void restartScenario() {
@@ -238,7 +221,61 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
 
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
-        
+        /*switch(touchEvent.getType()){
+
+            //Checking for down event is very responsive
+            case DOWN:
+
+            //case TAP:
+                if (name.equals("Touch"))
+                {
+
+                    // 1. Reset results list.
+                    CollisionResults results = new CollisionResults();
+
+                    // 2. Mode 1: user touch location.
+                    //Vector2f click2d = inputManager.getCursorPosition();
+
+                    Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
+                    Vector3f click3d = Camera.getWorldCoordinates(
+                            new Vector2f(click2d.x, click2d.y), 0f).clone();
+                    Vector3f dir = Camera.getWorldCoordinates(
+                            new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+                    Ray ray = new Ray(click3d, dir);
+
+                    // 3. Collect intersections between Ray and Shootables in results list.
+                    //focusableObjects.collideWith(ray, results);
+                    touchable.collideWith(ray, results);
+
+                    // 4. Print the results
+                    //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
+                    //for (int i = 0; i < results.size(); i++) {
+                        // For each hit, we know distance, impact point, name of geometry.
+                        //float dist = results.getCollision(i).getDistance();
+                        //Vector3f pt = results.getCollision(i).getContactPoint();
+                        //String hit = results.getCollision(i).getGeometry().getName();
+
+                        //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+                    //}
+
+                    // 5. Use the results (we mark the hit object)
+                    if (results.size() > 0)
+                    {
+
+                        // The closest collision point is what was truly hit:
+                        String nameToCompare =
+                                results.getClosestCollision().getGeometry().getParent().getName();
+
+                        if (nameToCompare.equals(titleTextBox.getName()))
+                        {
+                            showInformativeMenu = true;
+                            break;
+                        }
+
+                }
+            }
+            break;
+        }*/
     }
 
     @Override
@@ -277,14 +314,21 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
 
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
+        Spatial carrier = spatial;//null;
+        /*for(Spatial sp : ((Node) spatial).getChildren()){
+            if(sp.getName().contains("Carrier")){
+                carrier =  sp;
+            }
+        }*/
          if (notifierId.equals("InputWireAmpli")) {
           //Change Scale
-             outputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
+             carrier = this.particleAmplification(carrier);
+             outputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(spatial);
          } else if(notifierId.equals("OutputWireAmpli")) {
              Float scale = new Float(spatial.getWorldScale().length());
              spatial.setUserData(AppGetter.USR_SCALE, scale);
-             //System.out.println("Before addition : " + spatial.getWorldScale());
-             outputModule.getControl(ParticleEmitterControl.class).emitParticle(particleAmplification(spatial));
+             carrier = this.particleAmplification(carrier);
+             outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
          }   
     }
 
@@ -305,8 +349,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
                                     TEXTSIZE,
                                     TEXTCOLOR, 
                                     TEXTBOXCOLOR,
-                                    TITLEWIDTH, 
-                                    TITLEHEIGHT, 
+                                    TITLEWIDTH * 1.1f, 
+                                    TITLEHEIGHT * 2f, 
                                     "titleText", 
                                     BitmapFont.Align.Center, 
                                     SHOWTEXTDEBUG, 
@@ -323,17 +367,25 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     @Override
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
         this.isFM = isFm;
-        this.initModulatedParticles();
-        if(newCarrier.getName().equals("CubeCarrier")){
-            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
-        }
-        else if(newCarrier.getName().equals("PyramidCarrier")){
-            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.pyramidSignal);
-        }
-        else if(newCarrier.getName().equals("DodecagoneCarrier")){
-            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.dodecagoneSignal);
-            
-        }
+        Node node = new Node();
+        Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
+        node.attachChild(newCarrier.clone());
+        List<Spatial> lst = scenarioCommon.generateModulatedWaves(
+               node , baseGeom, isFm, 10,scenarioCommon.minBaseParticleScale ,scenarioCommon.maxBaseParticleScale);
+        
+        this.getInputHandle().getControl(PatternGeneratorControl.class).setParticleList(lst);
+    }
+
+    @Override
+    protected void onFirstNodeActions() {
+        super.onFirstNodeActions(); //To change body of generated methods, choose Tools | Templates.
+        this.attachChild(moveArrow);
+    }
+
+    @Override
+    protected void onSecondNodeActions() {
+        super.onSecondNodeActions(); //To change body of generated methods, choose Tools | Templates.
+        this.detachChild(moveArrow);
     }
     
 }

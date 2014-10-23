@@ -22,11 +22,12 @@
                 style="@style/InformativeMenuTextStyle"
                 />
 
-        <com.utils.GifWebView android:layout_width="fill_parent"
-                              android:layout_height="wrap_content"
-                              myapp:url="file:///android_asset/Gifs/Pression.html"
-
-                />
+      <!--  <com.galimatias.teslaradio.CustomVideoView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/videoView"
+                myapp:uri="android.resource://com.galimatias.teslaradio/raw/mouse"
+                />-->
         <!--android:background="@drawable/button_bg"-->
         <TextView
                 android:layout_width="wrap_content"

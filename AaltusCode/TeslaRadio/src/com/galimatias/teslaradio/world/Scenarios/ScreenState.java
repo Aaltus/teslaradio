@@ -143,7 +143,6 @@ public class ScreenState extends AbstractAppState implements ScreenController, C
                 //scenarios.add(amplification);
  
             } else if (frameCount == 4) {
-                
                 //Init Modulation scenario
                 Modulation modulation = new Modulation(this.scenarioCommon,null, null);
                 modulation.setName("Modulation");
@@ -161,14 +160,27 @@ public class ScreenState extends AbstractAppState implements ScreenController, C
                 //scenarios.add(soundCapture);
  
             } else if (frameCount == 6) {
-
                 // Init SoundEmission scenario
                 SoundEmission soundEmission = new SoundEmission(this.scenarioCommon,null,null);
                 soundEmission.setName("SoundEmission");
                 setProgress(0.6f, "Loading " + soundEmission.getName() + "...");
                 renderManager.preloadScene(soundEmission);
- 
+                            
             } else if (frameCount == 7) {
+                // Init PlayBack scenario
+                Playback playback = new Playback(this.scenarioCommon,null,null);
+                playback.setName("Playback");
+                setProgress(0.7f, "Loading " + playback.getName() + "...");
+                renderManager.preloadScene(playback);
+                
+            } else if (frameCount == 8) {
+                // Init PlayBack scenario
+                Filter filter = new Filter(this.scenarioCommon,null,null);
+                filter.setName("Filter");
+                setProgress(0.8f, "Loading " + filter.getName() + "...");
+                renderManager.preloadScene(filter);
+ 
+            } else if (frameCount == 9) {
                 setProgress(1f, "Loading finished");
                 this.openStartMenu();
  

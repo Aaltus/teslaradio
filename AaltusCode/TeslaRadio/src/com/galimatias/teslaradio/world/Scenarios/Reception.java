@@ -10,16 +10,14 @@ import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
-import com.utils.AppLogger;
+import java.util.List;
 
 /**
  *
@@ -27,20 +25,12 @@ import com.utils.AppLogger;
  */
 public final class Reception extends Scenario implements EmitterObserver, AutoGenObserver  {
     
-    // TextBox of the scene
-    private TextBox titleTextBox;
-    
     // Default text to be seen when scenario starts
     private String titleText = "La Réception";
-
-    //Test 
-    private Spatial antenne;
-    
-    // this is PIIIIIII! (kick persian)
-    private final float pi = (float) Math.PI;
+     
+    private TextBox titleTextBox;
     
     // Signals emitters 
-    private Node inputAntenneRx = new Node();
     private Node outputAntenneRx = new Node();
     private Node outputModule = new Node();
     
@@ -48,20 +38,15 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     private Spatial pathAntenneRx;
     private Spatial outputHandle;
     
-    //Test
-    // Output signals
-    private Geometry cubeOutputSignal;
-    
     // Paths
     private Geometry antenneRxPath;
-    //try particle
-    private Geometry particle;
     
     // Wifi logo related
     int signalIntensity = 0;
     private ImageBox wifiLogoLow;
     private ImageBox wifiLogoMedium;
     private ImageBox wifiLogoFull;
+    private ImageBox wifiLogoNull;
     private Node wifi = new Node();
     
     //Autogen stuff
@@ -73,29 +58,19 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     private Arrows moveArrow;
     
     private Boolean isFM = true;
+    private Boolean newWave = false;
     
-  
-    
+    private float tpf = 0f;
+
     public Reception(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         super(sc,Camera, destinationHandle, "Sounds/reception.ogg" );
-       
-
-        this.cam = Camera;
-        this.destinationHandle = destinationHandle;
-        this.needAutoGenIfMain = true;
+        
+        this.needAutoGenIfMain = true;     
+        scenarioCommon.registerObserver(this);
+        this.setName("Reception");
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();
-        
-        //Generate try particle
-        Box cube = new Box(0.25f, 0.25f, 0.25f);
-        particle = new Geometry("CubeCarrier", cube);
-        Material mat1 = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", ColorRGBA.Blue);
-        particle.setMaterial(mat1);
-        particle.setUserData("CarrierShape", "CubeCarrier");
-        particle.setUserData("isFM", true);
         scenarioCommon.registerObserver(this);
     }
 
@@ -112,9 +87,11 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         
         initTitleBox();
         
-        wifiLogoLow = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Low", "Models/Reception/wifi-logo_low.png", 0.0f);
-        wifiLogoMedium = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Medium", "Models/Reception/wifi-logo_medium.png", 0.0f);
-        wifiLogoFull = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Full", "Models/Reception/wifi-logo_full.png", 0.0f);
+        wifiLogoLow = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Low", "Models/Commons/wifi-logo_low.png", 0.0f);
+        wifiLogoMedium = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Medium", "Models/Commons/wifi-logo_medium.png", 0.0f);
+        wifiLogoFull = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Full", "Models/Commons/wifi-logo_full.png", 0.0f);
+        wifiLogoNull = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Full", "Models/Commons/wifi-logo_low_low.png", 0.0f);
+       
         
         addWifiControl(wifiLogoLow);
         addWifiControl(wifiLogoMedium);
@@ -132,43 +109,29 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         antenneRxPath = (Geometry)((Node) pathAntenneRx).getChild("NurbsPath.005");
        
         initParticlesEmitter(outputAntenneRx, pathAntenneRx, antenneRxPath, null);
+        outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
         
         scene.attachChild(outputModule);
-        System.out.println(outputHandle.getLocalTranslation().toString());
-        outputModule.setLocalTranslation(outputHandle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        outputModule.setLocalTranslation(outputHandle.getLocalTranslation());
+        
         if(this.destinationHandle != null){
-            outputModule.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null));
+            outputModule.addControl(new DynamicWireParticleEmitterControl(this.destinationHandle, 3.5f, null, true));
             outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
+            outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
+
         }
 
-        // Set names for the emitters  // VOir si utile dans ce module
-        // inputAntenneRx.setName("InputAntenneRx");
+        // Set names for the emitters
         outputAntenneRx.setName("OutputAntenneRx");
-
-        // inputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
-        if(this.destinationHandle != null){
-            outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));    
-            outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
-        }
         
-        
-        initModulatedParticles();
-        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, scenarioCommon.minBaseParticleScale, 
-                                                                     scenarioCommon.maxBaseParticleScale, true));
-        this.waveTime = 1;
-        this.particlePerWave = 4;
-        
-        this.updateSignalIntensity(0.3f);
- 	}
+        initPatternGenerator();
+    }
 
     private void loadArrows()
     {
         moveArrow = new Arrows("move", null, assetManager, 10);
-        this.attachChild(moveArrow);
     }
-   
-    
-   
+
     private void addWifiControl(ImageBox wifiLogo) {
         LookAtCameraControl lookAtControl = new LookAtCameraControl(Camera);
         wifiLogo.addControl(lookAtControl);
@@ -181,9 +144,6 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         touchable = new Node();
         touchable.setName("Touchable");
         scene.attachChild(touchable);
-        
-        //Test Board
-        antenne = scene.getChild("Board.001");
     }
 
     @Override
@@ -193,12 +153,76 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
 
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
-       
+        /*switch(touchEvent.getType()){
+
+            //Checking for down event is very responsive
+            case DOWN:
+
+            //case TAP:
+                if (name.equals("Touch"))
+                {
+
+                    // 1. Reset results list.
+                    CollisionResults results = new CollisionResults();
+
+                    // 2. Mode 1: user touch location.
+                    //Vector2f click2d = inputManager.getCursorPosition();
+
+                    Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
+                    Vector3f click3d = Camera.getWorldCoordinates(
+                            new Vector2f(click2d.x, click2d.y), 0f).clone();
+                    Vector3f dir = Camera.getWorldCoordinates(
+                            new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+                    Ray ray = new Ray(click3d, dir);
+
+                    // 3. Collect intersections between Ray and Shootables in results list.
+                    //focusableObjects.collideWith(ray, results);
+                    touchable.collideWith(ray, results);
+
+                    // 4. Print the results
+                    //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
+                    //for (int i = 0; i < results.size(); i++) {
+                        // For each hit, we know distance, impact point, name of geometry.
+                        //float dist = results.getCollision(i).getDistance();
+                        //Vector3f pt = results.getCollision(i).getContactPoint();
+                        //String hit = results.getCollision(i).getGeometry().getName();
+
+                        //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+                    //}
+
+                    // 5. Use the results (we mark the hit object)
+                    if (results.size() > 0)
+                    {
+
+                        // The closest collision point is what was truly hit:
+                        String nameToCompare =
+                                results.getClosestCollision().getGeometry().getParent().getName();
+
+                        if (nameToCompare.equals(titleTextBox.getName()))
+                        {
+                            showInformativeMenu = true;
+                            break;
+                        }
+
+                }
+            }
+            break;
+        }*/
     }
 
     @Override
     protected boolean simpleUpdate(float tpf) {
 
+        if(this.newWave == false){   
+            if(tpf - this.tpf > 0.75f){
+                this.updateSignalIntensity(0f);
+                System.out.println("Set noise to 1");
+            }
+        }else
+        {
+            this.tpf = tpf;
+            this.newWave = false;
+        }
         moveArrow.simpleUpdate(tpf);
         updateWifiLogos(signalIntensity);
         return false;
@@ -226,10 +250,13 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     private void updateSignalIntensity(Float normScale) { 
         wifi.detachAllChildren();
-        if(normScale < 1){
+        if(normScale < 1 && this.backgroundSound != null) {
             this.getControl(SoundControl.class).updateNoiseLevel(1-normScale);
         }
-        if (normScale >= 0 && normScale < 0.33f) {
+        if(normScale == 0){
+            signalIntensity = 0;
+        }
+        else if (normScale > 0 && normScale < 0.33f) {
             signalIntensity = 1;
         } else if (normScale >= 0.33f && normScale < 0.66f) {
             signalIntensity = 2;
@@ -243,18 +270,15 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         switch(signalIntensity) {
             case 1:
                 wifi.attachChild(wifiLogoLow);
-                
                 break;
             case 2:
                 wifi.attachChild(wifiLogoMedium);
-
                 break;
             case 3:
                 wifi.attachChild(wifiLogoFull);
-               
                 break;
             default:
-                wifi.attachChild(wifiLogoLow);
+                wifi.attachChild(wifiLogoNull);
                 break;
         }
     }
@@ -262,27 +286,23 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
         if (notifierId.equals("OutputAntenneRx")) {
-
+            
              if (outputAntenneRx != null) {
                  
                 Float particleScale = spatial.getUserData(AppGetter.USR_SCALE);
-                 
-                //System.out.println("Scale before emission : " + particleScale.toString());
-                //System.out.println("Scale when received : " + spatial.getLocalScale().toString());
                 
                 float normScale = spatial.getWorldScale().length()/particleScale;
                 
-                //System.out.println("Normalized scale : " + normScale);
-                
                 updateSignalIntensity(normScale);
                 outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
+                this.newWave = true;
              }
         }
     }
     
     private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
         scene.attachChild(signalEmitter);
-        signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        signalEmitter.setLocalTranslation(handle.getLocalTranslation());
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true); 
     }
@@ -292,6 +312,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         super.onFirstNodeActions();
         
         scene.detachChild(wifi);
+        this.detachChild(moveArrow);
     }
 
     @Override
@@ -299,6 +320,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         super.onSecondNodeActions();
         
         scene.attachChild(wifi);
+        this.attachChild(moveArrow);
     }
     
     @Override
@@ -317,16 +339,16 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
 
        //move the text on the ground without moving
        Vector3f titleTextPosition = new Vector3f(0f, 0.25f, 6f);
-       titleTextBox.rotate((float) -Math.PI / 2, 0, 0);
+       titleTextBox.rotate((float) -FastMath.PI / 2, 0, 0);
 
        titleTextBox.move(titleTextPosition);
        this.attachChild(titleTextBox);
     }
     
-
-    private void initModulatedParticles() {
-        Geometry baseGeom = scenarioCommon.initBaseGeneratorParticle();
-        Spatial[] carrier = ScenarioCommon.initCarrierGeometries();
+    @Override
+    protected void initPatternGenerator() {
+        Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
+        Spatial[] carrier = scenarioCommon.initCarrierGeometries();
               
         this.cubeSignal = new Node();
         this.cubeSignal.attachChild(carrier[0].clone());
@@ -350,22 +372,25 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         this.dodecagoneSignal.setUserData("isFM", isFM);
         
         this.autoGenParticle = this.cubeSignal;
+        
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, scenarioCommon.minBaseParticleScale, 
+                                                                     scenarioCommon.maxBaseParticleScale, true));
        
+        this.updateSignalIntensity(0.3f);
+
     }
     
-    @Override
+     @Override
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
         this.isFM = isFm;
-        this.initModulatedParticles();
-        if(newCarrier.getName().equals("CubeCarrier")){
-             this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
-        }
-        else if(newCarrier.getName().equals("PyramidCarrier")){
-            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.pyramidSignal);
-        }
-        else if(newCarrier.getName().equals("DodecagoneCarrier")){
-            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.dodecagoneSignal);
-            
-        }
+        Node node = new Node();
+        Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
+        node.attachChild(newCarrier.clone());
+        List<Spatial> lst = scenarioCommon.generateModulatedWaves(
+               node , baseGeom, isFm, 10,scenarioCommon.minBaseParticleScale ,scenarioCommon.maxBaseParticleScale);
+        
+        this.getInputHandle().getControl(PatternGeneratorControl.class).setParticleList(lst);
     }
+    
+    
 }
