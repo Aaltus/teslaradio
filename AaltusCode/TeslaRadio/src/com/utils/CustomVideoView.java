@@ -17,6 +17,7 @@ import com.galimatias.teslaradio.R;
  */
 public class CustomVideoView extends VideoView {
 
+    private final static String TAG = CustomVideoView.class.getSimpleName();
     private PlayPauseListener mListener;
 
     public CustomVideoView(Context context) {
@@ -59,7 +60,7 @@ public class CustomVideoView extends VideoView {
                 a.recycle();
             }
         }
-
+        this.setZOrderOnTop(true);
 
     }
 
@@ -83,9 +84,11 @@ public class CustomVideoView extends VideoView {
                 //        Log.d("TagVideo", "Video 1 clicked");
                 if (isPlaying()) {
                     pause();
+                    AppLogger.getInstance().d(TAG,"Pause");
                     //Log.d("TagVideo", "Video pause");
                 } else {
                     start();
+                    AppLogger.getInstance().d(TAG,"Start");
                     //Log.d("TagVideo", "Video start");
 
                 }

@@ -17,7 +17,7 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/soundcapturep2p1"
+                android:text="@string/soundcapturep1"
                 style="@style/InformativeMenuTextStyle"
                 />
 
@@ -33,7 +33,7 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/soundcapturep2p2"
+                android:text="@string/soundcapturep2"
                 style="@style/InformativeMenuTextStyle"
                 />
 

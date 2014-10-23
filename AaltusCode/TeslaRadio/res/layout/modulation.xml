@@ -18,7 +18,7 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/soundcapturep1p1"
+                android:text="@string/soundemissionp1"
                 style="@style/InformativeMenuTextStyle"
                 />
 
@@ -26,13 +26,13 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:id="@+id/videoView"
-                myapp:uri="android.resource://com.galimatias.teslaradio/raw/mouse"
+                myapp:uri="android.resource://com.galimatias.teslaradio/raw/pression"
                 />-->
         <!--android:background="@drawable/button_bg"-->
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/soundcapturep1p2"
+                android:text="@string/soundemissionp2"
                 style="@style/InformativeMenuTextStyle"
                 />
         <ImageView
@@ -46,7 +46,7 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/soundcapturep1p3"
+                android:text="@string/soundemissionp3"
                 style="@style/InformativeMenuTextStyle"
                 />
 
