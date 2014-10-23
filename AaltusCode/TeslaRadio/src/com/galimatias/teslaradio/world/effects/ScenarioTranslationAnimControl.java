@@ -45,7 +45,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
 
         this.id = id;
         this.trackables = trackables;
-        this.speed = speed*AppGetter.getWorldScalingDefault();
+        this.speed = speed;
         
         this.path = new MotionPath();
     }
@@ -91,14 +91,12 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
             }
         }
         
+        // set the start position of the scenario
+        this.spatial.setLocalTranslation(getStartPositionVector(pathIsReverse));
+        this.spatial.setLocalRotation(this.offsetRotation);
         
         // enable the control updates
         this.setEnabled(true);
-        
-        // set the start position of the scenario
-        this.spatial.setLocalTranslation(getStartPositionVector(pathIsReverse));
-        this.spatial.setLocalRotation(getStartOrientationQuaternion().mult(offsetRotation));
-
     }
     
     @Override
@@ -119,7 +117,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
             // find the current position on path from the distance traveled
             path.getSpline().interpolate(path.getWayPointIndexForDistance(distanceTraveled).y,(int) (path.getWayPointIndexForDistance(distanceTraveled).x), posVector);
             this.spatial.setLocalTranslation(posVector);
-            this.spatial.setLocalRotation(this.currentLocalRotation);
+            //this.spatial.setLocalRotation(this.currentLocalRotation);
         }
         else
         {
@@ -144,7 +142,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
             this.path.addWayPoint(Vector3f.ZERO);
                       
             // get the relative rotation
-            (this.currentLocalRotation.slerp(getStartOrientationQuaternion(), Quaternion.IDENTITY, this.distanceTraveled/this.path.getLength())).multLocal(this.offsetRotation);
+            currentLocalRotation = this.offsetRotation.mult(this.currentLocalRotation.slerp(getStartOrientationQuaternion(), Quaternion.IDENTITY, this.distanceTraveled/this.path.getLength()));
         }
     }
        

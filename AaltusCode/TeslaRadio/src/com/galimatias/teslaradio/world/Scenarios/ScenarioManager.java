@@ -193,7 +193,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         // add translation control to each scenarios
         int id = 0;
         for(Scenario scenario : scenarios){
-            scenario.addControl(new ScenarioTranslationAnimControl(node, 8,id));
+            scenario.addControl(new ScenarioTranslationAnimControl(node, 50,id));
             id ++;
         }
         
