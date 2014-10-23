@@ -48,7 +48,7 @@ public class ScenarioCommon {
             baseGeom.setMaterial(mat1);            
         } else {
             Material mat1 = new Material(AppGetter.getAssetManager(),"Common/MatDefs/Misc/Unshaded.j3md");
-            mat1.setColor("Color", new ColorRGBA(0.0f,0.0f,1.0f,1.0f));
+            mat1.setColor("Color", new ColorRGBA(1.0f,0.63f,0.0f,1.0f));
             mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
             Sphere sphere = new Sphere(10, 10, 0.4f);
             baseGeom = new Geometry("MicTapParticle", sphere);

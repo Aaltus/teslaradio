@@ -71,7 +71,7 @@ public class Playback extends Scenario implements EmitterObserver {
         touchable.attachChild(scene);
         
         Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", new ColorRGBA(1, 0, 1, 0.5f));
+        mat1.setColor("Color", new ColorRGBA(0, 0, 1, 0.5f));
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         
         speakerHandleIn = scene.getChild("Speaker.Handle.In");
