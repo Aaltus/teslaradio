@@ -30,7 +30,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     protected final String sAM600 = "AM 600kHz";
     protected final String sAM800 = "AM 800kHz";
     protected final String sAM1500 = "AM 1500kHz";
-    protected Boolean isFM = true;
+    protected Boolean isFM = false;
     protected Boolean switchIsToggled = false;
     
     // 3D objects of the scene
@@ -42,6 +42,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     protected TextBox titleTextBox;
 
     protected float titleTextSize = 0.5f;
+    protected float digitalTextSize = 0.4f;
     protected ColorRGBA digitalTextColor = ColorRGBA.Green;
 
     // Signals emitters
@@ -186,7 +187,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         // Default configuration of the digital display
         digitalDisplay = new TextBox(assetManager,
                 sFM1061,
-                TEXTSIZE,
+                digitalTextSize,
                 TEXTCOLOR,
                 TEXTBOXCOLOR,
                 3.5f,
@@ -205,7 +206,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         Quaternion rotY = new Quaternion();
         Quaternion rotZ = new Quaternion();
         rotY.fromAngleAxis(pi / 2, Vector3f.UNIT_Y);
-        rotZ.fromAngleAxis(-pi / 2, Vector3f.UNIT_X);
+        rotZ.fromAngleAxis(-pi / 3, Vector3f.UNIT_X);
         digitalDisplay.rotate(rotY);
         digitalDisplay.rotate(rotZ);
         scene.attachChild(digitalDisplay);
@@ -251,12 +252,12 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     }
 
     private void changeModulation(int frequency, Boolean isFM, float tpf) {
-
+        
         if (isFM) {
             switch (frequency) {
                 case 1:
                     digitalDisplay.simpleUpdate(sFM1061,
-                                                TEXTSIZE, 
+                                                digitalTextSize, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
@@ -264,7 +265,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                     break;
                 case 2:
                     digitalDisplay.simpleUpdate(sFM969, 
-                                                TEXTSIZE, 
+                                                digitalTextSize, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
@@ -272,7 +273,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sFM1027, 
-                                                TEXTSIZE, 
+                                                digitalTextSize, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
@@ -280,7 +281,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                     break;
                 default:
                     digitalDisplay.simpleUpdate(sFM1061,
-                                                TEXTSIZE,
+                                                digitalTextSize,
                                                 digitalTextColor,
                                                 Camera,
                                                 Vector3f.UNIT_X);
@@ -291,7 +292,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
             switch (frequency) {
                 case 1:
                     digitalDisplay.simpleUpdate(sAM600, 
-                                                TEXTSIZE, 
+                                                digitalTextSize, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
@@ -299,7 +300,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                     break;
                 case 2:
                     digitalDisplay.simpleUpdate(sAM800, 
-                                                TEXTSIZE, 
+                                                digitalTextSize, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
@@ -307,7 +308,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                     break;
                 case 3:
                     digitalDisplay.simpleUpdate(sAM1500, 
-                                                TEXTSIZE, 
+                                                digitalTextSize, 
                                                 digitalTextColor, 
                                                 Camera, 
                                                 Vector3f.UNIT_X);
@@ -315,7 +316,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                     break;
                 default:
                     digitalDisplay.simpleUpdate(sAM600,
-                                                TEXTSIZE,
+                                                digitalTextSize,
                                                 digitalTextColor,
                                                 Camera,
                                                 Vector3f.UNIT_X);
@@ -384,7 +385,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
      */
     private void switchRotation(boolean isFM, float tpfCumul) {
         Quaternion currRotation = new Quaternion();
-        if (!isFM) {
+        if (isFM) {
             actionSwitch.setLocalRotation(currRotation.slerp(initAngleSwitch, endAngleSwitch, tpfCumul));
 
         } else {
