@@ -31,7 +31,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     
     private Spatial filterWheel;
     
-    private String titleText = "Le filtrage";
+    private String titleText = "Le Démultiplexage";
     
     private boolean isFM = true;
     
