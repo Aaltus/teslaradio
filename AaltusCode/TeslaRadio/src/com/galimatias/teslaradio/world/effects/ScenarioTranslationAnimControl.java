@@ -6,6 +6,8 @@ package com.galimatias.teslaradio.world.effects;
 
 import com.ar4android.vuforiaJME.AppGetter;
 import com.jme3.cinematic.MotionPath;
+import com.jme3.math.Matrix3f;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -35,9 +37,9 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
     // position vector
     private Vector3f posVector = new Vector3f();
     private Vector3f startPos = new Vector3f();
+    private Quaternion currentLocalRotation = new Quaternion();
     private final int id;
     
-
     
     public ScenarioTranslationAnimControl(List<Node> trackables, float speed, int id){
 
@@ -94,7 +96,8 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
         this.setEnabled(true);
         
         // set the start position of the scenario
-        this.spatial.setLocalTranslation(startNode.getWorldRotation().inverse().mult((startNode.getWorldTranslation().subtract(endNode.getWorldTranslation())).divide(endNode.getWorldScale())));
+        this.spatial.setLocalTranslation(getStartPositionVector(pathIsReverse));
+        this.spatial.setLocalRotation(getStartOrientationQuaternion());
 
     }
     
@@ -116,33 +119,55 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
             // find the current position on path from the distance traveled
             path.getSpline().interpolate(path.getWayPointIndexForDistance(distanceTraveled).y,(int) (path.getWayPointIndexForDistance(distanceTraveled).x), posVector);
             this.spatial.setLocalTranslation(posVector);
+            this.spatial.setLocalRotation(this.currentLocalRotation);
         }
         else
         {
             // stop the translation by deactivating the control
             distanceTraveled = 0;
             this.spatial.setLocalTranslation(Vector3f.ZERO);
+            this.spatial.setLocalRotation(Quaternion.IDENTITY);
             this.setEnabled(false);
         }        
     }
     
     private void updatePath(){
-        
-        // get the relative position of the destination in this referential
+
         if(this.startNode != null){
-            if(!this.pathIsReverse){
-                startPos = this.endNode.getWorldRotation().inverse().mult((this.startNode.getWorldTranslation().subtract(endNode.getWorldTranslation())).divide(endNode.getWorldScale()));
-            }
-            else{
-                startPos = this.endNode.getWorldRotation().inverse().mult((this.endNode.getWorldTranslation().subtract(startNode.getWorldTranslation())).divide(endNode.getWorldScale()));
-            }
+            
+            // get the relative position of the destination in this referential
+            startPos = getStartPositionVector(pathIsReverse);
+                    
             // remove last waypoints and add new one
             this.path.clearWayPoints();
             this.path.addWayPoint(startPos);
             this.path.addWayPoint(Vector3f.ZERO);
+                      
+            // get the relative rotation
+            this.currentLocalRotation.slerp(getStartOrientationQuaternion(), Quaternion.IDENTITY, this.distanceTraveled/this.path.getLength());
         }
     }
-            
+       
+    private Vector3f getStartPositionVector(boolean isPathReverse){
+        Vector3f startPosition;
+        if(!isPathReverse){
+            startPosition = this.endNode.getWorldRotation().inverse().mult((this.startNode.getWorldTranslation().subtract(endNode.getWorldTranslation())).divide(endNode.getWorldScale()));
+        }
+        else{
+            startPosition = this.endNode.getWorldRotation().inverse().mult((this.endNode.getWorldTranslation().subtract(startNode.getWorldTranslation())).divide(endNode.getWorldScale()));
+        }
+        
+        return startPosition;
+    }
+    
+    private Quaternion getStartOrientationQuaternion(){
+        Quaternion startOrientation;
+        
+        startOrientation = this.startNode.getWorldRotation().mult(this.endNode.getWorldRotation().inverse());
+        
+        return startOrientation;
+    }
+    
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
        
