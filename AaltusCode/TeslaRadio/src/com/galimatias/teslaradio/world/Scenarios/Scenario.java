@@ -142,7 +142,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     {
         this(sc, Camera, destinationHandle);
         
-        this.backgroundSound = bgm;
+        //this.backgroundSound = bgm;
         this.scenarioCommon = sc;
         if(this.backgroundSound != null){
             this.addControl(new SoundControl(this.backgroundSound,false,1));

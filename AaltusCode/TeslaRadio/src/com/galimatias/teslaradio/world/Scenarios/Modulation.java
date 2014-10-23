@@ -22,7 +22,7 @@ public final class Modulation extends ModulationCommon {
     public Modulation(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         
         super(sc,Camera, destinationHandle, "Sounds/modulation.ogg");
-        
+        this.setName("Modulation");
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();
@@ -102,7 +102,6 @@ public final class Modulation extends ModulationCommon {
 
            // System.out.println("I am in " + notifierId);
             changeOuputParticles(spatial, notifierId);
-            scenarioCommon.notifyObservers(selectedCarrier.clone(), isFM);
             this.getParent().setUserData(AppGetter.USR_SCALE, spatial.getUserData(AppGetter.USR_NEXT_WAVE_SCALE));
             
         } else if (notifierId.equals("WirePCBEmitter")) {

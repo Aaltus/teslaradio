@@ -153,11 +153,8 @@ public class ScenarioCommon {
         float scale = (maxScale-minScale)/step;
         for(int i = 0; i < step;i++){
             Node clone = (Node) baseNode.clone();
-            
-            
-            baseParticle.setLocalScale(scale*(i+1));
-            //clone.setLocalScale(scale);
-            clone.setUserData(AppGetter.USR_SCALE, scale*i);
+            baseParticle.setLocalScale(minScale+i*scale);
+            clone.setUserData(AppGetter.USR_SCALE, minScale+i*scale);
             this.modulateFMorAM(clone, baseParticle.clone(), isFm);
            
             clone.setUserData("CarrierShape", baseNode.getChild(0).getName());

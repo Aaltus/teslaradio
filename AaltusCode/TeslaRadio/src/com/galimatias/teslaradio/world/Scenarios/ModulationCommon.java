@@ -349,7 +349,9 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                 selectedCarrier = dodecagoneCarrier;
                 break;
         }
-
+        if(this.getName().equals("Modulation")){
+        scenarioCommon.notifyObservers(selectedCarrier, this.isFM);
+        }
         if (carrierEmitter != null && tpfCumul >= 1.0f) {
             carrierEmitter.getControl(ParticleEmitterControl.class).emitParticle(selectedCarrier.clone());
             tpfCumul = 0;

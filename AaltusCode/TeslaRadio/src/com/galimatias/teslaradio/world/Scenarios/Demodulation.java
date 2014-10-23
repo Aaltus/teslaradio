@@ -28,7 +28,7 @@ public class Demodulation extends ModulationCommon  {
     private Node dodecagoneSignal;
     public Demodulation(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle){
         super(sc,Camera, destinationHandle,"Sounds/demodulation.ogg");
-        
+        this.setName("Demodulation");
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();
@@ -130,7 +130,7 @@ public class Demodulation extends ModulationCommon  {
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
         this.isFM = isFm;
         Node node = new Node();
-        Geometry baseGeom = scenarioCommon.initBaseGeneratorParticle();
+        Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
         node.attachChild(newCarrier.clone());
         List<Spatial> lst = scenarioCommon.generateModulatedWaves(
                node , baseGeom, isFm, 10,scenarioCommon.minBaseParticleScale ,scenarioCommon.maxBaseParticleScale);

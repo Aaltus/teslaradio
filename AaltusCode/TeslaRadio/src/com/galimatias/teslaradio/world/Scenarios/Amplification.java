@@ -80,7 +80,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         super(sc, Camera, destinationHandle, "Sounds/amplification.ogg");
         this.needAutoGenIfMain = true;
         scenarioCommon.registerObserver(this);
-
+        this.setName("Amplification");
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();
@@ -368,7 +368,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
         this.isFM = isFm;
         Node node = new Node();
-        Geometry baseGeom = scenarioCommon.initBaseGeneratorParticle();
+        Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
         node.attachChild(newCarrier.clone());
         List<Spatial> lst = scenarioCommon.generateModulatedWaves(
                node , baseGeom, isFm, 10,scenarioCommon.minBaseParticleScale ,scenarioCommon.maxBaseParticleScale);

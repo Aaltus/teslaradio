@@ -18,6 +18,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import java.util.List;
 
 /**
  *
@@ -57,7 +58,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     Filter(ScenarioCommon sc, Camera cam, Spatial destinationHandle) {
         
         super(sc, cam, destinationHandle, "Sounds/Tunak Tunak Tun.ogg");
-        
+        this.setName("Filter");
         this.needAutoGenIfMain = true; 
         scenarioCommon.registerObserver(this);
         
@@ -220,17 +221,13 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     @Override
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
         this.isFM = isFm;
-        this.initPatternGenerator();
-        if(newCarrier.getName().equals("CubeCarrier")){
-             this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.cubeSignal);
-        }
-        else if(newCarrier.getName().equals("PyramidCarrier")){
-            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.pyramidSignal);
-        }
-        else if(newCarrier.getName().equals("DodecagoneCarrier")){
-            this.getInputHandle().getControl(PatternGeneratorControl.class).setBaseParticle(this.dodecagoneSignal);
-            
-        }
+        Node node = new Node();
+        Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
+        node.attachChild(newCarrier.clone());
+        List<Spatial> lst = scenarioCommon.generateModulatedWaves(
+               node , baseGeom, isFm, 10,scenarioCommon.minBaseParticleScale ,scenarioCommon.maxBaseParticleScale);
+        
+        this.getInputHandle().getControl(PatternGeneratorControl.class).setParticleList(lst);
     }
 
     @Override
@@ -306,4 +303,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
             filter(((Node)spatial).getChild(0).getName(), spatial);
         }
     }
+    
+    
 }

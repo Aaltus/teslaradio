@@ -55,7 +55,7 @@ public class Playback extends Scenario implements EmitterObserver {
         touchable = new Node();
         touchable.setName("Touchable");
         this.attachChild(touchable);
-        
+        this.setName("Playback");
         loadUnmovableObjects();
         loadMovableObjects();
     }

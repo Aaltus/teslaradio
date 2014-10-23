@@ -63,7 +63,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         
         this.needAutoGenIfMain = true;     
         scenarioCommon.registerObserver(this);
-        
+        this.setName("Reception");
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();
@@ -234,7 +234,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     private void updateSignalIntensity(Float normScale) { 
         wifi.detachAllChildren();
-        if(normScale < 1) {
+        if(normScale < 1 && this.backgroundSound != null) {
             this.getControl(SoundControl.class).updateNoiseLevel(1-normScale);
         }
         if (normScale >= 0 && normScale < 0.33f) {
@@ -364,7 +364,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
         this.isFM = isFm;
         Node node = new Node();
-        Geometry baseGeom = scenarioCommon.initBaseGeneratorParticle();
+        Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
         node.attachChild(newCarrier.clone());
         List<Spatial> lst = scenarioCommon.generateModulatedWaves(
                node , baseGeom, isFm, 10,scenarioCommon.minBaseParticleScale ,scenarioCommon.maxBaseParticleScale);

@@ -63,7 +63,7 @@ public final class SoundEmission extends Scenario {
         touchable = new Node();
         touchable.setName("Touchable");
         this.attachChild(touchable);
-
+        this.setName("SoundEmission");
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();
