@@ -81,6 +81,8 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     
     protected int frequency = 1;
     
+    protected boolean lastFm = false;
+    
     ModulationCommon(ScenarioCommon sc, Camera cam, Spatial destinationHandle) {
         
         super(sc, cam, destinationHandle);
@@ -230,9 +232,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                 switchIsToggled = false;
                 tpfCumulSwitch = 0;
             }
-            Spatial carrier = this.selectedCarrier.clone();
-            carrier.setLocalScale(1);
-            scenarioCommon.notifyObservers(carrier, isFM);
+           
         }
     }
 
@@ -338,7 +338,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
 
         tpfCumul += tpf;
         this.frequency = frequency;
-
+        Spatial lastCarrier = selectedCarrier;
         switch (frequency) {
             case 1:
                 selectedCarrier = cubeCarrier;
@@ -350,9 +350,10 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                 selectedCarrier = dodecagoneCarrier;
                 break;
         }
-        if(this.getName().equals("Modulation")){
+        if(this.getName().equals("Modulation") && (lastCarrier != selectedCarrier || lastFm != isFM)){
         scenarioCommon.notifyObservers(selectedCarrier, this.isFM);
         }
+        lastFm = isFM;
         if (carrierEmitter != null && tpfCumul >= 1.0f) {
             carrierEmitter.getControl(ParticleEmitterControl.class).emitParticle(selectedCarrier.clone());
             tpfCumul = 0;

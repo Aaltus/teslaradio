@@ -34,7 +34,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     private String titleText = "Le filtrage";
     
     private boolean isFM = true;
-    private int lastFrequency = 1;
     
     //Pattern Geometry
     private Node micTapParticle;
@@ -51,9 +50,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     
     private int frequency = 1;
     private String carrier = "CubeCarrier";
-    
-    private float tpfCumul = 0;
-    private boolean needTurnin = false;
     
     Filter(ScenarioCommon sc, Camera cam, Spatial destinationHandle) {
         
@@ -130,7 +126,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
 
     @Override
     protected boolean simpleUpdate(float tpf) {
-        tpfCumul += tpf;
         
         if (this.DEBUG_ANGLE) { //In Scenario class !!
             trackableAngle += direction * (pi / 9) * tpf;
@@ -237,55 +232,45 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     
     private void checkTrackableAngle(float trackableAngle) {
 
-        float stepRange = pi / 3f;
+        float stepRange = 2f*pi / 3f;
+        float deltaAngle = stepRange*0.1f/2f;
 
-        if (trackableAngle >= 0 && trackableAngle < stepRange) {
+        if (trackableAngle <= stepRange + deltaAngle && trackableAngle >= stepRange - deltaAngle) {
             frequency = 1;
-            this.carrier = "NOPE CHUCK TESTA!";
-        } else if (trackableAngle >= stepRange && trackableAngle < 2 * stepRange) {
-            frequency = 2;
             this.carrier = "CubeCarrier";
-        } else if (trackableAngle >= 2 * stepRange && trackableAngle < 3 * stepRange) {
-            frequency = 3;
-            this.carrier = "NOPE CHUCK TESTA!";
-        } else if (trackableAngle >= 3 * stepRange && trackableAngle < 4 * stepRange) {
-            frequency = 4;
+        } else if (trackableAngle <= 2 * stepRange + deltaAngle && trackableAngle >= 2 * stepRange - deltaAngle) {
+            frequency = 2;
             this.carrier = "PyramidCarrier";
-        } else if (trackableAngle >= 4 * stepRange && trackableAngle < 5 * stepRange) {
-            frequency = 5;
-            this.carrier = "NOPE CHUCK TESTA!";
-        } else if (trackableAngle >= 5 * stepRange && trackableAngle < 6 * stepRange) {
-            frequency = 6;
+        } else if (trackableAngle <= 3 * stepRange + deltaAngle && trackableAngle >= 3 * stepRange - deltaAngle) {
+            frequency = 3;
             this.carrier = "DodecagoneCarrier";
+        } else {
+            frequency = 4;
+            this.carrier = "NOPE, CHUCK TESTA!";
         }
 
-        turnTunerButton(frequency);
+        turnTunerButton(frequency,stepRange);
     }
     
-    private void turnTunerButton(int frequency) {
-        
-        float stepAngle = pi / 3f; //Variable instance ?? Constante
+    private void turnTunerButton(int frequency, float stepAngle) {
+
         Quaternion rot = new Quaternion();
-        
-        if (lastFrequency != frequency) {
-            needTurnin = true;
+
+        switch(frequency) {
+            case 1:
+                filterWheel.setLocalRotation(rot.fromAngleAxis(stepAngle,Vector3f.UNIT_Y));
+                break;
+            case 2:
+                filterWheel.setLocalRotation(rot.fromAngleAxis(2*stepAngle,Vector3f.UNIT_Y));
+                break;
+            case 3:
+                filterWheel.setLocalRotation(rot.fromAngleAxis(3*stepAngle,Vector3f.UNIT_Y));
+                break;
+            case 4:
+                filterWheel.setLocalRotation(rot.fromAngleAxis(trackableAngle,Vector3f.UNIT_Y));
+                break;
         }
-        
-        if (needTurnin && tpfCumul <= 1) {
-            if (lastFrequency <= frequency) {
-                initAngleWheel.fromAngleAxis((frequency-1) * stepAngle, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(frequency * stepAngle, Vector3f.UNIT_Y);
-                filterWheel.setLocalRotation(rot.slerp(initAngleWheel, endAngleWheel, tpfCumul));
-            } else {
-                initAngleWheel.fromAngleAxis((frequency) * stepAngle, Vector3f.UNIT_Y);
-                endAngleWheel.fromAngleAxis(lastFrequency * stepAngle, Vector3f.UNIT_Y);
-                filterWheel.setLocalRotation(rot.slerp(endAngleWheel, initAngleWheel, tpfCumul));
-            }
-        } else {
-            needTurnin = false;
-            tpfCumul = 0;
-            lastFrequency = frequency;
-        }
+
 
     }
     

@@ -1,5 +1,6 @@
 package com.ar4android.vuforiaJME.java;
 
+import android.util.Log;
 import com.qualcomm.vuforia.*;
 import com.utils.AppLogger;
 
@@ -12,11 +13,11 @@ public class AaltusTrackable {
 
     int _id;
     String _name;
-    Matrix44F _poseMVMatrix;
-    Matrix44F _inverseMV;
-    Matrix44F _invTranspMV;
+    Matrix44F _poseMVMatrix = new Matrix44F();
+    Matrix44F _inverseMV    = new Matrix44F();
+    Matrix44F _invTranspMV  = new Matrix44F();
     DataSet   _dataSet;
-    Vec4F     _poseFromOrigin;
+    Vec4F     _poseFromOrigin = new Vec4F();
     AaltusTrackable	_origin;
 
     public int getId(){return _id;}
@@ -97,7 +98,8 @@ public class AaltusTrackable {
         _poseMVMatrix = modelViewMatrix;
         _inverseMV = SampleMath.Matrix44FInverse(_poseMVMatrix);
         //_invTranspMV = MathUtil::Matrix44FTranspose(_inverseMV);
-        _invTranspMV = SampleMath.Matrix44FTranspose(_inverseMV);
+        //_invTranspMV = SampleMath.Matrix44FTranspose(_inverseMV);
+        _invTranspMV = MathUtil.Matrix44FTranspose(_inverseMV);
     }
 
     void setOrigin(AaltusTrackable origin)
@@ -114,10 +116,11 @@ public class AaltusTrackable {
         _poseFromOrigin.data[1] = _invTranspMV.data[13];
         _poseFromOrigin.data[2] = _invTranspMV.data[14];
         _poseFromOrigin.data[4] = _invTranspMV.data[15];*/
+            //Log.d(TAG,_poseFromOrigin)
             _poseFromOrigin.getData()[0] = _poseMVMatrix.getData()[12];
             _poseFromOrigin.getData()[1] = _poseMVMatrix.getData()[13];
             _poseFromOrigin.getData()[2] = _poseMVMatrix.getData()[14];
-            _poseFromOrigin.getData()[4] = _poseMVMatrix.getData()[15];
+            _poseFromOrigin.getData()[3] = _poseMVMatrix.getData()[15];
 
         }
         else
