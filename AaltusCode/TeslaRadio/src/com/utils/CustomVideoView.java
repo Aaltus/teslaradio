@@ -17,6 +17,7 @@ import com.galimatias.teslaradio.R;
  */
 public class CustomVideoView extends VideoView {
 
+    private final static String TAG = CustomVideoView.class.getSimpleName();
     private PlayPauseListener mListener;
 
     public CustomVideoView(Context context) {
@@ -49,17 +50,17 @@ public class CustomVideoView extends VideoView {
 
             try {
                 uri = a.getString(R.styleable.CustomVideoView_uri);
-                Log.e("Chat", "Test uri:" + uri);
+                //Log.e("Chat", "Test uri:" + uri);
                 //this.setVideoPath(uri);
                 this.setVideoURI(Uri.parse(uri));
-                this.start();
-                this.pause();
+                //this.start();
+                //this.pause();
 
             } finally {
                 a.recycle();
             }
         }
-
+        this.setZOrderOnTop(true);
 
     }
 
@@ -83,9 +84,11 @@ public class CustomVideoView extends VideoView {
                 //        Log.d("TagVideo", "Video 1 clicked");
                 if (isPlaying()) {
                     pause();
+                    AppLogger.getInstance().d(TAG,"Pause");
                     //Log.d("TagVideo", "Video pause");
                 } else {
                     start();
+                    AppLogger.getInstance().d(TAG,"Start");
                     //Log.d("TagVideo", "Video start");
 
                 }
@@ -103,6 +106,7 @@ public class CustomVideoView extends VideoView {
             }
         });
     }
+
 
     public void setPlayPauseListener(PlayPauseListener listener) {
         mListener = listener;

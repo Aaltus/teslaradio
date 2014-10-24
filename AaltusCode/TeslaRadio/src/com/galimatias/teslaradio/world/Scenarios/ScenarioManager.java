@@ -3,6 +3,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.ar4android.vuforiaJME.AndroidActivityListener;
 import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
+import com.galimatias.teslaradio.world.effects.ScenarioTranslationAnimControl;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -189,17 +190,24 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         soundEmission.setName("SoundEmission");
         scenarios.add(soundEmission);
         
+        // add translation control to each scenarios
+        int id = 0;
+        for(Scenario scenario : scenarios){
+            scenario.addControl(new ScenarioTranslationAnimControl(node, 50,id));
+            id ++;
+        }
+        
         //Add first scenario
         List<Scenario> soundCaptureList = new ArrayList<Scenario>();
         soundCaptureList.add(soundEmission);
         soundCaptureList.add(soundCapture);
-        scenarioList.addScenario(ScenarioEnum.SOUNDPRODUCTION,soundCaptureList);
+        scenarioList.addScenario(ScenarioEnum.SOUNDEMISSION,soundCaptureList);
         
         //Add second scenario
         List<Scenario> modulationList = new ArrayList<Scenario>();
         modulationList.add(soundCapture);
         modulationList.add(modulation);
-        scenarioList.addScenario(ScenarioEnum.AMMODULATION,modulationList);
+        scenarioList.addScenario(ScenarioEnum.MODULATION,modulationList);
         
         //Add third scenario
         List<Scenario> amplificationList = new ArrayList<Scenario>();
@@ -238,7 +246,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
 
        
         //setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));
-        setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDPRODUCTION));
+        setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDEMISSION));
 
         setNodeList(node);
         initGuiNode(settings, assetManager);
@@ -315,7 +323,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 renderManager.preloadScene(scenario);
             }
             
-            scenario.setLocalRotation(rot);
+            scenario.getControl(ScenarioTranslationAnimControl.class).setOffsetRotation(rot);
 
             //WORLD_SCALE_DEFAULT = 100;
             scenario.setLocalScale(AppGetter.getWorldScalingDefault());
@@ -370,10 +378,43 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     private void setCurrentScenario(ScenarioGroup currentScenario) {
 
         detachCurrentScenario();
+        iniScenarioTranslation(currentScenario.getScenarios());
         this.currentScenario = currentScenario;
         attachCurrentScenario();
     }
 
+    private void iniScenarioTranslation( List<Scenario> nextScenarios){
+        
+        // set translation animation
+        if( (getCurrentScenario() != null) && (getCurrentScenario().getScenarios().size() >= 2) && (nextScenarios.size() >= 2) ){
+            
+            // scenario go to previous
+            if(getCurrentScenario().getScenarios().get(0) == nextScenarios.get(1))
+            {
+                int index = 0;
+                for(Scenario scenario : nextScenarios ){
+                    scenario.getControl(ScenarioTranslationAnimControl.class).startTranslationPrevious(index);
+                    index ++;
+                }               
+            }
+            // scenario go to next 
+            else if(getCurrentScenario().getScenarios().get(1) == nextScenarios.get(0))
+            {
+                int index = 0;
+                for(Scenario scenario : nextScenarios ){
+                    scenario.getControl(ScenarioTranslationAnimControl.class).startTranslationNext(index);
+                    index ++;
+                }               
+            }
+            // unknow translation = no translation
+            else
+            {
+                // do nothing
+            }
+
+        }
+    }
+    
     /**
      * Detach all the current scenarios from its parent if possible
      */

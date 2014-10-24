@@ -351,7 +351,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                 break;
         }
         if(this.getName().equals("Modulation") && (lastCarrier != selectedCarrier || lastFm != isFM)){
-        scenarioCommon.notifyObservers(selectedCarrier, this.isFM);
+            scenarioCommon.notifyObservers(selectedCarrier, this.isFM);
         }
         lastFm = isFM;
         if (carrierEmitter != null && tpfCumul >= 1.0f) {
