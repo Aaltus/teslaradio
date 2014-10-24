@@ -18,21 +18,7 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/soundemissionp1"
-                style="@style/InformativeMenuTextStyle"
-                />
-
-      <!--  <com.galimatias.teslaradio.CustomVideoView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:id="@+id/videoView"
-                myapp:uri="android.resource://com.galimatias.teslaradio/raw/pression"
-                />-->
-        <!--android:background="@drawable/button_bg"-->
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/soundemissionp2"
+                android:text="@string/transmissionp1"
                 style="@style/InformativeMenuTextStyle"
                 />
         <ImageView
@@ -40,13 +26,28 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/source_et_front_donde"
+                android:src="@drawable/tuyau_valve"
+
+                />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/transmissionp2"
+                style="@style/InformativeMenuTextStyle"
+                />
+        <ImageView
+                android:id="@+id/sound_capture_image"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/amplification_signaux_module_am"
 
                 />
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/soundemissionp3"
+                android:text="@string/transmissionp3"
                 style="@style/InformativeMenuTextStyle"
                 />
 
