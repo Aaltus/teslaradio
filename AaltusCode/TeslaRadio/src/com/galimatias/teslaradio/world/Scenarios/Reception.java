@@ -399,7 +399,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
          Vector3f v = me.subtract((Vector3f) this.getInputHandle().getUserData(AppGetter.USR_SOURCE_TRANSLATION));
          distance = Math.abs(distance);
          
-         float signalRatio = distance / 35.0f;
+         float signalRatio = distance / 43.0f;
          signalRatio = signalRatio > 1 ? 1 : signalRatio;
          this.updateSignalIntensity(1-signalRatio);
          this.updateWifiLogos(signalIntensity);
