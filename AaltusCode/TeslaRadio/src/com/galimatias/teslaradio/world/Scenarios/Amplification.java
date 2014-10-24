@@ -328,7 +328,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     @Override
     protected boolean simpleUpdate(float tpf) {
         moveArrow.simpleUpdate(tpf);
-
+        this.destinationHandle.setUserData(AppGetter.USR_SOURCE_TRANSLATION, this.getWorldTranslation());
         ampliSliderUpdate();
         
         return false;
