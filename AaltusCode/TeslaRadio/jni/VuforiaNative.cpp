@@ -299,7 +299,7 @@ Java_com_ar4android_vuforiaJME_VuforiaCallerNative_updateTracking(JNIEnv *env, j
             cam.data[4],cam.data[5],cam.data[6],cam.data[8],cam.data[9],cam.data[10], at->getId());
 
 
-        LOGE("Updating camera");
+
         //Update camera
         QCAR::Vec4F vector = at->getPositionFromOrigin();
 

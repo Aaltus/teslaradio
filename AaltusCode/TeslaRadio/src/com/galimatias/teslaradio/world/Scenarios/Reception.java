@@ -17,6 +17,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.utils.AppLogger;
 import java.util.List;
 
 /**
@@ -62,6 +63,11 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     private float tpf = 0f;
 
+    
+    private final float maxDistance = 100.0f;
+    
+    private float tpfDistanceCumul = 0f;
+
     public Reception(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         super(sc,Camera, destinationHandle, "Sounds/reception.ogg" );
         
@@ -71,7 +77,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         loadUnmovableObjects();
         loadMovableObjects();
         loadArrows();
-        scenarioCommon.registerObserver(this);
+        
     }
 
     @Override
@@ -213,18 +219,13 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     @Override
     protected boolean simpleUpdate(float tpf) {
 
-        if(this.newWave == false){   
-            if(tpf - this.tpf > 0.75f){
-                this.updateSignalIntensity(0f);
-                System.out.println("Set noise to 1");
-            }
-        }else
-        {
-            this.tpf = tpf;
-            this.newWave = false;
+        this.tpfDistanceCumul += tpf;
+        if(this.tpfDistanceCumul > 0.35f){   
+            this.updateDistanceStatus();
+            this.tpfDistanceCumul = 0;
         }
         moveArrow.simpleUpdate(tpf);
-        updateWifiLogos(signalIntensity);
+       
         return false;
     }
 
@@ -248,9 +249,9 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    private void updateSignalIntensity(Float normScale) { 
+    private void updateSignalIntensity(float normScale) { 
         wifi.detachAllChildren();
-        if(normScale < 1 && this.backgroundSound != null) {
+        if(normScale <= 1 && this.backgroundSound != null) {
             this.getControl(SoundControl.class).updateNoiseLevel(1-normScale);
         }
         if(normScale == 0){
@@ -288,14 +289,12 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         if (notifierId.equals("OutputAntenneRx")) {
             
              if (outputAntenneRx != null) {
-                 
+     
                 Float particleScale = spatial.getUserData(AppGetter.USR_SCALE);
                 
                 float normScale = spatial.getWorldScale().length()/particleScale;
                 
-                updateSignalIntensity(normScale);
                 outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
-                this.newWave = true;
              }
         }
     }
@@ -391,6 +390,20 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         
         this.getInputHandle().getControl(PatternGeneratorControl.class).setParticleList(lst);
     }
+     
+     private void updateDistanceStatus(){
+         
+         Vector3f me = this.getWorldTranslation();
+         me = me.divide(this.getWorldScale());
+         float distance = me.subtract(((Vector3f) this.getInputHandle().getUserData(AppGetter.USR_SOURCE_TRANSLATION)).divide(this.getWorldScale())).length();
+         Vector3f v = me.subtract((Vector3f) this.getInputHandle().getUserData(AppGetter.USR_SOURCE_TRANSLATION));
+         distance = Math.abs(distance);
+         
+         float signalRatio = distance / 35.0f;
+         signalRatio = signalRatio > 1 ? 1 : signalRatio;
+         this.updateSignalIntensity(1-signalRatio);
+         this.updateWifiLogos(signalIntensity);
+     }
     
     
 }

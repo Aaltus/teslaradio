@@ -37,7 +37,10 @@ public class AppGetter {
     static public final String USR_SCALE = "Scale";
     
     static public final String USR_AUDIO_SCALE="Audio Scale";
-    /*Public methods*/
+    
+    static public final String USR_SOURCE_TRANSLATION="Source Translation";
+    
+   
     
     //world scalling
     private static float worldScaling = 10;

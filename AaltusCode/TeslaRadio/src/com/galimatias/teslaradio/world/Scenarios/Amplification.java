@@ -73,6 +73,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     private final float pi = (float) Math.PI;
     
     private float tpfCumul = 0;
+    private float tpfDistanceCumul = 0f;
     //try particle
     private Geometry particle;
     
@@ -290,6 +291,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
             ampliButtonRotation(trackableAngle);
             invRotScenario(trackableAngle + (pi / 2));
         }
+        this.destinationHandle.setUserData(AppGetter.USR_SOURCE_TRANSLATION, this.getWorldTranslation());
         return false;
     }
 
@@ -314,12 +316,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
 
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
-        Spatial carrier = spatial;//null;
-        /*for(Spatial sp : ((Node) spatial).getChildren()){
-            if(sp.getName().contains("Carrier")){
-                carrier =  sp;
-            }
-        }*/
+        Spatial carrier = spatial;
          if (notifierId.equals("InputWireAmpli")) {
           //Change Scale
              carrier = this.particleAmplification(carrier);
@@ -329,6 +326,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
              spatial.setUserData(AppGetter.USR_SCALE, scale);
              carrier = this.particleAmplification(carrier);
              outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
+             
          }   
     }
 
@@ -388,4 +386,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         this.detachChild(moveArrow);
     }
     
+    private void updateDistanceStatus(){
+        
+    }
 }
