@@ -60,6 +60,8 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     private ApplicationType applicationType;
     private boolean scenePreloaded =false;
     private ScenarioCommon scenarioCommon = new ScenarioCommon();
+    private Node rightArrowNode;
+    private Node leftArrowNode;
 
     public void setApplicationType(ApplicationType applicationType){
         this.applicationType = applicationType;
@@ -142,6 +144,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             List<Node> node,
             Camera cam)
     {   
+        initGuiNode(settings, assetManager);
         
         //This a list of all the scenario that we will rotate/scale according
         //to which environment we are in. Don't forget to add scenario in it. 
@@ -246,10 +249,11 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
 
        
         //setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));
+        
         setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDEMISSION));
 
         setNodeList(node);
-        initGuiNode(settings, assetManager);
+        
         
 
     }
@@ -268,27 +272,37 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         pic1.setImage(assetManager, "Interface/arrow.png", true);
         pic1.setWidth(imageWidth);
         pic1.setHeight(imageHeight);
-        Node node1 = new Node();
-        node1.setName(NEXT_SCENARIO);
-        node1.attachChild(pic1);
-        localGuiNode.attachChild(node1);
+        rightArrowNode = new Node();
+        rightArrowNode.setName(NEXT_SCENARIO);
+        rightArrowNode.attachChild(pic1);
+        localGuiNode.attachChild(rightArrowNode);
         pic1.move(-imageWidth / 2, -imageHeight / 2, 0);
         //node2.rotate(0, 0, -(float)Math.PI);
-        node1.move(settings.getWidth()-imageWidth/2,settings.getHeight()/2, 0);
+        rightArrowNode.move(settings.getWidth()-imageWidth/2,settings.getHeight()/2, 0);
 
         Picture pic2 = new Picture(PREVIOUS_SCENARIO);
         pic2.setName(PREVIOUS_SCENARIO);
         pic2.setImage(assetManager, "Interface/arrow.png", true);
         pic2.setWidth(imageWidth);
         pic2.setHeight(imageHeight);
-        Node node2 = new Node();
-        node2.setName(PREVIOUS_SCENARIO);
-        node2.attachChild(pic2);
-        localGuiNode.attachChild(node2);
+        leftArrowNode = new Node();
+        leftArrowNode.setName(PREVIOUS_SCENARIO);
+        leftArrowNode.attachChild(pic2);
+        localGuiNode.attachChild(leftArrowNode);
         pic2.move(-imageWidth/2, -imageHeight/2, 0);
-        node2.rotate(0, 0, -(float)Math.PI);
-        node2.move(imageWidth/2,settings.getHeight()/2, 0);
+        leftArrowNode.rotate(0, 0, -(float)Math.PI);
+        leftArrowNode.move(imageWidth/2,settings.getHeight()/2, 0);
     }
+    /*
+    private void setAttachLeftArrow(boolean attach){
+        if(attach){
+            this.guiNode.attachChild(guiLeftArrowNode);
+        }
+        else{
+            this.guiNode.detachChild(guiLeftArrowNode);
+        }
+    }
+    * */
     
     /**
      * Make transformation to the scenario according to the application type.
@@ -466,6 +480,27 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 count++;
             }
         }
+        
+        updateGuiNavigationArrows();
+        
+    }
+    
+    private void updateGuiNavigationArrows()
+    {
+        if(this.hasNextScenario()){
+            this.localGuiNode.attachChild(this.rightArrowNode);
+        }
+        else{
+            this.localGuiNode.detachChild(this.rightArrowNode);
+        }
+        
+        if(this.hasPreviousScenario()){
+                this.localGuiNode.attachChild(this.leftArrowNode);
+        }
+        else{
+            this.localGuiNode.detachChild(this.leftArrowNode);
+        }
+        
     }
 
     @Override
