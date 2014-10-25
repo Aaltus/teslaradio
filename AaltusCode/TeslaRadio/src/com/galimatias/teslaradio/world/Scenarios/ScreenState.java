@@ -72,7 +72,7 @@ public class ScreenState extends AbstractAppState implements ScreenController, C
         
         nifty = niftyDisplay.getNifty();
         //nifty.fromXml("Interface/StartScreen.xml", "start", this);
-        nifty.fromXml("Interface/StartScreen.xml", "loadlevel", this);
+        nifty.fromXml("Interface/StartScreen.xml", LOADIND_SCREEN_ID, this);
         //nifty.getScreen("loadlevel").findElementByName("progressbar").;
         load = true;
         inputManager.setSimulateMouse(false); // must be false in order to the start screen to work.<
@@ -107,7 +107,7 @@ public class ScreenState extends AbstractAppState implements ScreenController, C
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         this.nifty  = nifty;
         this.screen = screen;
-        this.progressBarElement = nifty.getScreen("loadlevel").findElementByName("progressbar");
+        this.progressBarElement = nifty.getScreen(LOADIND_SCREEN_ID).findElementByName("progressbar");
     }
     
     @Override
