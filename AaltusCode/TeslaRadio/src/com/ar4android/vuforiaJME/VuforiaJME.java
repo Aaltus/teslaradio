@@ -87,7 +87,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 		setDisplayFps(true);
 
 
-        androidActivityListener.onFinishSimpleInit();
+        //androidActivityListener.onFinishSimpleInit();
 
 
         //To uncomments
@@ -211,6 +211,11 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
     @Override
     public void endGame() {
         this.stop();
+    }
+
+    @Override
+    public void dismissSplashScreen() {
+        androidActivityListener.onFinishSimpleInit();
     }
 
     @Override

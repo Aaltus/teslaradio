@@ -136,4 +136,9 @@ public class Main extends SimpleApplication implements StateSwitcher
         rootNode.addLight(front);
         rootNode.addLight(ambient);
     }
+
+    @Override
+    public void dismissSplashScreen() {
+        
+    }
 }

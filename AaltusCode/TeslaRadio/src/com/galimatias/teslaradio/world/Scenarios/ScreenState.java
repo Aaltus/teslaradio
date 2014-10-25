@@ -116,6 +116,8 @@ public class ScreenState extends AbstractAppState implements ScreenController, C
         
         if (load) { //loading is done over many frames
             if (frameCount == 1) {
+
+                stateSwitcher.dismissSplashScreen();
                 Element element = nifty.getScreen("loadlevel").findElementByName("loadingtext");
                 textRenderer = element.getRenderer(TextRenderer.class);
                 

@@ -15,5 +15,6 @@ public interface StateSwitcher {
     public void startTutorial();
     public void startCredits();
     public void endGame();
+    public void dismissSplashScreen();
     
 }

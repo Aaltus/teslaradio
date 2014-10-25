@@ -28,7 +28,7 @@
             <panel width="100%" height="100%" align="center" valign="center" childLayout="vertical" backgroundColor="#55a5" padding="10">
                 <panel height="100%" backgroundColor="#55aa" childLayout="vertical">
                     <panel width="100%" height="40%" childLayout="center">
-                        <image width="60%" height="100%" filename="Interface/Logo.jpg" />
+                        <image width="60%" height="100%" filename="Interface/Logo.png" />
                     </panel>
                     <panel width="100%" height="15%" childLayout="center" >
                         <control width="30%" height="90%" id="StartButton" name="button" label="Start" visibleToMouse="true" focusable="false">
