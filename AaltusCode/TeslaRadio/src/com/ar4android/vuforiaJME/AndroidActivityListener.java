@@ -23,5 +23,7 @@ public interface AndroidActivityListener {
 
    public void setICameraUpdater(ICameraUpdater iCameraUpdater);
 
+   public void quitActivity();
+
 
 }

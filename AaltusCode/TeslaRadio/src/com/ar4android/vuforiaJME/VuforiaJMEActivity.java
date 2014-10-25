@@ -18,6 +18,7 @@
 
 package com.ar4android.vuforiaJME;
 
+import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -93,6 +94,26 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     @Override
     public void setICameraUpdater(ICameraUpdater iCameraUpdater) {
         this.vuforiaCaller.setICameraUpdate(iCameraUpdater);
+    }
+
+    @Override
+    public void quitActivity() {
+        openCloseAlertDialog();
+    }
+
+    private void openCloseAlertDialog() {
+        runOnUiThread(
+            new Runnable()
+            {
+                public void run()
+                {
+                    AlertDialog dialog = new AlertDialog.Builder(VuforiaJMEActivity.this) // .setIcon(R.drawable.alert_dialog_icon)
+                            .setTitle(exitDialogTitle).setPositiveButton("Yes", VuforiaJMEActivity.this).setNegativeButton("No", VuforiaJMEActivity.this).setMessage(exitDialogMessage).create();
+                    dialog.show();
+
+                }
+            }
+        );
     }
 
     // Display size of the device:

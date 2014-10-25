@@ -169,7 +169,13 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
     public void onBackButton(){
 
-        openStartScreen();
+        String currentScreenName = stateManager.getState(ScreenState.class).getCurrentScreenShownName();
+        if(currentScreenName.equals(ScreenState.NULL_SCREEN_ID)) {
+            openStartScreen();
+        }
+        if(currentScreenName.equals(ScreenState.START_SCREEN_ID)) {
+            this.androidActivityListener.quitActivity();
+        }
 
     }
 
@@ -210,7 +216,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
     @Override
     public void endGame() {
-        this.stop();
+        this.androidActivityListener.quitActivity();
     }
 
     @Override

@@ -30,16 +30,15 @@ import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.tools.SizeValue;
 import de.lessvoid.xml.xpp3.Attributes;
 import java.util.Properties;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 
 public class ScreenState extends AbstractAppState implements ScreenController, Controller{
 
     private final static String TAG = ScreenState.class.getSimpleName();
-    
+    public static final String START_SCREEN_ID = "start";
+    public static final String NULL_SCREEN_ID = "null";
+    public static final String LOADIND_SCREEN_ID = "loadlevel";
+
     private SimpleApplication app;
     private StateSwitcher stateSwitcher;
     private Nifty nifty;
@@ -118,7 +117,7 @@ public class ScreenState extends AbstractAppState implements ScreenController, C
             if (frameCount == 1) {
 
                 stateSwitcher.dismissSplashScreen();
-                Element element = nifty.getScreen("loadlevel").findElementByName("loadingtext");
+                Element element = nifty.getScreen(LOADIND_SCREEN_ID).findElementByName("loadingtext");
                 textRenderer = element.getRenderer(TextRenderer.class);
                 
                 Demodulation demodulation = new Demodulation(this.scenarioCommon,null, null);
@@ -226,16 +225,19 @@ public class ScreenState extends AbstractAppState implements ScreenController, C
     
     public void openStartMenu(){
         //this.app.getFlyByCamera().setDragToRotate(true);
-        nifty.gotoScreen("start");
+        nifty.gotoScreen(START_SCREEN_ID);
         inputManager.setSimulateMouse(false); // must be false in order to the start screen to work.
     }
     public void closeStartMenu(){
         //this.app.getFlyByCamera().setDragToRotate(true);
-        nifty.gotoScreen("null");
+        nifty.gotoScreen(NULL_SCREEN_ID);
         inputManager.setSimulateMouse(true); // must be false in order to the start screen to work.
     }
     
-    
+    public String getCurrentScreenShownName(){
+
+       return nifty.getCurrentScreen().getScreenId();
+    }
  
     
     public void setProgress(final float progress, final String loadingText) {
