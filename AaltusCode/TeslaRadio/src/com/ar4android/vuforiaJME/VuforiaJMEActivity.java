@@ -28,6 +28,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -695,10 +696,27 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        setImmersiveMode(hasFocus);
+    }
 
+    private void setImmersiveMode(boolean hasFocus) {
+        if(android.os.Build.VERSION.SDK_INT >= 19) {
+            if (hasFocus) {
+                getWindow().getDecorView().setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            }
+        }
+    }
 
     /** Initializes AR application components. */
     private void initApplicationAR()
@@ -794,6 +812,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
+
+
         // Where the AppLogger is called for the first time and the log level is set
         AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ERROR);
 
@@ -805,6 +825,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         initLanguageSpecificStrings();
 
         super.onCreate(savedInstanceState);
+
+        setImmersiveMode(true);
 
         //Enabling Profiler
         if (UseProfiler)
