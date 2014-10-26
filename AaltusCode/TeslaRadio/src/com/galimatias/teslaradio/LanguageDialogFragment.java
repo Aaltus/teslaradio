@@ -65,19 +65,27 @@ public class LanguageDialogFragment extends DialogFragment {
                 LanguageDialogFragment.this.onClick(v);
             }
         });
+
+        //SPanish and german are not implemented yet, so we don,t want them to be enabled.
         ImageButton deButton = (ImageButton)view.findViewById(R.id.camera_toggle_de_button);
+        ImageButton esButton = (ImageButton)view.findViewById(R.id.camera_toggle_es_button);
+        //Use deprecated function but is available since API 1
+        deButton.getBackground().setAlpha(50);
+        esButton.getBackground().setAlpha(50);
+
+        /*
+
         deButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 LanguageDialogFragment.this.onClick(v);
             }
         });
-        ImageButton esButton = (ImageButton)view.findViewById(R.id.camera_toggle_es_button);
         esButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 LanguageDialogFragment.this.onClick(v);
             }
         });
-
+        */
         ImageButton cancelButton = (ImageButton) view.findViewById(R.id.camera_toggle_cancel_button);
         if(this.dialogClosable){
 
