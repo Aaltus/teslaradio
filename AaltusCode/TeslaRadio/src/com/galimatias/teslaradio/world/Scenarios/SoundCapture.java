@@ -27,6 +27,7 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import java.util.ResourceBundle;
 
 //import com.galimatias.teslaradio.world.observer.ScenarioObserver;
 
@@ -59,7 +60,9 @@ public final class SoundCapture extends Scenario {
     private Vector3f micHandleInPosition;
     
     // Default text to be seen when scenario starts
-    private String titleText = "La Capture du Son";
+    //private String titleText = ResourceBundle.getBundle("com.galimatias.teslaradio.world.Scenarios.Bundle").getString("sound_capture_title");//"La Capture du Son";
+    private String titleText = AppGetter.getResourceBundle().getString("sound_capture_title");//"La Capture du Son";
+    
     
     //Arrows
     private Arrows micArrow;

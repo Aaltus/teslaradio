@@ -11,6 +11,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 import com.utils.AppLogger;
+import java.util.ResourceBundle;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
@@ -107,6 +108,11 @@ public class AppGetter {
         //else{
         //    throw new RuntimeException("Can't initialized again an " + AppGetter.class.getSimpleName());
         //}
+    }
+    
+    public static ResourceBundle getResourceBundle(){
+        return ResourceBundle.getBundle("Bundle");
+    
     }
 
     public static AppGetter getInstance() {
