@@ -95,15 +95,18 @@ public class AppGetter {
     
     public static void setInstance(SimpleApplication app) {
 
-        if(instance == null)
-        {
+        //Jonathan Desmarais: I commented stuff here because recreating the activity will crash because of this singleton
+        //Since an application is recreated when we change language, we want it to become the new instance of the activity
+        //See crash TR-319
+        //if(instance == null)
+        //{
             instance = new AppGetter(app);
             AppLogger.getInstance().i(AppGetter.class.getSimpleName(),"Initialize: " + AppGetter.class.getSimpleName());
             instance.executor = new ScheduledThreadPoolExecutor(4);
-        }
-        else{
-            throw new RuntimeException("Can't initialized again an " + AppGetter.class.getSimpleName());
-        }
+        //}
+        //else{
+        //    throw new RuntimeException("Can't initialized again an " + AppGetter.class.getSimpleName());
+        //}
     }
 
     public static AppGetter getInstance() {

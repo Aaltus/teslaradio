@@ -221,11 +221,14 @@ public class AndroidHarnessFragmentActivity extends FragmentActivity implements 
     private class DataObject {
         protected Application app = null;
     }
-
+    //Jonathan Desmarais
+    //TR-319: To save the app data in a data structure and to retrieve it after the application recreated
+    //cause the bug of infinite splashscreen after choosing a new language for the app because the onFinishSimpleInitApp
+    // method is not called.
 
     //Has suggested by Android API, I replace onRetainNonConfigurationInstance() by onRetainCustomNonConfigurationInstance
     //In fragmentActivity
-    @Override
+    /*@Override
     public Object onRetainCustomNonConfigurationInstance() {
         logger.log(Level.FINE, "onRetainNonConfigurationInstance");
         final DataObject data = new DataObject();
@@ -233,7 +236,7 @@ public class AndroidHarnessFragmentActivity extends FragmentActivity implements 
         inConfigChange = true;
 
         return data;
-    }
+    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
