@@ -52,20 +52,28 @@
                   android:name="com.ar4android.vuforiaJME.VuforiaJMEActivity"
                   android:configChanges="keyboardHidden|screenLayout|orientation|screenSize"
                   android:screenOrientation="landscape"
-                  android:debuggable="true"
                 >
-
+<!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
          </activity>
         <!--<activity android:name=".CrashHandler" android:process=":CrashHandler" android:stateNotNeeded="true" android:exported="false" android:configChanges="keyboard|keyboardHidden|orientation" android:screenOrientation="landscape"/>-->
         <activity android:name="org.acra.CrashReportDialog"
                   android:launchMode="singleInstance"
                   android:excludeFromRecents="true"
                   android:finishOnTaskLaunch="true" />
+        <activity android:name="com.ar4android.vuforiaJME.LanguageChooserActivity"
+                  android:configChanges="keyboardHidden|screenLayout|orientation|screenSize"
+                  android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+        </activity>
         <supports-screens android:anyDensity="true" android:largeScreens="true" android:normalScreens="true" android:smallScreens="true"/>
     </application>
 

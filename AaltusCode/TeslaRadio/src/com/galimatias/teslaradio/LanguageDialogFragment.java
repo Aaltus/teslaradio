@@ -18,6 +18,10 @@ public class LanguageDialogFragment extends DialogFragment {
 
 
     private static final String TAG = "LanguageDialogFragment";
+    private boolean dialogClosable = true;
+    public void setDialogClosable(boolean dialogClosable) {
+        this.dialogClosable = dialogClosable;
+    }
 
     public LanguageDialogFragment() {
         // Empty constructor required for DialogFragment
@@ -73,12 +77,20 @@ public class LanguageDialogFragment extends DialogFragment {
                 LanguageDialogFragment.this.onClick(v);
             }
         });
-        ImageButton cancelButton = (ImageButton)view.findViewById(R.id.camera_toggle_cancel_button);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                LanguageDialogFragment.this.onClick(v);
-            }
-        });
+
+        ImageButton cancelButton = (ImageButton) view.findViewById(R.id.camera_toggle_cancel_button);
+        if(this.dialogClosable){
+
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    LanguageDialogFragment.this.onClick(v);
+                }
+            });
+
+        }
+        else {
+            ((ViewGroup)cancelButton.getParent()).removeView(cancelButton);
+        }
 
         return view;
     }
@@ -125,4 +137,6 @@ public class LanguageDialogFragment extends DialogFragment {
 
         }
     }
+
+
 }
