@@ -320,15 +320,17 @@ public class VuforiaJMEState extends AbstractAppState implements ICameraUpdater
 
         this.iTrackerUpdater.updateTracking();
 
-        try {
-            if (mNewCameraFrameAvailable) {
-                mCameraTexture.setImage(mCameraImage);
-                mvideoBGMat.setTexture("ColorMap", mCameraTexture);
-            }
+        //try {
+        if (mNewCameraFrameAvailable) {
+            mCameraTexture.setImage(mCameraImage);
+            mvideoBGMat.setTexture("ColorMap", mCameraTexture);
+        }
+        /*
         }catch(Exception e)
         {
             System.out.println(e);
         }
+        */
         // mCubeGeom.rotate(new Quaternion(1.f, 0.f, 0.f, 0.01f));
         if(attachedToViewPort){
             mVideoBGGeom.updateLogicalState(tpf);
