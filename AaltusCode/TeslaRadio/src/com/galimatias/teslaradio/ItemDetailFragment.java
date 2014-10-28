@@ -13,8 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import com.ar4android.vuforiaJME.AppGetter;
 import com.ar4android.vuforiaJME.VideoPlayerActivity;
 import com.galimatias.teslaradio.subject.SubjectContent;
+import com.utils.AppLogger;
 import com.viewpagerindicator.CirclePageIndicator;
 
 /**
@@ -211,14 +213,14 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
                                  Bundle savedInstanceState) {
 
             final View v = inflater.inflate(mLayouts[position], container, false);
-            v.setOnClickListener(this);
+            //v.setOnClickListener(this);
 
-            /*
+
             View soundCaptureImage     = v.findViewById(R.id.sound_capture_image);
             if(soundCaptureImage != null) {
                 soundCaptureImage.setOnClickListener(this);
             }
-            */
+            
 
 
             return v;
@@ -233,6 +235,7 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
 
         @Override
         public void onClick(View view) {
+            AppLogger.getInstance().d(TAG,"Testing stuff");
             switch(view.getId()) {
                 case R.id.sound_capture_image:
                     playVideo(R.raw.souris);
