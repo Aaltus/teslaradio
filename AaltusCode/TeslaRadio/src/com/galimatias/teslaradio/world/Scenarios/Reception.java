@@ -251,9 +251,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     private void updateSignalIntensity(float normScale) { 
         wifi.detachAllChildren();
-        if(normScale <= 1 && this.backgroundSound != null) {
-            this.getControl(SoundControl.class).updateNoiseLevel(1-normScale);
-        }
+        
         if(normScale == 0){
             signalIntensity = 0;
         }
@@ -264,11 +262,18 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         } else {
             signalIntensity = 3;
         }
+        if(this.backgroundSound != null){
+            this.updateSoundLevel(normScale);
+        }
+       
     }
     
     private void updateWifiLogos(int signalIntensity) {
         
         switch(signalIntensity) {
+            case 0:
+                wifi.attachChild(wifiLogoNull);
+                break;
             case 1:
                 wifi.attachChild(wifiLogoLow);
                 break;
@@ -282,6 +287,17 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
                 wifi.attachChild(wifiLogoNull);
                 break;
         }
+    }
+    
+    private void updateSoundLevel(float normScale){
+        if(normScale == 0){
+            this.getControl(SoundControl.class).updateNoiseLevel(1);
+        }else if (normScale > 0.75f){
+            this.getControl(SoundControl.class).updateNoiseLevel(0);
+        }else{
+            this.getControl(SoundControl.class).updateNoiseLevel(1-normScale);
+        }
+        
     }
 
     @Override
@@ -393,13 +409,13 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
      
      private void updateDistanceStatus(){
          
-         Vector3f me = this.getWorldTranslation();
-         me = me.divide(this.getWorldScale());
-         float distance = me.subtract(((Vector3f) this.getInputHandle().getUserData(AppGetter.USR_SOURCE_TRANSLATION)).divide(this.getWorldScale())).length();
-         Vector3f v = me.subtract((Vector3f) this.getInputHandle().getUserData(AppGetter.USR_SOURCE_TRANSLATION));
-         distance = Math.abs(distance);
-         
-         float signalRatio = distance / 43.0f;
+         Vector3f wt = this.getWorldTranslation();
+         wt = wt.subtract((Vector3f) this.getInputHandle().getUserData(AppGetter.USR_SOURCE_TRANSLATION));
+         float distance = wt.divide(this.getWorldScale()).length();
+         distance -= 8; //offset
+         distance = distance < 0 ? 0 : distance;
+         System.out.println(distance);
+         float signalRatio = distance / 20.0f;
          signalRatio = signalRatio > 1 ? 1 : signalRatio;
          this.updateSignalIntensity(1-signalRatio);
          this.updateWifiLogos(signalIntensity);

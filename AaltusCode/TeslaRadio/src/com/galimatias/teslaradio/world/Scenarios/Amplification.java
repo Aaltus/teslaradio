@@ -204,8 +204,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
             
             isTouched = false;
         }
-        
-        this.getControl(SoundControl.class).updateVolume(ampliScale/1.5f);
+        /*TR-261 apparently we don't want this */
+        //this.getControl(SoundControl.class).updateVolume(ampliScale/1.5f);
  
     }
     

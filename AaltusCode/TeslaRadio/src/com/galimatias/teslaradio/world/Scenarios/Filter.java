@@ -7,6 +7,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
+import com.galimatias.teslaradio.world.effects.SoundControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
@@ -279,6 +280,10 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
             if (outFilterEmitter != null) {
                 outFilterEmitter.getControl(ParticleEmitterControl.class).emitParticle(spatial);
             }
+            this.getControl(SoundControl.class).updateVolume(1);
+        }
+         else{
+            this.getControl(SoundControl.class).updateVolume(0);
         }
     }
 

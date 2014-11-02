@@ -39,52 +39,32 @@ public class SoundControl extends AbstractControl {
     /**
      * Start sound
      * @param isLoop Sound will loop
-     * @param noiseLevel  The noise level (1 means only noise)
-     */
-    public void playSound(boolean isLoop, float noiseLevel){
-        ((Node)this.spatial).attachChild(audio);
-        ((Node)this.spatial).attachChild(noise);
-        this.audio.setLooping(isLoop);
-        this.noise.setLooping(isLoop);
-        this.audio.setVolume(this.volume - noiseLevel*this.volume);
-        this.noise.setVolume(noiseLevel*this.volume);
-        this.audio.playInstance();
-        this.noise.playInstance();
-    }
-    /**
-     * Start sound
-     * @param isLoop Sound will loop
      * 
      */
     public void playSound(boolean isLoop){
-       ((Node)this.spatial).attachChild(audio);
-        ((Node)this.spatial).attachChild(noise);
-        this.audio.setLooping(isLoop);
+       
+        if(isLoop){
+            this.audio.setLooping(isLoop);
+            this.noise.setLooping(isLoop);
+        
+        }
         this.audio.play();
-        this.noise.setLooping(isLoop);
         this.noise.play();
   
     }
     public void stopSound(){
-        this.audio.pause();
-        this.noise.stop();
-        ((Node)this.spatial).detachChild(audio);
-        ((Node)this.spatial).detachChild(noise);
-        
-       
-     
+        this.audio.stop();
+        this.noise.stop();     
     }
     
     public void updateNoiseLevel(float noiseLevel){
-        this.spatial.setUserData(AppGetter.USR_AUDIO_SCALE,this.volume - noiseLevel*this.volume);
+        this.spatial.setUserData(AppGetter.USR_AUDIO_SCALE, this.volume - noiseLevel*this.volume);
         this.spatial.setUserData(AppGetter.USR_NOISE_LEVEL,noiseLevel*this.volume);
         
     }
     public void updateVolume(float volume){
-        this.spatial.setUserData(AppGetter.USR_AUDIO_SCALE, volume-this.noiseLevel*this.volume);
-        this.spatial.setUserData(AppGetter.USR_NOISE_LEVEL, this.noiseLevel*this.volume);
+        this.spatial.setUserData(AppGetter.USR_AUDIO_SCALE, volume);
     }
-   
     @Override
     protected void controlUpdate(float tpf) {
        
@@ -98,7 +78,7 @@ public class SoundControl extends AbstractControl {
            this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, false);
        }
       else{
-         
+
           this.audio.setVolume((Float)this.spatial.getUserData(AppGetter.USR_AUDIO_SCALE));
           this.noise.setVolume((Float)this.spatial.getUserData(AppGetter.USR_NOISE_LEVEL));
       }
@@ -118,6 +98,9 @@ public class SoundControl extends AbstractControl {
         this.spatial.setUserData(AppGetter.USR_NEXT_WAVE_SCALE, 0f);
         this.spatial.setUserData(AppGetter.USR_SCALE, 1f);
         this.spatial.setUserData(AppGetter.USR_AUDIO_SCALE, 1f);
+        
+        ((Node)this.spatial).attachChild(audio);
+        ((Node)this.spatial).attachChild(noise);
         
   
     }
