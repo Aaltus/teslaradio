@@ -1,6 +1,7 @@
 package com.galimatias.teslaradio;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,7 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import com.ar4android.vuforiaJME.AppGetter;
+import com.ar4android.vuforiaJME.VideoPlayerActivity;
 import com.galimatias.teslaradio.subject.SubjectContent;
+import com.utils.AppLogger;
 import com.viewpagerindicator.CirclePageIndicator;
 
 /**
@@ -143,6 +147,9 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
 
         }
 
+
+
+
         return rootView;
     }
 
@@ -183,9 +190,10 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
      * A fragment that return a fragment based on the
      * provided position.
      */
-    public static class PageDetailFragment extends Fragment {
+    public static class PageDetailFragment extends Fragment implements View.OnClickListener {
 
         private int position;
+
 
 
 
@@ -205,7 +213,35 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
                                  Bundle savedInstanceState) {
 
             final View v = inflater.inflate(mLayouts[position], container, false);
+            //v.setOnClickListener(this);
+
+
+            View soundCaptureImage     = v.findViewById(R.id.sound_capture_image);
+            if(soundCaptureImage != null) {
+                soundCaptureImage.setOnClickListener(this);
+            }
+            
+
+
             return v;
+        }
+
+        private void playVideo(int res) {
+            Intent videoPlaybackActivity = new Intent(this.getActivity(), VideoPlayerActivity.class);
+            //int res=this.getResources().getIdentifier(resourceName, "raw", getActivity().getPackageName());
+            videoPlaybackActivity.putExtra(VideoPlayerActivity.FILE_RES_ID, res);
+            this.getActivity().startActivity(videoPlaybackActivity);
+        }
+
+        @Override
+        public void onClick(View view) {
+            AppLogger.getInstance().d(TAG,"Testing stuff");
+            switch(view.getId()) {
+                case R.id.sound_capture_image:
+                    playVideo(R.raw.souris);
+                    break;
+
+            }
         }
     }
 }

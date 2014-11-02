@@ -41,7 +41,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     private final static String TAG = "Amplification";
     
       // 3D objects of the scene
-    private Spatial ampliSlider;
+    private Spatial ampliSliderButton;
+    private Spatial ampliSliderBox;
     private Vector3f translationIncrement;
     private boolean isTouched = false;
     private float ampliScale = 0.5f;
@@ -159,14 +160,17 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
 
     @Override
     protected void loadMovableObjects() {
-        ampliSlider = scene.getChild("Button.000");
-        ampliSlider.setName("Slider");
+        ampliSliderButton = scene.getChild("Button.000");
+        ampliSliderBox = scene.getChild("Cube");
+        ampliSliderButton.setName("SliderButton");
+        ampliSliderBox.setName("SliderBox");
          //Test
         touchable = new Node();
         touchable.setName("Touchable");
         scene.attachChild(touchable);
         
-        touchable.attachChild(ampliSlider);
+        touchable.attachChild(ampliSliderButton);
+        touchable.attachChild(ampliSliderBox);
     }
 
     private void loadArrows()
@@ -175,28 +179,24 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     }
     
     private void ampliSliderUpdate() {
-        /*Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
-        ampliSlider.setLocalRotation(rot);*/
-
         if (isTouched) {
             switch(touchCount) {
                 case 1:
                 case 2:
                 case 3:
                 case 4:
-                    ampliSlider.move(translationIncrement);
+                    ampliSliderButton.move(translationIncrement);
                     ampliScale = touchCount*0.25f + 0.5f;
                     break;
                 
                 case 5:
                 case 6:
                 case 7:
-                    ampliSlider.move(translationIncrement.negate());
+                    ampliSliderButton.move(translationIncrement.negate());
                     ampliScale = 2.5f - touchCount*0.25f;
                     break;
                 case 8:
-                    ampliSlider.move(translationIncrement.negate());
+                    ampliSliderButton.move(translationIncrement.negate());
                     ampliScale = 2.5f - touchCount*0.25f;
                     touchCount = 0;
                     break;
@@ -314,7 +314,10 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
                             break;
                         }*/
                         
-                        if (nameToCompare.equals("Slider")) {
+                        if (nameToCompare.equals("SliderButton")) {
+                            touchCount++;
+                            isTouched = true;
+                        } else if (nameToCompare.equals("SliderBox")) {
                             touchCount++;
                             isTouched = true;
                         }

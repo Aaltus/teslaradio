@@ -12,6 +12,7 @@ import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
+import com.galimatias.teslaradio.world.effects.SoundControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
@@ -106,7 +107,6 @@ public final class SoundCapture extends Scenario {
     protected void loadMovableObjects()
     {
         initMicWireParticlesEmitter();
-        initOnTouchEffect();
 
         this.attachChild(movableObjects);
     }
@@ -141,7 +141,7 @@ public final class SoundCapture extends Scenario {
         mat1.setColor("Color", new ColorRGBA(1.0f,0.63f,0.0f,1.0f));
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         micWireEmitter.getControl(ParticleEmitterControl.class).setDefaultMaterial(mat1);
-      //  micWireEmitter.addControl(new SoundControl("Sounds/micro_sound.wav", false, 2));
+        micWireEmitter.addControl(new SoundControl("Sounds/hit_mic.wav", false, 2));
         
         wireDestinationEmitter = new Node();
         wireDestinationEmitter.setName("WireDestinationEmitter");
