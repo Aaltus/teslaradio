@@ -40,7 +40,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     
     private final static String TAG = "Amplification";
     
-      // 3D objects of the scene
+    // 3D objects of the scene
     private Spatial ampliSliderButton;
     private Spatial ampliSliderBox;
     private Vector3f translationIncrement;
@@ -317,9 +317,11 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
                         if (nameToCompare.equals("SliderButton")) {
                             touchCount++;
                             isTouched = true;
+                            break;
                         } else if (nameToCompare.equals("SliderBox")) {
                             touchCount++;
                             isTouched = true;
+                            break;
                         }
 
                 }
