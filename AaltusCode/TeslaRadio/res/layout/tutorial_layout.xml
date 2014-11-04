@@ -24,6 +24,7 @@
                 android:id="@+id/tutorial_speech_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:background="@drawable/bubble_green_flipped"
                 android:text="Testing some random stuff. Alex and Christian are gay. Chat are beautiful as the great and meighty conquerer from the seven sea."
                 />
