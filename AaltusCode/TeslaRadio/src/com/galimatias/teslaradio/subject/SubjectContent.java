@@ -70,13 +70,14 @@ public class SubjectContent {
     {
         private int id;
         private String title;
-        private int[] listXml;
+        private int[] listXmlDetailmenu;
+        private int[] listXmlTutorial;
         private ScenarioEnum scenarioEnum;
 
-        public SubjectItem(int id, String title, int[] listXml, ScenarioEnum scenarioEnum)
+        public SubjectItem(int id, String title, int[] listXmlDetailmenu, ScenarioEnum scenarioEnum)
         {
             this.id = id;
-            this.listXml = listXml;
+            this.listXmlDetailmenu = listXmlDetailmenu;
             this.title = title;
             this.scenarioEnum = scenarioEnum;
         }
@@ -95,8 +96,8 @@ public class SubjectContent {
             return title;
         }
 
-        public int[] getListXml() {
-            return listXml;
+        public int[] getListXmlDetailmenu() {
+            return listXmlDetailmenu;
         }
 
         public ScenarioEnum getScenarioEnum() {
