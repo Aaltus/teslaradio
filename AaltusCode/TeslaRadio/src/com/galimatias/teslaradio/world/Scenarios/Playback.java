@@ -44,6 +44,7 @@ public final class Playback extends Scenario implements EmitterObserver {
     
     private Spatial ampliSliderButton;
     private Spatial ampliSliderBox;
+    private Spatial speaker;
     private Vector3f translationIncrement;
     private boolean isTouched = false;
     private float ampliScale = 0f;
@@ -126,7 +127,7 @@ public final class Playback extends Scenario implements EmitterObserver {
         ampliSliderButton.setName("SliderButton");
         ampliSliderBox.setName("SliderBox");
         
-        Spatial speaker = scene.getChild("Box01");
+        speaker = scene.getChild("Box01");
         speaker.setName("Speaker");
         
         this.spotlight = ScenarioCommon.spotlightFactory();
@@ -367,10 +368,15 @@ public final class Playback extends Scenario implements EmitterObserver {
             switch(this.currentObjectToEmphasisOn) {
                 // Attach on microphone
                 case 0:
-                    this.spotlight.setLocalTranslation(scene.getChild("Box01").getLocalTranslation().add(0.0f,-scene.getChild("Box01").getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    this.spotlight.setLocalTranslation(speaker.getLocalTranslation().add(0.0f,-speaker.getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
                     this.attachChild(this.spotlight);
-                    break;  
+                    break;
+                case 1:
+                    this.spotlight.setLocalTranslation(ampliSliderBox.getLocalTranslation().add(0.0f,-ampliSliderBox.getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
+                    this.attachChild(this.spotlight);
+                    break;    
                 default:
                     this.detachChild(this.spotlight);
                     break;
