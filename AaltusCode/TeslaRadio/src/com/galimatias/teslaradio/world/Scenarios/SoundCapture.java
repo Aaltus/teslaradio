@@ -141,7 +141,7 @@ public final class SoundCapture extends Scenario {
         mat1.setColor("Color", new ColorRGBA(1.0f,0.63f,0.0f,1.0f));
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         micWireEmitter.getControl(ParticleEmitterControl.class).setDefaultMaterial(mat1);
-        micWireEmitter.addControl(new SoundControl("Sounds/hit_mic.wav", false, 2));
+        //micWireEmitter.addControl(new SoundControl("Sounds/hit_mic.wav", false, 2));
         
         wireDestinationEmitter = new Node();
         wireDestinationEmitter.setName("WireDestinationEmitter");

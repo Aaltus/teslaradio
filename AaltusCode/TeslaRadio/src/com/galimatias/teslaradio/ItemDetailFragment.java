@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import com.ar4android.vuforiaJME.AppGetter;
 import com.ar4android.vuforiaJME.VideoPlayerActivity;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.utils.AppLogger;
@@ -108,7 +107,7 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
             mItem    = SubjectContent.ITEM_MAP.get(Integer.parseInt(getArguments().getString(ARG_ITEM_ID)));
-            mLayouts = mItem.getListXml();
+            mLayouts = mItem.getListXmlDetailmenu();
             Log.i(TAG,"Loading SubjectContent : " + mItem.getTitle());
         }
 
@@ -220,7 +219,7 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
             if(soundCaptureImage != null) {
                 soundCaptureImage.setOnClickListener(this);
             }
-            
+
 
 
             return v;

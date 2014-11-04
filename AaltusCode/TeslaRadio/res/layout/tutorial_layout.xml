@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:baselineAligned="false"
+        android:orientation="vertical"
+        android:showDividers="middle"
+        android:layout_weight="1">
+
+    <LinearLayout android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal"
+                  android:layout_gravity="bottom|left"
+                  android:layout_weight="1">
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:layout_gravity="bottom|left"
+                      android:layout_weight="1">
+            <include layout="@layout/speech_bubble_container"/>
+        <!--<TextView
+                android:id="@+id/tutorial_speech_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:background="@drawable/bubble_green_flipped"
+                android:text="Testing some random stuff. Alex and Christian are gay. Chat are beautiful as the great and meighty conquerer from the seven sea."
+                />-->
+        </LinearLayout>
+        <View android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"/>
+    </LinearLayout>
+    <ImageButton
+            android:id="@+id/character_tutorial_button"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:background="@drawable/nyancat"
+            />
+</LinearLayout>

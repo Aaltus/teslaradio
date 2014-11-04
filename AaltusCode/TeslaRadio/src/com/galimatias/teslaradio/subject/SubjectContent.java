@@ -35,6 +35,9 @@ public class SubjectContent {
         SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.MODULATION.ordinal(), activity.getString(R.string.modulation_title), new int[]{R.layout.modulation},ScenarioEnum.MODULATION));
         SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.TRANSMIT.ordinal(), activity.getString(R.string.transmit_title), new int[]{R.layout.transmission},ScenarioEnum.TRANSMIT));
         SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.RECEPTION.ordinal(), activity.getString(R.string.reception_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test},ScenarioEnum.RECEPTION));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.FILTER.ordinal(), activity.getString(R.string.filter_title), new int[]{R.layout.filter},ScenarioEnum.FILTER));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.DEMODULATION.ordinal(), activity.getString(R.string.demodulation_title), new int[]{R.layout.demodulation},ScenarioEnum.DEMODULATION));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.PLAYBACK.ordinal(), activity.getString(R.string.playback_title), new int[]{R.layout.playback},ScenarioEnum.PLAYBACK));
         SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.REFERENCE.ordinal(), activity.getString(R.string.reference_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test},ScenarioEnum.REFERENCE));
         SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.ABOUTUS.ordinal(), activity.getString(R.string.about_us_title), new int[]{R.layout.informative_info_detail_test2},ScenarioEnum.ABOUTUS));
 
@@ -70,13 +73,14 @@ public class SubjectContent {
     {
         private int id;
         private String title;
-        private int[] listXml;
+        private int[] listXmlDetailmenu;
+        private int[] listXmlTutorial;
         private ScenarioEnum scenarioEnum;
 
-        public SubjectItem(int id, String title, int[] listXml, ScenarioEnum scenarioEnum)
+        public SubjectItem(int id, String title, int[] listXmlDetailmenu, ScenarioEnum scenarioEnum)
         {
             this.id = id;
-            this.listXml = listXml;
+            this.listXmlDetailmenu = listXmlDetailmenu;
             this.title = title;
             this.scenarioEnum = scenarioEnum;
         }
@@ -95,8 +99,8 @@ public class SubjectContent {
             return title;
         }
 
-        public int[] getListXml() {
-            return listXml;
+        public int[] getListXmlDetailmenu() {
+            return listXmlDetailmenu;
         }
 
         public ScenarioEnum getScenarioEnum() {

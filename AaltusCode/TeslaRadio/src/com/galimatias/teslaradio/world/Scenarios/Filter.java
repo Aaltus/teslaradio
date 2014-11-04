@@ -32,7 +32,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     
     private Spatial filterWheel;
     
-    private String titleText = "Le Démultiplexage";
+    private String titleText = "Le Filtrage";
     
     private boolean isFM = true;
     
@@ -141,6 +141,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         }
         
         checkTrackableAngle(trackableAngle);
+        invRotScenario(trackableAngle + (pi / 2));
                 
         return false;
     }

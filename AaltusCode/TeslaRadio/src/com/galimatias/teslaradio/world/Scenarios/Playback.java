@@ -6,9 +6,13 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 import com.galimatias.teslaradio.world.effects.AirParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.Arrows;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.FadeControl;
+import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
+import com.galimatias.teslaradio.world.effects.SoundControl;
 import com.galimatias.teslaradio.world.effects.TextBox;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.collision.CollisionResults;
@@ -38,9 +42,18 @@ public class Playback extends Scenario implements EmitterObserver {
         
     private String titleText = "Hautparleur";
     
+    private Spatial ampliSliderButton;
+    private Spatial ampliSliderBox;
+    private Vector3f translationIncrement;
+    private boolean isTouched = false;
+    private float ampliScale = 0f;
+    private int touchCount = 0;
+    
     private Geometry soundParticle;
     
     private TextBox titleTextBox;
+    
+    private Arrows sliderArrow;
     
     private Spatial  speakerHandleOut;
     private Spatial  speakerHandleIn;
@@ -52,12 +65,10 @@ public class Playback extends Scenario implements EmitterObserver {
     Playback(ScenarioCommon sc, Camera Camera, Spatial destinationHandle) {
         
         super(sc, Camera, destinationHandle, "Sounds/Nyan cat.ogg");
-        touchable = new Node();
-        touchable.setName("Touchable");
-        this.attachChild(touchable);
         this.setName("Playback");
         loadUnmovableObjects();
         loadMovableObjects();
+        loadArrows();
     }
 
     @Override
@@ -68,8 +79,6 @@ public class Playback extends Scenario implements EmitterObserver {
         scene.setName("Playback");
         this.attachChild(scene);       
         
-        touchable.attachChild(scene);
-        
         Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setColor("Color", new ColorRGBA(0, 0, 1, 0.5f));
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
@@ -78,18 +87,18 @@ public class Playback extends Scenario implements EmitterObserver {
         speakerHandleIn.setName("InputSpeaker");
         speakerHandleOut = scene.getChild("Speaker.Handle.Out");
         speakerHandleOutPosition = speakerHandleOut.getLocalTranslation().add(scene.getLocalTranslation());
-        speakerHandleInPosition = speakerHandleIn.getLocalTranslation().add(scene.getLocalTranslation());
+        speakerHandleInPosition = speakerHandleIn.getLocalTranslation();
         
         speakerEmitter = new Node();
         speakerEmitter.setLocalTranslation(speakerHandleOutPosition);
         Quaternion quat = new Quaternion();
         quat.fromAngleAxis(3*pi/2, Vector3f.UNIT_Z);
         speakerEmitter.setLocalRotation(quat);
-        this.attachChild(speakerEmitter);
+        scene.attachChild(speakerEmitter);
         
         speakerIn = new Node();
         speakerIn.setLocalTranslation(speakerHandleInPosition);
-        this.attachChild(speakerIn);
+        scene.attachChild(speakerIn);
         
         speakerIn.addControl(new DynamicWireParticleEmitterControl(speakerEmitter, 1000f));
         speakerEmitter.addControl(new AirParticleEmitterControl(speakerHandleOut, 20f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
@@ -98,6 +107,9 @@ public class Playback extends Scenario implements EmitterObserver {
         speakerIn.getControl(ParticleEmitterControl.class).registerObserver(this);
         speakerIn.getControl(ParticleEmitterControl.class).setEnabled(true);
         
+        Vector3f handleSliderBegin = scene.getChild("Slider.Handle.Begin").getLocalTranslation();
+        Vector3f handleSliderEnd = scene.getChild("Slider.Handle.End").getLocalTranslation();
+        translationIncrement = handleSliderEnd.subtract(handleSliderBegin).divide(4);
         
         initTitleBox();
     }
@@ -105,8 +117,39 @@ public class Playback extends Scenario implements EmitterObserver {
     @Override
     protected void loadMovableObjects() {
         
-
+        touchable = new Node();
+        touchable.setName("Touchable");
+        this.attachChild(touchable);
         
+        ampliSliderButton = scene.getChild("Button.000");
+        ampliSliderBox = scene.getChild("Cube");
+        ampliSliderButton.setName("SliderButton");
+        ampliSliderBox.setName("SliderBox");
+        
+        Spatial speaker = scene.getChild("Box01");
+        speaker.setName("Speaker");
+        
+        touchable.attachChild(speaker);
+        touchable.attachChild(ampliSliderButton);
+        touchable.attachChild(ampliSliderBox);  
+        
+    }
+    
+    private void loadArrows() {
+        
+        sliderArrow = new Arrows("touch", ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f), assetManager, 1);
+        LookAtCameraControl control1 = new LookAtCameraControl(Camera);
+        sliderArrow.addControl(control1);
+        this.attachChild(sliderArrow);
+    }
+    
+    /**
+     * Remove hints, is called after touch occurs
+     */
+    private void removeHintImages()
+    {
+        sliderArrow.getControl(FadeControl.class).setShowImage(false);
+        sliderArrow.resetTimeLastTouch();
     }
 
     @Override
@@ -149,25 +192,30 @@ public class Playback extends Scenario implements EmitterObserver {
                     // 5. Use the results (we mark the hit object)
                     if (results.size() > 0)
                     {
-
                         // The closest collision point is what was truly hit:
                         String nameToCompare =
-                                results.getClosestCollision().getGeometry().getParent().getParent().getParent().getName();
+                                results.getClosestCollision().getGeometry().getParent().getName();
+                        
                         if(nameToCompare == null){
                             break;
-                        }
-                        else if (nameToCompare.equals(scene.getName()))
-                        {
+                        } else if (nameToCompare.equals("Speaker")) {
                             this.speakerTouchEffect();
                             break;
-                        }
-                        else if (nameToCompare.equals(titleTextBox.getName()))
-                        {
+                        } else if (nameToCompare.equals(titleTextBox.getName())) {
                             //this.textTouchEffect();
                             showInformativeMenu = true;
                             break;
-                        }
-                        
+                        } else if (nameToCompare.equals("SliderButton")) {
+                            touchCount++;
+                            isTouched = true;
+                            this.removeHintImages();
+                            break;
+                        } else if (nameToCompare.equals("SliderBox")) {
+                            touchCount++;
+                            isTouched = true;
+                            this.removeHintImages();
+                            break;
+                        }    
                     }
                 }
                 break;
@@ -177,7 +225,40 @@ public class Playback extends Scenario implements EmitterObserver {
     @Override
     protected boolean simpleUpdate(float tpf) {
         
+        ampliSliderUpdate();
+        sliderArrow.simpleUpdate(tpf);
         return false;
+    }
+    
+    private void ampliSliderUpdate() {
+        if (isTouched) {
+            switch(touchCount) {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    ampliSliderButton.move(translationIncrement);
+                    ampliScale = touchCount*0.25f;
+                    break;
+                case 5:
+                case 6:
+                case 7:
+                    ampliSliderButton.move(translationIncrement.negate());
+                    ampliScale = 2f - touchCount*0.25f;
+                    break;
+                case 8:
+                    ampliSliderButton.move(translationIncrement.negate());
+                    ampliScale = 2f - touchCount*0.25f;
+                    touchCount = 0;
+                    break;
+            }
+            
+            isTouched = false;
+        }
+        
+        /*TR-261 apparently we don't want this, but in this scenario we want! */
+        this.getControl(SoundControl.class).updateVolume(ampliScale);
+ 
     }
 
     @Override
@@ -264,8 +345,13 @@ public class Playback extends Scenario implements EmitterObserver {
     }
 
     @Override
-    public void emitterObserverUpdate(Spatial spatial, String notifierId) {
-        speakerTouchEffect();
+    public void emitterObserverUpdate(Spatial spatial, String notifierId) {       
+        
+        if (speakerEmitter != null) {
+            if (touchCount != 0) {
+                speakerTouchEffect();
+            }
+        }
     }
     
 }
