@@ -10,6 +10,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
+import com.ar4android.vuforiaJME.ITutorialSwitcher;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.utils.AppLogger;
@@ -20,6 +21,18 @@ import com.utils.AppLogger;
 public class TutorialFragment extends Fragment implements View.OnClickListener {
 
     private final static String TAG = TutorialFragment.class.getSimpleName();
+
+    private ITutorialSwitcher tutorialSwitcher;
+    public void setTutorialSwitcher(ITutorialSwitcher tutorialSwitcher) {
+        this.tutorialSwitcher = tutorialSwitcher;
+    }
+
+    private void setTutorialMenuCallback(int index){
+
+        if(tutorialSwitcher != null){
+            tutorialSwitcher.setTutorialIndex(index);
+        }
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -65,7 +78,12 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
                 {
                     toggleBubbleViewVisibility();
                 }
-                viewFlipper.showNext();
+                else {
+                    viewFlipper.showNext();
+                    setTutorialMenuCallback(viewFlipper.getDisplayedChild());
+                }
+
+
                 break;
 
         }
@@ -76,13 +94,20 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
     }
 
     private void toggleBubbleViewVisibility() {
-        View viewFlipper = getView().findViewById(R.id.bubble_root_view);
-        if(viewFlipper.getVisibility() == View.GONE){
-            viewFlipper.setVisibility(View.VISIBLE);
+        View view = (View)getView().findViewById(R.id.bubble_root_view);
+        ViewFlipper viewFlipper = getViewFlipper();
+        if(view.getVisibility() == View.GONE){
+            view.setVisibility(View.VISIBLE);
+            if(viewFlipper.getChildCount() > 0){
+                int index = 0;
+                viewFlipper.setDisplayedChild(index);
+                this.setTutorialMenuCallback(index);
+            }
             setShakeAnimation(false);
         }
         else{
-            viewFlipper.setVisibility(View.GONE);
+            view.setVisibility(View.GONE);
+            setTutorialMenuCallback(-1);
             setShakeAnimation(true);
         }
     }
