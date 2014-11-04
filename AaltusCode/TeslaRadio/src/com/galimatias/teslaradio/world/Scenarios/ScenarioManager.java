@@ -480,7 +480,11 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 count++;
             }
         }
-        
+
+        ScenarioEnum scenarioEnum = scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios());
+        if(androidActivityListener != null){
+            androidActivityListener.setTutorialMenu(scenarioEnum);
+        }
         updateGuiNavigationArrows();
         
     }
