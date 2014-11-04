@@ -132,6 +132,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         // Set names for the emitters
         outputAntenneRx.setName("OutputAntenneRx");
         outputAntenneRx.setUserData(AppGetter.USR_SOURCE_TRANSLATION, 0f);
+        outputAntenneRx.setUserData(AppGetter.USR_SCALE,1f);
         
         initPatternGenerator();
     }
@@ -422,6 +423,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
          Vector3f wt = this.getWorldTranslation();
          wt = wt.subtract((Vector3f) this.getInputHandle().getUserData(AppGetter.USR_SOURCE_TRANSLATION));
          float distance = wt.divide(this.getWorldScale()).length();
+         distance = distance / (Float) this.getInputHandle().getUserData(AppGetter.USR_SCALE);
          distance -= 8; //offset
          distance = distance < 0 ? 0 : distance;
          float signalRatio = distance / 20.0f;
