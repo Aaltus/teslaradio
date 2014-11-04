@@ -6,7 +6,10 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 import com.galimatias.teslaradio.world.effects.AirParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.Arrows;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
+import com.galimatias.teslaradio.world.effects.FadeControl;
+import com.galimatias.teslaradio.world.effects.LookAtCameraControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.SoundControl;
@@ -50,6 +53,8 @@ public class Playback extends Scenario implements EmitterObserver {
     
     private TextBox titleTextBox;
     
+    private Arrows sliderArrow;
+    
     private Spatial  speakerHandleOut;
     private Spatial  speakerHandleIn;
     private Vector3f speakerHandleOutPosition;
@@ -63,6 +68,7 @@ public class Playback extends Scenario implements EmitterObserver {
         this.setName("Playback");
         loadUnmovableObjects();
         loadMovableObjects();
+        loadArrows();
     }
 
     @Override
@@ -81,18 +87,18 @@ public class Playback extends Scenario implements EmitterObserver {
         speakerHandleIn.setName("InputSpeaker");
         speakerHandleOut = scene.getChild("Speaker.Handle.Out");
         speakerHandleOutPosition = speakerHandleOut.getLocalTranslation().add(scene.getLocalTranslation());
-        speakerHandleInPosition = speakerHandleIn.getLocalTranslation().add(scene.getLocalTranslation());
+        speakerHandleInPosition = speakerHandleIn.getLocalTranslation();
         
         speakerEmitter = new Node();
         speakerEmitter.setLocalTranslation(speakerHandleOutPosition);
         Quaternion quat = new Quaternion();
         quat.fromAngleAxis(3*pi/2, Vector3f.UNIT_Z);
         speakerEmitter.setLocalRotation(quat);
-        this.attachChild(speakerEmitter);
+        scene.attachChild(speakerEmitter);
         
         speakerIn = new Node();
         speakerIn.setLocalTranslation(speakerHandleInPosition);
-        this.attachChild(speakerIn);
+        scene.attachChild(speakerIn);
         
         speakerIn.addControl(new DynamicWireParticleEmitterControl(speakerEmitter, 1000f));
         speakerEmitter.addControl(new AirParticleEmitterControl(speakerHandleOut, 20f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
@@ -127,6 +133,23 @@ public class Playback extends Scenario implements EmitterObserver {
         touchable.attachChild(ampliSliderButton);
         touchable.attachChild(ampliSliderBox);  
         
+    }
+    
+    private void loadArrows() {
+        
+        sliderArrow = new Arrows("touch", ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f), assetManager, 1);
+        LookAtCameraControl control1 = new LookAtCameraControl(Camera);
+        sliderArrow.addControl(control1);
+        this.attachChild(sliderArrow);
+    }
+    
+    /**
+     * Remove hints, is called after touch occurs
+     */
+    private void removeHintImages()
+    {
+        sliderArrow.getControl(FadeControl.class).setShowImage(false);
+        sliderArrow.resetTimeLastTouch();
     }
 
     @Override
@@ -185,10 +208,12 @@ public class Playback extends Scenario implements EmitterObserver {
                         } else if (nameToCompare.equals("SliderButton")) {
                             touchCount++;
                             isTouched = true;
+                            this.removeHintImages();
                             break;
                         } else if (nameToCompare.equals("SliderBox")) {
                             touchCount++;
                             isTouched = true;
+                            this.removeHintImages();
                             break;
                         }    
                     }
@@ -201,6 +226,7 @@ public class Playback extends Scenario implements EmitterObserver {
     protected boolean simpleUpdate(float tpf) {
         
         ampliSliderUpdate();
+        sliderArrow.simpleUpdate(tpf);
         return false;
     }
     
@@ -319,8 +345,13 @@ public class Playback extends Scenario implements EmitterObserver {
     }
 
     @Override
-    public void emitterObserverUpdate(Spatial spatial, String notifierId) {
-        speakerTouchEffect();
+    public void emitterObserverUpdate(Spatial spatial, String notifierId) {       
+        
+        if (speakerEmitter != null) {
+            if (touchCount != 0) {
+                speakerTouchEffect();
+            }
+        }
     }
     
 }

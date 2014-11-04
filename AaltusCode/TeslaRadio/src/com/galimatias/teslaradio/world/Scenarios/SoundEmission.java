@@ -37,8 +37,6 @@ public final class SoundEmission extends Scenario {
     private Spatial drumHandleOut;
     private Spatial guitarHandleOut;
     
-
-    
     private TextBox titleTextBox;
     private TextBox instrumentTextBox;
 
@@ -272,11 +270,10 @@ public final class SoundEmission extends Scenario {
 //        updatedTextColor = null;
     }
 
-
     /**
      * Remove hints, is called after touch occurs
      */
-    public void removeHintImages()
+    private void removeHintImages()
     {
         drumArrow.getControl(FadeControl.class).setShowImage(false);
         drumArrow.resetTimeLastTouch();

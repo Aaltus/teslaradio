@@ -55,6 +55,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     private Node pyramidSignal;
     private Node dodecagoneSignal;
     private Arrows moveArrow;
+    private Arrows sliderArrow;
     
     private Boolean isFM = true;
     
@@ -175,6 +176,11 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
 
     private void loadArrows()
     {
+        sliderArrow = new Arrows("touch", ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f), assetManager, 1);
+        LookAtCameraControl control1 = new LookAtCameraControl(Camera);
+        sliderArrow.addControl(control1);
+        scene.attachChild(sliderArrow);
+        
         moveArrow = new Arrows("move", null, assetManager, 10);
     }
     
@@ -207,6 +213,15 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         /*TR-261 apparently we don't want this */
         //this.getControl(SoundControl.class).updateVolume(ampliScale/1.5f);
  
+    }
+    
+    /**
+     * Remove hints, is called after touch occurs
+     */
+    private void removeHintImages()
+    {
+        sliderArrow.getControl(FadeControl.class).setShowImage(false);
+        sliderArrow.resetTimeLastTouch();
     }
     
     //Scale handle of the particle
@@ -269,61 +284,59 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
             case DOWN:
 
             //case TAP:
-                if (name.equals("Touch"))
+            if (name.equals("Touch"))
+            {
+
+                // 1. Reset results list.
+                CollisionResults results = new CollisionResults();
+
+                // 2. Mode 1: user touch location.
+                //Vector2f click2d = inputManager.getCursorPosition();
+
+                Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
+                Vector3f click3d = Camera.getWorldCoordinates(
+                        new Vector2f(click2d.x, click2d.y), 0f).clone();
+                Vector3f dir = Camera.getWorldCoordinates(
+                        new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+                Ray ray = new Ray(click3d, dir);
+
+                // 3. Collect intersections between Ray and Shootables in results list.
+                //focusableObjects.collideWith(ray, results);
+                touchable.collideWith(ray, results);
+
+                // 4. Print the results
+                //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
+                //for (int i = 0; i < results.size(); i++) {
+                    // For each hit, we know distance, impact point, name of geometry.
+                    //float dist = results.getCollision(i).getDistance();
+                    //Vector3f pt = results.getCollision(i).getContactPoint();
+                    //String hit = results.getCollision(i).getGeometry().getName();
+
+                    //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+                //}
+
+                // 5. Use the results (we mark the hit object)
+                if (results.size() > 0)
                 {
 
-                    // 1. Reset results list.
-                    CollisionResults results = new CollisionResults();
+                    // The closest collision point is what was truly hit:
+                    String nameToCompare =
+                            results.getClosestCollision().getGeometry().getParent().getName();
 
-                    // 2. Mode 1: user touch location.
-                    //Vector2f click2d = inputManager.getCursorPosition();
-
-                    Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
-                    Vector3f click3d = Camera.getWorldCoordinates(
-                            new Vector2f(click2d.x, click2d.y), 0f).clone();
-                    Vector3f dir = Camera.getWorldCoordinates(
-                            new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
-                    Ray ray = new Ray(click3d, dir);
-
-                    // 3. Collect intersections between Ray and Shootables in results list.
-                    //focusableObjects.collideWith(ray, results);
-                    touchable.collideWith(ray, results);
-
-                    // 4. Print the results
-                    //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
-                    //for (int i = 0; i < results.size(); i++) {
-                        // For each hit, we know distance, impact point, name of geometry.
-                        //float dist = results.getCollision(i).getDistance();
-                        //Vector3f pt = results.getCollision(i).getContactPoint();
-                        //String hit = results.getCollision(i).getGeometry().getName();
-
-                        //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
-                    //}
-
-                    // 5. Use the results (we mark the hit object)
-                    if (results.size() > 0)
-                    {
-
-                        // The closest collision point is what was truly hit:
-                        String nameToCompare =
-                                results.getClosestCollision().getGeometry().getParent().getName();
-
-                        /*if (nameToCompare.equals(titleTextBox.getName()))
-                        {
-                            showInformativeMenu = true;
-                            break;
-                        }*/
-                        
-                        if (nameToCompare.equals("SliderButton")) {
-                            touchCount++;
-                            isTouched = true;
-                            break;
-                        } else if (nameToCompare.equals("SliderBox")) {
-                            touchCount++;
-                            isTouched = true;
-                            break;
-                        }
-
+                    if (nameToCompare.equals(titleTextBox.getName())) {
+                        showInformativeMenu = true;
+                        break;
+                    } else if (nameToCompare.equals("SliderButton")) {
+                        touchCount++;
+                        isTouched = true;
+                        removeHintImages();
+                        break;
+                    } else if (nameToCompare.equals("SliderBox")) {
+                        touchCount++;
+                        isTouched = true;
+                        removeHintImages();
+                        break;
+                    }
                 }
             }
             break;
@@ -333,6 +346,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     @Override
     protected boolean simpleUpdate(float tpf) {
         moveArrow.simpleUpdate(tpf);
+        sliderArrow.simpleUpdate(tpf);
         this.destinationHandle.setUserData(AppGetter.USR_SOURCE_TRANSLATION, this.getWorldTranslation());
         ampliSliderUpdate();
         
