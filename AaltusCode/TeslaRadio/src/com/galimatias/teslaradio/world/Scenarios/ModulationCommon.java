@@ -529,7 +529,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
             switch(this.currentObjectToEmphasisOn) {
                 // Attach on microphone
                 case 0:
-                    this.spotlight.setLocalTranslation(scene.getChild("Through-holes.007").getLocalTranslation().add(0.0f,-scene.getChild("Through-holes.007").getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalTranslation(scene.getChild("Modulator").getLocalTranslation().add(0.0f,-scene.getChild("Modulator").getLocalTranslation().y,0.0f));
                     this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
                     this.attachChild(this.spotlight);
                     break;  

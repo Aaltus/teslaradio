@@ -129,6 +129,8 @@ public final class Playback extends Scenario implements EmitterObserver {
         Spatial speaker = scene.getChild("Box01");
         speaker.setName("Speaker");
         
+        this.spotlight = ScenarioCommon.spotlightFactory();
+        
         touchable.attachChild(speaker);
         touchable.attachChild(ampliSliderButton);
         touchable.attachChild(ampliSliderBox);  
@@ -224,6 +226,11 @@ public final class Playback extends Scenario implements EmitterObserver {
 
     @Override
     protected boolean simpleUpdate(float tpf) {
+        
+        if (this.emphasisChange) {
+            objectEmphasis();
+            this.emphasisChange = false;
+        }
         
         ampliSliderUpdate();
         sliderArrow.simpleUpdate(tpf);
@@ -356,7 +363,19 @@ public final class Playback extends Scenario implements EmitterObserver {
 
     @Override
     protected void objectEmphasis() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (this.spotlight != null) {            
+            switch(this.currentObjectToEmphasisOn) {
+                // Attach on microphone
+                case 0:
+                    this.spotlight.setLocalTranslation(scene.getChild("Box01").getLocalTranslation().add(0.0f,-scene.getChild("Box01").getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    this.attachChild(this.spotlight);
+                    break;  
+                default:
+                    this.detachChild(this.spotlight);
+                    break;
+            }
+        }
     }
     
 }

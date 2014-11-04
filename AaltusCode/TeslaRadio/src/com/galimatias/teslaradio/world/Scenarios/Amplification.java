@@ -165,6 +165,9 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         ampliSliderBox = scene.getChild("Cube");
         ampliSliderButton.setName("SliderButton");
         ampliSliderBox.setName("SliderBox");
+        
+        this.spotlight = ScenarioCommon.spotlightFactory();
+        
          //Test
         touchable = new Node();
         touchable.setName("Touchable");
@@ -347,6 +350,12 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     protected boolean simpleUpdate(float tpf) {
         moveArrow.simpleUpdate(tpf);
         sliderArrow.simpleUpdate(tpf);
+        
+        if (this.emphasisChange) {
+            objectEmphasis();
+            this.emphasisChange = false;
+        }
+        
         this.destinationHandle.setUserData(AppGetter.USR_SOURCE_TRANSLATION, this.getWorldTranslation());
         ampliSliderUpdate();
         
@@ -450,7 +459,19 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
 
     @Override
     protected void objectEmphasis() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (this.spotlight != null) {            
+            switch(this.currentObjectToEmphasisOn) {
+                // Attach on microphone
+                case 0:
+                    this.spotlight.setLocalTranslation(scene.getChild("Antenna.Handle.In").getLocalTranslation().add(0.0f,-scene.getChild("Antenna.Handle.In").getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    this.attachChild(this.spotlight);
+                    break;  
+                default:
+                    this.detachChild(this.spotlight);
+                    break;
+            }
+        }
     }
     
 }

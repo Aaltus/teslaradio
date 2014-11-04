@@ -149,6 +149,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
 
     @Override
     protected void loadMovableObjects() {
+        this.spotlight = ScenarioCommon.spotlightFactory();
+        
         //implement touchable
         touchable = new Node();
         touchable.setName("Touchable");
@@ -222,6 +224,11 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     @Override
     protected boolean simpleUpdate(float tpf) {
 
+        if (this.emphasisChange) {
+            objectEmphasis();
+            this.emphasisChange = false;
+        }
+        
         this.tpfDistanceCumul += tpf;
         if(this.tpfDistanceCumul > 0.35f){   
             this.updateDistanceStatus();
@@ -425,7 +432,19 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
 
     @Override
     protected void objectEmphasis() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (this.spotlight != null) {            
+            switch(this.currentObjectToEmphasisOn) {
+                // Attach on microphone
+                case 0:
+                    this.spotlight.setLocalTranslation(scene.getChild("axis").getLocalTranslation().add(0.0f,-scene.getChild("axis").getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    this.attachChild(this.spotlight);
+                    break;  
+                default:
+                    this.detachChild(this.spotlight);
+                    break;
+            }
+        }
     }
     
     
