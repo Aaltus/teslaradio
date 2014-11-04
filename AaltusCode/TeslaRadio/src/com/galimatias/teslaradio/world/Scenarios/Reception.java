@@ -32,8 +32,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     private TextBox titleTextBox;
     
     // Signals emitters 
-    private Node outputAntenneRx = new Node();
-    private Node outputModule = new Node();
+    private Node outputAntenneRx;
+    private Node outputModule;
     
     // Handles for the emitter positions
     private Spatial pathAntenneRx;
@@ -86,6 +86,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         scene.setName("Reception");
         this.attachChild(scene);
         
+        outputAntenneRx = new Node();
+        outputModule = new Node();
         //scene rotation
         Quaternion rot = new Quaternion();
         rot.fromAngleAxis(-pi, Vector3f.UNIT_Y);
@@ -129,6 +131,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
 
         // Set names for the emitters
         outputAntenneRx.setName("OutputAntenneRx");
+        outputAntenneRx.setUserData(AppGetter.USR_SOURCE_TRANSLATION, 0f);
         
         initPatternGenerator();
     }
@@ -414,7 +417,6 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
          float distance = wt.divide(this.getWorldScale()).length();
          distance -= 8; //offset
          distance = distance < 0 ? 0 : distance;
-         System.out.println(distance);
          float signalRatio = distance / 20.0f;
          signalRatio = signalRatio > 1 ? 1 : signalRatio;
          this.updateSignalIntensity(1-signalRatio);
