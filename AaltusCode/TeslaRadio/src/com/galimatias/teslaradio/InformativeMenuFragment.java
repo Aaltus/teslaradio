@@ -13,6 +13,7 @@ import android.widget.Button;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.galimatias.teslaradio.world.Scenarios.IScenarioSwitcher;
+import com.utils.AppLogger;
 import com.utils.LanguageLocaleChanger;
 
 /**
@@ -22,6 +23,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         //SeekBar.OnSeekBarChangeListener,
         ItemListFragment.Callbacks,
         ItemDetailFragment.OnClickDetailFragmentListener{
+
 
     private IScenarioSwitcher scenarioSwitcher;
     public void setScenarioSwitcher(IScenarioSwitcher scenarioSwitcher) {
@@ -36,12 +38,13 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     private final String ITEM_LIST_FRAGMENT_TAG = "ITEM_LIST_FRAGMENT_TAG";
     private final String ITEM_DETAIL_FRAGMENT_TAG = "ITEM_DETAIL_FRAGMENT_TAG";
     private final String LANGUAGE_DIALOG_FRAGMENT_TAG = "LANGUAGE_DIALOG_FRAGMENT_TAG";
+    private final String TUTORIAL_FRAGMENT_TAG = "TUTORIAL_FRAGMENT_TAG";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        Log.d(TAG, "Initialize Top Layout");
-        View myView = inflater.inflate(R.layout.vuforia_jme_overlay_layout, null);
+        AppLogger.getInstance().d(TAG, "Initialize Top Layout");
+        View myView = inflater.inflate(R.layout.vuforia_jme_overlay_layout, null, false);
 
         //Get the rootView of the activity. This view is on the direct parent
         //to the android jme opengl view
@@ -59,6 +62,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         Fragment fragment = new ItemListFragment();
         ft.hide(fragment);
         ft.replace(R.id.item_list_fragment_vuforia, fragment, ITEM_LIST_FRAGMENT_TAG);
+        ft.replace(R.id.tutorial_fragment, new TutorialFragment(), TUTORIAL_FRAGMENT_TAG);
         ft.commit();
         fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
 
