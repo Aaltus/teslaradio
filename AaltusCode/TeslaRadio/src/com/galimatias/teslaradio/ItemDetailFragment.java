@@ -107,7 +107,7 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
             mItem    = SubjectContent.ITEM_MAP.get(Integer.parseInt(getArguments().getString(ARG_ITEM_ID)));
-            mLayouts = mItem.getListXmlDetailmenu();
+            mLayouts = mItem.getListXmlDetailMenu();
             Log.i(TAG,"Loading SubjectContent : " + mItem.getTitle());
         }
 
