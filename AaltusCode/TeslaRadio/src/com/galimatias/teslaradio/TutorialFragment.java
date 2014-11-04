@@ -18,7 +18,7 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
     {
         View myView = inflater.inflate(R.layout.tutorial_layout, null, false);
 
-        View bubbleView = (View)myView.findViewById(R.id.bubble_root_view);
+        View bubbleView = myView.findViewById(R.id.bubble_root_view);
         bubbleView.setVisibility(View.GONE);
 
         View characterButton     = myView.findViewById(R.id.character_tutorial_button);

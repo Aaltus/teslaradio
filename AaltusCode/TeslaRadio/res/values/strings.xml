@@ -43,5 +43,8 @@
     <string name="crash_dialog_ok_toast">Thank you !</string>
     <string name="developers_email">dms.jonathan@gmail.com</string>
     <string name="splashscreentext">Loading camera and game menu...</string>
+    <string name="filter_title">Filtrage</string>
+    <string name="demodulation_title">Démodulation</string>
+    <string name="playback_title">Hauts-parleurs</string>
 
 </resources>
