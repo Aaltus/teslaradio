@@ -370,15 +370,15 @@ public final class Playback extends Scenario implements EmitterObserver {
                 case 0:
                     this.spotlight.setLocalTranslation(speaker.getLocalTranslation().add(0.0f,-speaker.getLocalTranslation().y,0.0f));
                     this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
-                    this.attachChild(this.spotlight);
+                    scene.attachChild(this.spotlight);
                     break;
                 case 1:
                     this.spotlight.setLocalTranslation(ampliSliderBox.getLocalTranslation().add(0.0f,-ampliSliderBox.getLocalTranslation().y,0.0f));
                     this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
-                    this.attachChild(this.spotlight);
+                    scene.attachChild(this.spotlight);
                     break;    
                 default:
-                    this.detachChild(this.spotlight);
+                    scene.detachChild(this.spotlight);
                     break;
             }
         }

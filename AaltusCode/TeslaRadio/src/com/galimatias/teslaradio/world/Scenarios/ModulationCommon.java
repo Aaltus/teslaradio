@@ -531,22 +531,22 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                 case 0:
                     this.spotlight.setLocalTranslation(scene.getChild("Modulator").getLocalTranslation().add(0.0f,-scene.getChild("Modulator").getLocalTranslation().y,0.0f));
                     this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
-                    this.attachChild(this.spotlight);
+                    scene.attachChild(this.spotlight);
                     break;
                 // Attach on frequency generator    
                 case 1:
                     this.spotlight.setLocalTranslation(scene.getChild("Display").getLocalTranslation().add(0.0f,-scene.getChild("Display").getLocalTranslation().y,0.0f));
                     this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
-                    this.attachChild(this.spotlight);
+                    scene.attachChild(this.spotlight);
                     break;
-                //     
+                // Attach on the switch    
                 case 2:
                     this.spotlight.setLocalTranslation(scene.getChild("Switch").getLocalTranslation().add(0.0f,-scene.getChild("Switch").getLocalTranslation().y,0.0f));
                     this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
-                    this.attachChild(this.spotlight);
+                    scene.attachChild(this.spotlight);
                     break;    
                 default:
-                    this.detachChild(this.spotlight);
+                    scene.detachChild(this.spotlight);
                     break;
             }
         }
