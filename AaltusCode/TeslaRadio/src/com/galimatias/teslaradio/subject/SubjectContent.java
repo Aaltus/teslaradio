@@ -30,7 +30,7 @@ public class SubjectContent {
 //        Example avec plusieurs pages
 //        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.MODULATION.ordinal(), activity.getString(R.string.modulation_am_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test},ScenarioEnum.MODULATION));
 
-        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.SOUNDEMISSION.ordinal(), activity.getString(R.string.sound_emission_title), new int[]{R.layout.sound_emission}, new int[]{R.string.sound_emission_tutorial_p1}, ScenarioEnum.SOUNDEMISSION));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.SOUNDEMISSION.ordinal(), activity.getString(R.string.sound_emission_title), new int[]{R.layout.sound_emission}, new int[]{R.string.sound_emission_tutorial_p1,R.string.sound_emission_tutorial_p2}, ScenarioEnum.SOUNDEMISSION));
         SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.SOUNDCAPTURE.ordinal(), activity.getString(R.string.sound_capture_title), new int[]{R.layout.sound_capture}, new int[]{R.string.sound_capture_tutorial_p1}, ScenarioEnum.SOUNDCAPTURE));
         SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.MODULATION.ordinal(), activity.getString(R.string.modulation_title), new int[]{R.layout.modulation}, new int[]{R.string.modulation_tutorial_p1}, ScenarioEnum.MODULATION));
         SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.TRANSMIT.ordinal(), activity.getString(R.string.transmit_title), new int[]{R.layout.transmission}, new int[]{R.string.transmission_tutorial_p1}, ScenarioEnum.TRANSMIT));

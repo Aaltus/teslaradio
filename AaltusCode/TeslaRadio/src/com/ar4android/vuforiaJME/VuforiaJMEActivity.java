@@ -236,6 +236,18 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     }
 
     @Override
+    public void setTutorialMenu(final ScenarioEnum scenarioEnum) {
+        runOnUiThread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        getInformativeMenuFragment().setTutorialMenu(scenarioEnum);
+                    }
+                }
+        );
+    }
+
+    @Override
     public void pauseTracking() {
 
         runOnUiThread(new Runnable() {
@@ -839,7 +851,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
 
         // Where the AppLogger is called for the first time and the log level is set
-        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ERROR);
+        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ALL);
 
         AppLogger.getInstance().i(TAG, "onCreate");
 

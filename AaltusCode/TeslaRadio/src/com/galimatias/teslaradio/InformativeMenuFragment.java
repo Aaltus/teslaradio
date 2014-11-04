@@ -190,6 +190,10 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         toggleItemListVisibility(showFragment);
     }
 
+    private TutorialFragment getTutorialFragment(){
+        FragmentManager fm                = getChildFragmentManager(); //getSupportFragmentManager();s
+        return (TutorialFragment) fm.findFragmentByTag(TUTORIAL_FRAGMENT_TAG);
+    }
 
 
     /** Action when a listfragment item is selected*/
@@ -229,6 +233,10 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     public void replaceDetailFragment(ScenarioEnum scenarioEnum)
     {
         replaceDetailFragment(SubjectContent.ENUM_MAP.get(scenarioEnum).getId());
+    }
+
+    public void setTutorialMenu(ScenarioEnum scenarioEnum){
+        getTutorialFragment().setBubbleCategory(scenarioEnum);
     }
 
     /**
