@@ -2,15 +2,12 @@ package com.galimatias.teslaradio;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 /**
  * Created by jimbojd72 on 11/3/2014.
@@ -21,13 +18,17 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
     {
         View myView = inflater.inflate(R.layout.tutorial_layout, null, false);
 
-        TextView textView = (TextView)myView.findViewById(R.id.tutorial_speech_textview);
+        View bubbleView = (View)myView.findViewById(R.id.bubble_root_view);
+        bubbleView.setVisibility(View.GONE);
 
         View characterButton     = myView.findViewById(R.id.character_tutorial_button);
         Animation shakeAnim = AnimationUtils.loadAnimation(this.getActivity(), R.anim.shake);
         characterButton.startAnimation(shakeAnim);
 
+        View viewFlipper = myView.findViewById(R.id.view_flipper);
+
         characterButton.setOnClickListener(this);
+        viewFlipper.setOnClickListener(this);
 
         return myView;
     }
@@ -49,21 +50,28 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
         switch (view.getId())
         {
             case R.id.character_tutorial_button:
-
-                toggleTextViewVisibility();
+                toggleBubbleViewVisibility();
+                break;
+            case R.id.view_flipper:
+                ViewFlipper viewFlipper = (ViewFlipper)getView().findViewById(R.id.view_flipper);
+                if(viewFlipper.getDisplayedChild() == viewFlipper.getChildCount()-1)
+                {
+                    toggleBubbleViewVisibility();
+                }
+                viewFlipper.showNext();
                 break;
 
         }
     }
 
-    private void toggleTextViewVisibility() {
-        TextView textView = (TextView)getView().findViewById(R.id.tutorial_speech_textview);
-        if(textView.getVisibility() == View.GONE){
-            textView.setVisibility(View.VISIBLE);
+    private void toggleBubbleViewVisibility() {
+        View viewFlipper = (View)getView().findViewById(R.id.bubble_root_view);
+        if(viewFlipper.getVisibility() == View.GONE){
+            viewFlipper.setVisibility(View.VISIBLE);
             setShakeAnimation(false);
         }
         else{
-            textView.setVisibility(View.GONE);
+            viewFlipper.setVisibility(View.GONE);
             setShakeAnimation(true);
         }
     }
