@@ -163,6 +163,8 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         pcbAmpEmitter.getLocalTranslation().addLocal(new Vector3f(0.0f,cubeCarrier.getWorldScale().y,0.0f));
 
         initOutputSignals();
+        
+        this.spotlight = ScenarioCommon.spotlightFactory();
 
         //Assign touchable
         touchable = new Node();//(Node) scene.getParent().getChild("Touchable")
@@ -469,6 +471,11 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
             trackableAngle = this.getUserData("angleX");
         }
 
+        if (this.emphasisChange) {
+            objectEmphasis();
+            this.emphasisChange = false;
+        }
+        
         switchArrow.simpleUpdate(tpf);
         rotationArrow.simpleUpdate(tpf);
 
@@ -514,5 +521,22 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     {
         switchArrow.getControl(FadeControl.class).setShowImage(false);
         switchArrow.resetTimeLastTouch();
-    }    
+    }
+    
+    @Override
+    protected void objectEmphasis() {
+        if (this.spotlight != null) {            
+            switch(this.currentObjectToEmphasisOn) {
+                // Attach on microphone
+                case 0:
+                    this.spotlight.setLocalTranslation(scene.getChild("Through-holes.007").getLocalTranslation().add(0.0f,-scene.getChild("Through-holes.007").getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    this.attachChild(this.spotlight);
+                    break;  
+                default:
+                    this.detachChild(this.spotlight);
+                    break;
+            }
+        }
+    }
 }

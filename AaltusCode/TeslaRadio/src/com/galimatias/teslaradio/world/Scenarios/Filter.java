@@ -294,6 +294,11 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
             filter(((Node)spatial).getChild(0).getName(), spatial);
         }
     }
+
+    @Override
+    protected void objectEmphasis() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     
 }

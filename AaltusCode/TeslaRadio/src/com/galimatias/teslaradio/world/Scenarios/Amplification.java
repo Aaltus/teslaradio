@@ -447,5 +447,10 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         super.onSecondNodeActions(); //To change body of generated methods, choose Tools | Templates.
         this.detachChild(moveArrow);
     }
+
+    @Override
+    protected void objectEmphasis() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

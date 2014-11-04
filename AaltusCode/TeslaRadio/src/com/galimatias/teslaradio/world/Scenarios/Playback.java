@@ -38,7 +38,7 @@ import com.jme3.texture.Texture;
  *
  * @author Batcave
  */
-public class Playback extends Scenario implements EmitterObserver {
+public final class Playback extends Scenario implements EmitterObserver {
         
     private String titleText = "Hautparleur";
     
@@ -352,6 +352,11 @@ public class Playback extends Scenario implements EmitterObserver {
                 speakerTouchEffect();
             }
         }
+    }
+
+    @Override
+    protected void objectEmphasis() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

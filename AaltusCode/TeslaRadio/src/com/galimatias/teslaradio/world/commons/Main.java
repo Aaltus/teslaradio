@@ -43,7 +43,7 @@ public class Main extends SimpleApplication implements StateSwitcher
         AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ALL);
         AppGetter.setInstance(this);
         
-        initLights();
+        //initLights();
         
         mainState = new DevFrameworkMainState(this, this);
         scenarioManager = new ScenarioManager(this,

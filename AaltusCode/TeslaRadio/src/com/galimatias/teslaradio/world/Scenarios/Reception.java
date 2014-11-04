@@ -420,6 +420,11 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
          this.updateSignalIntensity(1-signalRatio);
          this.updateWifiLogos(signalIntensity);
      }
+
+    @Override
+    protected void objectEmphasis() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     
 }
