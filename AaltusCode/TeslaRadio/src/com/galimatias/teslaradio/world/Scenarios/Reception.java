@@ -417,7 +417,6 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
          float distance = wt.divide(this.getWorldScale()).length();
          distance -= 8; //offset
          distance = distance < 0 ? 0 : distance;
-         System.out.println(distance);
          float signalRatio = distance / 20.0f;
          signalRatio = signalRatio > 1 ? 1 : signalRatio;
          this.updateSignalIntensity(1-signalRatio);
