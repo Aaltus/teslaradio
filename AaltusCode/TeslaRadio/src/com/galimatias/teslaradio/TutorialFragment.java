@@ -132,17 +132,24 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
 
     public void setBubbleCategory(ScenarioEnum scenarioEnum){
 
-        //AppLogger.getInstance().d(TAG, "setBubbleCategory with scenarioEnum: " + scenarioEnum);
-        ViewFlipper viewFlipper = getViewFlipper();
-        viewFlipper.removeAllViews();
-        int[] listXmlString =  SubjectContent.ENUM_MAP.get(scenarioEnum).getListStringIdTutorial();
-        //AppLogger.getInstance().d(TAG, "setBubbleCategory with scenarioEnum: " + scenarioEnum);
-        if(listXmlString != null) {
-            for (int i = 0; i < listXmlString.length; i++) {
-                //AppLogger.getInstance().d(TAG, "Removing view :" + i);
-                TextView textView = new TextView(this.getActivity());
+        if(scenarioEnum == null)
+        {
+            setBubbleViewVisibility(false);
+        }
+        else
+        {
+            //AppLogger.getInstance().d(TAG, "setBubbleCategory with scenarioEnum: " + scenarioEnum);
+            ViewFlipper viewFlipper = getViewFlipper();
+            viewFlipper.removeAllViews();
+            int[] listXmlString = SubjectContent.ENUM_MAP.get(scenarioEnum).getListStringIdTutorial();
+            //AppLogger.getInstance().d(TAG, "setBubbleCategory with scenarioEnum: " + scenarioEnum);
+            if (listXmlString != null) {
+                for (int i = 0; i < listXmlString.length; i++) {
+                    //AppLogger.getInstance().d(TAG, "Removing view :" + i);
+                    TextView textView = new TextView(this.getActivity());
                 textView.setText(this.getActivity().getText(listXmlString[i]));
-                viewFlipper.addView(textView);
+                    viewFlipper.addView(textView);
+                }
             }
         }
     }
