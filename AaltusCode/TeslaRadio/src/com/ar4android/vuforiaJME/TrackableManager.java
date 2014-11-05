@@ -42,11 +42,27 @@ public class TrackableManager extends AbstractControl {
     public void updatePosition(Integer id, Vector3f position)
     {
         this.mNodeList.get(id).getControl(TrackableControl.class).updatePosition(position);
+
+        if(!this.mNodeList.get((id+1)%TRACKABLE_NUMBER).getControl(TrackableControl.class).getIsVisible()) {
+            // if the trackable is not in view
+            if(id == 0) {
+                this.mNodeList.get(1).getControl(TrackableControl.class).updatePosition(position.add((this.mNodeList.get(id).getControl(TrackableControl.class).getRotation().mult(Vector3f.UNIT_X)).mult(1600)));
+            }
+            else
+            {
+                this.mNodeList.get(0).getControl(TrackableControl.class).updatePosition(position.add((this.mNodeList.get(id).getControl(TrackableControl.class).getRotation().mult(Vector3f.UNIT_X)).mult(-1600)));
+            }
+        }
     }
 
     public void updateRotationMatrix(Integer id, Matrix3f rotMatrix, Vector3f vx)
     {
         this.mNodeList.get(id).getControl(TrackableControl.class).updateRotationMatrix(rotMatrix,vx);
+
+        if(!this.mNodeList.get((id+1)%TRACKABLE_NUMBER).getControl(TrackableControl.class).getIsVisible()) {
+            this.mNodeList.get((id+1)%TRACKABLE_NUMBER).getControl(TrackableControl.class).updateRotationMatrix(rotMatrix,vx);
+        }
+
         this.updateDistance();
     }
 
@@ -85,11 +101,29 @@ public class TrackableManager extends AbstractControl {
             if (previousState != isVisible) {
               tb.setIsVisible(isVisible);
               if (isVisible) {
-                    ((Node)this.spatial).attachChild(n);
+
+                  // attach to node if no more attach
+                  if(!tb.getIsAttach()) {
+                      ((Node) this.spatial).attachChild(n);
+                      ((Node) this.spatial).attachChild(this.mNodeList.get((i+1)%TRACKABLE_NUMBER));
+
+                      tb.setIsAttach(true);
+                      this.mNodeList.get((i+1)%TRACKABLE_NUMBER).getControl(TrackableControl.class).setIsAttach(false);
+                  }
+
               }else {
-                    ((Node)this.spatial).detachChild(n);
+
+                  // detach only if no more trackable in sight
+                  if(!this.mNodeList.get((i+1)%TRACKABLE_NUMBER).getControl(TrackableControl.class).getIsVisible()) {
+                      ((Node) this.spatial).detachChild(n);
+                      ((Node) this.spatial).detachChild(this.mNodeList.get((i+1)%TRACKABLE_NUMBER));
+
+                      tb.setIsAttach(false);
+                      this.mNodeList.get((i+1)%TRACKABLE_NUMBER).getControl(TrackableControl.class).setIsAttach(false);
+                  }
               }
-                }
+
+            }
 
         }
     }
