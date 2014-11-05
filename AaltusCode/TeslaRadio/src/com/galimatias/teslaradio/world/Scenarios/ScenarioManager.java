@@ -2,6 +2,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AndroidActivityListener;
 import com.ar4android.vuforiaJME.AppGetter;
+import com.ar4android.vuforiaJME.ITutorialSwitcher;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.world.effects.ScenarioTranslationAnimControl;
 import com.jme3.app.Application;
@@ -26,6 +27,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
+import com.utils.AppLogger;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -42,11 +44,13 @@ import java.util.List;
  *
  * Created by jimbojd72 on 9/3/14.
  */
-public class ScenarioManager extends AbstractAppState implements IScenarioManager
+public class ScenarioManager extends AbstractAppState implements IScenarioManager, ITutorialSwitcher
 {
+    private static final String TAG = ScenarioManager.class.getSimpleName();
     
     private static final String TOUCH_EVENT_NAME = "Touch";
     private static final String RIGHT_CLICK_MOUSE_EVENT_NAME = "Mouse";
+
     
     private SimpleApplication app;
     
@@ -193,6 +197,15 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         soundEmission.setName("SoundEmission");
         scenarios.add(soundEmission);
         
+        soundEmission.setCurrentObjectEmphasis(0);
+        soundCapture.setCurrentObjectEmphasis(0);
+        modulation.setCurrentObjectEmphasis(0);
+        amplification.setCurrentObjectEmphasis(0);
+        reception.setCurrentObjectEmphasis(0);
+        filter.setCurrentObjectEmphasis(0);
+        demodulation.setCurrentObjectEmphasis(0);
+        playback.setCurrentObjectEmphasis(0);
+        
         // add translation control to each scenarios
         int id = 0;
         for(Scenario scenario : scenarios){
@@ -241,6 +254,8 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         playbackList.add(demodulation);
         playbackList.add(playback);
         scenarioList.addScenario(ScenarioEnum.PLAYBACK,playbackList);
+        
+        
 
         //Only for debugging purpose deactivate it please.
         // scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
@@ -255,6 +270,12 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         setNodeList(node);
         
         
+
+    }
+
+    public void setTutorialIndex(int index){
+
+        AppLogger.getInstance().d(TAG,"ScenarioManager Index: " + index);
 
     }
 
@@ -480,7 +501,11 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 count++;
             }
         }
-        
+
+        ScenarioEnum scenarioEnum = scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios());
+        if(androidActivityListener != null){
+            androidActivityListener.setTutorialMenu(scenarioEnum);
+        }
         updateGuiNavigationArrows();
         
     }

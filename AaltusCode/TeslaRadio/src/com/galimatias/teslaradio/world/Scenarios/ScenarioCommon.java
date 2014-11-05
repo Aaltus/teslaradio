@@ -15,6 +15,7 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
@@ -127,6 +128,32 @@ public class ScenarioCommon {
         }
         clone.attachChild(spatial);
       
+    }
+    
+    public static Node spotlightFactory() {
+        
+        //if this value is bigger the dome will be more precise but will require more triangles to draw
+        final int numberOrRadialAndPlanes = 12;
+        //We have two dome, one that can be seen from inner and one that can be seen from outise of the dome.
+        Dome outsideDome = new Dome( new Vector3f(), 2, numberOrRadialAndPlanes, 1.0f, false);
+        Geometry outsideDomeGeom = new Geometry("OutsideDome", outsideDome);
+        Dome insideDome = new Dome( new Vector3f(), 2, numberOrRadialAndPlanes, 1.0f, true);
+        Geometry insideDomeGeom = new Geometry("InsideDome", insideDome);
+        
+        Material material = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        material.setColor("Color", new ColorRGBA(1.0f,1.0f,1.0f,0.5f));
+        material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        
+        outsideDomeGeom.setMaterial(material);
+        insideDomeGeom.setMaterial(material);
+        
+        //Both node are attached to the same node that is in the transparent bucket
+        Node scalingSignalNode = new Node();
+        scalingSignalNode.attachChild(outsideDomeGeom);
+        scalingSignalNode.attachChild(insideDomeGeom);
+        scalingSignalNode.setQueueBucket(RenderQueue.Bucket.Transparent);
+        
+        return scalingSignalNode;
     }
 
     
