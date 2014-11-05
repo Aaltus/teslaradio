@@ -471,6 +471,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         checkModulationMode(tpf);
         
         if (carrierEmitter != null && tpfCumul >= 1.0f) {
+            AppLogger.getInstance().d("TAG","Chat dans");
             carrierEmitter.getControl(ParticleEmitterControl.class).emitParticle(selectedCarrier.clone());
             tpfCumul = 0;
         }
