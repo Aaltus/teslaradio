@@ -362,12 +362,12 @@ public final class SoundCapture extends Scenario {
             switch(this.currentObjectToEmphasisOn) {
                 // Attach on microphone
                 case 0:
-                    this.spotlight.setLocalTranslation(micPosition.add(0.0f,-micPosition.y,0.0f));
+                    this.spotlight.setLocalTranslation(scene.getChild("Stand_micro").getLocalTranslation().add(0.0f,-scene.getChild("Stand_micro").getLocalTranslation().y,0.0f));
                     this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
-                    this.attachChild(this.spotlight);
+                    scene.attachChild(this.spotlight);
                     break;
                 default:
-                    this.detachChild(this.spotlight);
+                    scene.detachChild(this.spotlight);
                     break;
             }
         }
