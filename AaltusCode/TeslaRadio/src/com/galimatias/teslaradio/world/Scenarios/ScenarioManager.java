@@ -66,6 +66,8 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     private ScenarioCommon scenarioCommon = new ScenarioCommon();
     private Node rightArrowNode;
     private Node leftArrowNode;
+    
+    private SongManager songManager;
 
     public void setApplicationType(ApplicationType applicationType){
         this.applicationType = applicationType;
@@ -149,6 +151,9 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             Camera cam)
     {   
         initGuiNode(settings, assetManager);
+        songManager = new SongManager();
+        this.scenarioCommon.setNoiseControl(songManager.getNoiseControl());
+        this.nodeList.get(1).attachChild(songManager.getAudioNode());
         
         //This a list of all the scenario that we will rotate/scale according
         //to which environment we are in. Don't forget to add scenario in it. 
@@ -472,8 +477,13 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             {
                 if(count < size){
                     Scenario scenario = getCurrentScenario().getScenarios().get(count);
-                    if(count == 0 && scenario.getNeedsAutoGen()){
+                    if(count == 0 ){
                         scenario.onFirstNodeActions();
+                        if(scenario.getNeedsBackgroundSound()){
+                            this.songManager.playSong();
+                        }else{
+                            this.songManager.stopSong();
+                        }
                     }
                     if(count == 1){
                         scenario.onSecondNodeActions();

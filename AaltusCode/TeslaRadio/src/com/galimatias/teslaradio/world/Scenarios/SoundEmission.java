@@ -59,6 +59,7 @@ public final class SoundEmission extends Scenario {
     {
 
         super(sc,Camera, destinationHandle);
+        this.hasBackgroundSound = false;
         touchable = new Node();
         touchable.setName("Touchable");
         this.attachChild(touchable);

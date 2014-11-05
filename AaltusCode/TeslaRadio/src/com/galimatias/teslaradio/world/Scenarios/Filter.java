@@ -54,7 +54,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     
     Filter(ScenarioCommon sc, Camera cam, Spatial destinationHandle) {
         
-        super(sc, cam, destinationHandle, "Sounds/Tunak Tunak Tun.ogg");
+        super(sc, cam, destinationHandle);
         this.setName("Filter");
         this.needAutoGenIfMain = true; 
         scenarioCommon.registerObserver(this);
@@ -288,10 +288,12 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
             if (outFilterEmitter != null) {
                 outFilterEmitter.getControl(ParticleEmitterControl.class).emitParticle(spatial);
             }
-            this.getControl(SoundControl.class).updateVolume(1);
+            if(!this.isFirst){
+                this.updateVolume(1);
+            }
         }
          else{
-            this.getControl(SoundControl.class).updateVolume(0);
+            this.updateVolume(0);
         }
     }
 

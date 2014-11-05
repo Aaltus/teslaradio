@@ -65,7 +65,7 @@ public final class Playback extends Scenario implements EmitterObserver {
     
     Playback(ScenarioCommon sc, Camera Camera, Spatial destinationHandle) {
         
-        super(sc, Camera, destinationHandle, "Sounds/Nyan cat.ogg");
+        super(sc, Camera, destinationHandle);
         this.setName("Playback");
         loadUnmovableObjects();
         loadMovableObjects();
@@ -265,8 +265,8 @@ public final class Playback extends Scenario implements EmitterObserver {
         }
         
         /*TR-261 apparently we don't want this, but in this scenario we want! */
-        this.getControl(SoundControl.class).updateVolume(ampliScale);
- 
+        this.updateVolume(ampliScale);
+
     }
 
     @Override

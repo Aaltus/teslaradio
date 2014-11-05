@@ -69,7 +69,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     private float tpfDistanceCumul = 0f;
 
     public Reception(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
-        super(sc,Camera, destinationHandle, "Sounds/reception.ogg" );
+        super(sc,Camera, destinationHandle );
         
         this.needAutoGenIfMain = true;     
         scenarioCommon.registerObserver(this);
@@ -231,7 +231,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         }
         
         this.tpfDistanceCumul += tpf;
-        if(this.tpfDistanceCumul > 0.35f){   
+        if(this.tpfDistanceCumul > 0.35f && !this.isFirst){   
             this.updateDistanceStatus();
             this.tpfDistanceCumul = 0;
         }
@@ -273,9 +273,9 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         } else {
             signalIntensity = 3;
         }
-        if(this.backgroundSound != null){
-            this.updateSoundLevel(normScale);
-        }
+        
+        this.updateSoundLevel(normScale);
+        
        
     }
     
@@ -302,11 +302,11 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     private void updateSoundLevel(float normScale){
         if(normScale == 0){
-            this.getControl(SoundControl.class).updateNoiseLevel(1);
+            this.updateNoise(1);
         }else if (normScale > 0.75f){
-            this.getControl(SoundControl.class).updateNoiseLevel(0);
+            this.updateNoise(0);
         }else{
-            this.getControl(SoundControl.class).updateNoiseLevel(1-normScale);
+            this.updateNoise(1-normScale);
         }
         
     }

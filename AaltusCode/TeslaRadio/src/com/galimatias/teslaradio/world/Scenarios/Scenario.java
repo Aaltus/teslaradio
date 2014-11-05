@@ -35,6 +35,9 @@ public abstract class Scenario extends Node implements SignalObserver {
 
     private float cumulatedRot = 0;
     
+    protected boolean hasBackgroundSound = true;
+    protected boolean isFirst;
+    
     protected ScenarioCommon scenarioCommon = null;
     protected final static boolean DEBUG_ANGLE = false;
     /**
@@ -233,28 +236,36 @@ public abstract class Scenario extends Node implements SignalObserver {
     /**
      * Call all of the methods when scenario is on Node A, can be override for 
      * certain scenarios.
+     *
      */
     protected void onFirstNodeActions() {
-        startAutoGeneration();
+        this.isFirst = true;
+        if(this.needAutoGenIfMain){
+            startAutoGeneration();
+        }
     }
     
+    public boolean getNeedsBackgroundSound(){
+        return this.hasBackgroundSound;
+    }
     /**
      * Call all of the methods when scenario is on Node B, can be override for 
      * certain scenarios.
      */
     protected void onSecondNodeActions() {
-        startBackgroundSound();
+        this.isFirst = false;
+        //startBackgroundSound();
     }
     
     /**
      * Called when the scenario is detached from one of the two nodes
      */
     protected void notOnNodeActions() {
+        
         if (this.needAutoGenIfMain) {
             stopAutoGeneration();
         }
-        
-        stopBackgroundSound();
+        //stopBackgroundSound();
     }
     
     /**
@@ -299,9 +310,7 @@ public abstract class Scenario extends Node implements SignalObserver {
         }
     }
 */
-    public void setSoundControl(NoiseControl noiseControl){
-        this.noiseControl = noiseControl;
-    }
+  
     /**
      * This method will apply an opposite trackable rotation on the model, preventing it from rotating
      * @param ZXangle
@@ -326,6 +335,18 @@ public abstract class Scenario extends Node implements SignalObserver {
     public void setCurrentObjectEmphasis(int currentObjectToEmphasisOn) {
         this.currentObjectToEmphasisOn = currentObjectToEmphasisOn;
         this.emphasisChange = true;
+    }
+    
+   
+    protected void updateVolume(float volume){
+        if(this.scenarioCommon.getNoiseControl() != null){
+        this.scenarioCommon.getNoiseControl().updateVolume(volume);
+        }
+    }
+    protected void updateNoise(float noise){
+        if(this.scenarioCommon.getNoiseControl() != null){
+            this.scenarioCommon.getNoiseControl().updateNoiseLevel(noise);
+        }
     }
 }
 

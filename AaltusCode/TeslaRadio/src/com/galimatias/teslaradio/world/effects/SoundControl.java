@@ -23,15 +23,13 @@ public class SoundControl extends AbstractControl {
     protected AudioNode  audio;
     protected float volume;
     protected String volumeUsrData;
-   
+    
     public SoundControl(String wavPath, boolean isStream, float volume){
         this.audio = new AudioNode(AppGetter.getAssetManager(),wavPath,isStream);
         this.audio.setVolume(volume);
         this.audio.setPositional(false);
         this.volume = volume;
         this.volumeUsrData = AppGetter.USR_AUDIO_SCALE;
-        
-      
     }
     /**
      * Start sound
@@ -42,12 +40,8 @@ public class SoundControl extends AbstractControl {
        
         if(isLoop){
             this.audio.setLooping(isLoop);
-          
-        
         }
         this.audio.play();
-   
-  
     }
     public void stopSound(){
         this.audio.stop();     
@@ -62,17 +56,11 @@ public class SoundControl extends AbstractControl {
        
       if(this.spatial.getUserData(AppGetter.USR_NEW_WAVE_TOGGLED) ){
            float scale = this.spatial.getUserData(AppGetter.USR_NEXT_WAVE_SCALE);
-           float noise = this.spatial.getUserData(AppGetter.USR_NOISE_LEVEL);
-           this.audio.setVolume(scale * (this.volume - noise*this.volume));
+           this.audio.setVolume(scale * (this.volume ) );
            this.audio.playInstance();
            this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, false);
        }
-      else{
-
-          this.audio.setVolume((Float)this.spatial.getUserData(this.volumeUsrData));
-      }
-       
-        
+      
     }
 
     @Override

@@ -21,7 +21,7 @@ public final class Modulation extends ModulationCommon {
 
     public Modulation(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         
-        super(sc,Camera, destinationHandle, "Sounds/modulation.ogg");
+        super(sc,Camera, destinationHandle);
         this.setName("Modulation");
         loadUnmovableObjects();
         loadMovableObjects();
@@ -125,8 +125,14 @@ public final class Modulation extends ModulationCommon {
         }
     }
 
+   
+    
+    @Override
+    public void onSecondNodeActions(){
+        this.updateNoise(0f);
+    }
+
     @Override
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
-        
     }
 }

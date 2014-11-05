@@ -28,7 +28,7 @@ public class Demodulation extends ModulationCommon  {
     private Node pyramidSignal;
     private Node dodecagoneSignal;
     public Demodulation(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle){
-        super(sc,Camera, destinationHandle,"Sounds/demodulation.ogg");
+        super(sc,Camera, destinationHandle);
         this.setName("Demodulation");
         loadUnmovableObjects();
         loadMovableObjects();
@@ -125,12 +125,12 @@ public class Demodulation extends ModulationCommon  {
                     ((Node)spatial).getChild(1).setLocalScale(((Node)spatial).getChild(1).getWorldScale());
                     outputSignal.attachChild(((Node)spatial).getChild(1));
                     pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(outputSignal.clone());
-                
-                    
-                    this.getControl(SoundControl.class).updateNoiseLevel(0);
+                    if(!this.isFirst){
+                        this.updateNoise(0f);
+                    }
                 }
                else{
-                   this.getControl(SoundControl.class).updateNoiseLevel(1);
+                   this.updateNoise(1);
                  
                }
             }

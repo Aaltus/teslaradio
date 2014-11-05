@@ -6,6 +6,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppGetter;
 import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
+import com.galimatias.teslaradio.world.effects.NoiseControl;
 import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
@@ -32,6 +33,16 @@ public class ScenarioCommon {
     
     public float minBaseParticleScale = 0.25f;
     public float maxBaseParticleScale = 0.75f;
+    
+    private NoiseControl noiseControl;
+
+    public NoiseControl getNoiseControl() {
+        return noiseControl;
+    }
+
+    public void setNoiseControl(NoiseControl noiseControl) {
+        this.noiseControl = noiseControl;
+    }
     
     public ScenarioCommon(){
         observerList = new ArrayList<AutoGenObserver>();
