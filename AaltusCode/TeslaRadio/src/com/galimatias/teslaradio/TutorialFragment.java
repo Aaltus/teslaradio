@@ -141,7 +141,7 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
             for (int i = 0; i < listXmlString.length; i++) {
                 //AppLogger.getInstance().d(TAG, "Removing view :" + i);
                 TextView textView = new TextView(this.getActivity());
-                textView.setText(this.getActivity().getString(listXmlString[i]));
+                textView.setText(this.getActivity().getText(listXmlString[i]));
                 viewFlipper.addView(textView);
             }
         }
