@@ -41,7 +41,11 @@ public class AppGetter {
     
     static public final String USR_SOURCE_TRANSLATION="Source Translation";
     
-   
+    static public final String SONG_ROCK="SongRock";
+    
+    static public final String SONG_CLASSIC="SongClassic";
+    
+    static public final String SONG_ELEK="SongElek";
     
     //world scalling
     private static float worldScaling = 10;

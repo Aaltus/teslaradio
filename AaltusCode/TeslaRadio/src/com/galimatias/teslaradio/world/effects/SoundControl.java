@@ -20,19 +20,16 @@ import com.jme3.scene.control.AbstractControl;
  */
 public class SoundControl extends AbstractControl {
 
+    protected AudioNode  audio;
+    protected float volume;
+    protected String volumeUsrData;
    
-
-    AudioNode  audio;
-    AudioNode  noise;
-    private float volume;
-    private float noiseLevel;
     public SoundControl(String wavPath, boolean isStream, float volume){
         this.audio = new AudioNode(AppGetter.getAssetManager(),wavPath,isStream);
-        this.noise = new AudioNode(AppGetter.getAssetManager(),"Sounds/noise.ogg",isStream);
-        this.noise.setVolume(0f);
         this.audio.setVolume(volume);
         this.audio.setPositional(false);
         this.volume = volume;
+        this.volumeUsrData = AppGetter.USR_AUDIO_SCALE;
         
       
     }
@@ -45,23 +42,18 @@ public class SoundControl extends AbstractControl {
        
         if(isLoop){
             this.audio.setLooping(isLoop);
-            this.noise.setLooping(isLoop);
+          
         
         }
         this.audio.play();
-        this.noise.play();
+   
   
     }
     public void stopSound(){
-        this.audio.stop();
-        this.noise.stop();     
+        this.audio.stop();     
     }
     
-    public void updateNoiseLevel(float noiseLevel){
-        this.spatial.setUserData(AppGetter.USR_AUDIO_SCALE, this.volume - noiseLevel*this.volume);
-        this.spatial.setUserData(AppGetter.USR_NOISE_LEVEL,noiseLevel*this.volume);
-        
-    }
+   
     public void updateVolume(float volume){
         this.spatial.setUserData(AppGetter.USR_AUDIO_SCALE, volume);
     }
@@ -72,15 +64,12 @@ public class SoundControl extends AbstractControl {
            float scale = this.spatial.getUserData(AppGetter.USR_NEXT_WAVE_SCALE);
            float noise = this.spatial.getUserData(AppGetter.USR_NOISE_LEVEL);
            this.audio.setVolume(scale * (this.volume - noise*this.volume));
-           this.noise.setVolume(scale * (noise*this.volume));
            this.audio.playInstance();
-           this.noise.playInstance();
            this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, false);
        }
       else{
 
-          this.audio.setVolume((Float)this.spatial.getUserData(AppGetter.USR_AUDIO_SCALE));
-          this.noise.setVolume((Float)this.spatial.getUserData(AppGetter.USR_NOISE_LEVEL));
+          this.audio.setVolume((Float)this.spatial.getUserData(this.volumeUsrData));
       }
        
         
@@ -100,7 +89,6 @@ public class SoundControl extends AbstractControl {
         this.spatial.setUserData(AppGetter.USR_AUDIO_SCALE, 1f);
         
         ((Node)this.spatial).attachChild(audio);
-        ((Node)this.spatial).attachChild(noise);
         
   
     }
