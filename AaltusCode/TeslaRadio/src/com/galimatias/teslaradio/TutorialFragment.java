@@ -1,6 +1,7 @@
 package com.galimatias.teslaradio;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 import com.ar4android.vuforiaJME.ITutorialSwitcher;
@@ -64,6 +66,22 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private void setSpeakAnimation(boolean enabled) {
+        ImageView characterButton = (ImageView)getView().findViewById(R.id.character_tutorial_button);
+        if(enabled) {
+            //Animation shakeAnim = AnimationUtils.loadAnimation(this.getActivity(), R.anim.shake);
+            //characterButton.startAnimation(shakeAnim);
+            characterButton.setBackgroundResource(R.drawable.tesla_speak_anim);
+            AnimationDrawable animation = (AnimationDrawable) characterButton.getBackground();
+            animation.start();
+        }
+        else{
+            AnimationDrawable animation = (AnimationDrawable) characterButton.getBackground();
+            animation.stop();
+            //characterButton.clearAnimation();
+        }
+    }
+
     @Override
     public void onClick(View view) {
 
@@ -104,11 +122,13 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
                 this.setTutorialMenuCallback(index);
             }
             setShakeAnimation(false);
+            setSpeakAnimation(true);
         }
         else{
             view.setVisibility(View.GONE);
             setTutorialMenuCallback(-1);
             setShakeAnimation(true);
+            setSpeakAnimation(false);
         }
     }
 
