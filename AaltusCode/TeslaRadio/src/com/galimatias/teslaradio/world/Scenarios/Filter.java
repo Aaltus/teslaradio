@@ -113,6 +113,8 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         
         initAngleWheel.fromAngleAxis(0f, Vector3f.UNIT_Y);
         endAngleWheel.fromAngleAxis(pi/3f, Vector3f.UNIT_Y);
+        
+        this.spotlight = ScenarioCommon.spotlightFactory();
     }
 
     @Override
@@ -138,6 +140,11 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         } else {
             //trackableAngle = 0;
             trackableAngle = this.getUserData("angleX");
+        }
+        
+        if (this.emphasisChange) {
+            objectEmphasis();
+            this.emphasisChange = false;
         }
         
         checkTrackableAngle(trackableAngle);
@@ -292,6 +299,23 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
         if (notifierId.equals("Input")) {
             filter(((Node)spatial).getChild(0).getName(), spatial);
+        }
+    }
+
+    @Override
+    protected void objectEmphasis() {
+        if (this.spotlight != null) {            
+            switch(this.currentObjectToEmphasisOn) {
+                // Attach on microphone
+                case 0:
+                    this.spotlight.setLocalTranslation(scene.getChild("Circle").getLocalTranslation().add(0.0f,-scene.getChild("Circle").getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    scene.attachChild(this.spotlight);
+                    break;  
+                default:
+                    scene.detachChild(this.spotlight);
+                    break;
+            }
         }
     }
     

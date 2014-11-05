@@ -21,6 +21,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import java.util.ArrayList;
 
 
 /**
@@ -39,8 +40,6 @@ public abstract class Scenario extends Node implements SignalObserver {
      * Set to true to start autogeneration when scenario is the main scenario
      */
     protected boolean needAutoGenIfMain = false;
-    
-
    
     /**
      * The destination of the current scenario
@@ -91,16 +90,29 @@ public abstract class Scenario extends Node implements SignalObserver {
     protected Node scene;
     
     /**
-     * The foregound camera of the scene
+     * The foregound camera of the scene.
      */
     protected Camera cam;
+    
+    /**
+     * The spotlight which will be displayed on the object talked in the 
+     * scenario's tutorial.
+     */
+    protected Node spotlight;
+    protected boolean emphasisChange = false;
 
     /**
-     * Defines the number of particle per auto-gen wave
+     * Defines the number of particle per auto-gen wave.
      */
     protected int particlePerWave = 1;
+    
     /**
-     * Defines the time between 2 auto-wave emission
+     * Current object to display the spotlight on.
+     */
+    protected int currentObjectToEmphasisOn = 0;
+            
+    /**
+     * Defines the time between 2 auto-wave emission.
      */
     protected float waveTime = 1;
     
@@ -108,7 +120,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     protected String backgroundSound = null;
     
     /**
-     * Default parameters for textBoxes
+     * Default parameters for textBoxes.
      */
     protected final float TEXTSIZE             = 0.5f;
     protected final ColorRGBA TEXTCOLOR        = new ColorRGBA(125/255f, 249/255f, 255/255f, 1f);  
@@ -177,6 +189,12 @@ public abstract class Scenario extends Node implements SignalObserver {
      * @param v
      */
     public abstract void onScenarioTouch(String name, TouchEvent touchEvent, float v);
+    
+    /**
+     * Get the list of objects to display within two given scenarios.
+     * @param objectsToShow 
+     */
+    protected abstract void objectEmphasis();
 
     /**
      * Called periodically from scenario manager to make the simpleUpdate of the scenario.
@@ -299,6 +317,9 @@ public abstract class Scenario extends Node implements SignalObserver {
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
     
-  
+    public void setCurrentObjectEmphasis(int currentObjectToEmphasisOn) {
+        this.currentObjectToEmphasisOn = currentObjectToEmphasisOn;
+        this.emphasisChange = true;
+    }
 }
 

@@ -197,6 +197,15 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         soundEmission.setName("SoundEmission");
         scenarios.add(soundEmission);
         
+        soundEmission.setCurrentObjectEmphasis(0);
+        soundCapture.setCurrentObjectEmphasis(0);
+        modulation.setCurrentObjectEmphasis(0);
+        amplification.setCurrentObjectEmphasis(0);
+        reception.setCurrentObjectEmphasis(0);
+        filter.setCurrentObjectEmphasis(0);
+        demodulation.setCurrentObjectEmphasis(0);
+        playback.setCurrentObjectEmphasis(0);
+        
         // add translation control to each scenarios
         int id = 0;
         for(Scenario scenario : scenarios){
@@ -245,6 +254,8 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         playbackList.add(demodulation);
         playbackList.add(playback);
         scenarioList.addScenario(ScenarioEnum.PLAYBACK,playbackList);
+        
+        
 
         //Only for debugging purpose deactivate it please.
         // scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());

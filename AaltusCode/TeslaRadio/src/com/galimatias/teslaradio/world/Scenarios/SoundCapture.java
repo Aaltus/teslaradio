@@ -107,6 +107,8 @@ public final class SoundCapture extends Scenario {
     protected void loadMovableObjects()
     {
         initMicWireParticlesEmitter();
+        
+        this.spotlight = ScenarioCommon.spotlightFactory();
 
         this.attachChild(movableObjects);
     }
@@ -274,6 +276,11 @@ public final class SoundCapture extends Scenario {
             Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
             textBoxesUpdate(upVector);
         }
+        
+        if (this.emphasisChange) {
+            objectEmphasis();
+            this.emphasisChange = false;
+        }
 
         if (showInformativeMenu)
         {
@@ -347,5 +354,22 @@ public final class SoundCapture extends Scenario {
     {
         micArrow.getControl(FadeControl.class).setShowImage(false);
         micArrow.resetTimeLastTouch();
+    }
+
+    @Override
+    protected void objectEmphasis() {
+        if (this.spotlight != null) {            
+            switch(this.currentObjectToEmphasisOn) {
+                // Attach on microphone
+                case 0:
+                    this.spotlight.setLocalTranslation(micPosition.add(0.0f,-micPosition.y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
+                    this.attachChild(this.spotlight);
+                    break;
+                default:
+                    this.detachChild(this.spotlight);
+                    break;
+            }
+        }
     }
 }

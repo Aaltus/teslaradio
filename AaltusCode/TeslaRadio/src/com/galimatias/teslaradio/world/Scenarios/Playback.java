@@ -38,12 +38,13 @@ import com.jme3.texture.Texture;
  *
  * @author Batcave
  */
-public class Playback extends Scenario implements EmitterObserver {
+public final class Playback extends Scenario implements EmitterObserver {
         
     private String titleText = "Hautparleur";
     
     private Spatial ampliSliderButton;
     private Spatial ampliSliderBox;
+    private Spatial speaker;
     private Vector3f translationIncrement;
     private boolean isTouched = false;
     private float ampliScale = 0f;
@@ -126,8 +127,10 @@ public class Playback extends Scenario implements EmitterObserver {
         ampliSliderButton.setName("SliderButton");
         ampliSliderBox.setName("SliderBox");
         
-        Spatial speaker = scene.getChild("Box01");
+        speaker = scene.getChild("Box01");
         speaker.setName("Speaker");
+        
+        this.spotlight = ScenarioCommon.spotlightFactory();
         
         touchable.attachChild(speaker);
         touchable.attachChild(ampliSliderButton);
@@ -224,6 +227,11 @@ public class Playback extends Scenario implements EmitterObserver {
 
     @Override
     protected boolean simpleUpdate(float tpf) {
+        
+        if (this.emphasisChange) {
+            objectEmphasis();
+            this.emphasisChange = false;
+        }
         
         ampliSliderUpdate();
         sliderArrow.simpleUpdate(tpf);
@@ -350,6 +358,28 @@ public class Playback extends Scenario implements EmitterObserver {
         if (speakerEmitter != null) {
             if (touchCount != 0) {
                 speakerTouchEffect();
+            }
+        }
+    }
+
+    @Override
+    protected void objectEmphasis() {
+        if (this.spotlight != null) {            
+            switch(this.currentObjectToEmphasisOn) {
+                // Attach on microphone
+                case 0:
+                    this.spotlight.setLocalTranslation(speaker.getLocalTranslation().add(0.0f,-speaker.getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
+                    scene.attachChild(this.spotlight);
+                    break;
+                case 1:
+                    this.spotlight.setLocalTranslation(ampliSliderBox.getLocalTranslation().add(0.0f,-ampliSliderBox.getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
+                    scene.attachChild(this.spotlight);
+                    break;    
+                default:
+                    scene.detachChild(this.spotlight);
+                    break;
             }
         }
     }
