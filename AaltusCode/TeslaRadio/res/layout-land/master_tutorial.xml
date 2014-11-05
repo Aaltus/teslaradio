@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:padding="10dp"
+            style="@style/AppBaseTheme" android:fillViewport="false">
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tutorial_title"
+                android:id="@+id/textView" style="@style/InformativeMenuTextStyle"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tutorial_step1"
+                android:id="@+id/textView2"
+                style="@style/InformativeMenuTextStyle"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView3"
+                style="@style/InformativeMenuTextStyle" android:text="@string/tutorial_description1"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tutorial_step2"
+                android:id="@+id/textView4"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView" android:contentDescription="@string/scenario_arrows"
+                    style="@style/InformativeMenuImageViewStyle" android:src="@drawable/arrow"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tutorial_interaction1"
+                    android:id="@+id/textView5" style="@style/InformativeMenuTextStyle"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView2" android:contentDescription="@string/touch_arrow"
+                    style="@style/InformativeMenuImageViewStyle" android:src="@drawable/touch"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tutorial_interaction2"
+                    android:id="@+id/textView6" style="@style/InformativeMenuTextStyle"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView3" android:contentDescription="@string/rotation_arrow"
+                    style="@style/InformativeMenuImageViewStyle" android:src="@drawable/rotation"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tutorial_interaction3"
+                    android:id="@+id/textView7" style="@style/InformativeMenuTextStyle"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView4" android:contentDescription="@string/move_arrow"
+                    style="@style/InformativeMenuImageViewStyle" android:src="@drawable/move"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tutorial_interaction4"
+                    android:id="@+id/textView8" style="@style/InformativeMenuTextStyle"/>
+        </LinearLayout>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tutorial_step3"
+                android:id="@+id/textView9" style="@style/InformativeMenuTextStyle"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView5" style="@style/InformativeMenuImageViewStyle"
+                    android:src="@drawable/browser"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tutorial_help1"
+                    android:id="@+id/textView10" style="@style/InformativeMenuTextStyle"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView6" style="@style/InformativeMenuImageViewStyle"
+                    android:src="@drawable/ic_info_button"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tutorial_help2"
+                    android:id="@+id/textView11" style="@style/InformativeMenuTextStyle"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView7" style="@style/InformativeMenuImageViewStyle"
+                    android:contentDescription="tesla"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tutorial_help3"
+                    android:id="@+id/textView12" style="@style/InformativeMenuTextStyle"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
