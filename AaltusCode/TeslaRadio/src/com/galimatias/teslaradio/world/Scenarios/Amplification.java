@@ -54,8 +54,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     private Node cubeSignal;
     private Node pyramidSignal;
     private Node dodecagoneSignal;
-    private Arrows moveArrow;
-    private Arrows sliderArrow;
+    private Node moveArrow;
+    private Node sliderArrow;
     
     private Boolean isFM = true;
     
@@ -179,12 +179,16 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
 
     private void loadArrows()
     {
-        sliderArrow = new Arrows("touch", ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f), assetManager, 1);
+        sliderArrow = new Node();
+        sliderArrow.move(ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f));
+        sliderArrow.addControl(new Arrows("touch", assetManager, 1));
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
         sliderArrow.addControl(control1);
         scene.attachChild(sliderArrow);
         
-        moveArrow = new Arrows("move", null, assetManager, 10);
+        moveArrow = new Node();
+        moveArrow.move(ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f));
+        moveArrow.addControl(new Arrows("move", assetManager, 10));
     }
     
     private void ampliSliderUpdate() {
@@ -224,7 +228,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     private void removeHintImages()
     {
         sliderArrow.getControl(FadeControl.class).setShowImage(false);
-        sliderArrow.resetTimeLastTouch();
+        sliderArrow.getControl(Arrows.class).resetTimeLastTouch();
     }
     
     //Scale handle of the particle
@@ -349,8 +353,8 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
 
     @Override
     protected boolean simpleUpdate(float tpf) {
-        moveArrow.simpleUpdate(tpf);
-        sliderArrow.simpleUpdate(tpf);
+        //moveArrow.simpleUpdate(tpf);
+        //sliderArrow.simpleUpdate(tpf);
         
         if (this.emphasisChange) {
             objectEmphasis();
