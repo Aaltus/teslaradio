@@ -66,8 +66,8 @@ public final class SoundCapture extends Scenario {
     
     
     //Arrows
-    private Arrows micArrow;
-    private Arrows moveArrow;
+    private Node micArrow;
+    private Node moveArrow;
        
     public SoundCapture(ScenarioCommon sc,Camera Camera, Spatial destinationHandle)
     {
@@ -179,10 +179,6 @@ public final class SoundCapture extends Scenario {
         micWireEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(particlePerWave);
     }
     
-    private void textBoxesUpdate(Vector3f upVector)
-    {
-        titleTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
-    }
     
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
@@ -269,12 +265,11 @@ public final class SoundCapture extends Scenario {
     protected boolean simpleUpdate(float tpf) {
 
         //touchEffectEmitter.simpleUpdate(tpf);
-        micArrow.simpleUpdate(tpf);
-        moveArrow.simpleUpdate(tpf);
+        //micArrow.simpleUpdate(tpf);
+        //moveArrow.simpleUpdate(tpf);
         
         if(Camera != null) {
             Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
-            textBoxesUpdate(upVector);
         }
         
         if (this.emphasisChange) {
@@ -340,11 +335,15 @@ public final class SoundCapture extends Scenario {
     }
 
     private void loadArrows() {
-        micArrow = new Arrows("touch", micHandleInPosition, assetManager, 1);
+        micArrow = new Node();
+        micArrow.move(micHandleInPosition);
+        micArrow.addControl(new Arrows("touch",  assetManager, 1));
         LookAtCameraControl control = new LookAtCameraControl(Camera);
         micArrow.addControl(control);
         scene.attachChild(micArrow);
-        moveArrow = new Arrows("move", null, assetManager, 10);
+        
+        moveArrow = new Node();
+        moveArrow.addControl(new Arrows("move", assetManager, 10));
     }
     
         /**
@@ -353,7 +352,7 @@ public final class SoundCapture extends Scenario {
     public void removeHintImages()
     {
         micArrow.getControl(FadeControl.class).setShowImage(false);
-        micArrow.resetTimeLastTouch();
+        micArrow.getControl(Arrows.class).resetTimeLastTouch();
     }
 
     @Override
@@ -362,12 +361,12 @@ public final class SoundCapture extends Scenario {
             switch(this.currentObjectToEmphasisOn) {
                 // Attach on microphone
                 case 0:
-                    this.spotlight.setLocalTranslation(micPosition.add(0.0f,-micPosition.y,0.0f));
+                    this.spotlight.setLocalTranslation(scene.getChild("Stand_micro").getLocalTranslation().add(0.0f,-scene.getChild("Stand_micro").getLocalTranslation().y,0.0f));
                     this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
-                    this.attachChild(this.spotlight);
+                    scene.attachChild(this.spotlight);
                     break;
                 default:
-                    this.detachChild(this.spotlight);
+                    scene.detachChild(this.spotlight);
                     break;
             }
         }

@@ -197,15 +197,6 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         soundEmission.setName("SoundEmission");
         scenarios.add(soundEmission);
         
-        soundEmission.setCurrentObjectEmphasis(0);
-        soundCapture.setCurrentObjectEmphasis(0);
-        modulation.setCurrentObjectEmphasis(0);
-        amplification.setCurrentObjectEmphasis(0);
-        reception.setCurrentObjectEmphasis(0);
-        filter.setCurrentObjectEmphasis(0);
-        demodulation.setCurrentObjectEmphasis(0);
-        playback.setCurrentObjectEmphasis(0);
-        
         // add translation control to each scenarios
         int id = 0;
         for(Scenario scenario : scenarios){
@@ -223,37 +214,37 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         List<Scenario> modulationList = new ArrayList<Scenario>();
         modulationList.add(soundCapture);
         modulationList.add(modulation);
-        scenarioList.addScenario(ScenarioEnum.MODULATION,modulationList);
+        scenarioList.addScenario(ScenarioEnum.SOUNDCAPTURE,modulationList);
         
         //Add third scenario
         List<Scenario> amplificationList = new ArrayList<Scenario>();
         amplificationList.add(modulation);
         amplificationList.add(amplification);
-        scenarioList.addScenario(ScenarioEnum.TRANSMIT,amplificationList);
+        scenarioList.addScenario(ScenarioEnum.MODULATION,amplificationList);
         
         //Add four scenario
         List<Scenario> receptionList = new ArrayList<Scenario>();
         receptionList.add(amplification);
         receptionList.add(reception);
-        scenarioList.addScenario(ScenarioEnum.RECEPTION,receptionList);
+        scenarioList.addScenario(ScenarioEnum.TRANSMIT,receptionList);
         
         //Add fifth scenario
         List<Scenario> filterList = new ArrayList<Scenario>();
         filterList.add(reception);
         filterList.add(filter);
-        scenarioList.addScenario(ScenarioEnum.FILTER,filterList);
+        scenarioList.addScenario(ScenarioEnum.RECEPTION,filterList);
         
         //Add sixth scenario
         List<Scenario> demodulationList = new ArrayList<Scenario>();
         demodulationList.add(filter);
         demodulationList.add(demodulation);
-        scenarioList.addScenario(ScenarioEnum.DEMODULATION,demodulationList);
+        scenarioList.addScenario(ScenarioEnum.FILTER,demodulationList);
         
         //Add last scenario
         List<Scenario> playbackList = new ArrayList<Scenario>();
         playbackList.add(demodulation);
         playbackList.add(playback);
-        scenarioList.addScenario(ScenarioEnum.PLAYBACK,playbackList);
+        scenarioList.addScenario(ScenarioEnum.DEMODULATION,playbackList);
         
         
 
@@ -276,6 +267,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     public void setTutorialIndex(int index){
 
         AppLogger.getInstance().d(TAG,"ScenarioManager Index: " + index);
+        this.getCurrentScenario().getScenarios().get(0).setCurrentObjectEmphasis(index);
 
     }
 
@@ -458,6 +450,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         if(getCurrentScenario() != null){
             for(Scenario scenario : getCurrentScenario().getScenarios() )
             {
+                scenario.setCurrentObjectEmphasis(-1);
                 scenario.notOnNodeActions();
                 Node parent = scenario.getParent();
                 if(parent != null){

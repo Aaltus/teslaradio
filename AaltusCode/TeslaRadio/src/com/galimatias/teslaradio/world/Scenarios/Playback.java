@@ -54,7 +54,7 @@ public final class Playback extends Scenario implements EmitterObserver {
     
     private TextBox titleTextBox;
     
-    private Arrows sliderArrow;
+    private Node sliderArrow;
     
     private Spatial  speakerHandleOut;
     private Spatial  speakerHandleIn;
@@ -140,7 +140,10 @@ public final class Playback extends Scenario implements EmitterObserver {
     
     private void loadArrows() {
         
-        sliderArrow = new Arrows("touch", ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f), assetManager, 1);
+        sliderArrow = new Node();
+        sliderArrow.move(ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f));
+        sliderArrow.addControl(new Arrows("touch", assetManager, 1));
+        //sliderArrow = new Arrows("touch", ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f), assetManager, 1);
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
         sliderArrow.addControl(control1);
         this.attachChild(sliderArrow);
@@ -152,7 +155,7 @@ public final class Playback extends Scenario implements EmitterObserver {
     private void removeHintImages()
     {
         sliderArrow.getControl(FadeControl.class).setShowImage(false);
-        sliderArrow.resetTimeLastTouch();
+        sliderArrow.getControl(Arrows.class).resetTimeLastTouch();
     }
 
     @Override
@@ -234,7 +237,7 @@ public final class Playback extends Scenario implements EmitterObserver {
         }
         
         ampliSliderUpdate();
-        sliderArrow.simpleUpdate(tpf);
+        //sliderArrow.simpleUpdate(tpf);
         return false;
     }
     

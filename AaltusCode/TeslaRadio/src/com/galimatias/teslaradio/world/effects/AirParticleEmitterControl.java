@@ -18,6 +18,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.Sphere;
+import com.utils.AppLogger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -31,6 +32,7 @@ import java.util.logging.Logger;
  * @author Hugo
  */
 public class AirParticleEmitterControl extends ParticleEmitterControl{
+    private final static String TAG = AirParticleEmitterControl.class.getSimpleName();
     
     
     public enum AreaType
@@ -196,23 +198,35 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
         if(future != null)
         {
             if(future.isDone()){                
-                try { this.multiPathSpatial = (List<Spatial>) future.get(); } catch (Exception ex) {Logger.getLogger(AirParticleEmitterControl.class.getName()).log(Level.SEVERE, null, ex);}   
-                
-                for(Spatial spatialToAttach : multiPathSpatial)
-                {
+                try { 
+                    this.multiPathSpatial = (List<Spatial>) future.get();
+                    for(Spatial spatialToAttach : multiPathSpatial)
+                    {
 
-                    AbstractControl control = spatialToAttach.getControl(SignalControl.class);
-                    if(control != null){
-                        control.setEnabled(true);
+                        AbstractControl control = spatialToAttach.getControl(SignalControl.class);
+                        if(control != null){
+                            control.setEnabled(true);
+                        }
+
+                        control = spatialToAttach.getControl(ScalingSignalControl.class);
+                        if(control != null){
+                            control.setEnabled(true);
+                        }
+
+                        ((Node) this.spatial).attachChild(spatialToAttach);
                     }
-
-                    control = spatialToAttach.getControl(ScalingSignalControl.class);
-                    if(control != null){
-                        control.setEnabled(true);
-                    }
-
-                    ((Node) this.spatial).attachChild(spatialToAttach);
                 }
+                catch (InterruptedException ex)
+                {
+                    AppLogger.getInstance().e(TAG, ex.getMessage());
+                }
+                catch (ExecutionException ex)
+                {
+                    AppLogger.getInstance().e(TAG, ex.getMessage());
+                }  
+                
+                
+                
                 multiPathSpatial = null;
                 future = null;
             }
@@ -259,7 +273,6 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
                 for(int axe_a = 0; axe_a < nbDirection-axe_flat; axe_a++)
                 {
                    Spatial spatial_clone = threadSpatialToSend.clone();
-                   spatial_clone.setMaterial(threadMaterialClone);
                    MotionPath path = new MotionPath();
                    path.addWayPoint(Vector3f.ZERO);
                    path.addWayPoint(path_vector);

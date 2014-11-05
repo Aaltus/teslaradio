@@ -24,6 +24,7 @@ public class TrackableControl extends AbstractControl {
     protected Vector3f   mPosition = new Vector3f(0f,0f,0f);
     protected Vector3f   mVx = new Vector3f(0f,0f,0f);
     protected boolean    mIsVisible = false;
+    protected boolean    mIsAttach = false;
 
     public TrackableControl()
     {
@@ -31,6 +32,7 @@ public class TrackableControl extends AbstractControl {
     }
 
     public Vector3f getPosition(){return this.mPosition;}
+    public Matrix3f getRotation(){return this.mRotationMatrix;}
     public Node     getFixedAngleChild(){return this.mFixedAngleChild;}
 
     public void updatePosition( Vector3f newPosition)
@@ -72,6 +74,15 @@ public class TrackableControl extends AbstractControl {
     public boolean getIsVisible()
     {
         return this.mIsVisible;
+    }
+    public void setIsAttach(Boolean isAttach)
+    {
+        this.mIsAttach = isAttach;
+    }
+
+    public boolean getIsAttach()
+    {
+        return this.mIsAttach;
     }
 
     @Override
