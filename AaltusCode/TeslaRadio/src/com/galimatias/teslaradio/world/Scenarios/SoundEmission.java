@@ -295,10 +295,6 @@ public final class SoundEmission extends Scenario {
         //imageHintGuitar.simpleUpdate(tpf, this.Camera, upVector);
     }
 
-    public void textBoxesUpdate(Vector3f upVector)
-    {
-        titleTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
-    }
 
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {

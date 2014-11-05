@@ -86,9 +86,10 @@ public class SignalControl extends AbstractControl implements ParticleObservable
         this.spatial.setLocalTranslation(currentPosition);
         this.spatial.setLocalScale(this.startScaleRatio -((this.distanceTraveled/path.getLength())*(this.startScaleRatio-this.endScaleRatio)));
 
-        if (cam != null) {
-            this.spatial.lookAt(cam.getLocation(), cam.getUp());
-        }
+        //I have commented the look at because we don't have 2d particle now and ti seems that it is not good performance wise.
+        //if (cam != null) {
+        //    this.spatial.lookAt(cam.getLocation(), cam.getUp());
+        //}
         
         // verify if the refNodeDetachAttach is still in focus or not
         if(refNodeDetachAttach != null)
