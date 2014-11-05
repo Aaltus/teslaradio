@@ -60,10 +60,11 @@
     <string name="tutorial_title">Tutoriel</string>
     <string name="tutorial_step1">Première étape</string>
     <string name="tutorial_description1">Il est important que la caméra pointe vers les deux cibles afin de générer les
-        objets 3D.\"
-    </string>
+        objets 3D. Ainsi, il sera possible d\'observer deux modules à la fois pour mieux comprendre leurs intéractions.
+        De plus, il sera possible d\'intéragir avec les scénarios de diverses façons!</string>
     <string name="tutorial_step2">Intéractions avec la tablette</string>
-    <string name="tutorial_interaction1">Chaque cible affichera un module du monde des ondes! Il y a 7 modules. Pour voir les modules précédents/suivants, utilise les flèches!</string>
+    <string name="tutorial_interaction1">Chaque cible affichera un module du monde des ondes! Il y a 7 modules.
+        \nPour voir les modules précédents/suivants, utilise les flèches!</string>
     <string name="tutorial_interaction2">Touche l\'écran pour y voir un changement!</string>
     <string name="tutorial_interaction3">Tourne la cible pour faire une action!</string>
     <string name="tutorial_interaction4">Bouge la cible pour faire une actions!</string>

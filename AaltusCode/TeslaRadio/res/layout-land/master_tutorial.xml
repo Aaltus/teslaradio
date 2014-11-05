@@ -8,137 +8,135 @@
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="fill_parent"
+            android:gravity="center">
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
                 android:text="@string/tutorial_title"
-                android:id="@+id/textView" style="@style/InformativeMenuTextStyle"/>
+                android:id="@+id/textView"
+                android:textSize="40dp"
+                android:gravity="center"
+                android:textStyle="bold"/>
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
                 android:text="@string/tutorial_step1"
                 android:id="@+id/textView2"
-                style="@style/InformativeMenuTextStyle"/>
+                android:textSize="20dp"
+                android:gravity="center"
+                android:textStyle="bold"/>
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView3"
-                style="@style/InformativeMenuTextStyle" android:text="@string/tutorial_description1"/>
+                android:text="@string/tutorial_description1"
+                android:id="@+id/textView3"/>
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tutorial_step2"
-                android:id="@+id/textView4"/>
-        <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                android:layout_height="fill_parent"
+                android:text="@string/tutorial_step2"
+                android:id="@+id/textView4"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:textStyle="bold"/>
+        <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:columnCount="2"
+                android:rowCount="4">
             <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:id="@+id/imageView" android:contentDescription="@string/scenario_arrows"
                     style="@style/InformativeMenuImageViewStyle" android:src="@drawable/arrow"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tutorial_interaction1"
-                    android:id="@+id/textView5" style="@style/InformativeMenuTextStyle"/>
-        </LinearLayout>
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                    android:id="@+id/textView5"
+                    android:textAlignment="center"/>
             <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:id="@+id/imageView2" android:contentDescription="@string/touch_arrow"
                     style="@style/InformativeMenuImageViewStyle" android:src="@drawable/touch"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tutorial_interaction2"
-                    android:id="@+id/textView6" style="@style/InformativeMenuTextStyle"/>
-        </LinearLayout>
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                    android:id="@+id/textView6"
+                    android:textAlignment="center"/>
             <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:id="@+id/imageView3" android:contentDescription="@string/rotation_arrow"
                     style="@style/InformativeMenuImageViewStyle" android:src="@drawable/rotation"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tutorial_interaction3"
-                    android:id="@+id/textView7" style="@style/InformativeMenuTextStyle"/>
-        </LinearLayout>
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                    android:id="@+id/textView7"
+                    android:textAlignment="center"/>
             <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:id="@+id/imageView4" android:contentDescription="@string/move_arrow"
                     style="@style/InformativeMenuImageViewStyle" android:src="@drawable/move"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tutorial_interaction4"
-                    android:id="@+id/textView8" style="@style/InformativeMenuTextStyle"/>
-        </LinearLayout>
+                    android:id="@+id/textView8"
+                    android:textAlignment="center"/>
+        </GridLayout>
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tutorial_step3"
-                android:id="@+id/textView9" style="@style/InformativeMenuTextStyle"/>
-        <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                android:layout_height="fill_parent"
+                android:text="@string/tutorial_step3"
+                android:id="@+id/textView9"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:textStyle="bold"/>
+        <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:gravity="center_horizontal"
+                android:columnCount="2"
+                android:rowCount="3">
             <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:id="@+id/imageView5" style="@style/InformativeMenuImageViewStyle"
                     android:src="@drawable/browser"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tutorial_help1"
-                    android:id="@+id/textView10" style="@style/InformativeMenuTextStyle"/>
-        </LinearLayout>
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                    android:id="@+id/textView10"
+                    android:textAlignment="center"/>
             <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:id="@+id/imageView6" style="@style/InformativeMenuImageViewStyle"
                     android:src="@drawable/ic_info_button"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tutorial_help2"
-                    android:id="@+id/textView11" style="@style/InformativeMenuTextStyle"/>
-        </LinearLayout>
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                    android:id="@+id/textView11"
+                    android:textAlignment="center"/>
             <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:id="@+id/imageView7" style="@style/InformativeMenuImageViewStyle"
                     android:contentDescription="tesla"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tutorial_help3"
-                    android:id="@+id/textView12" style="@style/InformativeMenuTextStyle"/>
-        </LinearLayout>
+                    android:id="@+id/textView12"
+                    android:textAlignment="center"/>
+        </GridLayout>
     </LinearLayout>
 </ScrollView>
