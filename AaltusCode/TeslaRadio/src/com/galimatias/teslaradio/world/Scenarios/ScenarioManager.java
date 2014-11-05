@@ -2,6 +2,7 @@ package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AndroidActivityListener;
 import com.ar4android.vuforiaJME.AppGetter;
+import com.ar4android.vuforiaJME.ITutorialSwitcher;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.world.effects.ScenarioTranslationAnimControl;
 import com.jme3.app.Application;
@@ -26,6 +27,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
+import com.utils.AppLogger;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -42,11 +44,13 @@ import java.util.List;
  *
  * Created by jimbojd72 on 9/3/14.
  */
-public class ScenarioManager extends AbstractAppState implements IScenarioManager
+public class ScenarioManager extends AbstractAppState implements IScenarioManager, ITutorialSwitcher
 {
+    private static final String TAG = ScenarioManager.class.getSimpleName();
     
     private static final String TOUCH_EVENT_NAME = "Touch";
     private static final String RIGHT_CLICK_MOUSE_EVENT_NAME = "Mouse";
+
     
     private SimpleApplication app;
     
@@ -210,37 +214,39 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         List<Scenario> modulationList = new ArrayList<Scenario>();
         modulationList.add(soundCapture);
         modulationList.add(modulation);
-        scenarioList.addScenario(ScenarioEnum.MODULATION,modulationList);
+        scenarioList.addScenario(ScenarioEnum.SOUNDCAPTURE,modulationList);
         
         //Add third scenario
         List<Scenario> amplificationList = new ArrayList<Scenario>();
         amplificationList.add(modulation);
         amplificationList.add(amplification);
-        scenarioList.addScenario(ScenarioEnum.TRANSMIT,amplificationList);
+        scenarioList.addScenario(ScenarioEnum.MODULATION,amplificationList);
         
         //Add four scenario
         List<Scenario> receptionList = new ArrayList<Scenario>();
         receptionList.add(amplification);
         receptionList.add(reception);
-        scenarioList.addScenario(ScenarioEnum.RECEPTION,receptionList);
+        scenarioList.addScenario(ScenarioEnum.TRANSMIT,receptionList);
         
         //Add fifth scenario
         List<Scenario> filterList = new ArrayList<Scenario>();
         filterList.add(reception);
         filterList.add(filter);
-        scenarioList.addScenario(ScenarioEnum.FILTER,filterList);
+        scenarioList.addScenario(ScenarioEnum.RECEPTION,filterList);
         
         //Add sixth scenario
         List<Scenario> demodulationList = new ArrayList<Scenario>();
         demodulationList.add(filter);
         demodulationList.add(demodulation);
-        scenarioList.addScenario(ScenarioEnum.DEMODULATION,demodulationList);
+        scenarioList.addScenario(ScenarioEnum.FILTER,demodulationList);
         
         //Add last scenario
         List<Scenario> playbackList = new ArrayList<Scenario>();
         playbackList.add(demodulation);
         playbackList.add(playback);
-        scenarioList.addScenario(ScenarioEnum.PLAYBACK,playbackList);
+        scenarioList.addScenario(ScenarioEnum.DEMODULATION,playbackList);
+        
+        
 
         //Only for debugging purpose deactivate it please.
         // scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
@@ -255,6 +261,13 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         setNodeList(node);
         
         
+
+    }
+
+    public void setTutorialIndex(int index){
+
+        AppLogger.getInstance().d(TAG,"ScenarioManager Index: " + index);
+        this.getCurrentScenario().getScenarios().get(0).setCurrentObjectEmphasis(index);
 
     }
 
@@ -437,6 +450,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         if(getCurrentScenario() != null){
             for(Scenario scenario : getCurrentScenario().getScenarios() )
             {
+                scenario.setCurrentObjectEmphasis(-1);
                 scenario.notOnNodeActions();
                 Node parent = scenario.getParent();
                 if(parent != null){

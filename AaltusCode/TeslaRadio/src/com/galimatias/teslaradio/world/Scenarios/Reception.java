@@ -150,6 +150,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
 
     @Override
     protected void loadMovableObjects() {
+        this.spotlight = ScenarioCommon.spotlightFactory();
+        
         //implement touchable
         touchable = new Node();
         touchable.setName("Touchable");
@@ -223,6 +225,11 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     @Override
     protected boolean simpleUpdate(float tpf) {
 
+        if (this.emphasisChange) {
+            objectEmphasis();
+            this.emphasisChange = false;
+        }
+        
         this.tpfDistanceCumul += tpf;
         if(this.tpfDistanceCumul > 0.35f){   
             this.updateDistanceStatus();
@@ -424,6 +431,23 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
          this.updateSignalIntensity(1-signalRatio);
          this.updateWifiLogos(signalIntensity);
      }
+
+    @Override
+    protected void objectEmphasis() {
+        if (this.spotlight != null) {            
+            switch(this.currentObjectToEmphasisOn) {
+                // Attach on microphone
+                case 0:
+                    this.spotlight.setLocalTranslation(scene.getChild("axis").getLocalTranslation().add(0.0f,-scene.getChild("axis").getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    scene.attachChild(this.spotlight);
+                    break;  
+                default:
+                    scene.detachChild(this.spotlight);
+                    break;
+            }
+        }
+    }
     
     
 }

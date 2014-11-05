@@ -10,12 +10,15 @@ import static com.jme3.input.event.TouchEvent.Type.DOWN;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
@@ -24,8 +27,6 @@ import com.jme3.texture.Texture;
  * Created by Greenwood0 on 2014-09-08.
  */
 public final class SoundEmission extends Scenario {
-
-
 
     private Spatial drum;
     private Spatial guitar;
@@ -134,6 +135,8 @@ public final class SoundEmission extends Scenario {
             this.drumEmitter.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
             this.drumEmitter.addControl(new SoundControl("Sounds/drum_taiko.wav",false,5));
         }
+        
+        this.spotlight = ScenarioCommon.spotlightFactory();
     }
 
     @Override
@@ -370,6 +373,11 @@ public final class SoundEmission extends Scenario {
         guitarArrow.simpleUpdate(tpf);
         moveArrow.simpleUpdate(tpf);
         
+        if (this.emphasisChange) {
+            objectEmphasis();
+            this.emphasisChange = false;
+        }
+             
         /*
         DrumSoundEmitter.simpleUpdate(tpf, this.Camera);
         GuitarSoundEmitter.simpleUpdate(tpf, this.Camera);
@@ -413,5 +421,29 @@ public final class SoundEmission extends Scenario {
     @Override
     protected void initPatternGenerator() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void objectEmphasis() {
+        
+        if (this.spotlight != null) {            
+            switch(this.currentObjectToEmphasisOn) {
+                // Attach on drum
+                case 0:
+                    this.spotlight.setLocalTranslation(drumHandleOutPosition.add(0.0f,-drumHandleOutPosition.y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(3.0f,20.0f,3.0f));
+                    this.attachChild(this.spotlight);
+                    break;
+                // Attach on guitar
+                case 1:
+                    this.spotlight.setLocalTranslation(guitarHandleOutPosition.add(0.0f,-guitarHandleOutPosition.y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
+                    this.attachChild(this.spotlight);
+                    break;
+                default:
+                    this.detachChild(this.spotlight);
+                    break;
+            }
+        }
     }
 }

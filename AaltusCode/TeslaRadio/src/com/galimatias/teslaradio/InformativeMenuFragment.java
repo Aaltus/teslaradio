@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import com.ar4android.vuforiaJME.ITutorialSwitcher;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.galimatias.teslaradio.world.Scenarios.IScenarioSwitcher;
@@ -22,12 +23,19 @@ import com.utils.LanguageLocaleChanger;
 public class InformativeMenuFragment extends Fragment implements View.OnClickListener,
         //SeekBar.OnSeekBarChangeListener,
         ItemListFragment.Callbacks,
-        ItemDetailFragment.OnClickDetailFragmentListener{
+        ItemDetailFragment.OnClickDetailFragmentListener,
+        ITutorialSwitcher
+{
 
 
     private IScenarioSwitcher scenarioSwitcher;
     public void setScenarioSwitcher(IScenarioSwitcher scenarioSwitcher) {
         this.scenarioSwitcher = scenarioSwitcher;
+    }
+
+    private ITutorialSwitcher tutorialSwitcher;
+    public void setTutorialSwitcher(ITutorialSwitcher tutorialSwitcher) {
+        this.tutorialSwitcher = tutorialSwitcher;
     }
 
 
@@ -60,9 +68,12 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         FragmentManager fm = getChildFragmentManager();//sgetSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         Fragment fragment = new ItemListFragment();
+        TutorialFragment tutorialFragment =  new TutorialFragment();
+        tutorialFragment.setTutorialSwitcher(this);
         ft.hide(fragment);
         ft.replace(R.id.item_list_fragment_vuforia, fragment, ITEM_LIST_FRAGMENT_TAG);
-        ft.replace(R.id.tutorial_fragment, new TutorialFragment(), TUTORIAL_FRAGMENT_TAG);
+        ft.replace(R.id.tutorial_fragment, tutorialFragment, TUTORIAL_FRAGMENT_TAG);
+
         ft.commit();
         fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
 
@@ -368,4 +379,8 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
     }
 
+    @Override
+    public void setTutorialIndex(int index) {
+        this.tutorialSwitcher.setTutorialIndex(index);
+    }
 }
