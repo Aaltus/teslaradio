@@ -1,6 +1,5 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.ar4android.vuforiaJME.AppGetter;
 import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 import com.galimatias.teslaradio.world.effects.*;
 import com.jme3.collision.CollisionResults;
@@ -10,15 +9,12 @@ import static com.jme3.input.event.TouchEvent.Type.DOWN;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
@@ -71,24 +67,19 @@ public final class SoundEmission extends Scenario {
     @Override
     protected void loadUnmovableObjects() {
 
-        Node sceneDrum = (Node) assetManager.loadModel("Models/SoundEmission/Tambour.j3o");
-        Node sceneGuit = (Node) assetManager.loadModel("Models/SoundEmission/Guitare.j3o");
+        scene = (Node) assetManager.loadModel("Models/SoundEmission/Scene_wUV.j3o");
+        this.attachChild(scene);
         
-        float movementValue  = 2.5f;
-
-        sceneDrum.setLocalTranslation(movementValue,0,movementValue);
-        sceneGuit.setLocalTranslation(movementValue,0,-movementValue);
+        guitar = scene.getChild("Guitar");
+        drum = scene.getChild("Tambour");
         
-        touchable.attachChild(sceneDrum);
-        touchable.attachChild(sceneGuit);
+        touchable.attachChild(guitar);
+        touchable.attachChild(drum);
 
-
-        drum = sceneDrum.getChild("Tambour");
-        guitar = sceneGuit.getChild("Guitar");
-        guitarHandleOut = sceneGuit.getChild("Guitar_Output_Handle");
-        drumHandleOut = sceneDrum.getChild("Drum_Output_Handle");
-        drumHandleOutPosition = drumHandleOut.getLocalTranslation().add(sceneDrum.getLocalTranslation());
-        guitarHandleOutPosition = guitarHandleOut.getLocalTranslation().add(sceneGuit.getLocalTranslation());
+        guitarHandleOut = scene.getChild("Guitar_Output_Handle");
+        drumHandleOut = scene.getChild("Drum_Output_Handle");
+        drumHandleOutPosition = drumHandleOut.getLocalTranslation();
+        guitarHandleOutPosition = guitarHandleOut.getLocalTranslation();
 
         drumEmitter = new Node();
         drumEmitter.setLocalTranslation(drumHandleOutPosition);
@@ -141,7 +132,7 @@ public final class SoundEmission extends Scenario {
 
     @Override
     public void restartScenario() {
-
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
