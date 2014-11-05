@@ -47,9 +47,9 @@ public final class SoundEmission extends Scenario {
     private String titleText = "L'émission du son";
     
     //Arrows
-    Arrows moveArrow;
-    Arrows drumArrow;
-    Arrows guitarArrow;
+    Node moveArrow;
+    Node drumArrow;
+    Node guitarArrow;
 
     public SoundEmission(ScenarioCommon sc, com.jme3.renderer.Camera Camera, Spatial destinationHandle)
     {
@@ -218,17 +218,22 @@ public final class SoundEmission extends Scenario {
 
     private void loadArrows()
     {        
-        drumArrow = new Arrows("touch", drumHandleOutPosition, assetManager, 1);
+        drumArrow = new Node();
+        drumArrow.move(drumHandleOutPosition);
+        drumArrow.addControl(new Arrows("touch", assetManager, 1));
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
         drumArrow.addControl(control1);
         this.attachChild(drumArrow);
         
-        guitarArrow = new Arrows("touch", guitarHandleOutPosition, assetManager, 1);
+        guitarArrow = new Node();
+        guitarArrow.move(guitarHandleOutPosition);
+        guitarArrow.addControl(new Arrows("touch", assetManager, 1));
         LookAtCameraControl control2 = new LookAtCameraControl(Camera);
         guitarArrow.addControl(control2);
         this.attachChild(guitarArrow);
         
-        moveArrow = new Arrows("move", null, assetManager, 10);
+        moveArrow = new Node();
+        moveArrow.addControl(new Arrows("move", assetManager, 10));
         this.attachChild(moveArrow);
     }
 
@@ -270,9 +275,9 @@ public final class SoundEmission extends Scenario {
     private void removeHintImages()
     {
         drumArrow.getControl(FadeControl.class).setShowImage(false);
-        drumArrow.resetTimeLastTouch();
+        drumArrow.getControl(Arrows.class).resetTimeLastTouch();
         guitarArrow.getControl(FadeControl.class).setShowImage(false);
-        guitarArrow.resetTimeLastTouch();
+        guitarArrow.getControl(Arrows.class).resetTimeLastTouch();
     }
 
     /**
@@ -356,9 +361,9 @@ public final class SoundEmission extends Scenario {
     @Override
     protected boolean simpleUpdate(float tpf) {
         
-        drumArrow.simpleUpdate(tpf);
-        guitarArrow.simpleUpdate(tpf);
-        moveArrow.simpleUpdate(tpf);
+        //drumArrow.simpleUpdate(tpf);
+        //guitarArrow.simpleUpdate(tpf);
+        //moveArrow.simpleUpdate(tpf);
         
         if (this.emphasisChange) {
             objectEmphasis();

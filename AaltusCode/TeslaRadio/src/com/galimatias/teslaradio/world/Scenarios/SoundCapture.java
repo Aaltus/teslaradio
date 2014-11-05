@@ -66,8 +66,8 @@ public final class SoundCapture extends Scenario {
     
     
     //Arrows
-    private Arrows micArrow;
-    private Arrows moveArrow;
+    private Node micArrow;
+    private Node moveArrow;
        
     public SoundCapture(ScenarioCommon sc,Camera Camera, Spatial destinationHandle)
     {
@@ -265,8 +265,8 @@ public final class SoundCapture extends Scenario {
     protected boolean simpleUpdate(float tpf) {
 
         //touchEffectEmitter.simpleUpdate(tpf);
-        micArrow.simpleUpdate(tpf);
-        moveArrow.simpleUpdate(tpf);
+        //micArrow.simpleUpdate(tpf);
+        //moveArrow.simpleUpdate(tpf);
         
         if(Camera != null) {
             Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
@@ -335,11 +335,15 @@ public final class SoundCapture extends Scenario {
     }
 
     private void loadArrows() {
-        micArrow = new Arrows("touch", micHandleInPosition, assetManager, 1);
+        micArrow = new Node();
+        micArrow.move(micHandleInPosition);
+        micArrow.addControl(new Arrows("touch",  assetManager, 1));
         LookAtCameraControl control = new LookAtCameraControl(Camera);
         micArrow.addControl(control);
         scene.attachChild(micArrow);
-        moveArrow = new Arrows("move", null, assetManager, 10);
+        
+        moveArrow = new Node();
+        moveArrow.addControl(new Arrows("move", assetManager, 10));
     }
     
         /**
@@ -348,7 +352,7 @@ public final class SoundCapture extends Scenario {
     public void removeHintImages()
     {
         micArrow.getControl(FadeControl.class).setShowImage(false);
-        micArrow.resetTimeLastTouch();
+        micArrow.getControl(Arrows.class).resetTimeLastTouch();
     }
 
     @Override

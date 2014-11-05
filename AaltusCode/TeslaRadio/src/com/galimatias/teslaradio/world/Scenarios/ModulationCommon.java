@@ -77,8 +77,8 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     private Quaternion rotationXSwitch = new Quaternion();
 
     //Arrows
-    private Arrows rotationArrow;
-    private Arrows switchArrow;
+    private Node rotationArrow;
+    private Node switchArrow;
     
     protected int frequency = 1;
     
@@ -463,8 +463,8 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
             this.emphasisChange = false;
         }
         
-        switchArrow.simpleUpdate(tpf);
-        rotationArrow.simpleUpdate(tpf);
+        //switchArrow.simpleUpdate(tpf);
+        //rotationArrow.simpleUpdate(tpf);
 
         checkTrackableAngle(trackableAngle);
         invRotScenario(trackableAngle + (pi / 2));
@@ -490,12 +490,16 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     }
 
     protected void loadArrows() {
-        switchArrow = new Arrows("touch", actionSwitch.getLocalTranslation(), assetManager, 1);
+        
+        switchArrow = new Node();
+        switchArrow.move(actionSwitch.getLocalTranslation());
+        switchArrow.addControl(new Arrows("touch", assetManager, 1));
         LookAtCameraControl control = new LookAtCameraControl(Camera);
         switchArrow.addControl(control);
         scene.attachChild(switchArrow);
 
-        rotationArrow = new Arrows("rotation", null, assetManager, 10);
+        rotationArrow = new Node();
+        rotationArrow.addControl(new Arrows("rotation", assetManager, 10));
         this.attachChild(rotationArrow);
     }
 
@@ -513,7 +517,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     public void removeHintImages()
     {
         switchArrow.getControl(FadeControl.class).setShowImage(false);
-        switchArrow.resetTimeLastTouch();
+        switchArrow.getControl(Arrows.class).resetTimeLastTouch();
     }
     
     @Override
