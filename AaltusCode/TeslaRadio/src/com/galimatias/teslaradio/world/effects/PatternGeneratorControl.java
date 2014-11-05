@@ -129,6 +129,7 @@ public class PatternGeneratorControl extends AbstractControl {
     public void stopAutoPlay(){
         if(this.autoPlayThread != null){
             this.autoPlayThread.cancel(true);
+            AppGetter.getThreadExecutor().remove(autoPlay);
             this.autoPlayThread = null;
             this.geomList.clear();
         }
@@ -221,13 +222,8 @@ public class PatternGeneratorControl extends AbstractControl {
     private Runnable autoPlay = new Runnable() {
 
         @Override
-        
         public void run() {
-               try{
-                   toggleNewWave(particlePerAutoWave);
-               }catch(Exception e){
-                   //Empty, the interrupt...
-               }
+              toggleNewWave(particlePerAutoWave);
             }
           
     };

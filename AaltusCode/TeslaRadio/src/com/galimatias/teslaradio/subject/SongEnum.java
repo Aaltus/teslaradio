@@ -9,5 +9,6 @@ package com.galimatias.teslaradio.subject;
  * @author Jean-Christophe
  */
 public enum SongEnum {
-    NOISE, ROCK,CLASSIC,ELEK
+    
+    NOISE, ROCK, CLASSIC, ELEK, SELECTED
 }

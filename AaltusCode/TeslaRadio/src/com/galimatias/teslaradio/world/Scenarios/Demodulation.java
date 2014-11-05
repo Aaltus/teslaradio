@@ -85,7 +85,7 @@ public class Demodulation extends ModulationCommon  {
     protected void initPatternGenerator() {
         
         Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
-        Spatial[] carrier = scenarioCommon.initCarrierGeometries();
+        Spatial[] carrier = scenarioCommon.initCarrierGeometries();   
               
         this.cubeSignal = new Node();
         this.cubeSignal.attachChild(carrier[0].clone());

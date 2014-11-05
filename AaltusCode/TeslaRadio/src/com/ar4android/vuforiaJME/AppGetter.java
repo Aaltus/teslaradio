@@ -47,6 +47,8 @@ public class AppGetter {
     
     static public final String SONG_ELEK="SongElek";
     
+    static public final String SONG_NOISE="SongNoise";
+    
     //world scalling
     private static float worldScaling = 10;
 

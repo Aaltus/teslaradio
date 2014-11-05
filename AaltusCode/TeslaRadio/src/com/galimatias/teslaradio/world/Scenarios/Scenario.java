@@ -5,6 +5,7 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppGetter;
+import com.galimatias.teslaradio.world.effects.NoiseControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.SoundControl;
@@ -60,6 +61,8 @@ public abstract class Scenario extends Node implements SignalObserver {
     
     // this is PIIIIIII! (kick persian)
     protected final float pi = (float) FastMath.PI;
+    
+    protected NoiseControl noiseControl = null;
     
     public void setCamera(Camera cam){
         this.Camera = cam;
@@ -281,7 +284,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     public boolean getNeedsAutoGen() {
         return this.needAutoGenIfMain;
     }
-
+/*
     private void startBackgroundSound() {
         if(this.backgroundSound != null){
             this.getControl(SoundControl.class).playSound(true);
@@ -295,7 +298,10 @@ public abstract class Scenario extends Node implements SignalObserver {
             this.getControl(SoundControl.class).setEnabled(false);
         }
     }
-
+*/
+    public void setSoundControl(NoiseControl noiseControl){
+        this.noiseControl = noiseControl;
+    }
     /**
      * This method will apply an opposite trackable rotation on the model, preventing it from rotating
      * @param ZXangle
