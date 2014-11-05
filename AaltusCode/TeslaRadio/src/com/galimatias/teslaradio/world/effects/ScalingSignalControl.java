@@ -4,6 +4,7 @@
  */
 package com.galimatias.teslaradio.world.effects;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.observer.ParticleObservable;
 import com.galimatias.teslaradio.world.observer.ParticleObserver;
 import com.jme3.cinematic.MotionPath;
@@ -80,7 +81,7 @@ public class ScalingSignalControl extends AbstractControl implements ParticleObs
         
         //When the distance == 0, we know we are inside the dome because there is no distance between both.
         float distanceFromEdge = this.spatial.getWorldBound().distanceToEdge(destinationSpatial.getWorldTranslation());
-        if(!reachingDestination && distanceFromEdge == 0)
+        if(!reachingDestination && distanceFromEdge == 0 && AppGetter.hasRootNodeAsAncestor(destinationSpatial))
         {
             reachingDestination = true;
             this.observer.onParticleReachingReceiver(this.particle);

@@ -179,10 +179,6 @@ public final class SoundCapture extends Scenario {
         micWireEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(particlePerWave);
     }
     
-    private void textBoxesUpdate(Vector3f upVector)
-    {
-        titleTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
-    }
     
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
@@ -274,7 +270,6 @@ public final class SoundCapture extends Scenario {
         
         if(Camera != null) {
             Vector3f upVector = this.getLocalRotation().mult(Vector3f.UNIT_Y);
-            textBoxesUpdate(upVector);
         }
         
         if (this.emphasisChange) {
