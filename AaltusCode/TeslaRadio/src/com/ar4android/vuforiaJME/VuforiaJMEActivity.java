@@ -56,7 +56,10 @@ import java.util.concurrent.Callable;
  * Center of the Android side of the application. All Android view and specific thing are here.
  * It also initialize vuforia library and jme app.
  */
-public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements AndroidActivityListener, IScenarioSwitcher, VuforiaCallback {
+public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements AndroidActivityListener,
+        IScenarioSwitcher,
+        ITutorialSwitcher,
+        VuforiaCallback {
 
     // Boolean to use the profiler. If it's set to true, you can get the tracefile on your phone /sdcard/traceFile.trace
     private static final boolean UseProfiler = false;
@@ -236,6 +239,18 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     }
 
     @Override
+    public void setTutorialMenu(final ScenarioEnum scenarioEnum) {
+        runOnUiThread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        getInformativeMenuFragment().setTutorialMenu(scenarioEnum);
+                    }
+                }
+        );
+    }
+
+    @Override
     public void pauseTracking() {
 
         runOnUiThread(new Runnable() {
@@ -380,6 +395,20 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                         }
                         return null;
                     }});
+    }
+
+    @Override
+    public void setTutorialIndex(final int index) {
+        (app).enqueue(new Callable<Object>() {
+            public Object call() throws Exception {
+                //((VuforiaJME)app).getiScenarioManager().setScenarioByEnum(scenarioEnum);
+                ScenarioManager state = app.getStateManager().getState(ScenarioManager.class);
+                if(state != null)
+                {
+                    state.setTutorialIndex(index);
+                }
+                return null;
+            }});
     }
 
 
@@ -689,6 +718,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         FragmentTransaction ft = fm.beginTransaction();
         InformativeMenuFragment fragment = new InformativeMenuFragment();
         fragment.setScenarioSwitcher(this);
+        fragment.setTutorialSwitcher(this);
 
         ft.replace(frameLayout1.getId(), fragment, INFORMATIVE_MENU_FRAGMENT_TAG);
         ft.commit();
@@ -839,7 +869,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
 
         // Where the AppLogger is called for the first time and the log level is set
-        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ERROR);
+        AppLogger.getInstance().setLogLvl(AppLogger.LogLevel.ALL);
 
         AppLogger.getInstance().i(TAG, "onCreate");
 

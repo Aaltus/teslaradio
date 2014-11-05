@@ -163,6 +163,8 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         pcbAmpEmitter.getLocalTranslation().addLocal(new Vector3f(0.0f,cubeCarrier.getWorldScale().y,0.0f));
 
         initOutputSignals();
+        
+        this.spotlight = ScenarioCommon.spotlightFactory();
 
         //Assign touchable
         touchable = new Node();//(Node) scene.getParent().getChild("Touchable")
@@ -469,6 +471,11 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
             trackableAngle = this.getUserData("angleX");
         }
 
+        if (this.emphasisChange) {
+            objectEmphasis();
+            this.emphasisChange = false;
+        }
+        
         switchArrow.simpleUpdate(tpf);
         rotationArrow.simpleUpdate(tpf);
 
@@ -514,5 +521,34 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     {
         switchArrow.getControl(FadeControl.class).setShowImage(false);
         switchArrow.resetTimeLastTouch();
-    }    
+    }
+    
+    @Override
+    protected void objectEmphasis() {
+        if (this.spotlight != null) {            
+            switch(this.currentObjectToEmphasisOn) {
+                // Attach on modulator
+                case 0:
+                    this.spotlight.setLocalTranslation(scene.getChild("Modulator").getLocalTranslation().add(0.0f,-scene.getChild("Modulator").getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    scene.attachChild(this.spotlight);
+                    break;
+                // Attach on frequency generator    
+                case 1:
+                    this.spotlight.setLocalTranslation(scene.getChild("Display").getLocalTranslation().add(0.0f,-scene.getChild("Display").getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    scene.attachChild(this.spotlight);
+                    break;
+                // Attach on the switch    
+                case 2:
+                    this.spotlight.setLocalTranslation(scene.getChild("Switch").getLocalTranslation().add(0.0f,-scene.getChild("Switch").getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    scene.attachChild(this.spotlight);
+                    break;    
+                default:
+                    scene.detachChild(this.spotlight);
+                    break;
+            }
+        }
+    }
 }

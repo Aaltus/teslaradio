@@ -11,6 +11,8 @@ public interface AndroidActivityListener {
 
    public void toggleInformativeMenuCallback(ScenarioEnum scenarioEnum);
 
+   public void setTutorialMenu(ScenarioEnum scenarioEnum);
+
    public void pauseTracking();
 
    public void startTracking();

@@ -1,5 +1,6 @@
 package com.galimatias.teslaradio;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -7,12 +8,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
+import com.ar4android.vuforiaJME.ITutorialSwitcher;
+import com.galimatias.teslaradio.subject.ScenarioEnum;
+import com.galimatias.teslaradio.subject.SubjectContent;
 
 /**
  * Created by jimbojd72 on 11/3/2014.
  */
 public class TutorialFragment extends Fragment implements View.OnClickListener {
+
+    private final static String TAG = TutorialFragment.class.getSimpleName();
+
+    private ITutorialSwitcher tutorialSwitcher;
+    public void setTutorialSwitcher(ITutorialSwitcher tutorialSwitcher) {
+        this.tutorialSwitcher = tutorialSwitcher;
+    }
+
+    private void setTutorialMenuCallback(int index){
+
+        if(tutorialSwitcher != null){
+            tutorialSwitcher.setTutorialIndex(index);
+        }
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -44,35 +64,86 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private void setSpeakAnimation(boolean enabled) {
+        ImageView characterButton = (ImageView)getView().findViewById(R.id.character_tutorial_button);
+        if(enabled) {
+            //Animation shakeAnim = AnimationUtils.loadAnimation(this.getActivity(), R.anim.shake);
+            //characterButton.startAnimation(shakeAnim);
+            characterButton.setBackgroundResource(R.drawable.tesla_speak_anim);
+            AnimationDrawable animation = (AnimationDrawable) characterButton.getBackground();
+            animation.start();
+        }
+        else{
+            AnimationDrawable animation = (AnimationDrawable) characterButton.getBackground();
+            animation.stop();
+            //characterButton.clearAnimation();
+        }
+    }
+
     @Override
     public void onClick(View view) {
 
         switch (view.getId())
         {
             case R.id.character_tutorial_button:
-                toggleBubbleViewVisibility();
+                setBubbleViewVisibility(!(getView().findViewById(R.id.bubble_root_view).getVisibility() == View.VISIBLE));
                 break;
             case R.id.view_flipper:
-                ViewFlipper viewFlipper = (ViewFlipper)getView().findViewById(R.id.view_flipper);
+                ViewFlipper viewFlipper = getViewFlipper();
                 if(viewFlipper.getDisplayedChild() == viewFlipper.getChildCount()-1)
                 {
-                    toggleBubbleViewVisibility();
+                    setBubbleViewVisibility(false);
                 }
-                viewFlipper.showNext();
+                else {
+                    viewFlipper.showNext();
+                    setTutorialMenuCallback(viewFlipper.getDisplayedChild());
+                }
+
+
                 break;
 
         }
     }
 
-    private void toggleBubbleViewVisibility() {
-        View viewFlipper = (View)getView().findViewById(R.id.bubble_root_view);
-        if(viewFlipper.getVisibility() == View.GONE){
-            viewFlipper.setVisibility(View.VISIBLE);
+    private ViewFlipper getViewFlipper(){
+        return (ViewFlipper)getView().findViewById(R.id.view_flipper);
+    }
+
+    private void setBubbleViewVisibility(boolean showBubble) {
+        View view = (View)getView().findViewById(R.id.bubble_root_view);
+        ViewFlipper viewFlipper = getViewFlipper();
+        if(view.getVisibility() == View.GONE && showBubble){
+            view.setVisibility(View.VISIBLE);
+            if(viewFlipper.getChildCount() > 0){
+                int index = 0;
+                viewFlipper.setDisplayedChild(index);
+                this.setTutorialMenuCallback(index);
+            }
             setShakeAnimation(false);
+            setSpeakAnimation(true);
         }
-        else{
-            viewFlipper.setVisibility(View.GONE);
+        else if (view.getVisibility() == View.VISIBLE && !showBubble){
+            view.setVisibility(View.GONE);
+            setTutorialMenuCallback(-1);
             setShakeAnimation(true);
+            setSpeakAnimation(false);
+        }
+    }
+
+    public void setBubbleCategory(ScenarioEnum scenarioEnum){
+
+        //AppLogger.getInstance().d(TAG, "setBubbleCategory with scenarioEnum: " + scenarioEnum);
+        ViewFlipper viewFlipper = getViewFlipper();
+        viewFlipper.removeAllViews();
+        int[] listXmlString =  SubjectContent.ENUM_MAP.get(scenarioEnum).getListStringIdTutorial();
+        //AppLogger.getInstance().d(TAG, "setBubbleCategory with scenarioEnum: " + scenarioEnum);
+        if(listXmlString != null) {
+            for (int i = 0; i < listXmlString.length; i++) {
+                //AppLogger.getInstance().d(TAG, "Removing view :" + i);
+                TextView textView = new TextView(this.getActivity());
+                textView.setText(this.getActivity().getString(listXmlString[i]));
+                viewFlipper.addView(textView);
+            }
         }
     }
 }

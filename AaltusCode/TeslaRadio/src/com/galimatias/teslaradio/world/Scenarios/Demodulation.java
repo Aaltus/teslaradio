@@ -149,6 +149,7 @@ public class Demodulation extends ModulationCommon  {
         
         this.getInputHandle().getControl(PatternGeneratorControl.class).setParticleList(lst);
     }
+
 }
                
 

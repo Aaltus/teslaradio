@@ -30,16 +30,16 @@ public class SubjectContent {
 //        Example avec plusieurs pages
 //        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.MODULATION.ordinal(), activity.getString(R.string.modulation_am_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test},ScenarioEnum.MODULATION));
 
-        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.SOUNDEMISSION.ordinal(), activity.getString(R.string.sound_emission_title), new int[]{R.layout.sound_emission},ScenarioEnum.SOUNDEMISSION));
-        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.SOUNDCAPTURE.ordinal(), activity.getString(R.string.sound_capture_title), new int[]{R.layout.sound_capture},ScenarioEnum.MODULATION));
-        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.MODULATION.ordinal(), activity.getString(R.string.modulation_title), new int[]{R.layout.modulation},ScenarioEnum.MODULATION));
-        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.TRANSMIT.ordinal(), activity.getString(R.string.transmit_title), new int[]{R.layout.transmission},ScenarioEnum.TRANSMIT));
-        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.RECEPTION.ordinal(), activity.getString(R.string.reception_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test},ScenarioEnum.RECEPTION));
-        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.FILTER.ordinal(), activity.getString(R.string.filter_title), new int[]{R.layout.filter},ScenarioEnum.FILTER));
-        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.DEMODULATION.ordinal(), activity.getString(R.string.demodulation_title), new int[]{R.layout.demodulation},ScenarioEnum.DEMODULATION));
-        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.PLAYBACK.ordinal(), activity.getString(R.string.playback_title), new int[]{R.layout.playback},ScenarioEnum.PLAYBACK));
-        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.REFERENCE.ordinal(), activity.getString(R.string.reference_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test},ScenarioEnum.REFERENCE));
-        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.ABOUTUS.ordinal(), activity.getString(R.string.about_us_title), new int[]{R.layout.informative_info_detail_test2},ScenarioEnum.ABOUTUS));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.SOUNDEMISSION.ordinal(), activity.getString(R.string.sound_emission_title), new int[]{R.layout.sound_emission}, new int[]{R.string.sound_emission_tutorial_p1,R.string.sound_emission_tutorial_p2}, ScenarioEnum.SOUNDEMISSION));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.SOUNDCAPTURE.ordinal(), activity.getString(R.string.sound_capture_title), new int[]{R.layout.sound_capture}, new int[]{R.string.sound_capture_tutorial_p1}, ScenarioEnum.SOUNDCAPTURE));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.MODULATION.ordinal(), activity.getString(R.string.modulation_title), new int[]{R.layout.modulation}, new int[]{R.string.modulation_tutorial_p1}, ScenarioEnum.MODULATION));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.TRANSMIT.ordinal(), activity.getString(R.string.transmit_title), new int[]{R.layout.transmission}, new int[]{R.string.transmission_tutorial_p1}, ScenarioEnum.TRANSMIT));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.RECEPTION.ordinal(), activity.getString(R.string.reception_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}, new int[]{R.string.reception_tutorial_p1}, ScenarioEnum.RECEPTION));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.FILTER.ordinal(), activity.getString(R.string.filter_title), new int[]{R.layout.filter}, new int[]{R.string.filter_tutorial_p1}, ScenarioEnum.FILTER));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.DEMODULATION.ordinal(), activity.getString(R.string.demodulation_title), new int[]{R.layout.demodulation}, new int[]{R.string.demodulation_tutorial_p1}, ScenarioEnum.DEMODULATION));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.PLAYBACK.ordinal(), activity.getString(R.string.playback_title), new int[]{R.layout.playback}, new int[]{R.string.playback_tutorial_p1}, ScenarioEnum.PLAYBACK));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.REFERENCE.ordinal(), activity.getString(R.string.reference_title), new int[]{R.layout.informative_info_detail_test, R.layout.informative_info_detail_test}, null, ScenarioEnum.REFERENCE));
+        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.ABOUTUS.ordinal(), activity.getString(R.string.about_us_title), new int[]{R.layout.informative_info_detail_test2}, null, ScenarioEnum.ABOUTUS));
 
     }
 
@@ -74,13 +74,14 @@ public class SubjectContent {
         private int id;
         private String title;
         private int[] listXmlDetailmenu;
-        private int[] listXmlTutorial;
+        private int[] listStringIdTutorial;
         private ScenarioEnum scenarioEnum;
 
-        public SubjectItem(int id, String title, int[] listXmlDetailmenu, ScenarioEnum scenarioEnum)
+        public SubjectItem(int id, String title, int[] listXmlDetailmenu, int[] listStringIdTutorial, ScenarioEnum scenarioEnum)
         {
             this.id = id;
             this.listXmlDetailmenu = listXmlDetailmenu;
+            this.listStringIdTutorial = listStringIdTutorial;
             this.title = title;
             this.scenarioEnum = scenarioEnum;
         }
@@ -99,8 +100,12 @@ public class SubjectContent {
             return title;
         }
 
-        public int[] getListXmlDetailmenu() {
+        public int[] getListXmlDetailMenu() {
             return listXmlDetailmenu;
+        }
+
+        public int[] getListStringIdTutorial() {
+            return this.listStringIdTutorial;
         }
 
         public ScenarioEnum getScenarioEnum() {

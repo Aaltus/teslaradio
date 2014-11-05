@@ -46,5 +46,14 @@
     <string name="filter_title">Filtrage</string>
     <string name="demodulation_title">Démodulation</string>
     <string name="playback_title">Hauts-parleurs</string>
+    <string name="sound_emission_tutorial_p1">SoundCapture</string>
+    <string name="sound_capture_tutorial_p1">Sound capture.</string>
+    <string name="modulation_tutorial_p1">modulation</string>
+    <string name="transmission_tutorial_p1">transmission</string>
+    <string name="reception_tutorial_p1">Reception</string>
+    <string name="filter_tutorial_p1">Filter</string>
+    <string name="demodulation_tutorial_p1">Demodulation</string>
+    <string name="playback_tutorial_p1">Playback</string>
+    <string name="sound_emission_tutorial_p2">Alex is gay and I don\'t like when he ask to be quicker.</string>
 
 </resources>
