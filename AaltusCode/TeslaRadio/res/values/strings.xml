@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!--Misc.-->
     <string name="app_name">Aaltus</string>
     <string name="starting_email">Starting email client...</string>
     <string name="author_email">dms.jonathan@gmail.com</string>
@@ -13,13 +14,8 @@
     <string name="string_action_language_ge">Deutsch</string>
     <string name="exit_dialog_title">Exit?</string>
     <string name="exit_dialog_message">Press yes</string>
-    <string name="sound_emission_title">L\'émission du son</string>
-    <string name="sound_capture_title">La capture du son</string>
-    <string name="modulation_title">La modulation</string>
-    <string name="transmit_title">La transmission</string>
-    <string name="reception_title">La réception</string>
-    <string name="reference_title">Reference</string>
-    <string name="about_us_title">About us</string>
+
+    <!--Informative menus texts-->
     <string name="soundemissionp1">D’où provient le son? Quelle est son origine?\n\nLa perturbation d’un milieu, que ce soit l’air ou l’eau, est à l’origine du son. Lorsque le milieu de propagation du son est l’air, cette perturbation physique provoque des variations localisées de la pression atmosphérique. Ces variations de pressions sont très rapides, contrairement aux fluctuations lentes de la pression atmosphérique dues à la météo. Puisque l’oreille humaine est sensible aux variations rapides de la pression, il nous est donc possible de capter ce son et de l’interpréter. \n\nComment produit-on ce son/cette perturbation? </string>
     <string name="soundemissionp2">Un simple exemple de production du son consiste à insérer un piston dans un tube.\n\nLorsque le piston se déplace vers la droite, la couche d’air près du piston se retrouve comprimée. Cette couche d’air, sous compression, va à son tour comprimer la couche d’air à sa droite et ainsi de suite. Le déplacement de cette zone de compression s’effectue à la vitesse du son, soit 343 mètres par seconde à l’air ambiant. Cette vitesse est environ 10 fois plus grande que celle de la vitesse maximale du guépard.\n\nDès que le piston se retire du tube, la pression de la couche d’air adjacente au piston diminue pour se retrouver sous la pression atmosphérique normale : on parle de raréfaction de la pression.\n\nAinsi, si le piston effectue sans cesse son mouvement de va-et-vient, il y aura plusieurs zones de compression et de raréfaction de pression qui sortira du tube. Nos oreilles seront en mesure de capter ces variations de pressions et il sera possible d’entendre un son sortant de ce tube. Ce son changera selon la vitesse du piston.\n\nDans le même ordre d’idée, la guitare et le tambour produisent des perturbations dans son environnement. Cependant, ces perturbations sont plus complexes que ceux d’un mouvement simple de piston.\n\nPourquoi une personne à 10 km de moi n’entend-elle pas mon tambour ?\n\nDans la majorité des cas, le son se propage de façons sphériques autour de la source, comme observé sur la guitare et le tambour. Chaque sphère ainsi formée est nommée front d\'onde, puis est caractérisée par une pression constante sur toute sa surface. </string>
     <string name="soundemissionp3">Dans le monde 3D de cette application, si l’on relie toutes les sphères bleues de mêmes grosseurs, c\'est-à-dire relier tous les points où la pression est identique, la forme sphérique du front d\'onde ressort comme montré avec les grandes sphères bleues.\n\nEn l’absence de pertes, la puissance émise par la source est répartie uniformément sur toute la surface du front d’onde. Donc, plus on s’éloigne de la source, plus la sphère grossit et plus la puissance est répartie sur une grande surface. Cette répartition de la puissance a pour effet de diminuer l’intensité du son au fur et à mesure que l’on s’éloigne de la source. Ainsi, après une distance donnée, il n’est plus possible d’entendre le son de son interlocuteur. De plus, cette diminution de l’intensité est accentuée par l’absorption des ondes par le sol et l’air. </string>
@@ -43,18 +39,31 @@
     <string name="crash_dialog_ok_toast">Thank you !</string>
     <string name="developers_email">dms.jonathan@gmail.com</string>
     <string name="splashscreentext">Loading camera and game menu...</string>
+
+    <!--Scenario titles-->
+    <string name="sound_emission_title">L\'émission du son</string>
+    <string name="sound_capture_title">La capture du son</string>
+    <string name="modulation_title">La modulation</string>
+    <string name="transmit_title">La transmission</string>
+    <string name="reception_title">La réception</string>
+    <string name="reference_title">Reference</string>
+    <string name="about_us_title">About us</string>
     <string name="filter_title">Filtrage</string>
     <string name="demodulation_title">Démodulation</string>
     <string name="playback_title">Hauts-parleurs</string>
-    <string name="sound_emission_tutorial_p1">SoundCapture</string>
-    <string name="sound_capture_tutorial_p1">Sound capture.</string>
-    <string name="modulation_tutorial_p1">modulation</string>
-    <string name="transmission_tutorial_p1">transmission</string>
-    <string name="reception_tutorial_p1">Reception</string>
+
+    <!--Tesla's tutorials-->
+    <string name="sound_emission_tutorial_p1"><b>Tapoter</b> les instruments modifie la pression d’air autour d’eux et créent ainsi des <u>ondes sonores</u>.</string>
+    <string name="sound_capture_tutorial_p1">Les <u>ondes sonores</u> sont captés par le microphone, qui les transforment en <u>courant électrique</u>. <b>Éloigner</b> le microphone des instruments nuit à la capture du son..</string>
+    <string name="modulation_tutorial_p1">La forme géométrique représente une <u>porteuse</u>, c’est-à-dire la <u>fréquence</u> émise ou le poste de radio. On peut la changer en faisant<b>tourner</b> le bouton rouge.</string>
+    <string name="modulation_tutorial_p2">Le <u>modulateur</u> permet d’insérer l’information du courant électrique dans la <u>porteuse</u>, ce qui permettra de différencier les stations de radio entre-elles. Par la <u>modulation</u>, le <u>courant électrique</u> modifie la grandeur générale de la <u>porteuse</u>.</string>
+    <string name="modulation_tutorial_p3">Il existe deux types de <u>modulation</u> : AM et FM. La modulation d’<u>amplitude</u> (AM) a un effet sur la grosseur générale de la porteuse tandis que la modulation <u>de fréquence</u> (FM) a un effet sur sa largeur. <b>Basculer</b> l’interrupteur change le type de modulation.</string>
+    <string name="transmission_tutorial_p1"><u>Amplifier</u> la <u>porteuse modulée</u> (i.e. forme géométrique modifiée) permettra de l’envoyer dans les airs sur de longues distances. On peut modifier <u>l’amplification</u> en <b>touchant</b> le gradateur de l’amplificateur.</string>
+    <string name="transmission_tutorial_p2">La <u>porteuse modulée</u>, sous forme électrique, entre dans l’<u>antenne émettrice</u> et se transforme en <u>onde radio</u>. L’<u>onde radio</u> pourra se propager dans l’air et dans l’espace.</string>
+    <string name="reception_tutorial_p1"><u>L’antenne réceptrice</u> capte toutes les <u>ondes radio</u> qui s’y rendent. L’antenne transforme <u>l’onde radio</u> en <u>signal électrique</u>. <b>Éloigner</b> l’antenne émettrice de l’antenne réceptrice nuit à la capture de l’onde radio.</string>
     <string name="filter_tutorial_p1">Filter</string>
     <string name="demodulation_tutorial_p1">Demodulation</string>
     <string name="playback_tutorial_p1">Playback</string>
-    <string name="sound_emission_tutorial_p2">Alex is gay and I don\'t like when he ask to be quicker.</string>
 
     <!--Master tutorial strings-->
     <string name="tutorial_title">Tutoriel</string>

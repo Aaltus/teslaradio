@@ -18,6 +18,13 @@
     <style name="SeekBarLinearLayoutStyle">
         <item name="android:layout_height">250dp</item>
     </style>
+    <style name="BubbleWeight">
+        <item name="android:layout_weight">2</item>
+    </style>
+    <style name="CharacterSize">
+        <item name="android:layout_width">200dp</item>
+        <item name="android:layout_height">200dp</item>
+    </style>
 
 
 </resources>
