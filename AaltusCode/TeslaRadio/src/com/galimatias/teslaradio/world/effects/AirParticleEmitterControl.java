@@ -259,7 +259,6 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
                 for(int axe_a = 0; axe_a < nbDirection-axe_flat; axe_a++)
                 {
                    Spatial spatial_clone = threadSpatialToSend.clone();
-                   spatial_clone.setMaterial(threadMaterialClone);
                    MotionPath path = new MotionPath();
                    path.addWayPoint(Vector3f.ZERO);
                    path.addWayPoint(path_vector);
