@@ -176,12 +176,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         touchable.attachChild(ampliSliderButton);
         touchable.attachChild(ampliSliderBox);
         
-        this.isTouched = true;
-        this.touchCount = 4;
-        this.ampliSliderUpdate();
-        this.isTouched = true;
-        this.touchCount = 4;
-        this.ampliSliderUpdate();
+       
     }
 
     private void loadArrows()
