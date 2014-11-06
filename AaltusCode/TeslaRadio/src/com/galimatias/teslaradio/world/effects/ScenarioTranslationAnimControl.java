@@ -45,7 +45,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
 
         this.id = id;
         this.trackables = trackables;
-        this.speed = speed;
+        this.speed = speed/10;
         
         this.path = new MotionPath();
     }
@@ -93,7 +93,13 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
         
         // set the start position of the scenario
         this.spatial.setLocalTranslation(getStartPositionVector(pathIsReverse));
-        this.spatial.setLocalRotation(this.offsetRotation);
+        this.spatial.setLocalRotation(Quaternion.IDENTITY);
+
+        if(!this.pathIsReverse) {
+            this.spatial.rotate((this.endNode.getWorldRotation().inverse()).mult(this.startNode.getWorldRotation()));
+        }
+
+        //this.spatial.rotate(this.offsetRotation);
         
         // enable the control updates
         this.setEnabled(true);
@@ -124,7 +130,8 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
             // stop the translation by deactivating the control
             distanceTraveled = 0;
             this.spatial.setLocalTranslation(Vector3f.ZERO);
-            this.spatial.setLocalRotation(this.offsetRotation);
+            this.spatial.setLocalRotation(Quaternion.IDENTITY);
+            //this.spatial.setLocalRotation(this.offsetRotation);
             this.setEnabled(false);
         }        
     }
