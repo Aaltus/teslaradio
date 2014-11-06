@@ -25,6 +25,9 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
     private final static String TAG = TutorialFragment.class.getSimpleName();
 
     private ITutorialSwitcher tutorialSwitcher;
+    private int nbClicks = 0;
+    private long time = 0;
+
     public void setTutorialSwitcher(ITutorialSwitcher tutorialSwitcher) {
         this.tutorialSwitcher = tutorialSwitcher;
     }
@@ -75,7 +78,24 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
             AnimationDrawable animation = (AnimationDrawable) characterButton.getBackground();
             animation.start();
         }
-        else{
+        else {
+            AnimationDrawable animation = (AnimationDrawable) characterButton.getBackground();
+            animation.stop();
+            //characterButton.clearAnimation();
+        }
+    }
+
+    private void setElectricAnimation(boolean enabled) {
+        ImageView characterButton = (ImageView)getView().findViewById(R.id.character_tutorial_button);
+        if(enabled) {
+            //Animation shakeAnim = AnimationUtils.loadAnimation(this.getActivity(), R.anim.shake);
+            //characterButton.startAnimation(shakeAnim);
+            characterButton.setBackgroundResource(R.drawable.tesla_electric_anim);
+            AnimationDrawable animation = (AnimationDrawable) characterButton.getBackground();
+            animation.start();
+            animation.setOneShot(true);
+        }
+        else {
             AnimationDrawable animation = (AnimationDrawable) characterButton.getBackground();
             animation.stop();
             //characterButton.clearAnimation();
@@ -88,6 +108,19 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
         switch (view.getId())
         {
             case R.id.character_tutorial_button:
+                nbClicks++;
+
+                if (nbClicks == 1) {
+                    time= System.currentTimeMillis();
+                } else if (nbClicks > 1) {
+                    long currentTime = System.currentTimeMillis();
+                    long deltaTime = currentTime - time;
+
+                    if (deltaTime >= 2000) {
+                        nbClicks = 0;
+                    }
+                }
+
                 setBubbleViewVisibility(!(getView().findViewById(R.id.bubble_root_view).getVisibility() == View.VISIBLE));
                 break;
             case R.id.view_flipper:
@@ -123,12 +156,16 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
             }
             setShakeAnimation(false);
             setSpeakAnimation(true);
-        }
-        else if (view.getVisibility() == View.VISIBLE && !showBubble){
+            setElectricAnimation(false);
+        } else if (nbClicks >= 5) {
+            setElectricAnimation(true);
+        } else if (view.getVisibility() == View.VISIBLE && !showBubble){
+
             view.setVisibility(View.GONE);
             setTutorialMenuCallback(-1);
             setShakeAnimation(true);
             setSpeakAnimation(false);
+            setElectricAnimation(false);
         }
     }
 
