@@ -4,8 +4,4 @@
     <item android:drawable="@drawable/tesla_electric_1" android:duration="200" />
     <item android:drawable="@drawable/tesla_electric_2" android:duration="200" />
     <item android:drawable="@drawable/tesla_electric_3" android:duration="200" />
-    <item android:drawable="@drawable/tesla_electric_4" android:duration="200" />
-    <item android:drawable="@drawable/tesla_electric_5" android:duration="200" />
-    <item android:drawable="@drawable/tesla_electric_6" android:duration="200" />
-    <item android:drawable="@drawable/tesla_electric_7" android:duration="200" />
 </animation-list>
