@@ -422,14 +422,8 @@ public final class SoundEmission extends Scenario {
             switch(this.currentObjectToEmphasisOn) {
                 // Attach on drum
                 case 0:
-                    this.spotlight.setLocalTranslation(drumHandleOutPosition.add(0.0f,-drumHandleOutPosition.y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(3.0f,20.0f,3.0f));
-                    this.attachChild(this.spotlight);
-                    break;
-                // Attach on guitar
-                case 1:
-                    this.spotlight.setLocalTranslation(guitarHandleOutPosition.add(0.0f,-guitarHandleOutPosition.y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
+                    this.spotlight.setLocalTranslation(scene.getLocalTranslation().add(0.0f,-scene.getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(7.0f,30.0f,7.0f));
                     this.attachChild(this.spotlight);
                     break;
                 default:

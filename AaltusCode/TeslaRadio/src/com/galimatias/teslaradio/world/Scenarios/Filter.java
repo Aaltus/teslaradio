@@ -309,7 +309,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
                 // Attach on microphone
                 case 0:
                     this.spotlight.setLocalTranslation(scene.getChild("Circle").getLocalTranslation().add(0.0f,-scene.getChild("Circle").getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    this.spotlight.setLocalScale(new Vector3f(3.0f,30.0f,3.0f));
                     scene.attachChild(this.spotlight);
                     break;  
                 default:

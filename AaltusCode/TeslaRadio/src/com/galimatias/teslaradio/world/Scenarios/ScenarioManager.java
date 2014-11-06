@@ -197,6 +197,8 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         soundEmission.setName("SoundEmission");
         scenarios.add(soundEmission);
         
+        playback.setCurrentObjectEmphasis(0);
+        
         // add translation control to each scenarios
         int id = 0;
         for(Scenario scenario : scenarios){
