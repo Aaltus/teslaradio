@@ -112,6 +112,7 @@ public final class Playback extends Scenario implements EmitterObserver {
         Vector3f handleSliderEnd = scene.getChild("Slider.Handle.End").getLocalTranslation();
         translationIncrement = handleSliderEnd.subtract(handleSliderBegin).divide(4);
         
+        
         initTitleBox();
     }
 
