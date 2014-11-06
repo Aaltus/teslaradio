@@ -69,7 +69,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     private float tpfDistanceCumul = 0f;
 
     public Reception(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
-        super(sc,Camera, destinationHandle, "Sounds/reception.ogg" );
+        super(sc,Camera, destinationHandle );
         
         this.needAutoGenIfMain = true;     
         scenarioCommon.registerObserver(this);
@@ -132,8 +132,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         // Set names for the emitters
         outputAntenneRx.setName("OutputAntenneRx");
         outputAntenneRx.setUserData(AppGetter.USR_SOURCE_TRANSLATION, 0f);
-        outputAntenneRx.setUserData(AppGetter.USR_SCALE,1f);
-        
+        outputAntenneRx.setUserData(AppGetter.USR_SCALE,0.5f);
         initPatternGenerator();
     }
 
@@ -233,7 +232,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         }
         
         this.tpfDistanceCumul += tpf;
-        if(this.tpfDistanceCumul > 0.35f){   
+        if(this.tpfDistanceCumul > 0.35f && !this.isFirst){   
             this.updateDistanceStatus();
             this.tpfDistanceCumul = 0;
         }
@@ -275,9 +274,9 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         } else {
             signalIntensity = 3;
         }
-        if(this.backgroundSound != null){
-            this.updateSoundLevel(normScale);
-        }
+        
+        this.updateSoundLevel(normScale);
+        
        
     }
     
@@ -304,11 +303,11 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     private void updateSoundLevel(float normScale){
         if(normScale == 0){
-            this.getControl(SoundControl.class).updateNoiseLevel(1);
+            this.updateNoise(1);
         }else if (normScale > 0.75f){
-            this.getControl(SoundControl.class).updateNoiseLevel(0);
+            this.updateNoise(0);
         }else{
-            this.getControl(SoundControl.class).updateNoiseLevel(1-normScale);
+            this.updateNoise(1-normScale);
         }
         
     }
@@ -338,7 +337,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     @Override
     protected void onFirstNodeActions(){
         super.onFirstNodeActions();
-        
+        this.updateNoise(0f);
+        this.updateVolume(0f);
         scene.detachChild(wifi);
         this.detachChild(moveArrow);
     }
@@ -422,14 +422,22 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
      
      private void updateDistanceStatus(){
          
-         Vector3f wt = this.getWorldTranslation();
-         wt = wt.subtract((Vector3f) this.getInputHandle().getUserData(AppGetter.USR_SOURCE_TRANSLATION));
-         float distance = wt.divide(this.getWorldScale()).length();
-         distance = distance / (Float) this.getInputHandle().getUserData(AppGetter.USR_SCALE);
-         distance -= 8; //offset
-         distance = distance < 0 ? 0 : distance;
-         float signalRatio = distance / 20.0f;
-         signalRatio = signalRatio > 1 ? 1 : signalRatio;
+         float ampliScale = this.getInputHandle().getUserData(AppGetter.USR_SCALE);
+         float signalRatio;
+         if(ampliScale == 0.5){
+             signalRatio = 1;
+         }
+         else{
+             
+            Vector3f wt = this.getWorldTranslation();
+            wt = wt.subtract((Vector3f) this.getInputHandle().getUserData(AppGetter.USR_SOURCE_TRANSLATION));
+            float distance = wt.divide(this.getWorldScale()).length();
+            distance = distance / ampliScale;
+            distance -= 8; //offset
+            distance = distance < 0 ? 0 : distance;
+            signalRatio = distance / 20.0f;
+            signalRatio = signalRatio > 1 ? 1 : signalRatio;
+         }
          this.updateSignalIntensity(1-signalRatio);
          this.updateWifiLogos(signalIntensity);
      }
