@@ -164,7 +164,7 @@ public class Demodulation extends ModulationCommon  {
                     this.spotlight.setLocalTranslation(scene.getChild("Switch").getLocalTranslation().add(0.0f,-scene.getChild("Switch").getLocalTranslation().y,0.0f));
                     this.spotlight.setLocalScale(new Vector3f(2.0f,30.0f,2.0f));
                     scene.attachChild(this.spotlight);
-                    break;    
+                    break;
                 default:
                     scene.detachChild(this.spotlight);
                     break;
