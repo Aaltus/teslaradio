@@ -95,7 +95,6 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
             characterButton.setBackgroundResource(R.drawable.tesla_electric_anim);
             AnimationDrawable animation = (AnimationDrawable) characterButton.getBackground();
             animation.start();
-            animation.setOneShot(true);
         }
         else {
             AnimationDrawable animation = (AnimationDrawable) characterButton.getBackground();
@@ -163,8 +162,9 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
             }
             setShakeAnimation(false);
             setSpeakAnimation(true);
-            setElectricAnimation(false);
         } else if (nbClicks >= 5) {
+            setSpeakAnimation(false);
+            setShakeAnimation(false);
             setElectricAnimation(true);
         } else if (view.getVisibility() == View.VISIBLE && !showBubble){
 
