@@ -3,6 +3,7 @@ package com.galimatias.teslaradio;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import com.galimatias.teslaradio.subject.SubjectContent;
 public class TutorialFragment extends Fragment implements View.OnClickListener {
 
     private final static String TAG = TutorialFragment.class.getSimpleName();
+    MediaPlayer mediaPlayer = null;
 
     private ITutorialSwitcher tutorialSwitcher;
     public void setTutorialSwitcher(ITutorialSwitcher tutorialSwitcher) {
@@ -85,10 +87,17 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
 
+        if(mediaPlayer == null){
+            mediaPlayer = MediaPlayer.create(this.getActivity(), R.raw.tesla);
+        }
+
         switch (view.getId())
         {
             case R.id.character_tutorial_button:
                 setBubbleViewVisibility(!(getView().findViewById(R.id.bubble_root_view).getVisibility() == View.VISIBLE));
+                if(getView().findViewById(R.id.bubble_root_view).getVisibility() == View.VISIBLE){
+                    mediaPlayer.start();
+                }
                 break;
             case R.id.view_flipper:
                 ViewFlipper viewFlipper = getViewFlipper();
@@ -100,8 +109,6 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
                     viewFlipper.showNext();
                     setTutorialMenuCallback(viewFlipper.getDisplayedChild());
                 }
-
-
                 break;
 
         }
