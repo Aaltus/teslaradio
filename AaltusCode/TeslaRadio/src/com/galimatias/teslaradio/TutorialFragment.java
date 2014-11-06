@@ -3,6 +3,7 @@ package com.galimatias.teslaradio;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import com.galimatias.teslaradio.subject.SubjectContent;
 public class TutorialFragment extends Fragment implements View.OnClickListener {
 
     private final static String TAG = TutorialFragment.class.getSimpleName();
+    MediaPlayer mediaPlayer = null;
 
     private Animation shakeAnim;
     private AnimationDrawable speakAnim;
@@ -31,7 +33,8 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
 
         CALM,
         SHAKING,
-        SPEAKING
+        SPEAKING,
+        ELECTRIC
 
     }
 
@@ -56,12 +59,17 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
                 setSpeakAnimation();
                 break;
 
+            case ELECTRIC:
+                setElectricAnimation();
+                break;
+
         }
 
     }
 
     private ITutorialSwitcher tutorialSwitcher;
-    private boolean wantToSpeak = true;
+    private int nbClicks = 0;
+    private long time = 0;
 
     public void setTutorialSwitcher(ITutorialSwitcher tutorialSwitcher) {
         this.tutorialSwitcher = tutorialSwitcher;
@@ -116,15 +124,42 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
     private void setCalmAnimation() {
         ImageView characterButton = getCharacterView();
         characterButton.setBackgroundResource(R.drawable.tesla);
+
+    }
+
+    private void setElectricAnimation() {
+        ImageView characterButton = getCharacterView();
+        characterButton.setBackgroundResource(R.drawable.tesla_electric_anim);
+        AnimationDrawable animation = (AnimationDrawable) characterButton.getBackground();
+        animation.start();
     }
 
     @Override
     public void onClick(View view) {
 
+        if(mediaPlayer == null){
+            mediaPlayer = MediaPlayer.create(this.getActivity(), R.raw.tesla);
+        }
+
         switch (view.getId())
         {
             case R.id.character_tutorial_button:
+                nbClicks++;
+                if (nbClicks == 1) {
+                    time= System.currentTimeMillis();
+                } else if (nbClicks > 1) {
+                    long currentTime = System.currentTimeMillis();
+                    long deltaTime = currentTime - time;
+
+                    if (deltaTime >= 2000) {
+                        nbClicks = 0;
+                    }
+                }
+
                 setBubbleViewVisibility(!(getView().findViewById(R.id.bubble_root_view).getVisibility() == View.VISIBLE));
+                if(getView().findViewById(R.id.bubble_root_view).getVisibility() == View.VISIBLE){
+                    mediaPlayer.start();
+                }
                 break;
             case R.id.view_flipper:
                 ViewFlipper viewFlipper = getViewFlipper();
@@ -156,12 +191,20 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
                 viewFlipper.setDisplayedChild(index);
                 this.setTutorialMenuCallback(index);
             }
+
             setCharacterAction(CharacterAction.SPEAKING);
+        }
+        else if (nbClicks >= 5) {
+            //setSpeakAnimation(false);
+            //setShakeAnimation(false);
+            //setElectricAnimation(true);
+            setCharacterAction(CharacterAction.ELECTRIC);
         }
         else if (view.getVisibility() == View.VISIBLE && !showBubble){
             view.setVisibility(View.GONE);
             setTutorialMenuCallback(-1);
             setCharacterAction(CharacterAction.CALM);
+
 
         }
     }
