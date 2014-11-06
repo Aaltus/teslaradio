@@ -55,6 +55,13 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
     </style>
+    <style name="BubbleWeight">
+        <item name="android:layout_weight">1</item>
+    </style>
+    <style name="CharacterSize">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">100dp</item>
+    </style>
 
 
 </resources>

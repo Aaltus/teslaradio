@@ -7,11 +7,16 @@ package com.galimatias.teslaradio.world.effects;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
 
@@ -19,7 +24,7 @@ import com.jme3.scene.shape.Quad;
  *
  * @author Christian
  */
-public class Arrows extends Node{
+public class Arrows extends AbstractControl{
     private float       baseScale;
     private float       cumulatedTime;
     private String      name;
@@ -37,7 +42,7 @@ public class Arrows extends Node{
      * @param mat
      * @param baseScale 
      */
-    public Arrows(String name, Vector3f location, AssetManager assetManager, float baseScale)
+    public Arrows(String name, AssetManager assetManager, float baseScale)
     {        
         if (name.equals("touch")){
             imageGeom = new Geometry(name ,new Box(0.5f, 0.5f, Float.MIN_VALUE));
@@ -54,14 +59,10 @@ public class Arrows extends Node{
         imageMat.setTexture("ColorMap", assetManager.loadTexture("Textures/"+name+".png"));
         imageMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         imageMat.getAdditionalRenderState().setDepthWrite(false);
-        FadeControl fade = new FadeControl(hintFadingTime);
-        if (location != null){
-            this.move(location);
-        }
+        
         imageGeom.setMaterial(imageMat);
-        this.addControl(fade);
-        this.attachChild(imageGeom);
-        this.setLocalScale(baseScale);
+        
+        
         
         this.name      = name;
         this.baseScale = baseScale;
@@ -75,26 +76,40 @@ public class Arrows extends Node{
         timeLastTouch = 0f;
     }
     
-    public void simpleUpdate(float tpf)
-    {
+    @Override
+    public void setSpatial(Spatial spatial){
+        super.setSpatial(spatial);
+        FadeControl fade = new FadeControl(hintFadingTime);
+        this.spatial.addControl(fade);
+        ((Node)this.spatial).attachChild(imageGeom);
+        this.spatial.setLocalScale(baseScale);
+    }
+
+    @Override
+    protected void controlUpdate(float tpf) {
         timeLastTouch += tpf;
         cumulatedTime += tpf;
 
         if (timeLastTouch >= maxTimeRefreshHint)
         {
-            this.getControl(FadeControl.class).setShowImage(true);
+            this.spatial.getControl(FadeControl.class).setShowImage(true);
         }
                 
         float movement = 0.5f*(float)Math.sin(cumulatedTime*3);
         if (this.name.equals("move")){
-            this.setLocalScale(baseScale+movement);
+            this.spatial.setLocalScale(baseScale+movement);
         }
         else if (this.name.equals("rotation")){
-            this.setLocalRotation(this.rot.fromAngleAxis(movement, Vector3f.UNIT_Y));
+            this.spatial.setLocalRotation(this.rot.fromAngleAxis(movement, Vector3f.UNIT_Y));
         }
         else if (this.name.equals("touch")){
-            this.setLocalScale(baseScale+movement/3);            
+            this.spatial.setLocalScale(baseScale+movement/3);            
         }
+    }
+
+    @Override
+    protected void controlRender(RenderManager rm, ViewPort vp) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

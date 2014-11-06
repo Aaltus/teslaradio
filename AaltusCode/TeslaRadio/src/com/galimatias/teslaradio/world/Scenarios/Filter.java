@@ -242,7 +242,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     private void checkTrackableAngle(float trackableAngle) {
 
         float stepRange = 2f*pi / 3f;
-        float deltaAngle = stepRange*0.1f/2f;
+        float deltaAngle = stepRange*0.25f/2f;
 
         if (trackableAngle <= stepRange + deltaAngle && trackableAngle >= stepRange - deltaAngle) {
             frequency = 1;

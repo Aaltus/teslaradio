@@ -56,7 +56,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     private Node pyramidSignal;
     private Node dodecagoneSignal;
 
-    private Arrows moveArrow;
+    private Node moveArrow;
     
     private Boolean isFM = true;
     private Boolean newWave = false;
@@ -138,7 +138,9 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
 
     private void loadArrows()
     {
-        moveArrow = new Arrows("move", null, assetManager, 10);
+        moveArrow = new Node();
+        moveArrow.addControl(new Arrows("move", assetManager, 10));
+        //moveArrow = new Arrows("move", null, assetManager, 10);
     }
 
     private void addWifiControl(ImageBox wifiLogo) {
@@ -234,7 +236,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
             this.updateDistanceStatus();
             this.tpfDistanceCumul = 0;
         }
-        moveArrow.simpleUpdate(tpf);
+        //moveArrow.simpleUpdate(tpf);
        
         return false;
     }

@@ -463,6 +463,9 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 }
             }
         }
+        if(androidActivityListener != null){
+            androidActivityListener.setTutorialMenu(null);
+        }
     }
 
     /**

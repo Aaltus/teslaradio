@@ -1,6 +1,5 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.ar4android.vuforiaJME.AppGetter;
 import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 import com.galimatias.teslaradio.world.effects.*;
 import com.jme3.collision.CollisionResults;
@@ -10,15 +9,12 @@ import static com.jme3.input.event.TouchEvent.Type.DOWN;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
@@ -51,9 +47,9 @@ public final class SoundEmission extends Scenario {
     private String titleText = "L'émission du son";
     
     //Arrows
-    Arrows moveArrow;
-    Arrows drumArrow;
-    Arrows guitarArrow;
+    Node moveArrow;
+    Node drumArrow;
+    Node guitarArrow;
 
     public SoundEmission(ScenarioCommon sc, com.jme3.renderer.Camera Camera, Spatial destinationHandle)
     {
@@ -72,24 +68,19 @@ public final class SoundEmission extends Scenario {
     @Override
     protected void loadUnmovableObjects() {
 
-        Node sceneDrum = (Node) assetManager.loadModel("Models/SoundEmission/Tambour.j3o");
-        Node sceneGuit = (Node) assetManager.loadModel("Models/SoundEmission/Guitare.j3o");
+        scene = (Node) assetManager.loadModel("Models/SoundEmission/Scene_wUV.j3o");
+        this.attachChild(scene);
         
-        float movementValue  = 2.5f;
-
-        sceneDrum.setLocalTranslation(movementValue,0,movementValue);
-        sceneGuit.setLocalTranslation(movementValue,0,-movementValue);
+        guitar = scene.getChild("Guitar");
+        drum = scene.getChild("Tambour");
         
-        touchable.attachChild(sceneDrum);
-        touchable.attachChild(sceneGuit);
+        touchable.attachChild(guitar);
+        touchable.attachChild(drum);
 
-
-        drum = sceneDrum.getChild("Tambour");
-        guitar = sceneGuit.getChild("Guitar");
-        guitarHandleOut = sceneGuit.getChild("Guitar_Output_Handle");
-        drumHandleOut = sceneDrum.getChild("Drum_Output_Handle");
-        drumHandleOutPosition = drumHandleOut.getLocalTranslation().add(sceneDrum.getLocalTranslation());
-        guitarHandleOutPosition = guitarHandleOut.getLocalTranslation().add(sceneGuit.getLocalTranslation());
+        guitarHandleOut = scene.getChild("Guitar_Output_Handle");
+        drumHandleOut = scene.getChild("Drum_Output_Handle");
+        drumHandleOutPosition = drumHandleOut.getLocalTranslation();
+        guitarHandleOutPosition = guitarHandleOut.getLocalTranslation();
 
         drumEmitter = new Node();
         drumEmitter.setLocalTranslation(drumHandleOutPosition);
@@ -123,18 +114,18 @@ public final class SoundEmission extends Scenario {
         if(destinationHandle != null){
             ParticleEmitterControl microphoneControl = this.destinationHandle.getControl(ParticleEmitterControl.class);
 
-            this.guitarEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 20f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
+            this.guitarEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 10f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
             this.guitarEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
             this.guitarEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
             this.guitarEmitter.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
-            this.guitarEmitter.addControl(new SoundControl("Sounds/guitar.wav",false,2));
+            this.guitarEmitter.addControl(new SoundControl("Sounds/guitar.wav",false,5));
 
 
-            this.drumEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 20f, 13f, mat2, AirParticleEmitterControl.AreaType.DOME));
+            this.drumEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 10f, 13f, mat2, AirParticleEmitterControl.AreaType.DOME));
             this.drumEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
             this.drumEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
             this.drumEmitter.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
-            this.drumEmitter.addControl(new SoundControl("Sounds/drum_taiko.wav",false,2));
+            this.drumEmitter.addControl(new SoundControl("Sounds/drum_taiko.wav",false,5));
         }
         
         this.spotlight = ScenarioCommon.spotlightFactory();
@@ -142,7 +133,7 @@ public final class SoundEmission extends Scenario {
 
     @Override
     public void restartScenario() {
-
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -228,17 +219,22 @@ public final class SoundEmission extends Scenario {
 
     private void loadArrows()
     {        
-        drumArrow = new Arrows("touch", drumHandleOutPosition, assetManager, 1);
+        drumArrow = new Node();
+        drumArrow.move(drumHandleOutPosition);
+        drumArrow.addControl(new Arrows("touch", assetManager, 1));
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
         drumArrow.addControl(control1);
         this.attachChild(drumArrow);
         
-        guitarArrow = new Arrows("touch", guitarHandleOutPosition, assetManager, 1);
+        guitarArrow = new Node();
+        guitarArrow.move(guitarHandleOutPosition);
+        guitarArrow.addControl(new Arrows("touch", assetManager, 1));
         LookAtCameraControl control2 = new LookAtCameraControl(Camera);
         guitarArrow.addControl(control2);
         this.attachChild(guitarArrow);
         
-        moveArrow = new Arrows("move", null, assetManager, 10);
+        moveArrow = new Node();
+        moveArrow.addControl(new Arrows("move", assetManager, 10));
         this.attachChild(moveArrow);
     }
 
@@ -280,9 +276,9 @@ public final class SoundEmission extends Scenario {
     private void removeHintImages()
     {
         drumArrow.getControl(FadeControl.class).setShowImage(false);
-        drumArrow.resetTimeLastTouch();
+        drumArrow.getControl(Arrows.class).resetTimeLastTouch();
         guitarArrow.getControl(FadeControl.class).setShowImage(false);
-        guitarArrow.resetTimeLastTouch();
+        guitarArrow.getControl(Arrows.class).resetTimeLastTouch();
     }
 
     /**
@@ -296,10 +292,6 @@ public final class SoundEmission extends Scenario {
         //imageHintGuitar.simpleUpdate(tpf, this.Camera, upVector);
     }
 
-    public void textBoxesUpdate(Vector3f upVector)
-    {
-        titleTextBox.simpleUpdate(null, 0.0f, null, this.Camera, upVector);
-    }
 
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
@@ -370,9 +362,9 @@ public final class SoundEmission extends Scenario {
     @Override
     protected boolean simpleUpdate(float tpf) {
         
-        drumArrow.simpleUpdate(tpf);
-        guitarArrow.simpleUpdate(tpf);
-        moveArrow.simpleUpdate(tpf);
+        //drumArrow.simpleUpdate(tpf);
+        //guitarArrow.simpleUpdate(tpf);
+        //moveArrow.simpleUpdate(tpf);
         
         if (this.emphasisChange) {
             objectEmphasis();
