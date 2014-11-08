@@ -1,14 +1,16 @@
 package com.galimatias.teslaradio;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
+import com.ar4android.vuforiaJME.VuforiaJMEActivity;
 
 /**
  * Created by jimbojd72 on 11/8/2014.
  */
-public class MasterTutorialFragment extends Fragment {
+public class MasterTutorialFragment extends Fragment implements View.OnClickListener {
 
 
     private static final String TAG = MasterTutorialFragment.class.getSimpleName();
@@ -33,6 +35,11 @@ public class MasterTutorialFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.master_tutorial, container,false);
 
+        View cancelButton     = view.findViewById(R.id.master_tutorial_cancel_button);
+        cancelButton.setOnClickListener(this);
+        View continueButton     = view.findViewById(R.id.master_tutorial_ok_button);
+        continueButton.setOnClickListener(this);
+
 
         return view;
     }
@@ -41,13 +48,20 @@ public class MasterTutorialFragment extends Fragment {
      * Reload the activity with the new language when clicked
      * @param v
      */
-    private void onClick(View v){
+    public void onClick(View v){
 
         int id = v.getId();
 
         switch (id){
 
-
+            case R.id.master_tutorial_cancel_button:
+                this.getActivity().finish();
+                break;
+            case R.id.master_tutorial_ok_button:
+                Intent intent = new Intent(this.getActivity(), VuforiaJMEActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+                break;
 
         }
     }

@@ -50,6 +50,7 @@
                   android:name="com.ar4android.vuforiaJME.MasterTutorialActivity"
                   android:configChanges="keyboardHidden|screenLayout|orientation|screenSize"
                   android:screenOrientation="landscape"
+                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
                 >
         </activity>
 
