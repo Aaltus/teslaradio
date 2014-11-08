@@ -32,12 +32,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.galimatias.teslaradio.*;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
@@ -553,10 +551,26 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             @Override
             public void run() {
                 if(showAlertToast) {
+
+                    LayoutInflater inflater = getLayoutInflater();
+                    View layout = inflater.inflate(R.layout.toast_character_bubble,
+                            (ViewGroup) findViewById(R.id.toast_layout_root));
+
+                    TextView text = (TextView) layout.findViewById(R.id.toast_text);
+                    text.setText(getString(R.string.toast_no_trackable_seen));
+
+                    Toast toast = new Toast(getApplicationContext());
+                    //toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                    toast.setDuration(Toast.LENGTH_SHORT);
+                    toast.setView(layout);
+                    toast.show();
+                    //Old code for the toast.
+                    /*
                     String text = getString(R.string.toast_no_trackable_seen);
                     int duration = Toast.LENGTH_SHORT;
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.show();
+                    */
                 }
             }
         });
