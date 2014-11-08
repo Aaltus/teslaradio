@@ -1,6 +1,6 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.ar4android.vuforiaJME.AndroidActivityListener;
+import com.ar4android.vuforiaJME.AndroidActivityController;
 import com.ar4android.vuforiaJME.AppGetter;
 import com.ar4android.vuforiaJME.ITutorialSwitcher;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
@@ -115,7 +115,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     /**
      * Callback interface to open the informativeMenu.
      */
-    private AndroidActivityListener androidActivityListener;
+    private AndroidActivityController androidActivityController;
     
     private static final String NEXT_SCENARIO = "NextScenario";
     private static final String PREVIOUS_SCENARIO = "PreviousScenario";
@@ -129,11 +129,11 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             ApplicationType applicationType,
             List<Node> node,
             Camera cam,
-            AndroidActivityListener androidActivityListener)
+            AndroidActivityController androidActivityController)
     {
         this.app = app;
         this.nodeList = node;
-        this.androidActivityListener = androidActivityListener;
+        this.androidActivityController = androidActivityController;
         this.applicationType = applicationType;
         this.assetManager  = this.app.getAssetManager();//AppGetter.getAssetManager();
         this.renderManager = this.app.getRenderManager();
@@ -463,8 +463,8 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 }
             }
         }
-        if(androidActivityListener != null){
-            androidActivityListener.setTutorialMenu(null);
+        if(androidActivityController != null){
+            androidActivityController.setTutorialMenu(null);
         }
     }
 
@@ -509,8 +509,8 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         }
 
         ScenarioEnum scenarioEnum = scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios());
-        if(androidActivityListener != null){
-            androidActivityListener.setTutorialMenu(scenarioEnum);
+        if(androidActivityController != null){
+            androidActivityController.setTutorialMenu(scenarioEnum);
         }
         updateGuiNavigationArrows();
         
@@ -620,9 +620,9 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
 
         for(Scenario scenario : getCurrentScenario().getScenarios() )
         {
-            if (scenario.simpleUpdate(tpf) && androidActivityListener != null)
+            if (scenario.simpleUpdate(tpf) && androidActivityController != null)
             {
-                androidActivityListener.toggleInformativeMenuCallback(scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios()));
+                androidActivityController.toggleInformativeMenuCallback(scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios()));
             }
         }
     };

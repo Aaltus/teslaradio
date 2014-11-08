@@ -59,7 +59,7 @@ import java.util.concurrent.Callable;
  * Center of the Android side of the application. All Android view and specific thing are here.
  * It also initialize vuforia library and jme app.
  */
-public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements AndroidActivityListener,
+public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements AndroidActivityController,
         IScenarioSwitcher,
         ITutorialSwitcher,
         VuforiaCallback,
@@ -107,7 +107,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     }
 
     @Override
-    public void quitActivity() {
+    public void quitAndroidActivity() {
         openCloseAlertDialog();
     }
 
@@ -431,7 +431,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
 
     @Override
-    public void dismissSplashScreen()
+    public void dismissAndroidSplashScreen()
     {
 
         class OneShotTask implements Runnable {
@@ -1023,8 +1023,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             Debug.startMethodTracing("traceFile");
         }
 
-        //Set an AndroidActivityListener to receive callbacks from VuforiaJME e.g. to show informative menu
-        ((VuforiaJME) app).setAndroidActivityListener(this);
+        //Set an AndroidActivityController to receive callbacks from VuforiaJME e.g. to show informative menu
+        ((VuforiaJME) app).setAndroidActivityController(this);
         vuforiaCaller = new VuforiaCallerNative(this);
 
         showSplashscreenDialog();
