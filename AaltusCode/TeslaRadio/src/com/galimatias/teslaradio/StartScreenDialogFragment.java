@@ -23,7 +23,6 @@ public class StartScreenDialogFragment extends DialogFragment implements View.On
 
 
     private static final String TAG = StartScreenDialogFragment.class.getSimpleName();
-    public static final String BUNDLE_START_SCREEN_CONTROLLER_TAG = "StartScreenController";
 
     private boolean dialogClosable = true;
     private StartScreenController  startScreenController;

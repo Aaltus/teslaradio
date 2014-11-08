@@ -337,35 +337,35 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
         ScenarioCommon scenarioCommon = new ScenarioCommon();
 
-        androidActivityListener.setProgressBar(10, "Loading " + "Sound Emission" + "...");
+        androidActivityListener.setProgressBar(0, "Loading " + "Sound Emission" + "...");
         SoundEmission soundEmission = new SoundEmission(scenarioCommon, null, null);
         renderManager.preloadScene(soundEmission);
 
-        androidActivityListener.setProgressBar(20, "Loading " + "Sound Capture" + "...");
+        androidActivityListener.setProgressBar(10, "Loading " + "Sound Capture" + "...");
         Scenario soundCapture = new SoundCapture(scenarioCommon, null, null);
         renderManager.preloadScene(soundCapture);
 
-        androidActivityListener.setProgressBar(30, "Loading " + "Amplification" + "...");
+        androidActivityListener.setProgressBar(20, "Loading " + "Amplification" + "...");
         Amplification amplification = new Amplification(scenarioCommon, null, null);
         renderManager.preloadScene(amplification);
 
-        androidActivityListener.setProgressBar(40, "Loading " + "Modulation" + "...");
+        androidActivityListener.setProgressBar(30, "Loading " + "Modulation" + "...");
         Modulation modulation = new Modulation(scenarioCommon, null, null);
         renderManager.preloadScene(modulation);
 
-        androidActivityListener.setProgressBar(50, "Loading " + "Reception" + "...");
+        androidActivityListener.setProgressBar(40, "Loading " + "Reception" + "...");
         Reception reception = new Reception(scenarioCommon, null, null);
         renderManager.preloadScene(reception);
 
-        androidActivityListener.setProgressBar(60, "Loading " + "Demodulation" + "...");
+        androidActivityListener.setProgressBar(50, "Loading " + "Demodulation" + "...");
         Demodulation demodulation = new Demodulation(scenarioCommon, null, null);
         renderManager.preloadScene(demodulation);
 
-        androidActivityListener.setProgressBar(70, "Loading " + "Filter" + "...");
+        androidActivityListener.setProgressBar(60, "Loading " + "Filter" + "...");
         Filter filter = new Filter(scenarioCommon, null, null);
         renderManager.preloadScene(filter);
 
-        androidActivityListener.setProgressBar(80, "Loading " + "Playback" + "...");
+        androidActivityListener.setProgressBar(70, "Loading " + "Playback" + "...");
         Playback playback = new Playback(scenarioCommon, null, null);
         renderManager.preloadScene(playback);
 

@@ -122,6 +122,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 FragmentManager fm = getSupportFragmentManager();
                 StartScreenDialogFragment startScreenDialogFragment =
                         new StartScreenDialogFragment();
+                startScreenDialogFragment.setCancelable(false);
                 startScreenDialogFragment.setStartScreenController(startScreenController);
                 startScreenDialogFragment.show(fm, START_MENU_FRAGMENT_TAG);
             }
@@ -161,10 +162,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             @Override
             public void run() {
                 progressDialog = new ProgressDialog(context); //Here I get an error: The constructor ProgressDialog(PFragment) is undefined
-                //progressDialog.setMessage(title);
+                progressDialog.setMessage("Loading stuff...");
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 progressDialog.setTitle(title);
-                progressDialog.setIndeterminate(true);
+                //progressDialog.setIndeterminate(true);
                 progressDialog.setCancelable(false);
                 progressDialog.show();
             }
@@ -186,9 +187,11 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     @Override
     public void setProgressBar(final int currentProgress, final String progressComment) {
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                AppLogger.getInstance().d(TAG,"setProgressBar: " + progressComment + " " + currentProgress );
                 progressDialog.setMessage(progressComment);
                 progressDialog.setProgress(currentProgress);
             }
