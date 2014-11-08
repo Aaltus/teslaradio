@@ -15,7 +15,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="libs" level="project" />
     <orderEntry type="module" module-name="ViewPagerIndicator" />
-    <orderEntry type="module" module-name="gridlayout" />
   </component>
 </module>
 
