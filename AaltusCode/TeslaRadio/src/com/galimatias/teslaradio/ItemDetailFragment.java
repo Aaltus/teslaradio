@@ -215,9 +215,21 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
             //v.setOnClickListener(this);
 
 
-            View soundCaptureImage     = v.findViewById(R.id.sound_capture_image);
-            if(soundCaptureImage != null) {
-                soundCaptureImage.setOnClickListener(this);
+            View soundEmissionImage     = v.findViewById(R.id.sound_emission_image_preview);
+            if(soundEmissionImage != null) {
+                soundEmissionImage.setOnClickListener(this);
+            }
+            View sourisImage     = v.findViewById(R.id.souris_preview);
+            if(sourisImage != null) {
+                sourisImage.setOnClickListener(this);
+            }
+            View modulationFmImage     = v.findViewById(R.id.modulationfm_preview);
+            if(modulationFmImage != null) {
+                modulationFmImage.setOnClickListener(this);
+            }
+            View modulationAmImage    = v.findViewById(R.id.modulationam_preview);
+            if(modulationAmImage != null) {
+                modulationAmImage.setOnClickListener(this);
             }
 
 
@@ -236,10 +248,18 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
         public void onClick(View view) {
             AppLogger.getInstance().d(TAG,"Testing stuff");
             switch(view.getId()) {
-                case R.id.sound_capture_image:
+                case R.id.souris_preview:
                     playVideo(R.raw.souris);
                     break;
-
+                case R.id.modulationam_preview:
+                    playVideo(R.raw.modulationam);
+                    break;
+                case R.id.modulationfm_preview:
+                    playVideo(R.raw.modulationfm);
+                    break;
+                case R.id.sound_emission_image_preview:
+                    playVideo(R.raw.pression);
+                    break;
             }
         }
     }
