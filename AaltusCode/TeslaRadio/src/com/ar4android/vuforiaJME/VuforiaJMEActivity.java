@@ -855,6 +855,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         fragment.setTutorialSwitcher(this);
 
         ft.replace(frameLayout1.getId(), fragment, INFORMATIVE_MENU_FRAGMENT_TAG);
+        ft.hide(fragment);
         ft.commit();
         fm.executePendingTransactions(); //TO do it quickly instead of waiting for commit()
     }
