@@ -90,5 +90,6 @@
     <string name="screen_tutorial_button">Tutorial</string>
     <string name="screen_credits_button">Credits</string>
     <string name="screen_exit_button">Exit</string>
+    <string name="toast_no_trackable_seen">Please focus on a trackable</string>
 
 </resources>

@@ -38,6 +38,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 import com.galimatias.teslaradio.*;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
@@ -542,6 +543,23 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 ((VuforiaJME)app).onEndGameClick();
                 return null;
             }});
+
+    }
+
+    @Override
+    public void showTrackableAlertToast(final boolean showAlertToast) {
+        final Context context = this;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(showAlertToast) {
+                    String text = getString(R.string.toast_no_trackable_seen);
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                }
+            }
+        });
 
     }
 
