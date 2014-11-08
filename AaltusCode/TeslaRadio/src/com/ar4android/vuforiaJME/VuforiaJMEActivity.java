@@ -550,7 +550,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(showAlertToast) {
+                if(showAlertToast && !getInformativeMenuFragment().isChildFragmentShown()) {
 
                     LayoutInflater inflater = getLayoutInflater();
                     View layout = inflater.inflate(R.layout.toast_character_bubble,
