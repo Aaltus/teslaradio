@@ -18,10 +18,7 @@
 
 package com.ar4android.vuforiaJME;
 
-import com.galimatias.teslaradio.world.Scenarios.DevFrameworkMainState;
-import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
-import com.galimatias.teslaradio.world.Scenarios.ScreenState;
-import com.galimatias.teslaradio.world.Scenarios.StateSwitcher;
+import com.galimatias.teslaradio.world.Scenarios.*;
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -29,13 +26,16 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.utils.AppLogger;
 
-public class VuforiaJME extends SimpleApplication implements AppObservable, StateSwitcher {
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+
+public class VuforiaJME extends SimpleApplication implements AppObservable, StateSwitcher, StartScreenController {
 
 	private static final String TAG = VuforiaJME.class.getName();
 
 
 
-    private ScreenState startScreenState;
+    private IStartScreen startScreenState;
 
     private ScenarioManager scenarioManager;
     private VuforiaJMEState vuforiaJMEState;
@@ -87,32 +87,21 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 		setDisplayFps(true);
 
 
-        //androidActivityListener.onFinishSimpleInit();
+        androidActivityListener.dismissSplashScreen();
 
 
-        //To uncomments
-        startScreenState = new ScreenState(this, this);
-        this.getStateManager().attach(startScreenState);
-        this.getFlyByCamera().setDragToRotate(true);
+        //Code to unable nifty gui loading bar and start screen.
+        //startScreenState = new ScreenState(this, this);
+        //this.getStateManager().attach(startScreenState);
+        //this.getFlyByCamera().setDragToRotate(true);
+        this.androidActivityListener.openProgressScreen("Loading resources...");
+        startLoading();
+        startScreenState = androidActivityListener;
+        startScreenState.openStartMenu();
+        //this.openStartScreen();
 
-        //openStartScreen();
+        //this.androidActivityListener.openStartScreen();
 
-
-
-        /*
-        Node for Jimbo, old way of initializing vuforiaJME
-        // We use custom viewports - so the main viewport does not need to contain the rootNode
-		viewPort.detachScene(rootNode);
-
-
-		initTracking(settings.getWidth(), settings.getHeight());
-		initVideoBackground(settings.getWidth(), settings.getHeight());
-		initBackgroundCamera();
-
-        initForegroundCamera(mForegroundCamFOVY);
-
-		initForegroundScene();
-         */
 
         initLights();
 
@@ -120,6 +109,8 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         //Otherwise the camera background will be OVER the 3d models.
 
         // We use custom viewports - so the main viewport does not need to contain the rootNode
+
+
 
         //Init all the things
         this.rootNode.addControl(new TrackableManager());
@@ -169,6 +160,13 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
     public void onBackButton(){
 
+        if(!startScreenState.isStartMenuShown()){
+            openStartScreen();
+        }
+        else{
+            this.androidActivityListener.quitActivity();
+        }
+        /*
         String currentScreenName = stateManager.getState(ScreenState.class).getCurrentScreenShownName();
         if(currentScreenName.equals(ScreenState.NULL_SCREEN_ID)) {
             openStartScreen();
@@ -176,6 +174,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         if(currentScreenName.equals(ScreenState.START_SCREEN_ID)) {
             this.androidActivityListener.quitActivity();
         }
+        */
 
     }
 
@@ -221,7 +220,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
     @Override
     public void dismissSplashScreen() {
-        androidActivityListener.onFinishSimpleInit();
+        androidActivityListener.dismissSplashScreen();
     }
 
     @Override
@@ -311,6 +310,86 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
     }
 
 
+    @Override
+    public void onStartButtonClick() {
+        this.startGame();
+    }
 
+    @Override
+    public void onTutorialButtonClick() {
+        this.startTutorial();
+    }
+
+    @Override
+    public void onCreditsButtonClick() {
+        this.startCredits();
+    }
+
+    @Override
+    public void onEndGameClick() {
+        this.endGame();
+    }
+
+    private void startLoading() {
+
+        //Element element = nifty.getScreen(LOADIND_SCREEN_ID).findElementByName("loadingtext");
+        //textRenderer = element.getRenderer(TextRenderer.class);
+
+        ScenarioCommon scenarioCommon = new ScenarioCommon();
+
+        androidActivityListener.setProgressBar(10, "Loading " + "Sound Emission" + "...");
+        SoundEmission soundEmission = new SoundEmission(scenarioCommon, null, null);
+        renderManager.preloadScene(soundEmission);
+
+        androidActivityListener.setProgressBar(20, "Loading " + "Sound Capture" + "...");
+        Scenario soundCapture = new SoundCapture(scenarioCommon, null, null);
+        renderManager.preloadScene(soundCapture);
+
+        androidActivityListener.setProgressBar(30, "Loading " + "Amplification" + "...");
+        Amplification amplification = new Amplification(scenarioCommon, null, null);
+        renderManager.preloadScene(amplification);
+
+        androidActivityListener.setProgressBar(40, "Loading " + "Modulation" + "...");
+        Modulation modulation = new Modulation(scenarioCommon, null, null);
+        renderManager.preloadScene(modulation);
+
+        androidActivityListener.setProgressBar(50, "Loading " + "Reception" + "...");
+        Reception reception = new Reception(scenarioCommon, null, null);
+        renderManager.preloadScene(reception);
+
+        androidActivityListener.setProgressBar(60, "Loading " + "Demodulation" + "...");
+        Demodulation demodulation = new Demodulation(scenarioCommon, null, null);
+        renderManager.preloadScene(demodulation);
+
+        androidActivityListener.setProgressBar(70, "Loading " + "Filter" + "...");
+        Filter filter = new Filter(scenarioCommon, null, null);
+        renderManager.preloadScene(filter);
+
+        androidActivityListener.setProgressBar(80, "Loading " + "Playback" + "...");
+        Playback playback = new Playback(scenarioCommon, null, null);
+        renderManager.preloadScene(playback);
+
+        androidActivityListener.setProgressBar(100, "Done loading");
+
+        /*
+        try {
+            this.enqueue(new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+
+
+
+                    return null;
+                }
+            }).get();
+        } catch (InterruptedException e) {
+            //e.printStackTrace();
+        } catch (ExecutionException e) {
+            //e.printStackTrace();
+        }
+        */
+
+        androidActivityListener.closeProgressScreen();
+    }
 
 }

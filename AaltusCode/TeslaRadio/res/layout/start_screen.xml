@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#E6000000"
+        >-->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+
+        <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/start_screen_start_button"
+                android:text="@string/screen_start_button"
+                android:background="@color/blue"
+                android:layout_margin="5dp"/>
+        <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/start_screen_tutorial_button"
+                android:text="@string/screen_tutorial_button"
+                android:background="@color/blue"
+                android:layout_margin="5dp"/>
+        <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/start_screen_credits_button"
+                android:text="@string/screen_credits_button"
+                android:background="@color/blue"
+                android:layout_margin="5dp"/>
+        <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/start_screen_exit_button"
+                android:text="@string/screen_exit_button"
+                android:background="@color/blue"
+                android:layout_margin="5dp"/>
+    </LinearLayout>
+<!--</FrameLayout>-->

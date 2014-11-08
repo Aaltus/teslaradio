@@ -52,7 +52,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     private int frequency = 1;
     private String carrier = "CubeCarrier";
     
-    Filter(ScenarioCommon sc, Camera cam, Spatial destinationHandle) {
+    public Filter(ScenarioCommon sc, Camera cam, Spatial destinationHandle) {
         
         super(sc, cam, destinationHandle);
         this.setName("Filter");

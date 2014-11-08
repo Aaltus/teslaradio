@@ -19,28 +19,31 @@
 package com.ar4android.vuforiaJME;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Debug;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-import com.galimatias.teslaradio.InformativeMenuFragment;
-import com.galimatias.teslaradio.R;
-import com.galimatias.teslaradio.SplashscreenDialogFragment;
+import com.galimatias.teslaradio.*;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
 import com.galimatias.teslaradio.world.Scenarios.IScenarioSwitcher;
 import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
+import com.galimatias.teslaradio.world.Scenarios.StartScreenController;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
@@ -59,11 +62,13 @@ import java.util.concurrent.Callable;
 public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements AndroidActivityListener,
         IScenarioSwitcher,
         ITutorialSwitcher,
-        VuforiaCallback {
+        VuforiaCallback,
+        StartScreenController {
 
     // Boolean to use the profiler. If it's set to true, you can get the tracefile on your phone /sdcard/traceFile.trace
     private static final boolean UseProfiler = false;
 	private static final String TAG = VuforiaJMEActivity.class.getName();
+    private static final String START_MENU_FRAGMENT_TAG = "START_MENU_FRAGMENT_TAG";
 
     private final String INFORMATIVE_MENU_FRAGMENT_TAG = "INFORMATIVE_MENU_FRAGMENT_TAG";
     private final String ITEM_SPLASHSCREEN_FRAGMENT_TAG ="SPLASHSCREEN_FRAGMENT_TAG" ;
@@ -89,6 +94,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     private static final String NATIVE_LIB_QCAR = "Vuforia";
 
     private VuforiaCaller vuforiaCaller;
+    private ProgressDialog progressDialog;
+
     @Override
     public ITrackerUpdater getITrackerUpdater() {
         return vuforiaCaller;
@@ -102,6 +109,91 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     @Override
     public void quitActivity() {
         openCloseAlertDialog();
+    }
+
+    @Override
+    public void openStartMenu() {
+
+        final StartScreenController startScreenController = this;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "Show start screen dialog");
+                FragmentManager fm = getSupportFragmentManager();
+                StartScreenDialogFragment startScreenDialogFragment =
+                        new StartScreenDialogFragment();
+                startScreenDialogFragment.setStartScreenController(startScreenController);
+                startScreenDialogFragment.show(fm, START_MENU_FRAGMENT_TAG);
+            }
+        });
+
+
+    }
+
+    @Override
+    public void closeStartMenu() {
+        FragmentManager fm                    = getSupportFragmentManager(); //getSupportFragmentManager();s
+        DialogFragment fragment     = (DialogFragment)fm.findFragmentByTag(START_MENU_FRAGMENT_TAG);
+        fragment.dismiss();
+        //FragmentTransaction ft = fm.beginTransaction();
+        //ft.remove(fragment);
+    }
+
+    @Override
+    public boolean isStartMenuShown() {
+        FragmentManager fm                    = getSupportFragmentManager(); //getSupportFragmentManager();s
+        Fragment fragment     = fm.findFragmentByTag(START_MENU_FRAGMENT_TAG);
+
+        boolean isVisible = false;
+        if(fragment != null && fragment.isVisible())
+        {
+            isVisible = true;
+        }
+
+        return isVisible;
+    }
+
+    @Override
+    public void openProgressScreen(final String title) {
+
+        final Context context = this;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog = new ProgressDialog(context); //Here I get an error: The constructor ProgressDialog(PFragment) is undefined
+                //progressDialog.setMessage(title);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                progressDialog.setTitle(title);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+            }
+        });
+
+
+    }
+
+    @Override
+    public void closeProgressScreen() {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+            }
+        });
+    }
+
+    @Override
+    public void setProgressBar(final int currentProgress, final String progressComment) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.setMessage(progressComment);
+                progressDialog.setProgress(currentProgress);
+            }
+        });
+
     }
 
     private void openCloseAlertDialog() {
@@ -336,7 +428,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
 
     @Override
-    public void onFinishSimpleInit()
+    public void dismissSplashScreen()
     {
 
         class OneShotTask implements Runnable {
@@ -409,6 +501,45 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 }
                 return null;
             }});
+    }
+
+    @Override
+    public void onStartButtonClick() {
+        (app).enqueue(new Callable<Object>() {
+            public Object call() throws Exception {
+                ((VuforiaJME)app).onStartButtonClick();
+                return null;
+            }});
+    }
+
+    @Override
+    public void onTutorialButtonClick() {
+        (app).enqueue(new Callable<Object>() {
+            public Object call() throws Exception {
+                ((VuforiaJME)app).onTutorialButtonClick();
+                return null;
+            }});
+
+    }
+
+    @Override
+    public void onCreditsButtonClick() {
+        (app).enqueue(new Callable<Object>() {
+            public Object call() throws Exception {
+                ((VuforiaJME)app).onCreditsButtonClick();
+                return null;
+            }});
+
+    }
+
+    @Override
+    public void onEndGameClick() {
+        (app).enqueue(new Callable<Object>() {
+            public Object call() throws Exception {
+                ((VuforiaJME)app).onEndGameClick();
+                return null;
+            }});
+
     }
 
 

@@ -86,5 +86,9 @@
     <string name="tutorial_help1">Pour avoir de l\'information supplémentaire sur les modules affichés</string>
     <string name="tutorial_help2">Pour revoir le tutoriel des intéractions</string>
     <string name="tutorial_help3">Et surtout, pour mieux comprendre les scénarios!</string>
+    <string name="screen_start_button">Start</string>
+    <string name="screen_tutorial_button">Tutorial</string>
+    <string name="screen_credits_button">Credits</string>
+    <string name="screen_exit_button">Exit</string>
 
 </resources>

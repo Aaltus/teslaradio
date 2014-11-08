@@ -63,7 +63,7 @@ public final class Playback extends Scenario implements EmitterObserver {
     private Node     speakerEmitter;
     private Node     speakerIn = new Node();
     
-    Playback(ScenarioCommon sc, Camera Camera, Spatial destinationHandle) {
+    public Playback(ScenarioCommon sc, Camera Camera, Spatial destinationHandle) {
         
         super(sc, Camera, destinationHandle);
         this.setName("Playback");
