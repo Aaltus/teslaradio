@@ -37,12 +37,11 @@
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:clickable="false">
 
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="wrap_content"-->
+
             <ImageView
                     android:id="@+id/sound_emission_image_preview"
-                    android:layout_width="650dp"
-                    android:layout_height="185dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:src="@drawable/pression_preview"
                     android:clickable="false"/>
