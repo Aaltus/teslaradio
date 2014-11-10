@@ -23,8 +23,7 @@
                 />
         <ImageView
                 android:id="@+id/spectre_image"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                style="@style/ImageSize"
                 android:layout_gravity="center"
                 android:src="@drawable/spectre_electromagnetique"
 
@@ -38,8 +37,7 @@
                 />
         <ImageView
                 android:id="@+id/antenne_image"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                style="@style/ImageSize"
                 android:layout_gravity="center"
                 android:src="@drawable/symbole_antenne"
 
@@ -53,8 +51,8 @@
 
         <ImageView
                 android:id="@+id/vitesse_image"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                style="@style/ImageSize"
+                android:layout_height = "wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/vitesse_lumiere"
                 />

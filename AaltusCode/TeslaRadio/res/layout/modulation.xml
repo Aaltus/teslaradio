@@ -25,17 +25,15 @@
         <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dp"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:clickable="false">
 
 
             <ImageView
                     android:id="@+id/modulationam_preview"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:src="@drawable/modulationam_preview"
+                    style="@style/ImageSize"
                     android:clickable="false"/>
 
             <ImageView
@@ -72,15 +70,13 @@
         <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dp"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:clickable="false">
 
 
             <ImageView
                     android:id="@+id/souris_preview"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/ImageSize"
                     android:layout_gravity="center"
                     android:src="@drawable/souris_preview"
                     android:clickable="false"/>
@@ -111,15 +107,13 @@
         <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dp"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:clickable="false">
 
 
             <ImageView
                     android:id="@+id/modulationfm_preview"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/ImageSize"
                     android:layout_gravity="center"
                     android:src="@drawable/modulationfm_preview"
                     android:clickable="false"/>
