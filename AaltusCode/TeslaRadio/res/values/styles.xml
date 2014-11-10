@@ -62,6 +62,9 @@
         <item name="android:layout_width">100dp</item>
         <item name="android:layout_height">100dp</item>
     </style>
-
+    <style name="ImageSizePression">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 
 </resources>
