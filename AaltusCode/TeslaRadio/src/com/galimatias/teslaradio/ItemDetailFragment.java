@@ -141,8 +141,8 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
             mViewPager.setOffscreenPageLimit(0);
 
             //Attach page indicator to the ViewPager
-            CirclePageIndicator mIndicator = (CirclePageIndicator)rootView.findViewById(R.id.indicator);
-            mIndicator.setViewPager(mViewPager);
+//            CirclePageIndicator mIndicator = (CirclePageIndicator)rootView.findViewById(R.id.indicator);
+//            mIndicator.setViewPager(mViewPager);
 
         }
 
