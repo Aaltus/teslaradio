@@ -43,6 +43,8 @@ public class AppGetter {
     
     static public final String USR_VOLUME_UPDATE="Volume update";
     
+    static public final String USR_AMPLIFICATION="Amplification level";
+    
     //world scalling
     private static float worldScaling = 10;
 
