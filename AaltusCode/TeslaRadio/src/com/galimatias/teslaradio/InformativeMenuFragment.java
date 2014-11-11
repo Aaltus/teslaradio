@@ -195,10 +195,25 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
     }
 
+    public boolean isTutorialFragmentsVisible()
+    {
+
+        Fragment fragment = getTutorialFragment();
+        boolean isVisible = false;
+        if(fragment != null && fragment.isVisible())
+        {
+            isVisible = true;
+        }
+
+        return isVisible;
+
+    }
+
     public void showAllChildFragments(boolean showFragment)
     {
         toggleDetailFragmentVisibility(showFragment);
         toggleItemListVisibility(showFragment);
+        toggleTutorialVisibility(!showFragment);
     }
 
     private TutorialFragment getTutorialFragment(){
@@ -212,7 +227,6 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     public void onItemSelected(int id) {
 
         toggleItemListVisibility(false);
-
         replaceDetailFragment(id);
 
 
@@ -238,6 +252,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         scenarioSwitcher.setScenarioByEnum(scenarioEnum);
 
         toggleDetailFragmentVisibility(true);
+        toggleTutorialVisibility(false);
 
     }
 
@@ -268,9 +283,13 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
             case R.id.camera_toggle_info_button:
                 if(isListFragmentsVisible()){
                     toggleItemListVisibility(false);
+                    if(!isDetailFragmentsVisible()){
+                        toggleTutorialVisibility(true);
+                    }
                 }
                 else{
                     toggleItemListVisibility(true);
+                    toggleTutorialVisibility(false);
                 }
                 break;
 
@@ -310,6 +329,9 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
             case R.id.item_detail_fragment_close_button:
                 //Log.d(TAG, "OnClick Callback from detail fragment");
                 toggleDetailFragmentVisibility(false);
+                if(!isListFragmentsVisible()){
+                    toggleTutorialVisibility(true);
+                }
                 break;
         }
     }
@@ -348,6 +370,42 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
             ft.commit();
         }
+
+    }
+
+    public void toggleTutorialVisibility(boolean showFragment)
+    {
+        FragmentManager fm    = getChildFragmentManager(); //getSupportFragmentManager();s
+        Fragment fragment     = getTutorialFragment();
+
+        if (fragment != null)
+        {
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.setCustomAnimations(R.anim.enter_down, R.anim.exit_down);
+            if (showFragment && !isTutorialFragmentsVisible())
+            {
+                Log.d(TAG, "Showing tutorial fragment");
+                ft.show(fragment);
+
+                /*if (scenarioEnum != null)
+                {
+                    //Choose a detail fragment based on the provided enum
+                    listFragment.setActivatedPosition(scenarioEnum.ordinal());
+                    onItemSelected(scenarioEnum.ordinal());
+                }*/
+            }
+            else if (!showFragment && isTutorialFragmentsVisible())
+            {
+                Log.d(TAG, "Hiding tutorial fragment");
+                /*if (scenarioEnum == null)
+                {
+                    ft.hide(listFragment);
+                }*/
+                ft.hide(fragment);
+            }
+
+            ft.commit();
+        }
     }
 
     /**
@@ -367,16 +425,17 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
             {
                 Log.d(TAG, "Showing detail fragment");
                 ft.show(fragmentDetail);
+
             }
             else
             {
                 Log.d(TAG,"Hiding detail fragment");
                 //ft.hide(fragmentDetail);
                 ft.remove(fragmentDetail);
+
             }
             ft.commit();
         }
-
     }
 
     @Override
