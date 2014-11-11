@@ -487,7 +487,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         
         switchArrow = new Node();
         switchArrow.move(actionSwitch.getLocalTranslation());
-        switchArrow.addControl(new Arrows("touch", assetManager, 2));
+        switchArrow.addControl(new Arrows("touch", assetManager, 3));
         LookAtCameraControl control = new LookAtCameraControl(Camera);
         switchArrow.addControl(control);
         switchArrow.setLocalScale(2f);

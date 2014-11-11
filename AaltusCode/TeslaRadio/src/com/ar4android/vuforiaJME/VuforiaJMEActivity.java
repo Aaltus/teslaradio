@@ -23,6 +23,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Debug;
@@ -37,6 +39,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import ch.qos.logback.core.Layout;
 import com.galimatias.teslaradio.*;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
@@ -563,6 +566,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                     //toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
                     toast.setDuration(Toast.LENGTH_SHORT);
                     toast.setView(layout);
+                    //AppLogger.getInstance().d(TAG,"Toast width wPx:" + getInformativeMenuFragment().getCharacterWidthInPixel() + " hPx: " + getInformativeMenuFragment().getCharacterHeightInPixel());
+                    toast.setGravity(Gravity.BOTTOM | Gravity.LEFT, getInformativeMenuFragment().getCharacterWidthInPixel(), getInformativeMenuFragment().getCharacterHeightInPixel()/2 );
                     toast.show();
                     //Old code for the toast.
                     /*

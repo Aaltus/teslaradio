@@ -183,7 +183,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     {
         sliderArrow = new Node();
         sliderArrow.move(ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f));
-        sliderArrow.addControl(new Arrows("touch", assetManager, 2));
+        sliderArrow.addControl(new Arrows("touch", assetManager, 3));
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
         sliderArrow.addControl(control1);
         sliderArrow.setLocalScale(2f);
@@ -396,12 +396,11 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         }*/
          if (notifierId.equals("InputWireAmpli")) {
           //Change Scale
-             carrier = this.particleAmplification(carrier);
+             carrier = this.particleAmplification(((Node) spatial).getChild(0));
              outputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(spatial);
          } else if(notifierId.equals("OutputWireAmpli")) {
              Float scale = new Float(spatial.getWorldScale().length());
              spatial.setUserData(AppGetter.USR_SCALE, scale);
-             carrier = this.particleAmplification(carrier);
              outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
          }   
     }
