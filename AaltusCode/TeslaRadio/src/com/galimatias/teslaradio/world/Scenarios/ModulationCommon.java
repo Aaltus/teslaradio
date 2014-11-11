@@ -122,7 +122,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         Geometry pathOut = (Geometry) pcbAmp_node.getChild("Path.Out.Nurbs");
 
         initDigitalDisplay();
-        initTitleBox();
+        //initTitleBox();
 
         initStaticParticlesEmitter(wirePcbEmitter, pathInHandle, pathIn, cam);
         initStaticParticlesEmitter(carrierEmitter, pathCarrierHandle, pathCarrier, null);
@@ -355,11 +355,11 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
             frequency = 3;
         }
         
+        turnTunerButton(trackableAngle);
+
         if (lastFrequency != frequency) {
             changeModulation(frequency, isFM);
         }
-        
-        turnTunerButton(trackableAngle);
 
         lastFrequency = frequency;
     }
@@ -492,9 +492,10 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         
         switchArrow = new Node();
         switchArrow.move(actionSwitch.getLocalTranslation());
-        switchArrow.addControl(new Arrows("touch", assetManager, 1));
+        switchArrow.addControl(new Arrows("touch", assetManager, 2));
         LookAtCameraControl control = new LookAtCameraControl(Camera);
         switchArrow.addControl(control);
+        switchArrow.setLocalScale(2f);
         scene.attachChild(switchArrow);
 
         rotationArrow = new Node();

@@ -99,7 +99,7 @@ public final class SoundCapture extends Scenario {
         touchable.attachChild(micro);
         scene.attachChild(touchable);
         
-        initTitleBox();
+        //initTitleBox();
 
     }
 

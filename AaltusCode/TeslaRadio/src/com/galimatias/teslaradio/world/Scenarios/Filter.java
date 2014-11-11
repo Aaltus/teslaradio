@@ -82,7 +82,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         Node output_node = (Node) scene.getChild("Path.Out.Object");
         Geometry pathOut = (Geometry) output_node.getChild("Path.Out.Nurbs");
         
-        initTitleBox();
+        //initTitleBox();
         
         initStaticParticlesEmitter(inputEmitter, pathInHandle, pathIn, null);
         initStaticParticlesEmitter(outFilterEmitter, pathOutFilterHandle, pathOut, null);
