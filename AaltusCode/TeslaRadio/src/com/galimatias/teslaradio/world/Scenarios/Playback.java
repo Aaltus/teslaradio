@@ -5,6 +5,8 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
+
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.effects.AirParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.Arrows;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
@@ -206,7 +208,7 @@ public final class Playback extends Scenario implements EmitterObserver {
                         if(nameToCompare == null){
                             break;
                         } else if (nameToCompare.equals("Speaker")) {
-                            this.speakerTouchEffect();
+                            this.speakerTouchEffect(1f);
                             break;
                         } else if (nameToCompare.equals("SliderButton")) {
                             touchCount++;
@@ -260,7 +262,8 @@ public final class Playback extends Scenario implements EmitterObserver {
                     touchCount = 0;
                     break;
             }
-            
+
+            this.speakerEmitter.setUserData("SoundScale",ampliScale);
             isTouched = false;
         }
         
@@ -342,14 +345,14 @@ public final class Playback extends Scenario implements EmitterObserver {
         soundParticle.setQueueBucket(queueBucket.Opaque);
     }
     
-    public void speakerTouchEffect()
+    public void speakerTouchEffect(float particleScale)
     {
 
         // Here, we need to get the vector to the mic handle
         //Vector3f receiverHandleVector = particleLinker.GetEmitterDestinationPaths(this);
         //GuitarSoundEmitter.prepareEmeitParticles(receiverHandleVector);
 
-        this.speakerEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(1);
+        this.speakerEmitter.getControl(PatternGeneratorControl.class).toggleNewWave((Float)this.speakerEmitter.getUserData("SoundScale") * particleScale);
     }
 
     @Override
@@ -357,7 +360,7 @@ public final class Playback extends Scenario implements EmitterObserver {
         
         if (speakerEmitter != null) {
             if (touchCount != 0) {
-                speakerTouchEffect();
+                speakerTouchEffect(spatial.getLocalScale().length());
             }
         }
     }
