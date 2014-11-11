@@ -357,7 +357,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         
         turnTunerButton(trackableAngle);
 
-        if (lastFrequency != frequency) {
+        if (lastFrequency != frequency || switchIsToggled) {
             changeModulation(frequency, isFM);
         }
 
