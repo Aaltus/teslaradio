@@ -201,7 +201,9 @@ public class PatternGeneratorControl extends AbstractControl {
         {
             ParticleEmitterControl emitter = this.spatial.getControl(
                ParticleEmitterControl.class);
-            emitter.emitParticle(this.geomList.pollFirst()); 
+            Spatial particle = this.geomList.pollFirst();
+            this.spatial.setUserData(AppGetter.USR_SCALE, particle.getUserData(AppGetter.USR_SCALE));
+            emitter.emitParticle(particle); 
             
         }
         this.lastCall = 0;
