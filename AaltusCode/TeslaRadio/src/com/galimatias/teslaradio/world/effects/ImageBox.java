@@ -69,6 +69,7 @@ public class ImageBox extends Node{
         //imageTexture.set
         imageBoxMat.setTexture("ColorMap", assetManager.loadTexture(imagePath));
         imageBoxMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        imageBoxMat.getAdditionalRenderState().setDepthWrite(false);
         imageGeom.setQueueBucket(RenderQueue.Bucket.Transparent);
         imageGeom.setMaterial(imageBoxMat);
         this.attachChild(imageGeom);

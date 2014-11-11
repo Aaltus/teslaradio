@@ -102,7 +102,7 @@ public final class Playback extends Scenario implements EmitterObserver {
         scene.attachChild(speakerIn);
         
         speakerIn.addControl(new DynamicWireParticleEmitterControl(speakerEmitter, 1000f));
-        speakerEmitter.addControl(new AirParticleEmitterControl(speakerHandleOut, 20f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
+        speakerEmitter.addControl(new AirParticleEmitterControl(speakerHandleOut, 10f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
         speakerEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
         speakerEmitter.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
         speakerIn.getControl(ParticleEmitterControl.class).registerObserver(this);
@@ -111,9 +111,8 @@ public final class Playback extends Scenario implements EmitterObserver {
         Vector3f handleSliderBegin = scene.getChild("Slider.Handle.Begin").getLocalTranslation();
         Vector3f handleSliderEnd = scene.getChild("Slider.Handle.End").getLocalTranslation();
         translationIncrement = handleSliderEnd.subtract(handleSliderBegin).divide(4);
-        
-        
-        initTitleBox();
+
+        //initTitleBox();
     }
 
     @Override
@@ -143,10 +142,11 @@ public final class Playback extends Scenario implements EmitterObserver {
         
         sliderArrow = new Node();
         sliderArrow.move(ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f));
-        sliderArrow.addControl(new Arrows("touch", assetManager, 1));
+        sliderArrow.addControl(new Arrows("touch", assetManager, 2));
         //sliderArrow = new Arrows("touch", ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f), assetManager, 1);
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
         sliderArrow.addControl(control1);
+        sliderArrow.setLocalScale(2f);
         this.attachChild(sliderArrow);
     }
     

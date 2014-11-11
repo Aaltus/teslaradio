@@ -4,11 +4,7 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
-import com.galimatias.teslaradio.world.effects.SoundControl;
-import com.galimatias.teslaradio.world.effects.TextBox;
+import com.galimatias.teslaradio.world.effects.*;
 import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.font.BitmapFont;
@@ -48,6 +44,8 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     
     private Quaternion initAngleWheel = new Quaternion();
     private Quaternion endAngleWheel = new Quaternion();
+
+    private Node rotationArrow;
     
     private int frequency = 1;
     private String carrier = "CubeCarrier";
@@ -61,6 +59,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         
         loadUnmovableObjects();
         loadMovableObjects();
+        loadArrows();
     }
     
     @Override
@@ -68,8 +67,9 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         scene = (Node) assetManager.loadModel("Models/Filter/Filtre.j3o");
         scene.setName("Filter");
         this.attachChild(scene);
-        
+
         scene.setLocalRotation(new Quaternion().fromAngleAxis(-pi/2f, Vector3f.UNIT_Y));
+        scene.setLocalScale(1.5f);
         
         // Get the handles of the emitters
         Spatial pathInHandle = scene.getChild("Handle.In");
@@ -82,7 +82,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         Node output_node = (Node) scene.getChild("Path.Out.Object");
         Geometry pathOut = (Geometry) output_node.getChild("Path.Out.Nurbs");
         
-        initTitleBox();
+        //initTitleBox();
         
         initStaticParticlesEmitter(inputEmitter, pathInHandle, pathIn, null);
         initStaticParticlesEmitter(outFilterEmitter, pathOutFilterHandle, pathOut, null);
@@ -115,6 +115,13 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         endAngleWheel.fromAngleAxis(pi/3f, Vector3f.UNIT_Y);
         
         this.spotlight = ScenarioCommon.spotlightFactory();
+    }
+
+    private void loadArrows()
+    {
+        rotationArrow = new Node();
+        rotationArrow.addControl(new Arrows("rotation", assetManager, 10));
+        scene.attachChild(rotationArrow);
     }
 
     @Override
