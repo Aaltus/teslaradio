@@ -263,7 +263,6 @@ public final class Playback extends Scenario implements EmitterObserver {
                     break;
             }
 
-            this.speakerEmitter.setUserData("SoundScale",ampliScale);
             isTouched = false;
         }
         
@@ -352,7 +351,7 @@ public final class Playback extends Scenario implements EmitterObserver {
         //Vector3f receiverHandleVector = particleLinker.GetEmitterDestinationPaths(this);
         //GuitarSoundEmitter.prepareEmeitParticles(receiverHandleVector);
 
-        this.speakerEmitter.getControl(PatternGeneratorControl.class).toggleNewWave((Float)this.speakerEmitter.getUserData("SoundScale") * particleScale);
+        this.speakerEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(ampliScale * particleScale);
     }
 
     @Override
