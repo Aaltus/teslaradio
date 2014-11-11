@@ -231,4 +231,12 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
             }
         }
     }
+
+    public int getCharacterWidthInPixel(){
+        return getCharacterView().getWidth();
+    }
+
+    public int getCharacterHeightInPixel(){
+        return getCharacterView().getHeight();
+    }
 }
