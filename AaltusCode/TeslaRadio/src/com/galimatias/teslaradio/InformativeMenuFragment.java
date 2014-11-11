@@ -442,4 +442,12 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     public void setTutorialIndex(int index) {
         this.tutorialSwitcher.setTutorialIndex(index);
     }
+
+    public int getCharacterWidthInPixel(){
+        return getTutorialFragment().getCharacterWidthInPixel();
+    }
+
+    public int getCharacterHeightInPixel(){
+        return getTutorialFragment().getCharacterHeightInPixel();
+    }
 }
