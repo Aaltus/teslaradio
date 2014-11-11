@@ -143,7 +143,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
             outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 20, 25, mat2));
             outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
             outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
-            outputModule.setUserData(AppGetter.USR_SCALE, 1f);
+            outputModule.setUserData(AppGetter.USR_AMPLIFICATION, 0.5f);
 
       //-------------------------------AirParticleEmitterControl------------------
 
@@ -219,7 +219,10 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
                     break;
             }
             isTouched = false;
-            this.outputModule.setUserData(AppGetter.USR_SCALE, ampliScale);
+            if(ampliScale < 0){
+                ampliScale = -1/ampliScale;
+            }
+            this.outputModule.setUserData(AppGetter.USR_AMPLIFICATION, ampliScale);
             
         }
         /*TR-261 apparently we don't want this */

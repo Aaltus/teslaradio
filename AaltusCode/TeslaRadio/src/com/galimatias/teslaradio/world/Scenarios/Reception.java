@@ -132,7 +132,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         // Set names for the emitters
         outputAntenneRx.setName("OutputAntenneRx");
         outputAntenneRx.setUserData(AppGetter.USR_SOURCE_TRANSLATION, 0f);
-        outputAntenneRx.setUserData(AppGetter.USR_SCALE,0.5f);
+        outputAntenneRx.setUserData(AppGetter.USR_AMPLIFICATION,0.5f);
         initPatternGenerator();
     }
 
@@ -364,7 +364,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
      
      private void updateDistanceStatus(){
          
-         float ampliScale = this.getInputHandle().getUserData(AppGetter.USR_SCALE);
+         float ampliScale = this.getInputHandle().getUserData(AppGetter.USR_AMPLIFICATION);
          float signalRatio;
          if(ampliScale == 0.5){
              signalRatio = 1;
