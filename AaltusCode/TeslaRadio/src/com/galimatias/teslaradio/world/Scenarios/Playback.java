@@ -102,7 +102,7 @@ public final class Playback extends Scenario implements EmitterObserver {
         scene.attachChild(speakerIn);
         
         speakerIn.addControl(new DynamicWireParticleEmitterControl(speakerEmitter, 1000f));
-        speakerEmitter.addControl(new AirParticleEmitterControl(speakerHandleOut, 20f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
+        speakerEmitter.addControl(new AirParticleEmitterControl(speakerHandleOut, 10f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
         speakerEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
         speakerEmitter.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
         speakerIn.getControl(ParticleEmitterControl.class).registerObserver(this);
