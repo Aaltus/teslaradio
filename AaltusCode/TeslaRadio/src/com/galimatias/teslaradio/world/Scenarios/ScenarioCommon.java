@@ -154,6 +154,7 @@ public class ScenarioCommon {
         Material material = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", new ColorRGBA(1.0f,1.0f,1.0f,0.5f));
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        material.getAdditionalRenderState().setDepthWrite(false);
         
         outsideDomeGeom.setMaterial(material);
         insideDomeGeom.setMaterial(material);

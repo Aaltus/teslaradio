@@ -153,7 +153,8 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
         Geometry outsideDomeGeom = new Geometry("OutsideDome", outsideDome);
         Dome insideDome = new Dome( new Vector3f(), numberOrRadialAndPlanes, numberOrRadialAndPlanes, scaleAndRadius, true);
         Geometry insideDomeGeom = new Geometry("InsideDome", insideDome);
-        
+
+        material.getAdditionalRenderState().setDepthWrite(false);
         outsideDomeGeom.setMaterial(material);
         insideDomeGeom.setMaterial(material);
         

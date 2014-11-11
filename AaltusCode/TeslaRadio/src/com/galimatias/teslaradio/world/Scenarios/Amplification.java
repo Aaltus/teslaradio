@@ -108,7 +108,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         rot.fromAngleAxis(-pi / 2, Vector3f.UNIT_Y);
         scene.setLocalRotation(rot);
 
-        initTitleBox();
+        //initTitleBox();
         
         // Get the handles of the emitters
         pathInputAmpli = scene.getChild("Module.Handle.In");
@@ -183,9 +183,10 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     {
         sliderArrow = new Node();
         sliderArrow.move(ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f));
-        sliderArrow.addControl(new Arrows("touch", assetManager, 1));
+        sliderArrow.addControl(new Arrows("touch", assetManager, 2));
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
         sliderArrow.addControl(control1);
+        sliderArrow.setLocalScale(2f);
         scene.attachChild(sliderArrow);
         
         moveArrow = new Node();

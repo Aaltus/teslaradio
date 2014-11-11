@@ -51,5 +51,31 @@
                 style="@style/InformativeMenuTextStyle"
                 />
 
+        <ImageView
+                android:id="@+id/tube_image"
+                style="@style/ImageSize"
+                android:layout_gravity="center"
+                android:src="@drawable/tube"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/transmissionp4"
+                style="@style/InformativeMenuTextStyle"
+                />
+
+        <ImageView
+                android:id="@+id/tube_image"
+                style="@style/ImageSize"
+                android:layout_gravity="center"
+                android:src="@drawable/transistor"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/transmissionp5"
+                style="@style/InformativeMenuTextStyle"
+                />
+
     </LinearLayout>
 </ScrollView>

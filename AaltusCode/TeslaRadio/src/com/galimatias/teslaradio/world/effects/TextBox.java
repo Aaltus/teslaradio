@@ -198,6 +198,7 @@ public class TextBox extends Node {
             overTouchBox.setLocalTranslation(0, -textBoxHeight, 0.01f);
         }
         boxMat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+        boxMat.getAdditionalRenderState().setDepthWrite(false);
         overTouchBox.setQueueBucket(Bucket.Translucent);
         overTouchBox.setMaterial(boxMat);
         //move the box to the center of the box to make it rotate around its center instead of its left side

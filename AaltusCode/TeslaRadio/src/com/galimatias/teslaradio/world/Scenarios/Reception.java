@@ -93,7 +93,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         rot.fromAngleAxis(-pi, Vector3f.UNIT_Y);
         scene.setLocalRotation(rot);
         
-        initTitleBox();
+        //initTitleBox();
         
         wifiLogoLow = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Low", "Models/Commons/wifi-logo_low.png", 0.0f);
         wifiLogoMedium = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Medium", "Models/Commons/wifi-logo_medium.png", 0.0f);
