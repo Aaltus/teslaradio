@@ -239,7 +239,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     //Scale handle of the particle
     private Spatial particleAmplification(Spatial particle){
 
-        this.destinationHandle.setUserData(AppGetter.USR_SCALE, ampliScale);
+        this.destinationHandle.setUserData(AppGetter.USR_AMPLIFICATION, ampliScale);
         return particle.scale(ampliScale);
     }
     
