@@ -24,6 +24,11 @@ public class SoundControl extends AbstractControl {
     protected float volume;
     protected String volumeUsrData;
     
+    public SoundControl(){
+        this.volume = 1;
+        this.volumeUsrData = AppGetter.USR_AUDIO_SCALE;
+    }
+    
     public SoundControl(String wavPath, boolean isStream, float volume){
         this.audio = new AudioNode(AppGetter.getAssetManager(),wavPath,isStream);
         this.audio.setVolume(volume);
@@ -37,12 +42,12 @@ public class SoundControl extends AbstractControl {
      * 
      */
     public void playSound(boolean isLoop){
-       
         if(isLoop){
             this.audio.setLooping(isLoop);
         }
         this.audio.play();
     }
+    
     public void stopSound(){
         this.audio.stop();     
     }

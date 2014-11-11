@@ -83,6 +83,7 @@ public final class Modulation extends ModulationCommon {
 
     @Override
     protected void initPatternGenerator() {
+        this.initDrumGuitarSound();
         micTapParticle = scenarioCommon.initBaseGeneratorParticle();
         
         this.wirePcbEmitter.addControl(new PatternGeneratorControl(0.5f, micTapParticle, 10, scenarioCommon.minBaseParticleScale,

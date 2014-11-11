@@ -123,6 +123,10 @@ public class PatternGeneratorControl extends AbstractControl {
     public void startAutoPlay(int particlePerWave){
         this.startAutoPlay(this.minWaveDelay, particlePerWave);
     }
+    
+    public void resumeAutoPlay(){
+        this.startAutoPlay(this.autoWaveDelay, this.particlePerAutoWave);
+    }
     /**
      * Stop the autoplay
      */

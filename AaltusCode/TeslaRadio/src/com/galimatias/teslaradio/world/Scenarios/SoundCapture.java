@@ -247,6 +247,7 @@ public final class SoundCapture extends Scenario {
 
     @Override
     protected void initPatternGenerator() {
+        this.initDrumGuitarSound();
         micTapParticle = scenarioCommon.initBaseGeneratorParticle();
 
         micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);

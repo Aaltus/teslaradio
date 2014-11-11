@@ -198,7 +198,8 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     }
 
     @Override
-    protected void initPatternGenerator() {        
+    protected void initPatternGenerator() {   
+        this.initDrumGuitarSound();
         Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
         Spatial[] carrier = ScenarioCommon.initCarrierGeometries();
               

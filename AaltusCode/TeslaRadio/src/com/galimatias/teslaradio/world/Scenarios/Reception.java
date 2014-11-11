@@ -316,6 +316,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     @Override
     protected void initPatternGenerator() {
+        this.initDrumGuitarSound();
         Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
         Spatial[] carrier = scenarioCommon.initCarrierGeometries();
               

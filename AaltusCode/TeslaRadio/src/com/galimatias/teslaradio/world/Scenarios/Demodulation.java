@@ -83,7 +83,7 @@ public class Demodulation extends ModulationCommon  {
 
     @Override
     protected void initPatternGenerator() {
-        
+        this.initDrumGuitarSound();
         Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
         Spatial[] carrier = scenarioCommon.initCarrierGeometries();   
               

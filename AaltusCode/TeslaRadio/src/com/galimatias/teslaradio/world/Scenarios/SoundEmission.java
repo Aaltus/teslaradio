@@ -1,5 +1,6 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.subject.AudioOptionEnum;
 import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 import com.galimatias.teslaradio.world.effects.*;
 import com.jme3.collision.CollisionResults;
@@ -426,6 +427,15 @@ public final class SoundEmission extends Scenario {
                     this.detachChild(this.spotlight);
                     break;
             }
+        }
+    }
+    
+    @Override
+    protected void audioOptionTouch(AudioOptionEnum value){
+        if(value == AudioOptionEnum.DRUM){
+            this.drumTouchEffect();
+        }else if(value == AudioOptionEnum.GUITAR){
+            this.guitarTouchEffect();
         }
     }
 }
