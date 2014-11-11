@@ -208,10 +208,6 @@ public final class Playback extends Scenario implements EmitterObserver {
                         } else if (nameToCompare.equals("Speaker")) {
                             this.speakerTouchEffect();
                             break;
-                        } else if (nameToCompare.equals(titleTextBox.getName())) {
-                            //this.textTouchEffect();
-                            showInformativeMenu = true;
-                            break;
                         } else if (nameToCompare.equals("SliderButton")) {
                             touchCount++;
                             isTouched = true;

@@ -429,11 +429,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                         if (nameToCompare.equals(this.getChild("Switch").getName())) {
                             toggleModulationMode();
                         }
-                        else if (nameToCompare.equals(titleTextBox.getName()))
-                        {
-                            showInformativeMenu = true;
-                            break;
-                        }
                     }
                 }
                 break;

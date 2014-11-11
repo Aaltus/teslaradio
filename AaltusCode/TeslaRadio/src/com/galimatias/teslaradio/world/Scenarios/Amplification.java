@@ -333,10 +333,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
                     String nameToCompare =
                             results.getClosestCollision().getGeometry().getParent().getName();
 
-                    if (nameToCompare.equals(titleTextBox.getName())) {
-                        showInformativeMenu = true;
-                        break;
-                    } else if (nameToCompare.equals("SliderButton")) {
+                    if (nameToCompare.equals("SliderButton")) {
                         touchCount++;
                         isTouched = true;
                         removeHintImages();

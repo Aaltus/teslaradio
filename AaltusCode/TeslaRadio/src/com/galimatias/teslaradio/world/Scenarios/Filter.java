@@ -131,7 +131,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
 
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
-        
+        // ...Does nothing in this scenario
     }
 
     @Override

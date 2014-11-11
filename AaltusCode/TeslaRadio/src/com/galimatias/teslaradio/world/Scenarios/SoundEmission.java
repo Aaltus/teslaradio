@@ -347,14 +347,7 @@ public final class SoundEmission extends Scenario {
                         {
                             this.guitarTouchEffect();
                             break;
-                        }
-                        else if (nameToCompare.equals(titleTextBox.getName()) || nameToCompare.equals(instrumentTextBox.getName()))
-                        {
-                            //this.textTouchEffect();
-                            showInformativeMenu = true;
-                            break;
-                        }
-                        
+                        }                        
                     }
                 }
                 break;
