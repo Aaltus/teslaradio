@@ -222,14 +222,14 @@ public final class SoundEmission extends Scenario {
     {        
         drumArrow = new Node();
         drumArrow.move(drumHandleOutPosition);
-        drumArrow.addControl(new Arrows("touch", assetManager, 2));
+        drumArrow.addControl(new Arrows("touch", assetManager, 3));
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
         drumArrow.addControl(control1);
         this.attachChild(drumArrow);
         
         guitarArrow = new Node();
         guitarArrow.move(guitarHandleOutPosition.add(0.0f,1.0f,0.0f));
-        guitarArrow.addControl(new Arrows("touch", assetManager, 2));
+        guitarArrow.addControl(new Arrows("touch", assetManager, 3));
         LookAtCameraControl control2 = new LookAtCameraControl(Camera);
         guitarArrow.addControl(control2);
         guitarArrow.setLocalScale(8f);

@@ -142,7 +142,7 @@ public final class Playback extends Scenario implements EmitterObserver {
         
         sliderArrow = new Node();
         sliderArrow.move(ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f));
-        sliderArrow.addControl(new Arrows("touch", assetManager, 2));
+        sliderArrow.addControl(new Arrows("touch", assetManager, 3));
         //sliderArrow = new Arrows("touch", ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f), assetManager, 1);
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
         sliderArrow.addControl(control1);
