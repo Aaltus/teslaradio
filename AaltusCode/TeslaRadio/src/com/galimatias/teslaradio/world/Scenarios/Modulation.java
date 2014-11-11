@@ -21,7 +21,7 @@ public final class Modulation extends ModulationCommon {
 
     public Modulation(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         
-        super(sc,Camera, destinationHandle, "Sounds/modulation.ogg");
+        super(sc,Camera, destinationHandle);
         this.setName("Modulation");
         loadUnmovableObjects();
         loadMovableObjects();
@@ -125,8 +125,43 @@ public final class Modulation extends ModulationCommon {
         }
     }
 
+   
+    
+    @Override
+    public void onSecondNodeActions(){
+        this.updateNoise(0f);
+    }
+
     @Override
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
-        
+    }
+    
+    @Override
+    protected void objectEmphasis() {
+        if (this.spotlight != null) {            
+            switch(this.currentObjectToEmphasisOn) {
+                // Attach on modulator
+                case 1:
+                    this.spotlight.setLocalTranslation(scene.getChild("Modulator").getLocalTranslation().add(0.0f,-scene.getChild("Modulator").getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(3.0f,30.0f,3.0f));
+                    scene.attachChild(this.spotlight);
+                    break;
+                // Attach on frequency generator    
+                case 0:
+                    this.spotlight.setLocalTranslation(scene.getChild("Display").getLocalTranslation().add(0.0f,-scene.getChild("Display").getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(3.0f,30.0f,3.0f));
+                    scene.attachChild(this.spotlight);
+                    break;
+                // Attach on the switch    
+                case 2:
+                    this.spotlight.setLocalTranslation(scene.getChild("Switch").getLocalTranslation().add(0.0f,-scene.getChild("Switch").getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(2.0f,30.0f,2.0f));
+                    scene.attachChild(this.spotlight);
+                    break;    
+                default:
+                    scene.detachChild(this.spotlight);
+                    break;
+            }
+        }
     }
 }

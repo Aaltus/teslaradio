@@ -21,29 +21,14 @@
                 style="@style/InformativeMenuTextStyle"
                 />
 
-        <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dp"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:clickable="false">
 
 
             <ImageView
                     android:id="@+id/sound_capture_image"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:src="@drawable/principe_dynamic_microphone"
+                    style="@style/ImageSize"
                     android:clickable="false"/>
-
-            <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/play_button" />
-
-        </FrameLayout>
 
 
         <TextView

@@ -518,33 +518,4 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         switchArrow.getControl(FadeControl.class).setShowImage(false);
         switchArrow.getControl(Arrows.class).resetTimeLastTouch();
     }
-    
-    @Override
-    protected void objectEmphasis() {
-        if (this.spotlight != null) {            
-            switch(this.currentObjectToEmphasisOn) {
-                // Attach on modulator
-                case 0:
-                    this.spotlight.setLocalTranslation(scene.getChild("Modulator").getLocalTranslation().add(0.0f,-scene.getChild("Modulator").getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
-                    scene.attachChild(this.spotlight);
-                    break;
-                // Attach on frequency generator    
-                case 1:
-                    this.spotlight.setLocalTranslation(scene.getChild("Display").getLocalTranslation().add(0.0f,-scene.getChild("Display").getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
-                    scene.attachChild(this.spotlight);
-                    break;
-                // Attach on the switch    
-                case 2:
-                    this.spotlight.setLocalTranslation(scene.getChild("Switch").getLocalTranslation().add(0.0f,-scene.getChild("Switch").getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
-                    scene.attachChild(this.spotlight);
-                    break;    
-                default:
-                    scene.detachChild(this.spotlight);
-                    break;
-            }
-        }
-    }
 }

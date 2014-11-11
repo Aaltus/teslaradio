@@ -52,9 +52,9 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     private int frequency = 1;
     private String carrier = "CubeCarrier";
     
-    Filter(ScenarioCommon sc, Camera cam, Spatial destinationHandle) {
+    public Filter(ScenarioCommon sc, Camera cam, Spatial destinationHandle) {
         
-        super(sc, cam, destinationHandle, "Sounds/Tunak Tunak Tun.ogg");
+        super(sc, cam, destinationHandle);
         this.setName("Filter");
         this.needAutoGenIfMain = true; 
         scenarioCommon.registerObserver(this);
@@ -288,10 +288,12 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
             if (outFilterEmitter != null) {
                 outFilterEmitter.getControl(ParticleEmitterControl.class).emitParticle(spatial);
             }
-            this.getControl(SoundControl.class).updateVolume(1);
+            if(!this.isFirst){
+                this.updateVolume(1);
+            }
         }
          else{
-            this.getControl(SoundControl.class).updateVolume(0);
+            this.updateVolume(0);
         }
     }
 
@@ -309,7 +311,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
                 // Attach on microphone
                 case 0:
                     this.spotlight.setLocalTranslation(scene.getChild("Circle").getLocalTranslation().add(0.0f,-scene.getChild("Circle").getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    this.spotlight.setLocalScale(new Vector3f(3.0f,30.0f,3.0f));
                     scene.attachChild(this.spotlight);
                     break;  
                 default:

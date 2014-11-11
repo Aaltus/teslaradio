@@ -63,9 +63,9 @@ public final class Playback extends Scenario implements EmitterObserver {
     private Node     speakerEmitter;
     private Node     speakerIn = new Node();
     
-    Playback(ScenarioCommon sc, Camera Camera, Spatial destinationHandle) {
+    public Playback(ScenarioCommon sc, Camera Camera, Spatial destinationHandle) {
         
-        super(sc, Camera, destinationHandle, "Sounds/Nyan cat.ogg");
+        super(sc, Camera, destinationHandle);
         this.setName("Playback");
         loadUnmovableObjects();
         loadMovableObjects();
@@ -111,6 +111,7 @@ public final class Playback extends Scenario implements EmitterObserver {
         Vector3f handleSliderBegin = scene.getChild("Slider.Handle.Begin").getLocalTranslation();
         Vector3f handleSliderEnd = scene.getChild("Slider.Handle.End").getLocalTranslation();
         translationIncrement = handleSliderEnd.subtract(handleSliderBegin).divide(4);
+        
         
         initTitleBox();
     }
@@ -268,8 +269,8 @@ public final class Playback extends Scenario implements EmitterObserver {
         }
         
         /*TR-261 apparently we don't want this, but in this scenario we want! */
-        this.getControl(SoundControl.class).updateVolume(ampliScale);
- 
+        this.updateVolume(ampliScale);
+
     }
 
     @Override
@@ -372,14 +373,9 @@ public final class Playback extends Scenario implements EmitterObserver {
                 // Attach on microphone
                 case 0:
                     this.spotlight.setLocalTranslation(speaker.getLocalTranslation().add(0.0f,-speaker.getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
+                    this.spotlight.setLocalScale(new Vector3f(5.0f,30.0f,5.0f));
                     scene.attachChild(this.spotlight);
-                    break;
-                case 1:
-                    this.spotlight.setLocalTranslation(ampliSliderBox.getLocalTranslation().add(0.0f,-ampliSliderBox.getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
-                    scene.attachChild(this.spotlight);
-                    break;    
+                    break;   
                 default:
                     scene.detachChild(this.spotlight);
                     break;

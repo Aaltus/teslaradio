@@ -24,9 +24,18 @@ public class TrackableManager extends AbstractControl {
     private List<Node> mChildNodeList = new ArrayList<Node>();
     private boolean[]  mTrackableState = new boolean[TRACKABLE_NUMBER];
 
+    //Timer to generate toast on Android
+    private long timeOfTheLastVerification = System.currentTimeMillis();
+    private long deltaToTrigger            = 5000;
+
     public List<Node> getScenarioNodeList()
     {
         return this.mChildNodeList;
+    }
+
+    private ITrackableAlertToast iTrackableAlertToast;
+    public void setiTrackableAlertToast(ITrackableAlertToast iTrackableAlertToast) {
+        this.iTrackableAlertToast = iTrackableAlertToast;
     }
 
     public TrackableManager()
@@ -68,8 +77,29 @@ public class TrackableManager extends AbstractControl {
 
     public void updateVisibility(int id, boolean isVisible)
     {
+        this.mTrackableState[id] = isVisible;
 
-            this.mTrackableState[id] = isVisible;
+        long currentTime = System.currentTimeMillis();
+        long deltaTime   = currentTime - timeOfTheLastVerification;
+
+        if(deltaTime >= deltaToTrigger) {
+            timeOfTheLastVerification = currentTime;
+            if(this.iTrackableAlertToast != null){
+                this.iTrackableAlertToast.showTrackableAlertToast(!isEnoughTrackableIsVisible(1));
+            }
+        }
+    }
+
+    private boolean isEnoughTrackableIsVisible(int minNumberOfTrackableRequired){
+
+        int numberOfTrackableVisible = 0;
+        for(int i = 0; i < this.mTrackableState.length; i++)
+        {
+            if(this.mTrackableState[i]){
+                numberOfTrackableVisible++;
+            }
+        }
+        return numberOfTrackableVisible >= minNumberOfTrackableRequired;
 
     }
 
@@ -132,4 +162,6 @@ public class TrackableManager extends AbstractControl {
     protected void controlRender(RenderManager renderManager, ViewPort viewPort) {
 
     }
+
+
 }
