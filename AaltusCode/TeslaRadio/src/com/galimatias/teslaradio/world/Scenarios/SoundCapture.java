@@ -337,7 +337,7 @@ public final class SoundCapture extends Scenario {
     private void loadArrows() {
         micArrow = new Node();
         micArrow.move(micHandleInPosition);
-        micArrow.addControl(new Arrows("touch",  assetManager, 1));
+        micArrow.addControl(new Arrows("touch",  assetManager, 2));
         LookAtCameraControl control = new LookAtCameraControl(Camera);
         micArrow.addControl(control);
         scene.attachChild(micArrow);
