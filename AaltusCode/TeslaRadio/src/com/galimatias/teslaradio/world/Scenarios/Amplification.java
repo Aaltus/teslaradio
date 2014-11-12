@@ -402,7 +402,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         }*/
          if (notifierId.equals("InputWireAmpli")) {
           //Change Scale
-             carrier = this.particleAmplification(((Node) spatial).getChild(0));
+             carrier = this.particleAmplification(carrier);
              outputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(spatial);
          } else if(notifierId.equals("OutputWireAmpli")) {
              Float scale = new Float(spatial.getWorldScale().length());
