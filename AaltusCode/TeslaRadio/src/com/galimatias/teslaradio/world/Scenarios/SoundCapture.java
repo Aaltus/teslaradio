@@ -175,7 +175,7 @@ public final class SoundCapture extends Scenario {
 
     protected void microTouchEffect() {
         removeHintImages();
-        
+        micWireEmitter.addControl(new SoundControl("Sounds/hit_mic.wav", false, 2));
         micWireEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(particlePerWave);
     }
     
