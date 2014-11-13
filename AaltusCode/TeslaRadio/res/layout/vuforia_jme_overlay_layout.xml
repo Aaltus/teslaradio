@@ -86,34 +86,44 @@ button on the handset.
             android:layout_height="fill_parent">
     </FrameLayout>
 
-    <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
 
-            android:baselineAligned="false"
+    <SlidingDrawer
+            android:id="@+id/informative_menu_drawer"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
             android:orientation="horizontal"
-            android:showDividers="middle"
-            android:layout_weight="1"
-            >
+            android:handle="@+id/handle"
+            android:content="@+id/content">
 
-        <FrameLayout
-                android:id="@+id/item_list_fragment_vuforia"
-                android:layout_height="fill_parent"
-                android:layout_width="0dp"
+
+
+        <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:id="@id/content"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:showDividers="middle"
                 android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                style="@style/ListFragmentPadding"/>
+                >
 
-        <FrameLayout
-                android:layout_height="fill_parent"
-                android:layout_width="0dp"
-                android:layout_weight="4"
-                android:layout_gravity="center_vertical"
-                />
+            <FrameLayout
+                    android:id="@+id/item_list_fragment_vuforia"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    style="@style/ListFragmentPadding"/>
 
-    </LinearLayout>
+        </LinearLayout>
 
+        <ImageView
+                android:id="@id/handle"
+                android:layout_width="44dip"
+                android:layout_height="88dip"
+                android:background="@color/white"/>
+
+    </SlidingDrawer>
 
 
 </FrameLayout>
