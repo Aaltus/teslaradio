@@ -16,6 +16,21 @@ button on the handset.
 
 
     <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|center"
+            android:background="@drawable/window_layout_bg">
+
+        <ImageView android:layout_width="50dp"
+                   android:layout_height="50dp"
+                   android:background="@drawable/arrow"/>
+        <ImageView android:layout_width="50dp"
+                   android:layout_height="50dp"
+                   android:background="@drawable/arrow"/>
+
+    </LinearLayout>
+
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
 
@@ -92,6 +107,8 @@ button on the handset.
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
     </FrameLayout>
+
+
 
 
     <FrameLayout
