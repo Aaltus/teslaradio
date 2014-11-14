@@ -121,7 +121,7 @@ button on the handset.
             <ImageView
                     android:id="@id/handle"
                     android:layout_width="44dip"
-                    android:layout_height="fill_parent"
+                    android:layout_height="80dp"
                     android:background="@drawable/drawer_handle"/>
 
 
