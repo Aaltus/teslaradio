@@ -121,12 +121,12 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
         FragmentManager fm = getChildFragmentManager();//getSupportFragmentManager();
 
-        Button languageButton = (Button) getView().findViewById(R.id.camera_toggle_language_button);
+        //For the old code
+        /*Button languageButton = (Button) getView().findViewById(R.id.camera_toggle_language_button);
         Button infoButton     = (Button) getView().findViewById(R.id.camera_toggle_info_button);
 
         //Replace the current language button to show the current choosed locale language
         int drawableToGet = 0;
-        //LayerDrawable languageButtonLayerDrawable = (LayerDrawable) getResources().getDrawable(R.drawable.layer_list_language);
         String currentLanguage = LanguageLocaleChanger.loadLanguageLocaleFromSharedPreferences(getActivity());
         if (currentLanguage.equals("fr"))
         {
@@ -152,6 +152,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
         languageButton.setOnClickListener(this);
         infoButton.setOnClickListener(this);
+        */
 
         //Hi Jimbo myself, Hope you feel great, I commented because people asked me to hide
         //Get the vertical side bar and set its propriety
@@ -314,6 +315,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
         switch (id){
 
+            /* code for when there were language button
             case R.id.camera_toggle_language_button:
                 showLanguageDialog();
                 break;
@@ -330,7 +332,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
                     toggleTutorialVisibility(false);
                 }
                 break;
-
+            */
             default:
                 break;
         }

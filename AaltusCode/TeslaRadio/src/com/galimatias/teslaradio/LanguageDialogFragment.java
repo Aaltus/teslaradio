@@ -54,11 +54,11 @@ public class LanguageDialogFragment extends DialogFragment {
 
         // Watch for button clicks.
         ImageButton enButton = (ImageButton)view.findViewById(R.id.camera_toggle_en_button);
-        enButton.setOnClickListener(new View.OnClickListener() {
+        /*enButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 LanguageDialogFragment.this.onClick(v);
             }
-        });
+        });*/
         ImageButton frButton = (ImageButton)view.findViewById(R.id.camera_toggle_fr_button);
         frButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -72,6 +72,8 @@ public class LanguageDialogFragment extends DialogFragment {
         //Use deprecated function but is available since API 1
         deButton.getBackground().setAlpha(50);
         esButton.getBackground().setAlpha(50);
+        enButton.getBackground().setAlpha(50);
+
 
         /*
 
