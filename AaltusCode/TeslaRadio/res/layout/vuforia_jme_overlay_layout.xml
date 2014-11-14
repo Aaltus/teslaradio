@@ -53,6 +53,11 @@ button on the handset.
                       android:id="@+id/linear_layout_global_buttons"
                       android:gravity="top"
                 >
+            <!--For some fucking reason, I need to add this view so the slidingdrawer don't go under everything
+            when it is closing...thats kind of strange really...-->
+            <View android:layout_width="50dp"
+                  android:layout_height="fill_parent">
+            </View>
             <!--
             <Button
                     android:id="@+id/camera_toggle_info_button"
