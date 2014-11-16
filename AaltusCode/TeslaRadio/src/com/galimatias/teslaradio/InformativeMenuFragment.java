@@ -63,11 +63,16 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         AppLogger.getInstance().d(TAG, "Initialize Top Layout");
         View myView  = inflater.inflate(R.layout.vuforia_jme_overlay_layout, null, false);
         drawerLayout = (SlidingDrawer)myView.findViewById(R.id.informative_menu_drawer);
-        //drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        //drawerView   = myView.findViewById(R.id.list_fragment_drawer);
 
         drawerLayout.setOnDrawerOpenListener(this);
         drawerLayout.setOnDrawerCloseListener(this);
+
+        myView.findViewById(R.id.previous_scenario_button).setOnClickListener(this);
+        myView.findViewById(R.id.next_scenario_button).setOnClickListener(this);
+
+
+
+
         /*
        * In my trial experiment:
        * Without dummy OnTouchListener for the drawView to
@@ -315,6 +320,12 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
         switch (id){
 
+            case R.id.previous_scenario_button:
+                this.scenarioSwitcher.setPreviousScenario();
+                break;
+            case R.id.next_scenario_button:
+                this.scenarioSwitcher.setNextScenario();
+                break;
             /* code for when there were language button
             case R.id.camera_toggle_language_button:
                 showLanguageDialog();

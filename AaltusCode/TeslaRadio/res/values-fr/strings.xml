@@ -34,5 +34,7 @@
     <string name="reference_title">Références</string>
     <string name="about_us_title">À propos de nous</string>
     <string name="splashscreentext">Loading camera and game menu...</string>
+    <string name="previous_scenario_button">Precécédent</string>
+    <string name="next_scenario_button">Prochain</string>
 
 </resources>

@@ -15,20 +15,38 @@ button on the handset.
         >
 
 
-    <LinearLayout
-            android:layout_width="100dp"
-            android:layout_height="50dp"
+    <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:background="@drawable/window_layout_bg">
+        <TableRow android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  android:layout_weight="1">
+            <ImageButton android:layout_width="50dp"
+                       android:layout_height="50dp"
+                       android:id="@+id/previous_scenario_button"
+                       android:background="@drawable/arrow_flipped"/>
+            <ImageButton android:layout_width="50dp"
+                         android:layout_height="50dp"
+                       android:id="@+id/next_scenario_button"
+                       android:background="@drawable/arrow"/>
+        </TableRow>
+        <TableRow android:layout_height="wrap_content"
+                  android:layout_width="fill_parent">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/previous_scenario_button"
+                      android:layout_gravity="center"
+                      android:textColor="@color/white"/>
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_gravity="center"
+                       android:text="@string/next_scenario_button"
+                       android:textColor="@color/white"/>
+        </TableRow>
 
-        <ImageView android:layout_width="50dp"
-                   android:layout_height="50dp"
-                   android:background="@drawable/arrow"/>
-        <ImageView android:layout_width="50dp"
-                   android:layout_height="50dp"
-                   android:background="@drawable/arrow"/>
-
-    </LinearLayout>
+    </TableLayout>
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -116,6 +134,7 @@ button on the handset.
             android:layout_height="fill_parent"
             android:layout_gravity="right">
         <SlidingDrawer
+                xmlns:my="http://schemas.android.com/apk/res/com.galimatias.teslaradio"
                 android:id="@+id/informative_menu_drawer"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"

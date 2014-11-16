@@ -103,5 +103,7 @@
     <string name="toast_no_trackable_seen">Please focus on a trackable</string>
     <string name="master_tutorial_ok_button">Continuer</string>
     <string name="master_tutorial_cancel_button">Quitter</string>
+    <string name="previous_scenario_button">Previous</string>
+    <string name="next_scenario_button">Next</string>
 
 </resources>

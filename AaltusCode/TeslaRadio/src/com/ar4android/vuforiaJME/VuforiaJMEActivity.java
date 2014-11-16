@@ -472,11 +472,31 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     @Override
     public void setNextScenario() {
-
+        (app).enqueue(new Callable<Object>() {
+            public Object call() throws Exception {
+                //((VuforiaJME)app).getiScenarioManager().setScenarioByEnum(scenarioEnum);
+                ScenarioManager state = app.getStateManager().getState(ScenarioManager.class);
+                if(state != null)
+                {
+                    state.setNextScenario();
+                }
+                return null;
+            }});
     }
 
     @Override
     public void setPreviousScenario() {
+
+        (app).enqueue(new Callable<Object>() {
+            public Object call() throws Exception {
+                //((VuforiaJME)app).getiScenarioManager().setScenarioByEnum(scenarioEnum);
+                ScenarioManager state = app.getStateManager().getState(ScenarioManager.class);
+                if(state != null)
+                {
+                    state.setPreviousScenario();
+                }
+                return null;
+            }});
 
     }
 
