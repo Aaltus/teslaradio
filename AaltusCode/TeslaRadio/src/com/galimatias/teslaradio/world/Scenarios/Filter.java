@@ -28,7 +28,11 @@ import java.util.List;
  */
 public class Filter extends Scenario implements EmitterObserver, AutoGenObserver {
 
+    private float initialAngle = 0;
+    private float lastAngle = 0;
+    private float nobAngle = 0;
     private float trackableAngle = 0;
+    private float timeBuffer = 0;
     private float direction = 1;
     
     private Spatial filterWheel;
@@ -154,8 +158,19 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
                 direction *= -1;
             }
         } else {
-            //trackableAngle = 0;
             trackableAngle = this.getUserData("angleX");
+            if (timeBuffer < 2){
+                initialAngle = this.getUserData("angleX");
+                timeBuffer += 1;
+            }
+            if (this.isFirst){
+                nobAngle = (lastAngle + (trackableAngle+2*pi - initialAngle)) % (2*pi);
+                System.out.println("nobAngle :"+nobAngle+"\t initialAngle :"+initialAngle + "\t trackableAngle :"+trackableAngle+"\t lastAngle :"+lastAngle);
+            }
+            else{
+                nobAngle = (lastAngle + (trackableAngle+2*pi - initialAngle)) % (2*pi);
+                System.out.println("nobAngle :"+nobAngle+"\t initialAngle :"+initialAngle + "\t trackableAngle :"+trackableAngle+"\t lastAngle :"+lastAngle);
+            }
         }
         
         if (this.emphasisChange) {
@@ -163,7 +178,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
             this.emphasisChange = false;
         }
         
-        checkTrackableAngle(trackableAngle);
+        checkTrackableAngle(nobAngle);
         //invRotScenario(trackableAngle + (pi / 2));
                 
         return false;
@@ -256,18 +271,18 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    private void checkTrackableAngle(float trackableAngle) {
+    private void checkTrackableAngle(float Angle) {
 
         float stepRange = 2f*pi / 3f;
         float deltaAngle = stepRange*0.25f/2f;
 
-        if (trackableAngle <= stepRange + deltaAngle && trackableAngle >= stepRange - deltaAngle) {
+        if (Angle <= stepRange + deltaAngle && Angle >= stepRange - deltaAngle) {
             frequency = 1;
             this.carrier = "CubeCarrier";
-        } else if (trackableAngle <= 2 * stepRange + deltaAngle && trackableAngle >= 2 * stepRange - deltaAngle) {
+        } else if (Angle <= 2 * stepRange + deltaAngle && Angle >= 2 * stepRange - deltaAngle) {
             frequency = 2;
             this.carrier = "PyramidCarrier";
-        } else if (trackableAngle <= 3 * stepRange + deltaAngle && trackableAngle >= 3 * stepRange - deltaAngle) {
+        } else if (Angle <= 3 * stepRange + deltaAngle && Angle >= 3 * stepRange - deltaAngle) {
             frequency = 3;
             this.carrier = "DodecagoneCarrier";
         } else {
@@ -293,7 +308,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
                 filterWheel.setLocalRotation(rot.fromAngleAxis(3*stepAngle,Vector3f.UNIT_Y));
                 break;
             case 4:
-                filterWheel.setLocalRotation(rot.fromAngleAxis(trackableAngle,Vector3f.UNIT_Y));
+                filterWheel.setLocalRotation(rot.fromAngleAxis(nobAngle,Vector3f.UNIT_Y));
                 break;
         }
 
@@ -337,6 +352,22 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
             }
         }
     }
-    
-    
+
+    @Override
+    protected void onFirstNodeActions() {
+        super.onFirstNodeActions();
+        timeBuffer = 0;
+    }
+
+    @Override
+    protected void onSecondNodeActions() {
+        super.onSecondNodeActions();
+        timeBuffer = 0;
+    }
+
+    @Override
+    protected void notOnNodeActions() {
+        super.notOnNodeActions();
+        lastAngle = nobAngle;
+    }
 }
