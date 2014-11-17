@@ -111,7 +111,9 @@ public final class Playback extends Scenario implements EmitterObserver {
         speakerIn.getControl(ParticleEmitterControl.class).setEnabled(true);
         
         Vector3f handleSliderBegin = scene.getChild("Slider.Handle.Begin").getLocalTranslation();
+        scene.getChild("Slider.Handle.Begin").setCullHint(cullHint.Always);
         Vector3f handleSliderEnd = scene.getChild("Slider.Handle.End").getLocalTranslation();
+        scene.getChild("Slider.Handle.End").setCullHint(cullHint.Always);
         translationIncrement = handleSliderEnd.subtract(handleSliderBegin).divide(4);
 
         //initTitleBox();

@@ -98,12 +98,13 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         wifiLogoLow = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Low", "Models/Commons/wifi-logo_low.png", 0.0f);
         wifiLogoMedium = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Medium", "Models/Commons/wifi-logo_medium.png", 0.0f);
         wifiLogoFull = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Full", "Models/Commons/wifi-logo_full.png", 0.0f);
-        wifiLogoNull = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Full", "Models/Commons/wifi-logo_low_low.png", 0.0f);
+        wifiLogoNull = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Null", "Models/Commons/wifi-logo_low_low.png", 0.0f);
        
         
         addWifiControl(wifiLogoLow);
         addWifiControl(wifiLogoMedium);
         addWifiControl(wifiLogoFull);
+        addWifiControl(wifiLogoNull);
 
         scene.attachChild(wifi);
         wifi.attachChild(wifiLogoLow);
@@ -114,13 +115,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         wifi.setLocalTranslation(outputHandle.getLocalTranslation().add(3.0f, 5.0f, -3.0f));
         
         // Get the different paths
-        Material meshMat = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        meshMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        meshMat.setColor("Color", new ColorRGBA(0, 0, 1, 0.0f));
-        meshMat.getAdditionalRenderState().setDepthWrite(false);
         antenneRxPath = (Geometry)((Node) pathAntenneRx).getChild("NurbsPath.005");
-        antenneRxPath.setQueueBucket(RenderQueue.Bucket.Transparent);
-        antenneRxPath.setMaterial(meshMat);
+        antenneRxPath.setCullHint(cullHint.Always);
        
         initParticlesEmitter(outputAntenneRx, pathAntenneRx, antenneRxPath, null);
         outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);

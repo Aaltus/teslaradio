@@ -109,21 +109,16 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         // Get the handles of the emitters
         pathInputAmpli = scene.getChild("Module.Handle.In");
         pathOutputAmpli = scene.getChild("Ampli.Handle");
+        pathOutputAmpli.setCullHint(cullHint.Always);
         pathAntenneTx = scene.getChild("Module.Handle.Out");
    
         // Get the different paths
-        Material meshMat = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        meshMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        meshMat.setColor("Color", new ColorRGBA(0, 0, 1, 0.0f));
-        meshMat.getAdditionalRenderState().setDepthWrite(false);
         Node wireInAmpli_node = (Node) scene.getChild("Path.Entree");
         inputAmpPath = (Geometry) wireInAmpli_node.getChild("NurbsPath.000");
-        inputAmpPath.setQueueBucket(RenderQueue.Bucket.Transparent);
-        inputAmpPath.setMaterial(meshMat);
+        inputAmpPath.setCullHint(cullHint.Always);
         Node wireOutAmpli_node = (Node) scene.getChild("Path.PostAmpli");
         outputAmpPath = (Geometry) wireOutAmpli_node.getChild("NurbsPath.005");
-        outputAmpPath.setQueueBucket(RenderQueue.Bucket.Transparent);
-        outputAmpPath.setMaterial(meshMat);
+        outputAmpPath.setCullHint(cullHint.Always);
         
         initParticlesEmitter(inputWireAmpli, pathInputAmpli, inputAmpPath, null);
         initParticlesEmitter(outputWireAmpli, pathOutputAmpli, outputAmpPath, null);
@@ -159,7 +154,9 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         this.initPatternGenerator();
         
         Vector3f handleSliderBegin = scene.getChild("Slider.Handle.Begin").getLocalTranslation();
+        scene.getChild("Slider.Handle.Begin").setCullHint(cullHint.Always);
         Vector3f handleSliderEnd = scene.getChild("Slider.Handle.End").getLocalTranslation();
+        scene.getChild("Slider.Handle.End").setCullHint(cullHint.Always);
         translationIncrement = handleSliderEnd.subtract(handleSliderBegin).divide(4);
         
     }

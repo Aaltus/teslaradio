@@ -79,21 +79,16 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         // Get the handles of the emitters
         Spatial pathInHandle = scene.getChild("Handle.In");
         Spatial pathOutFilterHandle = scene.getChild("Handle.Filtre.In");
+        pathOutFilterHandle.setCullHint(cullHint.Always);
         Spatial outputHandle = scene.getChild("Handle.Out");
         
         // Get the different paths
-        Material meshMat = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        meshMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        meshMat.setColor("Color", new ColorRGBA(0, 0, 1, 0.0f));
-        meshMat.getAdditionalRenderState().setDepthWrite(false);
         Node wirePcb_node = (Node) scene.getChild("Path.In.Object");
         Geometry pathIn = (Geometry) wirePcb_node.getChild("Path.In.Nurbs");
-        pathIn.setQueueBucket(RenderQueue.Bucket.Transparent);
-        pathIn.setMaterial(meshMat);
+        pathIn.setCullHint(cullHint.Always);
         Node output_node = (Node) scene.getChild("Path.Out.Object");
         Geometry pathOut = (Geometry) output_node.getChild("Path.Out.Nurbs");
-        pathOut.setQueueBucket(RenderQueue.Bucket.Transparent);
-        pathOut.setMaterial(meshMat);
+        pathOut.setCullHint(cullHint.Always);
         
         //initTitleBox();
         
