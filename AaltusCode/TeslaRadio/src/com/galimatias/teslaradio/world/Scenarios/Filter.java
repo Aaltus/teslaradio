@@ -4,14 +4,19 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.effects.*;
 import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -77,10 +82,18 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         Spatial outputHandle = scene.getChild("Handle.Out");
         
         // Get the different paths
+        Material meshMat = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        meshMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        meshMat.setColor("Color", new ColorRGBA(0, 0, 1, 0.0f));
+        meshMat.getAdditionalRenderState().setDepthWrite(false);
         Node wirePcb_node = (Node) scene.getChild("Path.In.Object");
         Geometry pathIn = (Geometry) wirePcb_node.getChild("Path.In.Nurbs");
+        pathIn.setQueueBucket(RenderQueue.Bucket.Transparent);
+        pathIn.setMaterial(meshMat);
         Node output_node = (Node) scene.getChild("Path.Out.Object");
         Geometry pathOut = (Geometry) output_node.getChild("Path.Out.Nurbs");
+        pathOut.setQueueBucket(RenderQueue.Bucket.Transparent);
+        pathOut.setMaterial(meshMat);
         
         //initTitleBox();
         

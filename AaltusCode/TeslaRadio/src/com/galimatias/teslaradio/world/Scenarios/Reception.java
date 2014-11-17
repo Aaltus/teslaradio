@@ -10,10 +10,14 @@ import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -114,7 +118,13 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         wifi.setLocalTranslation(outputHandle.getLocalTranslation().add(3.0f, 5.0f, -3.0f));
         
         // Get the different paths
+        Material meshMat = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        meshMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        meshMat.setColor("Color", new ColorRGBA(0, 0, 1, 0.0f));
+        meshMat.getAdditionalRenderState().setDepthWrite(false);
         antenneRxPath = (Geometry)((Node) pathAntenneRx).getChild("NurbsPath.005");
+        antenneRxPath.setQueueBucket(RenderQueue.Bucket.Transparent);
+        antenneRxPath.setMaterial(meshMat);
        
         initParticlesEmitter(outputAntenneRx, pathAntenneRx, antenneRxPath, null);
         outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);
