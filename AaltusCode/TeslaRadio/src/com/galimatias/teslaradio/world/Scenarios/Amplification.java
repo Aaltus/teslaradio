@@ -106,7 +106,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         //scene rotation
         scene.setLocalTranslation(new Vector3f(0.5f, 0.0f, 1.7f));
         Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(-pi / 2, Vector3f.UNIT_Y);
+        rot.fromAngleAxis(pi / 2, Vector3f.UNIT_Y);
         scene.setLocalRotation(rot);
 
         //initTitleBox();

@@ -92,10 +92,6 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         
         outputAntenneRx = new Node();
         outputModule = new Node();
-        //scene rotation
-        Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(-pi, Vector3f.UNIT_Y);
-        scene.setLocalRotation(rot);
         
         //initTitleBox();
         
