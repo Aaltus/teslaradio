@@ -91,7 +91,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         //startScreenState = new ScreenState(this, this);
         //this.getStateManager().attach(startScreenState);
         //this.getFlyByCamera().setDragToRotate(true);
-        this.androidActivityController.openProgressScreen("Loading resources...");
+        this.androidActivityController.openProgressScreen("Chargement des resources...");
         startLoading();
         startScreenState = androidActivityController;
         startScreenState.openStartMenu();
@@ -336,39 +336,39 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
         ScenarioCommon scenarioCommon = new ScenarioCommon();
 
-        androidActivityController.setProgressBar(0, "Loading " + "Sound Emission" + "...");
+        androidActivityController.setProgressBar(0, "Chargement Émission du son...");
         SoundEmission soundEmission = new SoundEmission(scenarioCommon, null, null);
         renderManager.preloadScene(soundEmission);
 
-        androidActivityController.setProgressBar(10, "Loading " + "Sound Capture" + "...");
+        androidActivityController.setProgressBar(10, "Chargement Capture du son...");
         Scenario soundCapture = new SoundCapture(scenarioCommon, null, null);
         renderManager.preloadScene(soundCapture);
 
-        androidActivityController.setProgressBar(20, "Loading " + "Amplification" + "...");
+        androidActivityController.setProgressBar(20, "Chargement Amplification...");
         Amplification amplification = new Amplification(scenarioCommon, null, null);
         renderManager.preloadScene(amplification);
 
-        androidActivityController.setProgressBar(30, "Loading " + "Modulation" + "...");
+        androidActivityController.setProgressBar(30, "Chargement Modulation...");
         Modulation modulation = new Modulation(scenarioCommon, null, null);
         renderManager.preloadScene(modulation);
 
-        androidActivityController.setProgressBar(40, "Loading " + "Reception" + "...");
+        androidActivityController.setProgressBar(40, "Chargement Réception...");
         Reception reception = new Reception(scenarioCommon, null, null);
         renderManager.preloadScene(reception);
 
-        androidActivityController.setProgressBar(50, "Loading " + "Demodulation" + "...");
+        androidActivityController.setProgressBar(50, "Chargement Démodulation...");
         Demodulation demodulation = new Demodulation(scenarioCommon, null, null);
         renderManager.preloadScene(demodulation);
 
-        androidActivityController.setProgressBar(60, "Loading " + "Filter" + "...");
+        androidActivityController.setProgressBar(60, "Chargement Filtrage...");
         Filter filter = new Filter(scenarioCommon, null, null);
         renderManager.preloadScene(filter);
 
-        androidActivityController.setProgressBar(70, "Loading " + "Playback" + "...");
+        androidActivityController.setProgressBar(70, "Chargement Hautparleur...");
         Playback playback = new Playback(scenarioCommon, null, null);
         renderManager.preloadScene(playback);
 
-        androidActivityController.setProgressBar(100, "Done loading");
+        androidActivityController.setProgressBar(100, "Chargement terminé!");
 
         /*
         try {

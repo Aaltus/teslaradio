@@ -33,7 +33,7 @@
     <string name="playback_title">Hauts-parleurs</string>
     <string name="reference_title">Références</string>
     <string name="about_us_title">À propos de nous</string>
-    <string name="splashscreentext">Loading camera and game menu...</string>
+    <string name="splashscreentext">Chargement de la caméra et du menu de démarrage...</string>
     <string name="previous_scenario_button">Precécédent</string>
     <string name="next_scenario_button">Prochain</string>
 

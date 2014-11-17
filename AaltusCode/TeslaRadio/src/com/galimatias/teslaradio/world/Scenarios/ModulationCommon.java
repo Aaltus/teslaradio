@@ -92,14 +92,13 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     ModulationCommon(ScenarioCommon sc, Camera cam, Spatial destinationHandle) {
         
         super(sc, cam, destinationHandle);
-        
+        this.needFixedScenario = true;
         this.needAutoGenIfMain = true;
     }
     
     ModulationCommon(ScenarioCommon sc, Camera cam, Spatial destinationHandle, String bgm) {
         
         super(sc, cam, destinationHandle, bgm);
-        
         this.needAutoGenIfMain = true;
     }
     
@@ -329,7 +328,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     private void changeCarrierParticles(int frequency) {
 
         this.frequency = frequency;
-        
+
         Spatial lastCarrier = selectedCarrier;
         switch (frequency) {
             case 1:
@@ -469,7 +468,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         //rotationArrow.simpleUpdate(tpf);
 
         checkTrackableAngle(trackableAngle);
-        invRotScenario(trackableAngle + (pi / 2));
+        //invRotScenario(trackableAngle + (pi / 2));
         checkModulationMode(tpf);
         
         if (carrierEmitter != null && tpfCumul >= 1.0f) {

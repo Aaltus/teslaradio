@@ -124,6 +124,11 @@ public abstract class Scenario extends Node implements SignalObserver {
      * Defines the time between 2 auto-wave emission.
      */
     protected float waveTime = 1;
+
+    /**
+     * This boolean defines if the scenarios should look at each others.
+     */
+    protected boolean needFixedScenario = false;
     
     /*Path of the background sound*/
     protected String backgroundSound = null;
@@ -375,5 +380,7 @@ public abstract class Scenario extends Node implements SignalObserver {
             this.scenarioCommon.getNoiseControl().updateNoiseLevel(noise);
         }
     }
+
+    protected boolean getNeedFixedScenario() { return needFixedScenario; }
 }
 

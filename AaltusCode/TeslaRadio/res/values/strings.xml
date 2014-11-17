@@ -47,7 +47,7 @@
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you !</string>
     <string name="developers_email">dms.jonathan@gmail.com</string>
-    <string name="splashscreentext">Loading camera and game menu...</string>
+    <string name="splashscreentext">Chargement de la caméra et du menu de démarrage...</string>
 
     <!--Scenario titles-->
     <string name="sound_emission_title">Émission du son</string>
@@ -96,11 +96,11 @@
     <string name="tutorial_help1">Pour avoir de l\'information supplémentaire sur les modules affichés</string>
     <string name="tutorial_help2">Pour revoir le tutoriel des interactions</string>
     <string name="tutorial_help3">Et surtout, pour mieux comprendre les scénarios!</string>
-    <string name="screen_start_button">Start</string>
-    <string name="screen_tutorial_button">Tutorial</string>
-    <string name="screen_credits_button">Credits</string>
-    <string name="screen_exit_button">Exit</string>
-    <string name="toast_no_trackable_seen">Please focus on a trackable</string>
+    <string name="screen_start_button">Commencer</string>
+    <string name="screen_tutorial_button">Tutoriel</string>
+    <string name="screen_credits_button">Crédits</string>
+    <string name="screen_exit_button">Quitter</string>
+    <string name="toast_no_trackable_seen">Pointes sur les cibles!</string>
     <string name="master_tutorial_ok_button">Continuer</string>
     <string name="master_tutorial_cancel_button">Quitter</string>
     <string name="previous_scenario_button">Previous</string>

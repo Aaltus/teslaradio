@@ -59,7 +59,8 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         
         super(sc, cam, destinationHandle);
         this.setName("Filter");
-        this.needAutoGenIfMain = true; 
+        this.needAutoGenIfMain = true;
+        this.needFixedScenario = true;
         scenarioCommon.registerObserver(this);
         
         loadUnmovableObjects();
@@ -163,7 +164,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         }
         
         checkTrackableAngle(trackableAngle);
-        invRotScenario(trackableAngle + (pi / 2));
+        //invRotScenario(trackableAngle + (pi / 2));
                 
         return false;
     }
