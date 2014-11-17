@@ -79,6 +79,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         // Get the handles of the emitters
         Spatial pathInHandle = scene.getChild("Handle.In");
         Spatial pathOutFilterHandle = scene.getChild("Handle.Filtre.In");
+        pathOutFilterHandle.setCullHint(cullHint.Always);
         Spatial outputHandle = scene.getChild("Handle.Out");
         
         // Get the different paths

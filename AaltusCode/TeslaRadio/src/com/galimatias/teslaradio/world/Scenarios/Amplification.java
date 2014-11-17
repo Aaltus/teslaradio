@@ -114,6 +114,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         // Get the handles of the emitters
         pathInputAmpli = scene.getChild("Module.Handle.In");
         pathOutputAmpli = scene.getChild("Ampli.Handle");
+        pathOutputAmpli.setCullHint(cullHint.Always);
         pathAntenneTx = scene.getChild("Module.Handle.Out");
    
         // Get the different paths
@@ -158,7 +159,9 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         this.initPatternGenerator();
         
         Vector3f handleSliderBegin = scene.getChild("Slider.Handle.Begin").getLocalTranslation();
+        scene.getChild("Slider.Handle.Begin").setCullHint(cullHint.Always);
         Vector3f handleSliderEnd = scene.getChild("Slider.Handle.End").getLocalTranslation();
+        scene.getChild("Slider.Handle.End").setCullHint(cullHint.Always);
         translationIncrement = handleSliderEnd.subtract(handleSliderBegin).divide(4);
         
     }
