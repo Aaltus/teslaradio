@@ -44,11 +44,11 @@ int CdestroyTrackerData(CWorld* cworld)
 #endif
 World::World()
 {
-	AaltusTrackable chips(0, "Chips");
+	AaltusTrackable chips(0, "TargetA");
 	pair<string, AaltusTrackable> chipsPair(chips.getName(), chips);
 	_aaltusMap.insert(chipsPair);
 	
-	AaltusTrackable stones(1,"Stones");
+	AaltusTrackable stones(1,"TargetB");
 	pair<string, AaltusTrackable> stonesPair(stones.getName(), stones);
 	_aaltusMap.insert(stonesPair);
 }
