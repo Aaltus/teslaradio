@@ -10,10 +10,14 @@ import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -88,22 +92,19 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         
         outputAntenneRx = new Node();
         outputModule = new Node();
-        //scene rotation
-        Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(-pi, Vector3f.UNIT_Y);
-        scene.setLocalRotation(rot);
         
         //initTitleBox();
         
         wifiLogoLow = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Low", "Models/Commons/wifi-logo_low.png", 0.0f);
         wifiLogoMedium = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Medium", "Models/Commons/wifi-logo_medium.png", 0.0f);
         wifiLogoFull = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Full", "Models/Commons/wifi-logo_full.png", 0.0f);
-        wifiLogoNull = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Full", "Models/Commons/wifi-logo_low_low.png", 0.0f);
+        wifiLogoNull = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Null", "Models/Commons/wifi-logo_low_low.png", 0.0f);
        
         
         addWifiControl(wifiLogoLow);
         addWifiControl(wifiLogoMedium);
         addWifiControl(wifiLogoFull);
+        addWifiControl(wifiLogoNull);
 
         scene.attachChild(wifi);
         wifi.attachChild(wifiLogoLow);
@@ -115,6 +116,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         
         // Get the different paths
         antenneRxPath = (Geometry)((Node) pathAntenneRx).getChild("NurbsPath.005");
+        antenneRxPath.setCullHint(cullHint.Always);
        
         initParticlesEmitter(outputAntenneRx, pathAntenneRx, antenneRxPath, null);
         outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);

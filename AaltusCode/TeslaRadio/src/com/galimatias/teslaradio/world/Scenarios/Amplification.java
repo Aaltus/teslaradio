@@ -26,6 +26,7 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -101,26 +102,24 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         scene = (Node) assetManager.loadModel("Models/Amplification/Antenne_Tx.j3o");
         scene.setName("Amplification");
         this.attachChild(scene);
-
-        //scene rotation
         scene.setLocalTranslation(new Vector3f(0.5f, 0.0f, 1.7f));
-        Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(-pi / 2, Vector3f.UNIT_Y);
-        scene.setLocalRotation(rot);
 
         //initTitleBox();
         
         // Get the handles of the emitters
         pathInputAmpli = scene.getChild("Module.Handle.In");
         pathOutputAmpli = scene.getChild("Ampli.Handle");
+        pathOutputAmpli.setCullHint(cullHint.Always);
         pathAntenneTx = scene.getChild("Module.Handle.Out");
    
         // Get the different paths
         Node wireInAmpli_node = (Node) scene.getChild("Path.Entree");
         inputAmpPath = (Geometry) wireInAmpli_node.getChild("NurbsPath.000");
+        inputAmpPath.setCullHint(cullHint.Always);
         Node wireOutAmpli_node = (Node) scene.getChild("Path.PostAmpli");
         outputAmpPath = (Geometry) wireOutAmpli_node.getChild("NurbsPath.005");
-     
+        outputAmpPath.setCullHint(cullHint.Always);
+        
         initParticlesEmitter(inputWireAmpli, pathInputAmpli, inputAmpPath, null);
         initParticlesEmitter(outputWireAmpli, pathOutputAmpli, outputAmpPath, null);
         
@@ -155,7 +154,9 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         this.initPatternGenerator();
         
         Vector3f handleSliderBegin = scene.getChild("Slider.Handle.Begin").getLocalTranslation();
+        scene.getChild("Slider.Handle.Begin").setCullHint(cullHint.Always);
         Vector3f handleSliderEnd = scene.getChild("Slider.Handle.End").getLocalTranslation();
+        scene.getChild("Slider.Handle.End").setCullHint(cullHint.Always);
         translationIncrement = handleSliderEnd.subtract(handleSliderBegin).divide(4);
         
     }
