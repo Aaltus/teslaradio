@@ -1,5 +1,6 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
+import com.galimatias.teslaradio.subject.AudioOptionEnum;
 import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 import com.galimatias.teslaradio.world.effects.*;
 import com.jme3.collision.CollisionResults;
@@ -55,6 +56,7 @@ public final class SoundEmission extends Scenario {
     {
 
         super(sc,Camera, destinationHandle);
+        this.hasBackgroundSound = false;
         touchable = new Node();
         touchable.setName("Touchable");
         this.attachChild(touchable);
@@ -68,6 +70,7 @@ public final class SoundEmission extends Scenario {
     protected void loadUnmovableObjects() {
 
         scene = (Node) assetManager.loadModel("Models/SoundEmission/Scene_wUV.j3o");
+        scene.scale(0.75f);
         this.attachChild(scene);
         
         guitar = scene.getChild("Guitar");
@@ -89,7 +92,7 @@ public final class SoundEmission extends Scenario {
         this.attachChild(drumEmitter);
         
         initAudio();
-        initTitleBox();
+        //initTitleBox();
         initOnTouchEffect();
         
     }
@@ -220,16 +223,17 @@ public final class SoundEmission extends Scenario {
     {        
         drumArrow = new Node();
         drumArrow.move(drumHandleOutPosition);
-        drumArrow.addControl(new Arrows("touch", assetManager, 1));
+        drumArrow.addControl(new Arrows("touch", assetManager, 3));
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
         drumArrow.addControl(control1);
         this.attachChild(drumArrow);
         
         guitarArrow = new Node();
-        guitarArrow.move(guitarHandleOutPosition);
-        guitarArrow.addControl(new Arrows("touch", assetManager, 1));
+        guitarArrow.move(guitarHandleOutPosition.add(0.0f,1.0f,0.0f));
+        guitarArrow.addControl(new Arrows("touch", assetManager, 3));
         LookAtCameraControl control2 = new LookAtCameraControl(Camera);
         guitarArrow.addControl(control2);
+        guitarArrow.setLocalScale(8f);
         this.attachChild(guitarArrow);
         
         moveArrow = new Node();
@@ -344,14 +348,7 @@ public final class SoundEmission extends Scenario {
                         {
                             this.guitarTouchEffect();
                             break;
-                        }
-                        else if (nameToCompare.equals(titleTextBox.getName()) || nameToCompare.equals(instrumentTextBox.getName()))
-                        {
-                            //this.textTouchEffect();
-                            showInformativeMenu = true;
-                            break;
-                        }
-                        
+                        }                        
                     }
                 }
                 break;
@@ -422,20 +419,23 @@ public final class SoundEmission extends Scenario {
             switch(this.currentObjectToEmphasisOn) {
                 // Attach on drum
                 case 0:
-                    this.spotlight.setLocalTranslation(drumHandleOutPosition.add(0.0f,-drumHandleOutPosition.y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(3.0f,20.0f,3.0f));
-                    this.attachChild(this.spotlight);
-                    break;
-                // Attach on guitar
-                case 1:
-                    this.spotlight.setLocalTranslation(guitarHandleOutPosition.add(0.0f,-guitarHandleOutPosition.y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
+                    this.spotlight.setLocalTranslation(scene.getLocalTranslation().add(0.0f,-scene.getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(7.0f,30.0f,7.0f));
                     this.attachChild(this.spotlight);
                     break;
                 default:
                     this.detachChild(this.spotlight);
                     break;
             }
+        }
+    }
+    
+    @Override
+    protected void audioOptionTouch(AudioOptionEnum value){
+        if(value == AudioOptionEnum.DRUM){
+            this.drumTouchEffect();
+        }else if(value == AudioOptionEnum.GUITAR){
+            this.guitarTouchEffect();
         }
     }
 }

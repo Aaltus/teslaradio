@@ -103,8 +103,9 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
 
     @Override
     public void emitParticle(Spatial spatialToSend) {
-        
-        emitParticle(spatialToSend, this.radius*spatialToSend.getLocalScale().length());
+        float ampli = this.spatial.getUserData(AppGetter.USR_AMPLIFICATION);
+        System.out.print(ampli);
+        emitParticle(spatialToSend, this.radius*ampli);
     }
     
     private void emitParticle(Spatial spatialToSend, float scale) {
@@ -153,7 +154,8 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
         Geometry outsideDomeGeom = new Geometry("OutsideDome", outsideDome);
         Dome insideDome = new Dome( new Vector3f(), numberOrRadialAndPlanes, numberOrRadialAndPlanes, scaleAndRadius, true);
         Geometry insideDomeGeom = new Geometry("InsideDome", insideDome);
-        
+
+        material.getAdditionalRenderState().setDepthWrite(false);
         outsideDomeGeom.setMaterial(material);
         insideDomeGeom.setMaterial(material);
         

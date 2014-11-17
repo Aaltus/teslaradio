@@ -22,7 +22,7 @@ public class LanguageChooserActivity extends FragmentActivity {
 
         SharedPreferences pref = getSharedPreferences("ActivityPREF", Context.MODE_PRIVATE);
         if(pref.getBoolean("activity_executed", false)){
-            Intent intent = new Intent(this, VuforiaJMEActivity.class);
+            Intent intent = new Intent(this, MasterTutorialActivity.class);
             startActivity(intent);
             finish();
         } else {

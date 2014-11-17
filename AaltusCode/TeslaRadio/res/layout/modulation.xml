@@ -22,13 +22,35 @@
                 style="@style/InformativeMenuTextStyle"
                 />
 
-        <com.utils.CustomVideoView
+        <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:clickable="false">
+
+
+            <ImageView
+                    android:id="@+id/modulationam_preview"
+                    android:layout_gravity="center"
+                    android:src="@drawable/modulationam_preview"
+                    style="@style/ImageSize"
+                    android:clickable="false"/>
+
+            <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/play_button" />
+
+        </FrameLayout>
+        <!--<com.utils.CustomVideoView
                 android:layout_gravity="center_horizontal"
                 android:layout_height="350dp"
                 android:layout_width="fill_parent"
                 android:id="@+id/videoView"
                 myapp:uri="android.resource://com.galimatias.teslaradio/raw/modulationam"
-                />
+                />-->
+
         <!--android:background="@drawable/button_bg"-->
         <TextView
                 android:layout_width="wrap_content"
@@ -37,13 +59,35 @@
                 style="@style/InformativeMenuTextStyle"
                 />
 
-        <com.utils.CustomVideoView
+        <!--<com.utils.CustomVideoView
                 android:layout_gravity="center_horizontal"
                 android:layout_height="500dp"
                 android:layout_width="fill_parent"
                 android:id="@+id/videoView"
                 myapp:uri="android.resource://com.galimatias.teslaradio/raw/souris"
-                />
+                />-->
+
+        <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:clickable="false">
+
+
+            <ImageView
+                    android:id="@+id/souris_preview"
+                    style="@style/ImageSize"
+                    android:layout_gravity="center"
+                    android:src="@drawable/souris_preview"
+                    android:clickable="false"/>
+
+            <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/play_button" />
+
+        </FrameLayout>
 
         <TextView
                 android:layout_width="wrap_content"
@@ -52,13 +96,35 @@
                 style="@style/InformativeMenuTextStyle"
                 />
 
-        <com.utils.CustomVideoView
+        <!--<com.utils.CustomVideoView
                 android:layout_gravity="center_horizontal"
                 android:layout_height="350dp"
                 android:layout_width="fill_parent"
                 android:id="@+id/videoView"
                 myapp:uri="android.resource://com.galimatias.teslaradio/raw/modulationfm"
-                />
+                />-->
+
+        <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:clickable="false">
+
+
+            <ImageView
+                    android:id="@+id/modulationfm_preview"
+                    style="@style/ImageSize"
+                    android:layout_gravity="center"
+                    android:src="@drawable/modulationfm_preview"
+                    android:clickable="false"/>
+
+            <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/play_button" />
+
+        </FrameLayout>
 
 
     </LinearLayout>

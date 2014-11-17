@@ -99,7 +99,7 @@ public final class SoundCapture extends Scenario {
         touchable.attachChild(micro);
         scene.attachChild(touchable);
         
-        initTitleBox();
+        //initTitleBox();
 
     }
 
@@ -247,6 +247,7 @@ public final class SoundCapture extends Scenario {
 
     @Override
     protected void initPatternGenerator() {
+        this.initDrumGuitarSound();
         micTapParticle = scenarioCommon.initBaseGeneratorParticle();
 
         micTapParticle.setQueueBucket(RenderQueue.Bucket.Opaque);
@@ -337,7 +338,7 @@ public final class SoundCapture extends Scenario {
     private void loadArrows() {
         micArrow = new Node();
         micArrow.move(micHandleInPosition);
-        micArrow.addControl(new Arrows("touch",  assetManager, 1));
+        micArrow.addControl(new Arrows("touch",  assetManager, 3));
         LookAtCameraControl control = new LookAtCameraControl(Camera);
         micArrow.addControl(control);
         scene.attachChild(micArrow);
@@ -362,7 +363,7 @@ public final class SoundCapture extends Scenario {
                 // Attach on microphone
                 case 0:
                     this.spotlight.setLocalTranslation(scene.getChild("Stand_micro").getLocalTranslation().add(0.0f,-scene.getChild("Stand_micro").getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
+                    this.spotlight.setLocalScale(new Vector3f(5.0f,30.0f,5.0f));
                     scene.attachChild(this.spotlight);
                     break;
                 default:

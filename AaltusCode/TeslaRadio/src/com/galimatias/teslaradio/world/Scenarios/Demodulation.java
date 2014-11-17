@@ -28,7 +28,7 @@ public class Demodulation extends ModulationCommon  {
     private Node pyramidSignal;
     private Node dodecagoneSignal;
     public Demodulation(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle){
-        super(sc,Camera, destinationHandle,"Sounds/demodulation.ogg");
+        super(sc,Camera, destinationHandle);
         this.setName("Demodulation");
         loadUnmovableObjects();
         loadMovableObjects();
@@ -83,9 +83,9 @@ public class Demodulation extends ModulationCommon  {
 
     @Override
     protected void initPatternGenerator() {
-        
+        this.initDrumGuitarSound();
         Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
-        Spatial[] carrier = scenarioCommon.initCarrierGeometries();
+        Spatial[] carrier = scenarioCommon.initCarrierGeometries();   
               
         this.cubeSignal = new Node();
         this.cubeSignal.attachChild(carrier[0].clone());
@@ -125,12 +125,12 @@ public class Demodulation extends ModulationCommon  {
                     ((Node)spatial).getChild(1).setLocalScale(((Node)spatial).getChild(1).getWorldScale());
                     outputSignal.attachChild(((Node)spatial).getChild(1));
                     pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(outputSignal.clone());
-                
-                    
-                    this.getControl(SoundControl.class).updateNoiseLevel(0);
+                    if(!this.isFirst){
+                        this.updateNoise(0f);
+                    }
                 }
                else{
-                   this.getControl(SoundControl.class).updateNoiseLevel(1);
+                   this.updateNoise(1);
                  
                }
             }
@@ -148,6 +148,28 @@ public class Demodulation extends ModulationCommon  {
                node , baseGeom, isFm, 10,scenarioCommon.minBaseParticleScale ,scenarioCommon.maxBaseParticleScale);
         
         this.getInputHandle().getControl(PatternGeneratorControl.class).setParticleList(lst);
+    }
+    
+    @Override
+    protected void objectEmphasis() {
+        if (this.spotlight != null) {            
+            switch(this.currentObjectToEmphasisOn) {
+                // Attach on modulator
+                case 0:
+                    this.spotlight.setLocalTranslation(scene.getChild("Modulator").getLocalTranslation().add(0.0f,-scene.getChild("Modulator").getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(3.0f,30.0f,3.0f));
+                    scene.attachChild(this.spotlight);
+                    break;  
+                case 1:
+                    this.spotlight.setLocalTranslation(scene.getChild("Switch").getLocalTranslation().add(0.0f,-scene.getChild("Switch").getLocalTranslation().y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(2.0f,30.0f,2.0f));
+                    scene.attachChild(this.spotlight);
+                    break;
+                default:
+                    scene.detachChild(this.spotlight);
+                    break;
+            }
+        }
     }
 
 }

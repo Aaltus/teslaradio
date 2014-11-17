@@ -87,7 +87,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     private Geometry particle;
     
     public Amplification(ScenarioCommon sc,Camera Camera, Spatial destinationHandle){
-        super(sc, Camera, destinationHandle, "Sounds/amplification.ogg");
+        super(sc, Camera, destinationHandle);
         this.needAutoGenIfMain = true;
         scenarioCommon.registerObserver(this);
         this.setName("Amplification");
@@ -108,7 +108,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         rot.fromAngleAxis(-pi / 2, Vector3f.UNIT_Y);
         scene.setLocalRotation(rot);
 
-        initTitleBox();
+        //initTitleBox();
         
         // Get the handles of the emitters
         pathInputAmpli = scene.getChild("Module.Handle.In");
@@ -143,6 +143,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
             outputModule.addControl(new AirParticleEmitterControl(this.destinationHandle, 20, 25, mat2));
             outputModule.getControl(ParticleEmitterControl.class).registerObserver(this.destinationHandle.getControl(ParticleEmitterControl.class));
             outputModule.getControl(ParticleEmitterControl.class).setEnabled(true);
+            outputModule.setUserData(AppGetter.USR_AMPLIFICATION, 0.5f);
 
       //-------------------------------AirParticleEmitterControl------------------
 
@@ -175,15 +176,18 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         
         touchable.attachChild(ampliSliderButton);
         touchable.attachChild(ampliSliderBox);
+        
+       
     }
 
     private void loadArrows()
     {
         sliderArrow = new Node();
         sliderArrow.move(ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f));
-        sliderArrow.addControl(new Arrows("touch", assetManager, 1));
+        sliderArrow.addControl(new Arrows("touch", assetManager, 3));
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
         sliderArrow.addControl(control1);
+        sliderArrow.setLocalScale(2f);
         scene.attachChild(sliderArrow);
         
         moveArrow = new Node();
@@ -214,8 +218,12 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
                     touchCount = 0;
                     break;
             }
-            
             isTouched = false;
+            if(ampliScale < 0){
+                ampliScale = -1/ampliScale;
+            }
+            this.outputModule.setUserData(AppGetter.USR_AMPLIFICATION, ampliScale);
+            
         }
         /*TR-261 apparently we don't want this */
         //this.getControl(SoundControl.class).updateVolume(ampliScale/1.5f);
@@ -234,7 +242,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     //Scale handle of the particle
     private Spatial particleAmplification(Spatial particle){
 
-        this.destinationHandle.setUserData(AppGetter.USR_SCALE, ampliScale);
+        this.destinationHandle.setUserData(AppGetter.USR_AMPLIFICATION, ampliScale);
         return particle.scale(ampliScale);
     }
     
@@ -248,6 +256,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
      
     @Override
     protected void initPatternGenerator(){
+        this.initDrumGuitarSound();
         Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
         Spatial[] carrier = scenarioCommon.initCarrierGeometries();
                 
@@ -331,10 +340,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
                     String nameToCompare =
                             results.getClosestCollision().getGeometry().getParent().getName();
 
-                    if (nameToCompare.equals(titleTextBox.getName())) {
-                        showInformativeMenu = true;
-                        break;
-                    } else if (nameToCompare.equals("SliderButton")) {
+                    if (nameToCompare.equals("SliderButton")) {
                         touchCount++;
                         isTouched = true;
                         removeHintImages();
@@ -396,12 +402,11 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         }*/
          if (notifierId.equals("InputWireAmpli")) {
           //Change Scale
-             carrier = this.particleAmplification(carrier);
+             carrier = this.particleAmplification(((Node) spatial).getChild(0));
              outputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(spatial);
          } else if(notifierId.equals("OutputWireAmpli")) {
              Float scale = new Float(spatial.getWorldScale().length());
              spatial.setUserData(AppGetter.USR_SCALE, scale);
-             carrier = this.particleAmplification(carrier);
              outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
          }   
     }
@@ -460,6 +465,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
     protected void onSecondNodeActions() {
         super.onSecondNodeActions(); //To change body of generated methods, choose Tools | Templates.
         this.detachChild(moveArrow);
+        this.updateNoise(0f);
     }
 
     @Override
@@ -469,17 +475,12 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
                 // Attach on microphone
                 case 0:
                     this.spotlight.setLocalTranslation(scene.getChild("Ampli.Handle").getLocalTranslation().add(0.0f,-scene.getChild("Ampli.Handle").getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    this.spotlight.setLocalScale(new Vector3f(3.0f,30.0f,3.0f));
                     scene.attachChild(this.spotlight);
                     break;
                 case 1:
                     this.spotlight.setLocalTranslation(scene.getChild("Antenna.Handle.In").getLocalTranslation().add(0.0f,-scene.getChild("Antenna.Handle.In").getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
-                    scene.attachChild(this.spotlight);
-                    break;
-                case 2:
-                    this.spotlight.setLocalTranslation(ampliSliderBox.getLocalTranslation().add(0.0f,-ampliSliderBox.getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    this.spotlight.setLocalScale(new Vector3f(2.0f,30.0f,2.0f));
                     scene.attachChild(this.spotlight);
                     break;
                 default:

@@ -1,6 +1,6 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.ar4android.vuforiaJME.AndroidActivityListener;
+import com.ar4android.vuforiaJME.AndroidActivityController;
 import com.ar4android.vuforiaJME.AppGetter;
 import com.ar4android.vuforiaJME.ITutorialSwitcher;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
@@ -66,6 +66,8 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     private ScenarioCommon scenarioCommon = new ScenarioCommon();
     private Node rightArrowNode;
     private Node leftArrowNode;
+    
+    private SongManager songManager;
 
     public void setApplicationType(ApplicationType applicationType){
         this.applicationType = applicationType;
@@ -113,7 +115,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     /**
      * Callback interface to open the informativeMenu.
      */
-    private AndroidActivityListener androidActivityListener;
+    private AndroidActivityController androidActivityController;
     
     private static final String NEXT_SCENARIO = "NextScenario";
     private static final String PREVIOUS_SCENARIO = "PreviousScenario";
@@ -127,11 +129,11 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             ApplicationType applicationType,
             List<Node> node,
             Camera cam,
-            AndroidActivityListener androidActivityListener)
+            AndroidActivityController androidActivityController)
     {
         this.app = app;
         this.nodeList = node;
-        this.androidActivityListener = androidActivityListener;
+        this.androidActivityController = androidActivityController;
         this.applicationType = applicationType;
         this.assetManager  = this.app.getAssetManager();//AppGetter.getAssetManager();
         this.renderManager = this.app.getRenderManager();
@@ -149,6 +151,9 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             Camera cam)
     {   
         initGuiNode(settings, assetManager);
+        songManager = new SongManager();
+        this.scenarioCommon.setNoiseControl(songManager.getNoiseControl());
+        this.nodeList.get(1).attachChild(songManager.getAudioNode());
         
         //This a list of all the scenario that we will rotate/scale according
         //to which environment we are in. Don't forget to add scenario in it. 
@@ -458,6 +463,9 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 }
             }
         }
+        if(androidActivityController != null){
+            androidActivityController.setTutorialMenu(null);
+        }
     }
 
     /**
@@ -472,8 +480,13 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             {
                 if(count < size){
                     Scenario scenario = getCurrentScenario().getScenarios().get(count);
-                    if(count == 0 && scenario.getNeedsAutoGen()){
+                    if(count == 0 ){
                         scenario.onFirstNodeActions();
+                        if(scenario.getNeedsBackgroundSound()){
+                            this.songManager.playSong();
+                        }else{
+                            this.songManager.stopSong();
+                        }
                     }
                     if(count == 1){
                         scenario.onSecondNodeActions();
@@ -496,8 +509,8 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         }
 
         ScenarioEnum scenarioEnum = scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios());
-        if(androidActivityListener != null){
-            androidActivityListener.setTutorialMenu(scenarioEnum);
+        if(androidActivityController != null){
+            androidActivityController.setTutorialMenu(scenarioEnum);
         }
         updateGuiNavigationArrows();
         
@@ -607,9 +620,9 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
 
         for(Scenario scenario : getCurrentScenario().getScenarios() )
         {
-            if (scenario.simpleUpdate(tpf) && androidActivityListener != null)
+            if (scenario.simpleUpdate(tpf) && androidActivityController != null)
             {
-                androidActivityListener.toggleInformativeMenuCallback(scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios()));
+                androidActivityController.toggleInformativeMenuCallback(scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios()));
             }
         }
     };

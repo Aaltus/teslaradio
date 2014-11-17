@@ -69,7 +69,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     private float tpfDistanceCumul = 0f;
 
     public Reception(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
-        super(sc,Camera, destinationHandle, "Sounds/reception.ogg" );
+        super(sc,Camera, destinationHandle );
         
         this.needAutoGenIfMain = true;     
         scenarioCommon.registerObserver(this);
@@ -93,7 +93,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         rot.fromAngleAxis(-pi, Vector3f.UNIT_Y);
         scene.setLocalRotation(rot);
         
-        initTitleBox();
+        //initTitleBox();
         
         wifiLogoLow = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Low", "Models/Commons/wifi-logo_low.png", 0.0f);
         wifiLogoMedium = new ImageBox(1.0f, 1.0f, assetManager, "Wifi Logo Medium", "Models/Commons/wifi-logo_medium.png", 0.0f);
@@ -132,8 +132,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         // Set names for the emitters
         outputAntenneRx.setName("OutputAntenneRx");
         outputAntenneRx.setUserData(AppGetter.USR_SOURCE_TRANSLATION, 0f);
-        outputAntenneRx.setUserData(AppGetter.USR_SCALE,1f);
-        
+        outputAntenneRx.setUserData(AppGetter.USR_AMPLIFICATION,0.5f);
         initPatternGenerator();
     }
 
@@ -166,65 +165,6 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     }
 
     @Override
-    public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
-        /*switch(touchEvent.getType()){
-
-            //Checking for down event is very responsive
-            case DOWN:
-
-            //case TAP:
-                if (name.equals("Touch"))
-                {
-
-                    // 1. Reset results list.
-                    CollisionResults results = new CollisionResults();
-
-                    // 2. Mode 1: user touch location.
-                    //Vector2f click2d = inputManager.getCursorPosition();
-
-                    Vector2f click2d = new Vector2f(touchEvent.getX(),touchEvent.getY());
-                    Vector3f click3d = Camera.getWorldCoordinates(
-                            new Vector2f(click2d.x, click2d.y), 0f).clone();
-                    Vector3f dir = Camera.getWorldCoordinates(
-                            new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
-                    Ray ray = new Ray(click3d, dir);
-
-                    // 3. Collect intersections between Ray and Shootables in results list.
-                    //focusableObjects.collideWith(ray, results);
-                    touchable.collideWith(ray, results);
-
-                    // 4. Print the results
-                    //Log.d(TAG, "----- Collisions? " + results.size() + "-----");
-                    //for (int i = 0; i < results.size(); i++) {
-                        // For each hit, we know distance, impact point, name of geometry.
-                        //float dist = results.getCollision(i).getDistance();
-                        //Vector3f pt = results.getCollision(i).getContactPoint();
-                        //String hit = results.getCollision(i).getGeometry().getName();
-
-                        //Log.e(TAG, "  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
-                    //}
-
-                    // 5. Use the results (we mark the hit object)
-                    if (results.size() > 0)
-                    {
-
-                        // The closest collision point is what was truly hit:
-                        String nameToCompare =
-                                results.getClosestCollision().getGeometry().getParent().getName();
-
-                        if (nameToCompare.equals(titleTextBox.getName()))
-                        {
-                            showInformativeMenu = true;
-                            break;
-                        }
-
-                }
-            }
-            break;
-        }*/
-    }
-
-    @Override
     protected boolean simpleUpdate(float tpf) {
 
         if (this.emphasisChange) {
@@ -233,7 +173,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         }
         
         this.tpfDistanceCumul += tpf;
-        if(this.tpfDistanceCumul > 0.35f){   
+        if(this.tpfDistanceCumul > 0.35f && !this.isFirst){   
             this.updateDistanceStatus();
             this.tpfDistanceCumul = 0;
         }
@@ -275,9 +215,9 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         } else {
             signalIntensity = 3;
         }
-        if(this.backgroundSound != null){
-            this.updateSoundLevel(normScale);
-        }
+        
+        this.updateSoundLevel(normScale);
+        
        
     }
     
@@ -304,11 +244,11 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     private void updateSoundLevel(float normScale){
         if(normScale == 0){
-            this.getControl(SoundControl.class).updateNoiseLevel(1);
+            this.updateNoise(1);
         }else if (normScale > 0.75f){
-            this.getControl(SoundControl.class).updateNoiseLevel(0);
+            this.updateNoise(0);
         }else{
-            this.getControl(SoundControl.class).updateNoiseLevel(1-normScale);
+            this.updateNoise(1-normScale);
         }
         
     }
@@ -338,7 +278,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     @Override
     protected void onFirstNodeActions(){
         super.onFirstNodeActions();
-        
+        this.updateNoise(0f);
+        this.updateVolume(0f);
         scene.detachChild(wifi);
         this.detachChild(moveArrow);
     }
@@ -375,6 +316,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     
     @Override
     protected void initPatternGenerator() {
+        this.initDrumGuitarSound();
         Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
         Spatial[] carrier = scenarioCommon.initCarrierGeometries();
               
@@ -422,14 +364,22 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
      
      private void updateDistanceStatus(){
          
-         Vector3f wt = this.getWorldTranslation();
-         wt = wt.subtract((Vector3f) this.getInputHandle().getUserData(AppGetter.USR_SOURCE_TRANSLATION));
-         float distance = wt.divide(this.getWorldScale()).length();
-         distance = distance / (Float) this.getInputHandle().getUserData(AppGetter.USR_SCALE);
-         distance -= 8; //offset
-         distance = distance < 0 ? 0 : distance;
-         float signalRatio = distance / 20.0f;
-         signalRatio = signalRatio > 1 ? 1 : signalRatio;
+         float ampliScale = this.getInputHandle().getUserData(AppGetter.USR_AMPLIFICATION);
+         float signalRatio;
+         if(ampliScale == 0.5){
+             signalRatio = 1;
+         }
+         else{
+             
+            Vector3f wt = this.getWorldTranslation();
+            wt = wt.subtract((Vector3f) this.getInputHandle().getUserData(AppGetter.USR_SOURCE_TRANSLATION));
+            float distance = wt.divide(this.getWorldScale()).length();
+            distance = distance / ampliScale;
+            distance -= 8; //offset
+            distance = distance < 0 ? 0 : distance;
+            signalRatio = distance / 20.0f;
+            signalRatio = signalRatio > 1 ? 1 : signalRatio;
+         }
          this.updateSignalIntensity(1-signalRatio);
          this.updateWifiLogos(signalIntensity);
      }
@@ -441,7 +391,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
                 // Attach on microphone
                 case 0:
                     this.spotlight.setLocalTranslation(scene.getChild("axis").getLocalTranslation().add(0.0f,-scene.getChild("axis").getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    this.spotlight.setLocalScale(new Vector3f(2.0f,30.0f,2.0f));
                     scene.attachChild(this.spotlight);
                     break;  
                 default:
@@ -449,6 +399,11 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
                     break;
             }
         }
+    }
+
+    @Override
+    public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
+        // ...Does nothing in this scenario
     }
     
     

@@ -4,11 +4,7 @@
  */
 package com.galimatias.teslaradio.world.Scenarios;
 
-import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
-import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
-import com.galimatias.teslaradio.world.effects.SoundControl;
-import com.galimatias.teslaradio.world.effects.TextBox;
+import com.galimatias.teslaradio.world.effects.*;
 import com.galimatias.teslaradio.world.observer.AutoGenObserver;
 import com.galimatias.teslaradio.world.observer.EmitterObserver;
 import com.jme3.font.BitmapFont;
@@ -48,19 +44,22 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     
     private Quaternion initAngleWheel = new Quaternion();
     private Quaternion endAngleWheel = new Quaternion();
+
+    private Node rotationArrow;
     
     private int frequency = 1;
     private String carrier = "CubeCarrier";
     
-    Filter(ScenarioCommon sc, Camera cam, Spatial destinationHandle) {
+    public Filter(ScenarioCommon sc, Camera cam, Spatial destinationHandle) {
         
-        super(sc, cam, destinationHandle, "Sounds/Tunak Tunak Tun.ogg");
+        super(sc, cam, destinationHandle);
         this.setName("Filter");
         this.needAutoGenIfMain = true; 
         scenarioCommon.registerObserver(this);
         
         loadUnmovableObjects();
         loadMovableObjects();
+        loadArrows();
     }
     
     @Override
@@ -68,8 +67,9 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         scene = (Node) assetManager.loadModel("Models/Filter/Filtre.j3o");
         scene.setName("Filter");
         this.attachChild(scene);
-        
+
         scene.setLocalRotation(new Quaternion().fromAngleAxis(-pi/2f, Vector3f.UNIT_Y));
+        scene.setLocalScale(1.5f);
         
         // Get the handles of the emitters
         Spatial pathInHandle = scene.getChild("Handle.In");
@@ -82,7 +82,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         Node output_node = (Node) scene.getChild("Path.Out.Object");
         Geometry pathOut = (Geometry) output_node.getChild("Path.Out.Nurbs");
         
-        initTitleBox();
+        //initTitleBox();
         
         initStaticParticlesEmitter(inputEmitter, pathInHandle, pathIn, null);
         initStaticParticlesEmitter(outFilterEmitter, pathOutFilterHandle, pathOut, null);
@@ -117,6 +117,13 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         this.spotlight = ScenarioCommon.spotlightFactory();
     }
 
+    private void loadArrows()
+    {
+        rotationArrow = new Node();
+        rotationArrow.addControl(new Arrows("rotation", assetManager, 10));
+        scene.attachChild(rotationArrow);
+    }
+
     @Override
     public void restartScenario() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -124,7 +131,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
 
     @Override
     public void onScenarioTouch(String name, TouchEvent touchEvent, float v) {
-        
+        // ...Does nothing in this scenario
     }
 
     @Override
@@ -191,7 +198,8 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     }
 
     @Override
-    protected void initPatternGenerator() {        
+    protected void initPatternGenerator() {   
+        this.initDrumGuitarSound();
         Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
         Spatial[] carrier = ScenarioCommon.initCarrierGeometries();
               
@@ -288,10 +296,12 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
             if (outFilterEmitter != null) {
                 outFilterEmitter.getControl(ParticleEmitterControl.class).emitParticle(spatial);
             }
-            this.getControl(SoundControl.class).updateVolume(1);
+            if(!this.isFirst){
+                this.updateVolume(1);
+            }
         }
          else{
-            this.getControl(SoundControl.class).updateVolume(0);
+            this.updateVolume(0);
         }
     }
 
@@ -309,7 +319,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
                 // Attach on microphone
                 case 0:
                     this.spotlight.setLocalTranslation(scene.getChild("Circle").getLocalTranslation().add(0.0f,-scene.getChild("Circle").getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
+                    this.spotlight.setLocalScale(new Vector3f(3.0f,30.0f,3.0f));
                     scene.attachChild(this.spotlight);
                     break;  
                 default:

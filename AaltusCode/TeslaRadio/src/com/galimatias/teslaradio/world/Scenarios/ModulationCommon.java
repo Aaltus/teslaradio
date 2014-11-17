@@ -122,7 +122,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         Geometry pathOut = (Geometry) pcbAmp_node.getChild("Path.Out.Nurbs");
 
         initDigitalDisplay();
-        initTitleBox();
+        //initTitleBox();
 
         initStaticParticlesEmitter(wirePcbEmitter, pathInHandle, pathIn, cam);
         initStaticParticlesEmitter(carrierEmitter, pathCarrierHandle, pathCarrier, null);
@@ -355,11 +355,11 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
             frequency = 3;
         }
         
-        if (lastFrequency != frequency) {
+        turnTunerButton(trackableAngle);
+
+        if (lastFrequency != frequency || switchIsToggled) {
             changeModulation(frequency, isFM);
         }
-        
-        turnTunerButton(trackableAngle);
 
         lastFrequency = frequency;
     }
@@ -429,11 +429,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                         if (nameToCompare.equals(this.getChild("Switch").getName())) {
                             toggleModulationMode();
                         }
-                        else if (nameToCompare.equals(titleTextBox.getName()))
-                        {
-                            showInformativeMenu = true;
-                            break;
-                        }
                     }
                 }
                 break;
@@ -492,9 +487,10 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         
         switchArrow = new Node();
         switchArrow.move(actionSwitch.getLocalTranslation());
-        switchArrow.addControl(new Arrows("touch", assetManager, 1));
+        switchArrow.addControl(new Arrows("touch", assetManager, 3));
         LookAtCameraControl control = new LookAtCameraControl(Camera);
         switchArrow.addControl(control);
+        switchArrow.setLocalScale(2f);
         scene.attachChild(switchArrow);
 
         rotationArrow = new Node();
@@ -517,34 +513,5 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     {
         switchArrow.getControl(FadeControl.class).setShowImage(false);
         switchArrow.getControl(Arrows.class).resetTimeLastTouch();
-    }
-    
-    @Override
-    protected void objectEmphasis() {
-        if (this.spotlight != null) {            
-            switch(this.currentObjectToEmphasisOn) {
-                // Attach on modulator
-                case 0:
-                    this.spotlight.setLocalTranslation(scene.getChild("Modulator").getLocalTranslation().add(0.0f,-scene.getChild("Modulator").getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
-                    scene.attachChild(this.spotlight);
-                    break;
-                // Attach on frequency generator    
-                case 1:
-                    this.spotlight.setLocalTranslation(scene.getChild("Display").getLocalTranslation().add(0.0f,-scene.getChild("Display").getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
-                    scene.attachChild(this.spotlight);
-                    break;
-                // Attach on the switch    
-                case 2:
-                    this.spotlight.setLocalTranslation(scene.getChild("Switch").getLocalTranslation().add(0.0f,-scene.getChild("Switch").getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(2.0f,20.0f,2.0f));
-                    scene.attachChild(this.spotlight);
-                    break;    
-                default:
-                    scene.detachChild(this.spotlight);
-                    break;
-            }
-        }
     }
 }

@@ -5,6 +5,8 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import static com.galimatias.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
+
+import com.ar4android.vuforiaJME.AppGetter;
 import com.galimatias.teslaradio.world.effects.AirParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.Arrows;
 import com.galimatias.teslaradio.world.effects.DynamicWireParticleEmitterControl;
@@ -63,9 +65,9 @@ public final class Playback extends Scenario implements EmitterObserver {
     private Node     speakerEmitter;
     private Node     speakerIn = new Node();
     
-    Playback(ScenarioCommon sc, Camera Camera, Spatial destinationHandle) {
+    public Playback(ScenarioCommon sc, Camera Camera, Spatial destinationHandle) {
         
-        super(sc, Camera, destinationHandle, "Sounds/Nyan cat.ogg");
+        super(sc, Camera, destinationHandle);
         this.setName("Playback");
         loadUnmovableObjects();
         loadMovableObjects();
@@ -102,7 +104,7 @@ public final class Playback extends Scenario implements EmitterObserver {
         scene.attachChild(speakerIn);
         
         speakerIn.addControl(new DynamicWireParticleEmitterControl(speakerEmitter, 1000f));
-        speakerEmitter.addControl(new AirParticleEmitterControl(speakerHandleOut, 20f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
+        speakerEmitter.addControl(new AirParticleEmitterControl(speakerHandleOut, 10f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
         speakerEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
         speakerEmitter.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
         speakerIn.getControl(ParticleEmitterControl.class).registerObserver(this);
@@ -111,8 +113,8 @@ public final class Playback extends Scenario implements EmitterObserver {
         Vector3f handleSliderBegin = scene.getChild("Slider.Handle.Begin").getLocalTranslation();
         Vector3f handleSliderEnd = scene.getChild("Slider.Handle.End").getLocalTranslation();
         translationIncrement = handleSliderEnd.subtract(handleSliderBegin).divide(4);
-        
-        initTitleBox();
+
+        //initTitleBox();
     }
 
     @Override
@@ -142,10 +144,11 @@ public final class Playback extends Scenario implements EmitterObserver {
         
         sliderArrow = new Node();
         sliderArrow.move(ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f));
-        sliderArrow.addControl(new Arrows("touch", assetManager, 1));
+        sliderArrow.addControl(new Arrows("touch", assetManager, 3));
         //sliderArrow = new Arrows("touch", ampliSliderBox.getLocalTranslation().add(0.0f,1.0f,0.0f), assetManager, 1);
         LookAtCameraControl control1 = new LookAtCameraControl(Camera);
         sliderArrow.addControl(control1);
+        sliderArrow.setLocalScale(2f);
         this.attachChild(sliderArrow);
     }
     
@@ -205,11 +208,7 @@ public final class Playback extends Scenario implements EmitterObserver {
                         if(nameToCompare == null){
                             break;
                         } else if (nameToCompare.equals("Speaker")) {
-                            this.speakerTouchEffect();
-                            break;
-                        } else if (nameToCompare.equals(titleTextBox.getName())) {
-                            //this.textTouchEffect();
-                            showInformativeMenu = true;
+                            this.speakerTouchEffect(1f);
                             break;
                         } else if (nameToCompare.equals("SliderButton")) {
                             touchCount++;
@@ -263,13 +262,13 @@ public final class Playback extends Scenario implements EmitterObserver {
                     touchCount = 0;
                     break;
             }
-            
+
             isTouched = false;
         }
         
         /*TR-261 apparently we don't want this, but in this scenario we want! */
-        this.getControl(SoundControl.class).updateVolume(ampliScale);
- 
+        this.updateVolume(ampliScale);
+
     }
 
     @Override
@@ -345,14 +344,14 @@ public final class Playback extends Scenario implements EmitterObserver {
         soundParticle.setQueueBucket(queueBucket.Opaque);
     }
     
-    public void speakerTouchEffect()
+    public void speakerTouchEffect(float particleScale)
     {
 
         // Here, we need to get the vector to the mic handle
         //Vector3f receiverHandleVector = particleLinker.GetEmitterDestinationPaths(this);
         //GuitarSoundEmitter.prepareEmeitParticles(receiverHandleVector);
 
-        this.speakerEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(1);
+        this.speakerEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(ampliScale * particleScale);
     }
 
     @Override
@@ -360,7 +359,7 @@ public final class Playback extends Scenario implements EmitterObserver {
         
         if (speakerEmitter != null) {
             if (touchCount != 0) {
-                speakerTouchEffect();
+                speakerTouchEffect(spatial.getLocalScale().length());
             }
         }
     }
@@ -372,14 +371,9 @@ public final class Playback extends Scenario implements EmitterObserver {
                 // Attach on microphone
                 case 0:
                     this.spotlight.setLocalTranslation(speaker.getLocalTranslation().add(0.0f,-speaker.getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
+                    this.spotlight.setLocalScale(new Vector3f(5.0f,30.0f,5.0f));
                     scene.attachChild(this.spotlight);
-                    break;
-                case 1:
-                    this.spotlight.setLocalTranslation(ampliSliderBox.getLocalTranslation().add(0.0f,-ampliSliderBox.getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(5.0f,20.0f,5.0f));
-                    scene.attachChild(this.spotlight);
-                    break;    
+                    break;   
                 default:
                     scene.detachChild(this.spotlight);
                     break;

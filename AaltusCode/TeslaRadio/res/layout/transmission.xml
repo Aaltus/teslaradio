@@ -24,7 +24,8 @@
         <ImageView
                 android:id="@+id/transmission_image"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                style="@style/ImageSize"
+                android:layout_height = "wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/tuyau_valve"
 
@@ -38,8 +39,7 @@
                 />
         <ImageView
                 android:id="@+id/amplification_image"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                style="@style/ImageSize"
                 android:layout_gravity="center"
                 android:src="@drawable/amplification_signaux_module_am"
 
@@ -48,6 +48,32 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/transmissionp3"
+                style="@style/InformativeMenuTextStyle"
+                />
+
+        <ImageView
+                android:id="@+id/tube_image"
+                style="@style/ImageSize"
+                android:layout_gravity="center"
+                android:src="@drawable/tube"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/transmissionp4"
+                style="@style/InformativeMenuTextStyle"
+                />
+
+        <ImageView
+                android:id="@+id/tube_image"
+                style="@style/ImageSize"
+                android:layout_gravity="center"
+                android:src="@drawable/transistor"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/transmissionp5"
                 style="@style/InformativeMenuTextStyle"
                 />
 

@@ -123,12 +123,17 @@ public class PatternGeneratorControl extends AbstractControl {
     public void startAutoPlay(int particlePerWave){
         this.startAutoPlay(this.minWaveDelay, particlePerWave);
     }
+    
+    public void resumeAutoPlay(){
+        this.startAutoPlay(this.autoWaveDelay, this.particlePerAutoWave);
+    }
     /**
      * Stop the autoplay
      */
     public void stopAutoPlay(){
         if(this.autoPlayThread != null){
             this.autoPlayThread.cancel(true);
+            AppGetter.getThreadExecutor().remove(autoPlay);
             this.autoPlayThread = null;
             this.geomList.clear();
         }
@@ -196,7 +201,9 @@ public class PatternGeneratorControl extends AbstractControl {
         {
             ParticleEmitterControl emitter = this.spatial.getControl(
                ParticleEmitterControl.class);
-            emitter.emitParticle(this.geomList.pollFirst()); 
+            Spatial particle = this.geomList.pollFirst();
+            this.spatial.setUserData(AppGetter.USR_AMPLIFICATION, particle.getUserData(AppGetter.USR_SCALE));
+            emitter.emitParticle(particle); 
             
         }
         this.lastCall = 0;
@@ -221,13 +228,8 @@ public class PatternGeneratorControl extends AbstractControl {
     private Runnable autoPlay = new Runnable() {
 
         @Override
-        
         public void run() {
-               try{
-                   toggleNewWave(particlePerAutoWave);
-               }catch(Exception e){
-                   //Empty, the interrupt...
-               }
+              toggleNewWave(particlePerAutoWave);
             }
           
     };

@@ -5,6 +5,9 @@
 package com.galimatias.teslaradio.world.Scenarios;
 
 import com.ar4android.vuforiaJME.AppGetter;
+import com.galimatias.teslaradio.subject.AudioOptionEnum;
+import com.galimatias.teslaradio.world.effects.DrumGuitarSoundControl;
+import com.galimatias.teslaradio.world.effects.NoiseControl;
 import com.galimatias.teslaradio.world.effects.ParticleEmitterControl;
 import com.galimatias.teslaradio.world.effects.PatternGeneratorControl;
 import com.galimatias.teslaradio.world.effects.SoundControl;
@@ -21,6 +24,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.utils.AppLogger;
 import java.util.ArrayList;
 
 
@@ -33,6 +37,9 @@ public abstract class Scenario extends Node implements SignalObserver {
     private final static String TAG = "Scenario";
 
     private float cumulatedRot = 0;
+    
+    protected boolean hasBackgroundSound = true;
+    protected boolean isFirst;
     
     protected ScenarioCommon scenarioCommon = null;
     protected final static boolean DEBUG_ANGLE = false;
@@ -60,6 +67,8 @@ public abstract class Scenario extends Node implements SignalObserver {
     
     // this is PIIIIIII! (kick persian)
     protected final float pi = (float) FastMath.PI;
+    
+    protected NoiseControl noiseControl = null;
     
     public void setCamera(Camera cam){
         this.Camera = cam;
@@ -226,32 +235,64 @@ public abstract class Scenario extends Node implements SignalObserver {
      * Initialize the pattern generators of a scenario.
      */
     protected abstract void initPatternGenerator();
+    
+    protected void initDrumGuitarSound(){
+        Spatial handler = this.getInputHandle();
+        if(handler != null){
+            handler.addControl(new DrumGuitarSoundControl());
+            handler.getControl(DrumGuitarSoundControl.class).setEnabled(false);
+        }
+    }
 
+    protected void audioOptionTouch(AudioOptionEnum value){
+        Spatial handler = this.getInputHandle();
+        if(handler != null){
+           DrumGuitarSoundControl dgsc =  handler.getControl(DrumGuitarSoundControl.class);
+           PatternGeneratorControl pgc = handler.getControl(PatternGeneratorControl.class);
+           switch(value){
+               case IPOD:
+                   this.startAutoGeneration();
+                   break;
+               default:
+                   this.stopAutoGeneration();
+                   dgsc.setNextInstrument(value);
+                   pgc.toggleNewWave(1);
+           }
+        }
+    }
     /**
      * Call all of the methods when scenario is on Node A, can be override for 
      * certain scenarios.
+     *
      */
     protected void onFirstNodeActions() {
-        startAutoGeneration();
+        this.isFirst = true;
+        if(this.needAutoGenIfMain){
+            startAutoGeneration();
+        }
     }
     
+    public boolean getNeedsBackgroundSound(){
+        return this.hasBackgroundSound;
+    }
     /**
      * Call all of the methods when scenario is on Node B, can be override for 
      * certain scenarios.
      */
     protected void onSecondNodeActions() {
-        startBackgroundSound();
+        this.isFirst = false;
+        //startBackgroundSound();
     }
     
     /**
      * Called when the scenario is detached from one of the two nodes
      */
     protected void notOnNodeActions() {
+        
         if (this.needAutoGenIfMain) {
             stopAutoGeneration();
         }
-        
-        stopBackgroundSound();
+        //stopBackgroundSound();
     }
     
     /**
@@ -281,7 +322,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     public boolean getNeedsAutoGen() {
         return this.needAutoGenIfMain;
     }
-
+/*
     private void startBackgroundSound() {
         if(this.backgroundSound != null){
             this.getControl(SoundControl.class).playSound(true);
@@ -295,7 +336,8 @@ public abstract class Scenario extends Node implements SignalObserver {
             this.getControl(SoundControl.class).setEnabled(false);
         }
     }
-
+*/
+  
     /**
      * This method will apply an opposite trackable rotation on the model, preventing it from rotating
      * @param ZXangle
@@ -320,6 +362,18 @@ public abstract class Scenario extends Node implements SignalObserver {
     public void setCurrentObjectEmphasis(int currentObjectToEmphasisOn) {
         this.currentObjectToEmphasisOn = currentObjectToEmphasisOn;
         this.emphasisChange = true;
+    }
+    
+   
+    protected void updateVolume(float volume){
+        if(this.scenarioCommon.getNoiseControl() != null){
+        this.scenarioCommon.getNoiseControl().updateVolume(volume);
+        }
+    }
+    protected void updateNoise(float noise){
+        if(this.scenarioCommon.getNoiseControl() != null){
+            this.scenarioCommon.getNoiseControl().updateNoiseLevel(noise);
+        }
     }
 }
 
