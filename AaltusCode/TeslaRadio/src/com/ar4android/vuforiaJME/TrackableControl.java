@@ -10,6 +10,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import com.utils.AppLogger;
 
 import java.io.IOException;
 
@@ -25,6 +26,7 @@ public class TrackableControl extends AbstractControl {
     protected Vector3f   mVx = new Vector3f(0f,0f,0f);
     protected boolean    mIsVisible = false;
     protected boolean    mIsAttach = false;
+    private   boolean    mNeedFixedScenario = false;
 
     public TrackableControl()
     {
@@ -34,17 +36,18 @@ public class TrackableControl extends AbstractControl {
     public Vector3f getPosition(){return this.mPosition;}
     public Matrix3f getRotation(){return this.mRotationMatrix;}
     public Node     getFixedAngleChild(){return this.mFixedAngleChild;}
-
-    public void updatePosition( Vector3f newPosition)
+    public void     updatePosition( Vector3f newPosition)
     {
         this.mPosition.set(newPosition);
     }
+
     public void updateRotationMatrix(Matrix3f newMatrix, Vector3f newVx)
     {
         this.mRotationMatrix.set(newMatrix);
         this.mVx.set(newVx);
 
     }
+
     public void updateDistance(Vector3f distance, boolean vectorIsInverted)
     {
         Vector3f vectorAB;
@@ -66,6 +69,7 @@ public class TrackableControl extends AbstractControl {
             spatial.setUserData("angleX",(float)angleX);
         }
     }
+
     public void setIsVisible(Boolean isVisible)
     {
         this.mIsVisible = isVisible;
@@ -85,6 +89,8 @@ public class TrackableControl extends AbstractControl {
         return this.mIsAttach;
     }
 
+    public void setmFixedAngleChild(boolean needFixedScenario) { this.mNeedFixedScenario = needFixedScenario; }
+
     @Override
     public void setSpatial(Spatial spatial) {
         this.spatial = spatial;
@@ -97,14 +103,15 @@ public class TrackableControl extends AbstractControl {
         this.spatial.setLocalRotation(this.mRotationMatrix);
         this.spatial.setLocalTranslation(this.mPosition);
 
-        //this.mFixedAngleChild.setLocalRotation(this.mChildRotation);
+        if (mNeedFixedScenario) {
+            this.mFixedAngleChild.setLocalRotation(this.mChildRotation);
+        }
     }
 
     @Override
     protected void controlRender(RenderManager renderManager, ViewPort viewPort) {
 
     }
-
 
     @Override
     public void write(JmeExporter jmeExporter) throws IOException {

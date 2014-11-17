@@ -69,7 +69,11 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     protected Spatial micTapParticle;
 
     //Angle for test purposes
+    private float initialAngle = 0;
+    private float lastAngle = 0;
+    private float nobAngle = 0;
     private float trackableAngle = 0;
+    private float timeBuffer = 0;
     private int direction = 1;
 
     //Variable for switch
@@ -92,14 +96,13 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     ModulationCommon(ScenarioCommon sc, Camera cam, Spatial destinationHandle) {
         
         super(sc, cam, destinationHandle);
-        
+        this.needFixedScenario = true;
         this.needAutoGenIfMain = true;
     }
     
     ModulationCommon(ScenarioCommon sc, Camera cam, Spatial destinationHandle, String bgm) {
         
         super(sc, cam, destinationHandle, bgm);
-        
         this.needAutoGenIfMain = true;
     }
     
@@ -164,9 +167,9 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         endAngleSwitch.fromAngleAxis(-0.45f, Vector3f.UNIT_X);
 
         Spatial[] geom = ScenarioCommon.initCarrierGeometries();
-        cubeCarrier = geom[0];
+        dodecagoneCarrier = geom[0];
         pyramidCarrier = geom[1];
-        dodecagoneCarrier = geom[2];
+        cubeCarrier = geom[2];
         selectedCarrier = cubeCarrier;
 
         carrierEmitter.getLocalTranslation().addLocal(new Vector3f(0.0f,cubeCarrier.getWorldScale().y,0.0f));
@@ -229,10 +232,14 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     @Override
     protected void onFirstNodeActions() {
         super.onFirstNodeActions();
-        
-        turnButton.setLocalRotation(new Quaternion().fromAngleAxis(pi, Vector3f.UNIT_Y));
-    }  
-    
+        timeBuffer = 0;
+    }
+
+    @Override
+    protected void onSecondNodeActions() {
+        super.onSecondNodeActions();
+        timeBuffer = 0;
+    }
 
     //Dynamic move
     private void checkModulationMode(float tpf) {
@@ -329,7 +336,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     private void changeCarrierParticles(int frequency) {
 
         this.frequency = frequency;
-        
+
         Spatial lastCarrier = selectedCarrier;
         switch (frequency) {
             case 1:
@@ -349,20 +356,20 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         lastFm = isFM;
     }
 
-    private void checkTrackableAngle(float trackableAngle) {
+    private void checkTrackableAngle(float Angle) {
 
         float stepRange = 2f * pi / 3;
         int frequency = 0;
 
-        if (trackableAngle >= 0 && trackableAngle < stepRange) {
+        if (Angle >= 0 && Angle < stepRange) {
             frequency = 1;
-        } else if (trackableAngle >= stepRange && trackableAngle < 2 * stepRange) {
+        } else if (Angle >= stepRange && Angle < 2 * stepRange) {
             frequency = 2;
-        } else if (trackableAngle >= 2 * stepRange && trackableAngle < 3 * stepRange) {
+        } else if (Angle >= 2 * stepRange && Angle < 3 * stepRange) {
             frequency = 3;
         }
         
-        turnTunerButton(trackableAngle);
+        turnTunerButton(Angle);
 
         if (lastFrequency != frequency || switchIsToggled) {
             changeModulation(frequency, isFM);
@@ -456,8 +463,19 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                 direction *= -1;
             }
         } else {
-            //trackableAngle = 0;
             trackableAngle = this.getUserData("angleX");
+            if (timeBuffer < 2){
+                initialAngle = this.getUserData("angleX");
+                timeBuffer += 1;
+            }
+            if (this.isFirst){
+                nobAngle = (lastAngle + (trackableAngle+2*pi - initialAngle)) % (2*pi);
+                System.out.println("nobAngle :"+nobAngle+"\t initialAngle :"+initialAngle + "\t trackableAngle :"+trackableAngle+"\t lastAngle :"+lastAngle);
+            }
+            else{
+                nobAngle = (lastAngle + (trackableAngle+2*pi - initialAngle)) % (2*pi);
+                System.out.println("nobAngle :"+nobAngle+"\t initialAngle :"+initialAngle + "\t trackableAngle :"+trackableAngle+"\t lastAngle :"+lastAngle);
+            }
         }
 
         if (this.emphasisChange) {
@@ -468,8 +486,8 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         //switchArrow.simpleUpdate(tpf);
         //rotationArrow.simpleUpdate(tpf);
 
-        checkTrackableAngle(trackableAngle);
-        invRotScenario(trackableAngle + (pi / 2));
+        checkTrackableAngle(nobAngle);
+        //invRotScenario(trackableAngle + (pi / 2));
         checkModulationMode(tpf);
         
         if (carrierEmitter != null && tpfCumul >= 1.0f) {
@@ -521,4 +539,11 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         switchArrow.getControl(FadeControl.class).setShowImage(false);
         switchArrow.getControl(Arrows.class).resetTimeLastTouch();
     }
-}
+
+    @Override
+    protected void notOnNodeActions() {
+        super.notOnNodeActions();
+        lastAngle = nobAngle;
+    }
+
+    }
