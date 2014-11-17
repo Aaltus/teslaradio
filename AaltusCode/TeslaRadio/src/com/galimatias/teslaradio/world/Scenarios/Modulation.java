@@ -130,6 +130,7 @@ public final class Modulation extends ModulationCommon {
     
     @Override
     public void onSecondNodeActions(){
+        super.onSecondNodeActions();
         this.updateNoise(0f);
     }
 
