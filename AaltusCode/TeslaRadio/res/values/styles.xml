@@ -5,6 +5,7 @@
     <drawable name="global_app_color">#FAC9D6</drawable>
     <drawable name="button_pressed_app_color">#E5BEC8</drawable>
     <drawable name="GreyTransparent">#CC212121</drawable>
+    <drawable name="GreyOpaque">#FF212121</drawable>
 
     <!--For splashscreen-->
     <style name="Theme.NoBackground" parent="android:Theme">

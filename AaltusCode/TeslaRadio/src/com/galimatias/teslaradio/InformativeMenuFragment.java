@@ -5,11 +5,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.SlidingDrawer;
 import com.ar4android.vuforiaJME.ITutorialSwitcher;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.subject.SubjectContent;
@@ -24,7 +27,10 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         //SeekBar.OnSeekBarChangeListener,
         ItemListFragment.Callbacks,
         ItemDetailFragment.OnClickDetailFragmentListener,
-        ITutorialSwitcher
+        ITutorialSwitcher,
+        SlidingDrawer.OnDrawerOpenListener,
+        SlidingDrawer.OnDrawerCloseListener
+
 {
 
 
@@ -48,11 +54,44 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     private final String LANGUAGE_DIALOG_FRAGMENT_TAG = "LANGUAGE_DIALOG_FRAGMENT_TAG";
     private final String TUTORIAL_FRAGMENT_TAG = "TUTORIAL_FRAGMENT_TAG";
 
+    private SlidingDrawer drawerLayout;
+    //private View drawerView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         AppLogger.getInstance().d(TAG, "Initialize Top Layout");
-        View myView = inflater.inflate(R.layout.vuforia_jme_overlay_layout, null, false);
+        View myView  = inflater.inflate(R.layout.vuforia_jme_overlay_layout, null, false);
+        drawerLayout = (SlidingDrawer)myView.findViewById(R.id.informative_menu_drawer);
+
+        drawerLayout.setOnDrawerOpenListener(this);
+        drawerLayout.setOnDrawerCloseListener(this);
+
+        myView.findViewById(R.id.previous_scenario_button).setOnClickListener(this);
+        myView.findViewById(R.id.next_scenario_button).setOnClickListener(this);
+
+
+
+
+        /*
+       * In my trial experiment:
+       * Without dummy OnTouchListener for the drawView to
+       * consume the onTouch event, touching/clicking on
+       * un-handled view on drawView will pass to the view
+       * under it!
+       * - Touching on the Android icon will
+       * trigger the TextView("http://android-er.blogspot.com/")
+       * to open the web.
+       */
+        /*
+        drawerView.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                return false;
+            }
+        });*/
 
         //Get the rootView of the activity. This view is on the direct parent
         //to the android jme opengl view
@@ -70,7 +109,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         Fragment fragment = new ItemListFragment();
         TutorialFragment tutorialFragment =  new TutorialFragment();
         tutorialFragment.setTutorialSwitcher(this);
-        ft.hide(fragment);
+        //ft.hide(fragment);
         ft.replace(R.id.item_list_fragment_vuforia, fragment, ITEM_LIST_FRAGMENT_TAG);
         ft.replace(R.id.tutorial_fragment, tutorialFragment, TUTORIAL_FRAGMENT_TAG);
 
@@ -87,12 +126,12 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
         FragmentManager fm = getChildFragmentManager();//getSupportFragmentManager();
 
-        Button languageButton = (Button) getView().findViewById(R.id.camera_toggle_language_button);
+        //For the old code
+        /*Button languageButton = (Button) getView().findViewById(R.id.camera_toggle_language_button);
         Button infoButton     = (Button) getView().findViewById(R.id.camera_toggle_info_button);
 
         //Replace the current language button to show the current choosed locale language
         int drawableToGet = 0;
-        //LayerDrawable languageButtonLayerDrawable = (LayerDrawable) getResources().getDrawable(R.drawable.layer_list_language);
         String currentLanguage = LanguageLocaleChanger.loadLanguageLocaleFromSharedPreferences(getActivity());
         if (currentLanguage.equals("fr"))
         {
@@ -118,6 +157,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
         languageButton.setOnClickListener(this);
         infoButton.setOnClickListener(this);
+        */
 
         //Hi Jimbo myself, Hope you feel great, I commented because people asked me to hide
         //Get the vertical side bar and set its propriety
@@ -165,7 +205,8 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
     public boolean isListFragmentsVisible()
     {
-
+        return drawerLayout.isOpened();
+        /*
         FragmentManager fm                = getChildFragmentManager(); //getSupportFragmentManager();s
         ItemListFragment listFragment     = (ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
 
@@ -176,6 +217,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         }
 
         return isVisible;
+        */
 
     }
 
@@ -272,10 +314,19 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     @Override
     public void onClick(View view) {
 
+
         int id = view.getId();
+        Log.d(TAG,"onClick with id: " + id);
 
         switch (id){
 
+            case R.id.previous_scenario_button:
+                this.scenarioSwitcher.setPreviousScenario();
+                break;
+            case R.id.next_scenario_button:
+                this.scenarioSwitcher.setNextScenario();
+                break;
+            /* code for when there were language button
             case R.id.camera_toggle_language_button:
                 showLanguageDialog();
                 break;
@@ -292,7 +343,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
                     toggleTutorialVisibility(false);
                 }
                 break;
-
+            */
             default:
                 break;
         }
@@ -339,6 +390,16 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
     public void toggleItemListVisibility(boolean showFragment)
     {
+
+        if(showFragment){
+            drawerLayout.animateOpen();
+        }
+        else{
+            drawerLayout.animateClose();
+        }
+
+
+        /*
         FragmentManager fm                = getChildFragmentManager(); //getSupportFragmentManager();s
         ItemListFragment listFragment     = (ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
 
@@ -351,25 +412,16 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
                 Log.d(TAG, "Showing list fragment");
                 ft.show(listFragment);
 
-                /*if (scenarioEnum != null)
-                {
-                    //Choose a detail fragment based on the provided enum
-                    listFragment.setActivatedPosition(scenarioEnum.ordinal());
-                    onItemSelected(scenarioEnum.ordinal());
-                }*/
             }
             else
             {
                 Log.d(TAG, "Hiding list fragment");
-                /*if (scenarioEnum == null)
-                {
-                    ft.hide(listFragment);
-                }*/
                 ft.hide(listFragment);
             }
 
             ft.commit();
         }
+        */
 
     }
 
@@ -449,5 +501,17 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
     public int getCharacterHeightInPixel(){
         return getTutorialFragment().getCharacterHeightInPixel();
+    }
+
+    @Override
+    public void onDrawerClosed() {
+        if(!isDetailFragmentsVisible()){
+            toggleTutorialVisibility(true);
+        }
+    }
+
+    @Override
+    public void onDrawerOpened() {
+        toggleTutorialVisibility(false);
     }
 }
