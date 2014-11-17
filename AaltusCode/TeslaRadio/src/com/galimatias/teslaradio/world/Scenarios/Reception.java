@@ -118,13 +118,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         wifi.setLocalTranslation(outputHandle.getLocalTranslation().add(3.0f, 5.0f, -3.0f));
         
         // Get the different paths
-        Material meshMat = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        meshMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        meshMat.setColor("Color", new ColorRGBA(0, 0, 1, 0.0f));
-        meshMat.getAdditionalRenderState().setDepthWrite(false);
         antenneRxPath = (Geometry)((Node) pathAntenneRx).getChild("NurbsPath.005");
-        antenneRxPath.setQueueBucket(RenderQueue.Bucket.Transparent);
-        antenneRxPath.setMaterial(meshMat);
+        antenneRxPath.setCullHint(cullHint.Always);
        
         initParticlesEmitter(outputAntenneRx, pathAntenneRx, antenneRxPath, null);
         outputAntenneRx.getControl(ParticleEmitterControl.class).registerObserver(this);

@@ -117,18 +117,12 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         pathAntenneTx = scene.getChild("Module.Handle.Out");
    
         // Get the different paths
-        Material meshMat = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        meshMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        meshMat.setColor("Color", new ColorRGBA(0, 0, 1, 0.0f));
-        meshMat.getAdditionalRenderState().setDepthWrite(false);
         Node wireInAmpli_node = (Node) scene.getChild("Path.Entree");
         inputAmpPath = (Geometry) wireInAmpli_node.getChild("NurbsPath.000");
-        inputAmpPath.setQueueBucket(RenderQueue.Bucket.Transparent);
-        inputAmpPath.setMaterial(meshMat);
+        inputAmpPath.setCullHint(cullHint.Always);
         Node wireOutAmpli_node = (Node) scene.getChild("Path.PostAmpli");
         outputAmpPath = (Geometry) wireOutAmpli_node.getChild("NurbsPath.005");
-        outputAmpPath.setQueueBucket(RenderQueue.Bucket.Transparent);
-        outputAmpPath.setMaterial(meshMat);
+        outputAmpPath.setCullHint(cullHint.Always);
         
         initParticlesEmitter(inputWireAmpli, pathInputAmpli, inputAmpPath, null);
         initParticlesEmitter(outputWireAmpli, pathOutputAmpli, outputAmpPath, null);

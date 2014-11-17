@@ -119,21 +119,14 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
 
         // Get the different paths
         Node wirePcb_node = (Node) scene.getChild("Path.In.Object");
-        Material meshMat = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        meshMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        meshMat.setColor("Color", new ColorRGBA(0, 0, 1, 0.0f));
-        meshMat.getAdditionalRenderState().setDepthWrite(false);
         Geometry pathIn = (Geometry) wirePcb_node.getChild("Path.In.Nurbs");
-        pathIn.setQueueBucket(RenderQueue.Bucket.Transparent);
-        pathIn.setMaterial(meshMat);
+        pathIn.setCullHint(cullHint.Always);
         Node carrier_node = (Node) scene.getChild("Path.Generator.Object");
         Geometry pathCarrier = (Geometry) carrier_node.getChild("Path.Generator.Nurbs");
-        pathCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
-        pathCarrier.setMaterial(meshMat);
+        pathCarrier.setCullHint(cullHint.Always);
         Node pcbAmp_node = (Node) scene.getChild("Path.Out.Object");
         Geometry pathOut = (Geometry) pcbAmp_node.getChild("Path.Out.Nurbs");
-        pathOut.setQueueBucket(RenderQueue.Bucket.Transparent);
-        pathOut.setMaterial(meshMat);
+        pathOut.setCullHint(cullHint.Always);
 
         initDigitalDisplay();
         //initTitleBox();
