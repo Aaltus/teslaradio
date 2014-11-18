@@ -18,7 +18,7 @@
 
 package com.ar4android.vuforiaJME;
 
-import com.galimatias.teslaradio.world.Scenarios.*;
+import com.aaltus.teslaradio.world.Scenarios.*;
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;

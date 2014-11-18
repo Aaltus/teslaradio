@@ -1,6 +1,6 @@
 package com.ar4android.vuforiaJME;
 
-import com.galimatias.teslaradio.subject.ScenarioEnum;
+import com.aaltus.teslaradio.subject.ScenarioEnum;
 
 /**
  * Created by jimbojd72 on 11/8/2014.

@@ -5,7 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.webkit.WebView;
-import com.galimatias.teslaradio.R;
+import com.aaltus.teslaradio.R;
 
 /**
  * Created by Simon on 14-04-03.

@@ -115,7 +115,7 @@ public class AppGetter {
     }
     
     public static ResourceBundle getResourceBundle(){
-        return ResourceBundle.getBundle("com.galimatias.teslaradio.Bundle");
+        return ResourceBundle.getBundle("com.aaltus.teslaradio.Bundle");
     
     }
 
