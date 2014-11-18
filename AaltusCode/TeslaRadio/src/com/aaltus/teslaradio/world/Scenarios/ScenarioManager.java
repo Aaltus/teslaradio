@@ -88,7 +88,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     }
     @Override
     public void onAudioOptionTouched(AudioOptionEnum value) {
-        this.getCurrentScenario().getScenarios().get(0).onAudioOptionTouched(value);
+     ((Scenario)this.getCurrentScenario().getScenarios().get(0)).onAudioOptionTouched(value);  
     }
 
    
