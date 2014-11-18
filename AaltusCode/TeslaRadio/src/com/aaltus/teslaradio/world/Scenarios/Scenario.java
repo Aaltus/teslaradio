@@ -370,6 +370,6 @@ public abstract class Scenario extends Node implements SignalObserver {
         }
     }
 
-    protected boolean getNeedFixedScenario() { return needFixedScenario; }
+    public boolean getNeedFixedScenario() { return needFixedScenario; }
 }
 

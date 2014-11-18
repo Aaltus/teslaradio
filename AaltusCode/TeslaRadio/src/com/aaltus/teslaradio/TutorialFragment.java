@@ -89,7 +89,6 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
         View bubbleView = myView.findViewById(R.id.bubble_root_view);
         bubbleView.setVisibility(View.GONE);
 
-
         View characterButton     = myView.findViewById(R.id.character_tutorial_button);
         shakeAnim = AnimationUtils.loadAnimation(this.getActivity(), R.anim.shake);
         characterButton.startAnimation(shakeAnim);
@@ -110,6 +109,7 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
 
     private void setShakeAnimation() {
         ImageView characterButton = getCharacterView();
+        characterButton.setBackgroundResource(R.drawable.tesla_exclamation);
         //Animation shakeAnim = AnimationUtils.loadAnimation(this.getActivity(), R.anim.shake);
         characterButton.startAnimation(shakeAnim);
     }
@@ -123,7 +123,7 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
 
     private void setCalmAnimation() {
         ImageView characterButton = getCharacterView();
-        characterButton.setBackgroundResource(R.drawable.tesla);
+        characterButton.setBackgroundResource(R.drawable.tesla_norm);
 
     }
 
