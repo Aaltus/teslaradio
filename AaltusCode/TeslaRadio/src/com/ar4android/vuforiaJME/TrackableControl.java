@@ -65,7 +65,7 @@ public class TrackableControl extends AbstractControl {
 
         for(Spatial spatial : this.mFixedAngleChild.getChildren())
         {
-            spatial.setUserData("angleX",(float)angleX);
+            ((Node) spatial).getChild(0).setUserData("angleX",(float)angleX);
         }
     }
 
