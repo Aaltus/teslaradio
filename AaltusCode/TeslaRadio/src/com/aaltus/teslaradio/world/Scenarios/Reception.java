@@ -372,7 +372,8 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     }
      
      private void updateDistanceStatus(){
-         
+       //  System.out.println("Ampli : " + this.getInputHandle().getUserData(AppGetter.USR_AMPLIFICATION));
+
          float ampliScale = this.getInputHandle().getUserData(AppGetter.USR_AMPLIFICATION);
          float signalRatio;
          if(ampliScale == 0.5){
@@ -384,6 +385,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
             wt = wt.subtract((Vector3f) this.getInputHandle().getUserData(AppGetter.USR_SOURCE_TRANSLATION));
             float distance = wt.divide(this.getWorldScale()).length();
             distance = distance / ampliScale;
+            //System.out.println("Distance : " + distance);
             distance -= 8; //offset
             distance = distance < 0 ? 0 : distance;
             signalRatio = distance / 20.0f;

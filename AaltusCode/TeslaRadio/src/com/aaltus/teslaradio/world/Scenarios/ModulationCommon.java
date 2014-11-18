@@ -355,7 +355,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                 selectedCarrier = dodecagoneCarrier;
                 break;
         }
-        if(this.getName().equals("Modulation") && (lastCarrier != selectedCarrier || lastFm != isFM)){
+        if(this.getName().equals("Modulation")){
             scenarioCommon.notifyObservers(selectedCarrier, this.isFM);
         }
 
