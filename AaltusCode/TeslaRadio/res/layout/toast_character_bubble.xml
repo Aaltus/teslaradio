@@ -5,7 +5,7 @@
               android:orientation="horizontal"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
-              android:background="@drawable/bubble_black_white" >
+              android:background="@drawable/bubble_black_white_inverse" >
 
     <!--<ImageView android:id="@+id/toast_image"
                android:layout_width="wrap_content"
