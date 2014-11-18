@@ -44,7 +44,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
     public ScenarioTranslationAnimControl(List<Node> trackables, float speed){
 
         this.trackables = trackables;
-        this.speed = speed/10;
+        this.speed = speed;
         
         this.path = new MotionPath();
     }
