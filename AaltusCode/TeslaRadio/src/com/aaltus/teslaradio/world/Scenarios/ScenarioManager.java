@@ -700,9 +700,9 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                     ((Scenario) scenario.getChild(0)).onScenarioTouch(name, touchEvent, v);
                 }
             }*/
-            for(Scenario scenario : getCurrentScenario().getScenarios() )
+            for(Node scenario : getCurrentScenario().getScenarios() )
                 {
-                    scenario.onScenarioTouch(name, touchEvent, v);
+                    ((Scenario) scenario.getChild(0)).onScenarioTouch(name, touchEvent, v);
                 }
         }
 
