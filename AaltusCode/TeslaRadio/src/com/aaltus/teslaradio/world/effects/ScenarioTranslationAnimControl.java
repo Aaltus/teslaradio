@@ -4,6 +4,7 @@
  */
 package com.aaltus.teslaradio.world.effects;
 
+import com.aaltus.teslaradio.world.Scenarios.Scenario;
 import com.ar4android.vuforiaJME.AppGetter;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.math.Matrix3f;
@@ -38,14 +39,12 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
     private Vector3f posVector = new Vector3f();
     private Vector3f startPos = new Vector3f();
     private Quaternion currentLocalRotation = new Quaternion();
-    private Quaternion offsetRotation;
-    private final int id;
+    private Quaternion startOrientation = new Quaternion();
 
-    public ScenarioTranslationAnimControl(List<Node> trackables, float speed, int id){
+    public ScenarioTranslationAnimControl(List<Node> trackables, float speed){
 
-        this.id = id;
         this.trackables = trackables;
-        this.speed = speed;
+        this.speed = speed/10;
         
         this.path = new MotionPath();
     }
@@ -93,7 +92,21 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
         
         // set the start position of the scenario
         this.spatial.setLocalTranslation(getStartPositionVector(pathIsReverse));
-        this.spatial.setLocalRotation(this.offsetRotation);
+
+        if(!this.pathIsReverse) {
+            if(!(((Scenario) ((Node) this.spatial).getChild(0)).getNeedFixedScenario()) ){
+                this.startOrientation = (this.endNode.getParent().getWorldRotation().inverse()).mult(this.startNode.getParent().getWorldRotation());
+            }
+            else{
+                this.startOrientation = (Quaternion.IDENTITY);
+            }
+        }
+        else
+        {
+            this.startOrientation = Quaternion.IDENTITY;
+        }
+
+        this.spatial.setLocalRotation(this.startOrientation);
         
         // enable the control updates
         this.setEnabled(true);
@@ -117,14 +130,20 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
             // find the current position on path from the distance traveled
             path.getSpline().interpolate(path.getWayPointIndexForDistance(distanceTraveled).y,(int) (path.getWayPointIndexForDistance(distanceTraveled).x), posVector);
             this.spatial.setLocalTranslation(posVector);
-            //this.spatial.setLocalRotation(this.currentLocalRotation);
+
+            // get the relative rotation
+            currentLocalRotation = Quaternion.ZERO;
+            if(!this.pathIsReverse) {
+                this.spatial.setLocalRotation(this.currentLocalRotation.slerp(this.startOrientation, Quaternion.IDENTITY, this.distanceTraveled / this.path.getLength()));
+            }
+
         }
         else
         {
             // stop the translation by deactivating the control
             distanceTraveled = 0;
             this.spatial.setLocalTranslation(Vector3f.ZERO);
-            this.spatial.setLocalRotation(this.offsetRotation);
+            this.spatial.setLocalRotation(Quaternion.IDENTITY);
             this.setEnabled(false);
         }        
     }
@@ -132,7 +151,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
     private void updatePath(){
 
         if(this.startNode != null){
-            
+
             // get the relative position of the destination in this referential
             startPos = getStartPositionVector(pathIsReverse);
                     
@@ -140,12 +159,9 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
             this.path.clearWayPoints();
             this.path.addWayPoint(startPos);
             this.path.addWayPoint(Vector3f.ZERO);
-                      
-            // get the relative rotation
-            currentLocalRotation = this.offsetRotation.mult(this.currentLocalRotation.slerp(getStartOrientationQuaternion(), Quaternion.IDENTITY, this.distanceTraveled/this.path.getLength()));
         }
     }
-       
+
     private Vector3f getStartPositionVector(boolean isPathReverse){
         Vector3f startPosition;
         if(!isPathReverse){
@@ -154,20 +170,8 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
         else{
             startPosition = this.endNode.getWorldRotation().inverse().mult((this.endNode.getWorldTranslation().subtract(startNode.getWorldTranslation())).divide(endNode.getWorldScale()));
         }
-        
-        return startPosition;
-    }
-    
-    private Quaternion getStartOrientationQuaternion(){
-        Quaternion startOrientation;
-        
-        startOrientation = this.startNode.getWorldRotation().mult(this.endNode.getWorldRotation().inverse());
-        
-        return startOrientation;
-    }
 
-    public void setOffsetRotation(Quaternion rot) {
-        this.offsetRotation = rot;
+        return startPosition;
     }
     
     @Override

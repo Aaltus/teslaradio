@@ -65,7 +65,7 @@ public class TrackableControl extends AbstractControl {
 
         for(Spatial spatial : this.mFixedAngleChild.getChildren())
         {
-            spatial.setUserData("angleX",(float)angleX);
+            ((Node) spatial).getChild(0).setUserData("angleX",(float)angleX);
         }
     }
 
@@ -104,6 +104,9 @@ public class TrackableControl extends AbstractControl {
         boolean needFixedScenario = this.spatial.getUserData(AppGetter.USR_FIXED_ANGLE_CHILD);
         if (needFixedScenario) {
             this.mFixedAngleChild.setLocalRotation(this.mChildRotation);
+        }
+        else{ // reset Node angle to 0 if not used
+            this.mFixedAngleChild.setLocalRotation(Quaternion.IDENTITY);
         }
     }
 

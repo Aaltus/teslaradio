@@ -75,8 +75,8 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
 
     public void setCamera(Camera camera) {
         this.camera = camera;
-        for(Scenario scenario : scenarioList.getAllScenario()){
-            scenario.setCamera(camera);
+        for(Node scenario : scenarioList.getAllScenario()){
+            ((Scenario) scenario.getChild(0)).setCamera(camera);
         }
     }
 
@@ -155,124 +155,128 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         this.scenarioCommon.setNoiseControl(songManager.getNoiseControl());
         this.nodeList.get(1).attachChild(songManager.getAudioNode());
         
-        //This a list of all the scenario that we will rotate/scale according
-        //to which environment we are in. Don't forget to add scenario in it. 
-        List<Scenario> scenarios = new ArrayList<Scenario>();
-        
         // Init the playback scenario, this is the last of them! yayyyyy!
         Playback playback = new Playback(this.scenarioCommon, cam,null);
+        Node playbackNode = new Node();
+        playbackNode.attachChild(playback);
         playback.setName("Playback");
-        scenarios.add(playback);
+        playbackNode.setName("PlaybackNode");
+        playbackNode.addControl(new ScenarioTranslationAnimControl(node,100));
         
         //Init Demodulation scenario
         Demodulation demodulation = new Demodulation(this.scenarioCommon,cam, playback.getInputHandle());
+        Node demodulationNode = new Node();
+        demodulationNode.attachChild(demodulation);
         demodulation.setName("Demodulation");
-        scenarios.add(demodulation);
+        demodulationNode.setName("DemodulationNode");
+        demodulationNode.addControl(new ScenarioTranslationAnimControl(node,100));
         this.scenarioCommon.registerObserver(demodulation);
         
         // Init Filtering scenario
         Filter filter = new Filter(this.scenarioCommon,cam, demodulation.getInputHandle());
+        Node filterNode = new Node();
+        filterNode.attachChild(filter);
         filter.setName("Filter");
-        scenarios.add(filter);
+        filterNode.setName("FilterNode");
+        filterNode.addControl(new ScenarioTranslationAnimControl(node,100));
         
         //Init Reception scenario
         Reception reception = new Reception(this.scenarioCommon,cam, filter.getInputHandle());
+        Node receptionNode = new Node();
+        receptionNode.attachChild(reception);
         reception.setName("Reception");
-        scenarios.add(reception);
+        receptionNode.setName("ReceptionNode");
+        receptionNode.addControl(new ScenarioTranslationAnimControl(node,100));
         this.scenarioCommon.registerObserver(reception);
         
         //Init Amplification scenario
         Amplification amplification = new Amplification(this.scenarioCommon,cam,reception.getInputHandle());
+        Node amplificationNode = new Node();
+        amplificationNode.attachChild(amplification);
         amplification.setName("Amplification");
-        scenarios.add(amplification);
+        amplificationNode.setName("AmplificationNode");
+        amplificationNode.addControl(new ScenarioTranslationAnimControl(node,100));
         this.scenarioCommon.registerObserver(amplification);
         
         //Init Modulation scenario
         Modulation modulation = new Modulation(this.scenarioCommon,cam, amplification.getInputHandle());
+        Node modulationNode = new Node();
+        modulationNode.attachChild(modulation);
         modulation.setName("Modulation");
-        scenarios.add(modulation);
+        modulationNode.setName("ModulationNode");
+        modulationNode.addControl(new ScenarioTranslationAnimControl(node,100));
         
         //Init SoundCapture scenario
         Scenario soundCapture = new SoundCapture(this.scenarioCommon,cam, modulation.getInputHandle());
+        Node soundCaptureNode = new Node();
+        soundCaptureNode.attachChild(soundCapture);
         soundCapture.setName("SoundCapture");
-        scenarios.add(soundCapture);
+        soundCaptureNode.setName("SoundCaptureNode");
+        soundCaptureNode.addControl(new ScenarioTranslationAnimControl(node,100));
         
         // Init SoundEmission scenario
         SoundEmission soundEmission = new SoundEmission(this.scenarioCommon,cam, soundCapture.getInputHandle());
+        Node soundEmissionNode = new Node();
+        soundEmissionNode.attachChild(soundEmission);
         soundEmission.setName("SoundEmission");
-        scenarios.add(soundEmission);
-        
-        // add translation control to each scenarios
-        int id = 0;
-        for(Scenario scenario : scenarios){
-            scenario.addControl(new ScenarioTranslationAnimControl(node, 50,id));
-            id ++;
-        }
-        
+        soundEmissionNode.setName("SoundEmissionNode");
+        soundEmissionNode.addControl(new ScenarioTranslationAnimControl(node,100));
+
+
         //Add first scenario
-        List<Scenario> soundCaptureList = new ArrayList<Scenario>();
-        soundCaptureList.add(soundEmission);
-        soundCaptureList.add(soundCapture);
+        List<Node> soundCaptureList = new ArrayList<Node>();
+        soundCaptureList.add(soundEmissionNode);
+        soundCaptureList.add(soundCaptureNode);
         scenarioList.addScenario(ScenarioEnum.SOUNDEMISSION,soundCaptureList);
         
         //Add second scenario
-        List<Scenario> modulationList = new ArrayList<Scenario>();
-        modulationList.add(soundCapture);
-        modulationList.add(modulation);
+        List<Node> modulationList = new ArrayList<Node>();
+        modulationList.add(soundCaptureNode);
+        modulationList.add(modulationNode);
         scenarioList.addScenario(ScenarioEnum.SOUNDCAPTURE,modulationList);
         
         //Add third scenario
-        List<Scenario> amplificationList = new ArrayList<Scenario>();
-        amplificationList.add(modulation);
-        amplificationList.add(amplification);
+        List<Node> amplificationList = new ArrayList<Node>();
+        amplificationList.add(modulationNode);
+        amplificationList.add(amplificationNode);
         scenarioList.addScenario(ScenarioEnum.MODULATION,amplificationList);
         
         //Add four scenario
-        List<Scenario> receptionList = new ArrayList<Scenario>();
-        receptionList.add(amplification);
-        receptionList.add(reception);
+        List<Node> receptionList = new ArrayList<Node>();
+        receptionList.add(amplificationNode);
+        receptionList.add(receptionNode);
         scenarioList.addScenario(ScenarioEnum.TRANSMIT,receptionList);
         
         //Add fifth scenario
-        List<Scenario> filterList = new ArrayList<Scenario>();
-        filterList.add(reception);
-        filterList.add(filter);
+        List<Node> filterList = new ArrayList<Node>();
+        filterList.add(receptionNode);
+        filterList.add(filterNode);
         scenarioList.addScenario(ScenarioEnum.RECEPTION,filterList);
         
         //Add sixth scenario
-        List<Scenario> demodulationList = new ArrayList<Scenario>();
-        demodulationList.add(filter);
-        demodulationList.add(demodulation);
+        List<Node> demodulationList = new ArrayList<Node>();
+        demodulationList.add(filterNode);
+        demodulationList.add(demodulationNode);
         scenarioList.addScenario(ScenarioEnum.FILTER,demodulationList);
         
         //Add last scenario
-        List<Scenario> playbackList = new ArrayList<Scenario>();
-        playbackList.add(demodulation);
-        playbackList.add(playback);
+        List<Node> playbackList = new ArrayList<Node>();
+        playbackList.add(demodulationNode);
+        playbackList.add(playbackNode);
         scenarioList.addScenario(ScenarioEnum.DEMODULATION,playbackList);
         
-        
 
-        //Only for debugging purpose deactivate it please.
-        // scenarioList.addScenario(ScenarioEnum.FMMODULATION,new ArrayList<Scenario>());
-        // scenarioList.addScenario(ScenarioEnum.TRANSMIT,new ArrayList<Scenario>());
-        // scenarioList.addScenario(ScenarioEnum.RECEPTION,new ArrayList<Scenario>());
-
-       
-        //setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.AMMODULATION));
         
         setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDEMISSION));
 
         setNodeList(node);
-        
-        
 
     }
 
     public void setTutorialIndex(int index){
 
         AppLogger.getInstance().d(TAG,"ScenarioManager Index: " + index);
-        this.getCurrentScenario().getScenarios().get(0).setCurrentObjectEmphasis(index);
+        ((Scenario) this.getCurrentScenario().getScenarios().get(0)).setCurrentObjectEmphasis(index);
 
     }
 
@@ -327,7 +331,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
      * @param applicationType
      * @param scenarios
      */
-    private void adjustScenario(ApplicationType applicationType, List<Scenario> scenarios, RenderManager renderManager)
+    private void adjustScenario(ApplicationType applicationType, List<Node> scenarios, RenderManager renderManager)
     {
         Quaternion rot = new Quaternion();
 
@@ -346,7 +350,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 break;
         }
 
-        for(Scenario scenario : scenarios)
+        for(Node scenario : scenarios)
         {
             //Correction for BUG TR-176
             //The problem was that the 3d modules was in RAM but was not forwarded to the GPU.
@@ -355,7 +359,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 renderManager.preloadScene(scenario);
             }
             
-            scenario.getControl(ScenarioTranslationAnimControl.class).setOffsetRotation(rot);
+            scenario.getChild(0).setLocalRotation(rot);
 
             //WORLD_SCALE_DEFAULT = 100;
             scenario.setLocalScale(AppGetter.getWorldScalingDefault());
@@ -415,7 +419,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         attachCurrentScenario();
     }
 
-    private void iniScenarioTranslation( List<Scenario> nextScenarios){
+    private void iniScenarioTranslation( List<Node> nextScenarios){
         
         // set translation animation
         if( (getCurrentScenario() != null) && (getCurrentScenario().getScenarios().size() >= 2) && (nextScenarios.size() >= 2) ){
@@ -424,7 +428,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             if(getCurrentScenario().getScenarios().get(0) == nextScenarios.get(1))
             {
                 int index = 0;
-                for(Scenario scenario : nextScenarios ){
+                for(Node scenario : nextScenarios ){
                     scenario.getControl(ScenarioTranslationAnimControl.class).startTranslationPrevious(index);
                     index ++;
                 }               
@@ -433,7 +437,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             else if(getCurrentScenario().getScenarios().get(1) == nextScenarios.get(0))
             {
                 int index = 0;
-                for(Scenario scenario : nextScenarios ){
+                for(Node scenario : nextScenarios ){
                     scenario.getControl(ScenarioTranslationAnimControl.class).startTranslationNext(index);
                     index ++;
                 }               
@@ -453,10 +457,10 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     private void detachCurrentScenario()
     {
         if(getCurrentScenario() != null){
-            for(Scenario scenario : getCurrentScenario().getScenarios() )
+            for(Node scenario : getCurrentScenario().getScenarios() )
             {
-                scenario.setCurrentObjectEmphasis(-1);
-                scenario.notOnNodeActions();
+                ((Scenario) scenario.getChild(0)).setCurrentObjectEmphasis(-1);
+                ((Scenario) scenario.getChild(0)).notOnNodeActions();
                 Node parent = scenario.getParent();
                 if(parent != null){
                     parent.detachChild(scenario);
@@ -479,22 +483,22 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             for(Node node : getNodeList())
             {
                 if(count < size){
-                    Scenario scenario = getCurrentScenario().getScenarios().get(count);
+                    Node scenario = getCurrentScenario().getScenarios().get(count);
                     if(count == 0 ){
-                        scenario.onFirstNodeActions();
-                        if(scenario.getNeedsBackgroundSound()){
+                        ((Scenario) scenario.getChild(0)).onFirstNodeActions();
+                        if(((Scenario) scenario.getChild(0)).getNeedsBackgroundSound()){
                             this.songManager.playSong();
                         }else{
                             this.songManager.stopSong();
                         }
                     }
                     if(count == 1){
-                        scenario.onSecondNodeActions();
+                        ((Scenario) scenario.getChild(0)).onSecondNodeActions();
                     }
                     if(node != null)
                     {
                         if(node.getParent() != null){
-                            node.getParent().setUserData(AppGetter.USR_FIXED_ANGLE_CHILD, scenario.getNeedFixedScenario());
+                            node.getParent().setUserData(AppGetter.USR_FIXED_ANGLE_CHILD, ((Scenario) scenario.getChild(0)).getNeedFixedScenario());
                         }
                         node.attachChild(scenario);
                     }
@@ -621,9 +625,9 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     @Override
     public void update(float tpf){
 
-        for(Scenario scenario : getCurrentScenario().getScenarios() )
+        for(Node scenario : getCurrentScenario().getScenarios() )
         {
-            if (scenario.simpleUpdate(tpf) && androidActivityController != null)
+            if (((Scenario)scenario.getChild(0)).simpleUpdate(tpf) && androidActivityController != null)
             {
                 androidActivityController.toggleInformativeMenuCallback(scenarioList.getScenarioEnumFromScenarioList(getCurrentScenario().getScenarios()));
             }
@@ -691,14 +695,14 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 }
             }
             else{
-                for(Scenario scenario : getCurrentScenario().getScenarios() )
+                for(Node scenario : getCurrentScenario().getScenarios() )
                 {
-                    scenario.onScenarioTouch(name, touchEvent, v);
+                    ((Scenario) scenario.getChild(0)).onScenarioTouch(name, touchEvent, v);
                 }
             }*/
-            for(Scenario scenario : getCurrentScenario().getScenarios() )
+            for(Node scenario : getCurrentScenario().getScenarios() )
                 {
-                    scenario.onScenarioTouch(name, touchEvent, v);
+                    ((Scenario) scenario.getChild(0)).onScenarioTouch(name, touchEvent, v);
                 }
         }
 
@@ -717,23 +721,23 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     public void onAction(String name, boolean keyPressed, float tpf) {
         
         if ((name.equals(GUITAR) || name.equals(DRUM) || name.equals(MICRO)) && !keyPressed) {
-            List<Scenario> scenarios = getCurrentScenario().getScenarios();
+            List<Node> scenarios = getCurrentScenario().getScenarios();
             if(scenarios != null){
-                for(Scenario scenario : scenarios ){
+                for(Node scenario : scenarios ){
                     if(scenario instanceof SoundEmission){
                         if(name.equals(DRUM))
                         {
-                            ((SoundEmission)scenario).drumTouchEffect();
+                            ((SoundEmission) scenario.getChild(0)).drumTouchEffect();
                         }
                         if(name.equals(GUITAR))
                         {
-                            ((SoundEmission)scenario).guitarTouchEffect();
+                            ((SoundEmission) scenario.getChild(0)).guitarTouchEffect();
                         }
                     }
                     if(scenario instanceof SoundCapture){
                         if(name.equals(MICRO))
                         {
-                            ((SoundCapture)scenario).microTouchEffect();
+                            ((SoundCapture) scenario.getChild(0)).microTouchEffect();
                         }
                     }
                 }
@@ -767,16 +771,16 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     private class ScenarioGroup
     {
 
-        List<Scenario> scenarios  = null;
+        List<Node> scenarios  = null;
         Integer index             = null;
 
-        public ScenarioGroup(List<Scenario> scenarios, int index)
+        public ScenarioGroup(List<Node> scenarios, int index)
         {
             this.scenarios    = scenarios;
             this.index        = index;
         }
 
-        public List<Scenario> getScenarios() {
+        public List<Node> getScenarios() {
             return scenarios;
         }
 
@@ -784,7 +788,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             return index;
         }
 
-        public Scenario getNextScenarioInGroup(Scenario scenario){
+        public Node getNextScenarioInGroup(Node scenario){
             if (scenarios.get(0) == scenario && scenarios.size() > 1){
                 return scenarios.get(1);
             }
@@ -800,20 +804,20 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     private class ScenarioList
     {
 
-        private EnumMap<ScenarioEnum,List<Scenario>> enumScenarioEnumMap = new EnumMap<ScenarioEnum, List<Scenario>>(ScenarioEnum.class);
-        private List<List<Scenario>> scenarioList = new ArrayList<List<Scenario>>();
-        private List<Scenario> allScenario = new ArrayList<Scenario>();
-        public List<Scenario> getAllScenario(){
+        private EnumMap<ScenarioEnum,List<Node>> enumScenarioEnumMap = new EnumMap<ScenarioEnum, List<Node>>(ScenarioEnum.class);
+        private List<List<Node>> scenarioList = new ArrayList<List<Node>>();
+        private List<Node> allScenario = new ArrayList<Node>();
+        public List<Node> getAllScenario(){
             return allScenario;
         }
 
         ScenarioList(){}
 
-        public void addScenario(ScenarioEnum scenarioEnum, List<Scenario> scenarios)
+        public void addScenario(ScenarioEnum scenarioEnum, List<Node> scenariosNode)
         {
-            enumScenarioEnumMap.put(scenarioEnum,scenarios);
-            scenarioList.add(scenarios);
-            for(Scenario scenario : scenarios){
+            enumScenarioEnumMap.put(scenarioEnum,scenariosNode);
+            scenarioList.add(scenariosNode);
+            for(Node scenario : scenariosNode){
 
                 if(!allScenario.contains(scenario)){
                     allScenario.add(scenario);
@@ -823,11 +827,11 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
 
         public ScenarioGroup getScenarioListByEnum(ScenarioEnum scenarioEnum)
         {
-            List<Scenario> scenariosFound = enumScenarioEnumMap.get(scenarioEnum);
+            List<Node> scenariosFound = enumScenarioEnumMap.get(scenarioEnum);
 
             Integer index = null;
             int count = 0;
-            for(List<Scenario> listOfScenarios: scenarioList)
+            for(List<Node> listOfScenarios: scenarioList)
             {
                 if(listOfScenarios == scenariosFound)
                 {
@@ -855,11 +859,11 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             }
         }
 
-        public Integer getIndexFromScenarioList(List<Scenario> scenarios)
+        public Integer getIndexFromScenarioList(List<Node> scenarios)
         {
             int count = 0;
             Integer index = null;
-            for(List<Scenario> listOfScenarios: scenarioList)
+            for(List<Node> listOfScenarios: scenarioList)
             {
                 if(listOfScenarios == scenarios)
                 {
@@ -872,13 +876,13 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
 
         }
 
-        public ScenarioEnum getScenarioEnumFromScenarioList(List<Scenario> scenarios)
+        public ScenarioEnum getScenarioEnumFromScenarioList(List<Node> scenarios)
         {
             int count = 0;
             ScenarioEnum currentScenatioEnum = null;
-            for (EnumMap.Entry<ScenarioEnum,List<Scenario>> entry : enumScenarioEnumMap.entrySet()) {
+            for (EnumMap.Entry<ScenarioEnum,List<Node>> entry : enumScenarioEnumMap.entrySet()) {
                 ScenarioEnum key = entry.getKey();
-                List<Scenario> value = entry.getValue();
+                List<Node> value = entry.getValue();
                 if(value == scenarios)
                 {
                     currentScenatioEnum = key;
