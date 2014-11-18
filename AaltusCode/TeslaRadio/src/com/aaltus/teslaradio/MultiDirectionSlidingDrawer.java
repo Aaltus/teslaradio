@@ -325,7 +325,10 @@ public class MultiDirectionSlidingDrawer extends ViewGroup {
             }
         }
 
-        handle.layout( handleLeft, handleTop, handleLeft + handleWidth, handleTop + handleHeight );
+        //TODO: We hardcore it to top align, it is stupid, but I don't care near the end like this...
+        handle.layout( handleLeft, 0, handleLeft + handleWidth, 0 + handleHeight );
+        //old code to center it in the parent.
+        //handle.layout( handleLeft, handleTop, handleLeft + handleWidth, handleTop + handleHeight );
         mHandleHeight = handle.getHeight();
         mHandleWidth = handle.getWidth();
     }
