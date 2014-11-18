@@ -150,7 +150,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             List<Node> node,
             Camera cam)
     {   
-        initGuiNode(settings, assetManager);
+        //initGuiNode(settings, assetManager);
         songManager = new SongManager();
         this.scenarioCommon.setNoiseControl(songManager.getNoiseControl());
         this.nodeList.get(1).attachChild(songManager.getAudioNode());
@@ -515,7 +515,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         if(androidActivityController != null){
             androidActivityController.setTutorialMenu(scenarioEnum);
         }
-        updateGuiNavigationArrows();
+        //updateGuiNavigationArrows();
         
     }
     
@@ -541,7 +541,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     public void initialize(AppStateManager stateManager, Application app) {
       super.initialize(stateManager, app);
       adjustScenario(this.applicationType, this.scenarioList.getAllScenario(), renderManager);
-      guiNode.attachChild(localGuiNode);
+      //guiNode.attachChild(localGuiNode);
       attachCurrentScenario();
       addInputMapping(applicationType);
       // init stuff that is independent of whether state is PAUSED or RUNNING
@@ -552,7 +552,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     public void cleanup() {
       super.cleanup();
       detachCurrentScenario();
-      guiNode.detachChild(localGuiNode);
+      //guiNode.detachChild(localGuiNode);
       removeInputMapping();
       
       // unregister all my listeners, detach all my nodes, etc.../*
@@ -668,7 +668,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
 
 
             //We check if the event is on the GUI NODE. We pass it down to scenario otherwise.
-            CollisionResults results = new CollisionResults();
+            /*CollisionResults results = new CollisionResults();
             Vector2f location = new Vector2f(touchEvent.getX(),touchEvent.getY());
             Vector3f origin = new Vector3f(location.x, location.y, 0);
             Vector3f dir = new Vector3f(0f, 0f, 1f);
@@ -695,7 +695,11 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 {
                     scenario.onScenarioTouch(name, touchEvent, v);
                 }
-            }
+            }*/
+            for(Scenario scenario : getCurrentScenario().getScenarios() )
+                {
+                    scenario.onScenarioTouch(name, touchEvent, v);
+                }
         }
 
 
