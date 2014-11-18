@@ -206,11 +206,11 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
                 case 6:
                 case 7:
                     ampliSliderButton.move(translationIncrement.negate());
-                    ampliScale = 2.5f - touchCount*0.25f;
+                    ampliScale = 2.5f - touchCount*0.5f;
                     break;
                 case 8:
                     ampliSliderButton.move(translationIncrement.negate());
-                    ampliScale = 2.5f - touchCount*0.25f;
+                    ampliScale = 2.5f - touchCount*0.5f;
                     touchCount = 0;
                     break;
             }
@@ -221,8 +221,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
             this.outputModule.setUserData(AppGetter.USR_AMPLIFICATION, ampliScale);
             
         }
-        /*TR-261 apparently we don't want this */
-        //this.getControl(SoundControl.class).updateVolume(ampliScale/1.5f);
+        
  
     }
     
@@ -396,8 +395,6 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
              spatial = this.particleAmplification(spatial);
              outputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(spatial);
          } else if(notifierId.equals("OutputWireAmpli")) {
-             Float scale = new Float(spatial.getWorldScale().length());
-             spatial.setUserData(AppGetter.USR_SCALE, scale);
              spatial = this.particleAmplification(spatial);
              outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
          }   
