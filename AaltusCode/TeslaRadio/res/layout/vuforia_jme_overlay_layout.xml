@@ -49,27 +49,27 @@ button on the handset.
     </TableLayout>
  <LinearLayout android:layout_width="match_parent"
                   android:layout_height="match_parent"
-
+                android:gravity="left"
                 android:baselineAligned="false"
                 android:orientation="vertical"
                 android:showDividers="middle"
                 android:layout_weight="1">
 
         <Button
-                android:id="@+id/ipod_song_selector"
+                android:id="@+id/ipod_song_selector_button"
                 android:layout_height="50dp"
                 android:layout_width="50dp"
                 android:layout_margin="5dp"
                 android:background="@drawable/layer_list_info"/>
 
         <Button
-                android:id="@+id/guitar_hit"
+                android:id="@+id/guitar_hit_button"
                 android:layout_height="50dp"
                 android:layout_width="50dp"
                 android:layout_margin="5dp"
                 android:background="@drawable/layer_list_info"/>
         <Button
-                android:id="@+id/tambour_hit"
+                android:id="@+id/tambour_hit_button"
                 android:layout_height="50dp"
                 android:layout_width="50dp"
                 android:layout_margin="5dp"
