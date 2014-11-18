@@ -324,6 +324,7 @@ public class VuforiaJMEState extends AbstractAppState implements ICameraUpdater
         if (mNewCameraFrameAvailable) {
             mCameraTexture.setImage(mCameraImage);
             mvideoBGMat.setTexture("ColorMap", mCameraTexture);
+            mNewCameraFrameAvailable = false;
         }
         /*
         }catch(Exception e)
