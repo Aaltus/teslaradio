@@ -3,7 +3,6 @@ package com.galimatias.teslaradio.world.Scenarios;
 import com.ar4android.vuforiaJME.AndroidActivityController;
 import com.ar4android.vuforiaJME.AppGetter;
 import com.ar4android.vuforiaJME.ITutorialSwitcher;
-import com.ar4android.vuforiaJME.TrackableControl;
 import com.galimatias.teslaradio.subject.ScenarioEnum;
 import com.galimatias.teslaradio.world.effects.ScenarioTranslationAnimControl;
 import com.jme3.app.Application;
@@ -494,9 +493,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                     }
                     if(node != null)
                     {
-                        if (node.getParent().getControl(TrackableControl.class) != null) {
-                            node.getParent().getControl(TrackableControl.class).setmFixedAngleChild(scenario.getNeedFixedScenario());
-                        }
+                        node.getParent().setUserData(AppGetter.USR_FIXED_ANGLE_CHILD, scenario.getNeedFixedScenario());
                         node.attachChild(scenario);
                     }
                     else
