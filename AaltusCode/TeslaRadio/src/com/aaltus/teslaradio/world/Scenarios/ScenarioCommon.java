@@ -92,9 +92,9 @@ public class ScenarioCommon {
         pyramidCarrier.scale(0.4f);
         pyramidCarrier.setName("PyramidCarrier");
         
-        dodecagoneCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation_Demodulation/Dodecahedron_rupee.j3o");
+        dodecagoneCarrier = AppGetter.getAssetManager().loadModel("Models/Modulation_Demodulation/Octahedron.j3o");
         Material m3 = new Material(AppGetter.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        m3.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Commons/Edgemap_square.png"));
+        m3.setTexture("ColorMap", AppGetter.getAssetManager().loadTexture("Models/Commons/Edgemap_octahedron.png"));
         m3.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         dodecagoneCarrier.setQueueBucket(RenderQueue.Bucket.Transparent);
         dodecagoneCarrier.setMaterial(m3);

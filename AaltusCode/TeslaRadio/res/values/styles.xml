@@ -7,6 +7,7 @@
     <drawable name="GreyTransparent">#CC212121</drawable>
     <drawable name="GreyOpaque">#FF212121</drawable>
 
+
     <!--For splashscreen-->
     <style name="Theme.NoBackground" parent="android:Theme">
         <item name="android:windowBackground">@null</item>
@@ -68,6 +69,13 @@
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:adjustViewBounds">true</item>
+    </style>
+
+    <style name="CustomDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:background">@drawable/GreyOpaque</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <!--<item name="android:windowBackground">@null</item>
+        <item name="android:windowFrame">@null</item>-->
     </style>
 
 </resources>
