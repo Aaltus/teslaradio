@@ -155,11 +155,6 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         this.scenarioCommon.setNoiseControl(songManager.getNoiseControl());
         this.nodeList.get(1).attachChild(songManager.getAudioNode());
         
-        //This a list of all the scenario that we will rotate/scale according
-        //to which environment we are in. Don't forget to add scenario in it. 
-        List<Scenario> scenarios = new ArrayList<Scenario>();
-        List<Node> scenariosNode = new ArrayList<Node>();
-        
         // Init the playback scenario, this is the last of them! yayyyyy!
         Playback playback = new Playback(this.scenarioCommon, cam,null);
         Node playbackNode = new Node();

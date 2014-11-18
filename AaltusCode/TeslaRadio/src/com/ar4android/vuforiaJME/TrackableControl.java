@@ -105,6 +105,9 @@ public class TrackableControl extends AbstractControl {
         if (needFixedScenario) {
             this.mFixedAngleChild.setLocalRotation(this.mChildRotation);
         }
+        else{ // reset Node angle to 0 if not used
+            this.mFixedAngleChild.setLocalRotation(Quaternion.IDENTITY);
+        }
     }
 
     @Override
