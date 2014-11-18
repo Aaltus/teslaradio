@@ -8,6 +8,7 @@ button on the handset.
 
 <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:my="http://schemas.android.com/apk/res/com.aaltus.teslaradio"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/activity_item_twopane_2_rootview"
@@ -18,7 +19,7 @@ button on the handset.
     <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
+            android:layout_gravity="bottom|right"
             android:orientation="vertical"
             android:gravity="center"
             android:background="@drawable/window_layout_bg">
@@ -164,15 +165,21 @@ button on the handset.
     <FrameLayout
             android:layout_width="200dp"
             android:layout_height="fill_parent"
-            android:layout_gravity="right">
-        <SlidingDrawer
-                xmlns:my="http://schemas.android.com/apk/res/com.galimatias.teslaradio"
+            android:layout_gravity="left">
+        <com.aaltus.teslaradio.MultiDirectionSlidingDrawer
                 android:id="@+id/informative_menu_drawer"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:orientation="horizontal"
-                android:handle="@+id/handle"
-                android:content="@+id/content">
+                my:direction="leftToRight"
+                my:handle="@+id/handle"
+                my:content="@+id/content">
+
+            <ImageView
+                    android:id="@id/handle"
+                    android:layout_width="44dip"
+                    android:layout_height="80dp"
+                    android:background="@drawable/drawer_handle"/>
 
             <LinearLayout
                     android:layout_width="wrap_content"
@@ -191,14 +198,10 @@ button on the handset.
 
             </LinearLayout>
 
-            <ImageView
-                    android:id="@id/handle"
-                    android:layout_width="44dip"
-                    android:layout_height="80dp"
-                    android:background="@drawable/drawer_handle"/>
 
 
-        </SlidingDrawer>
+
+        </com.aaltus.teslaradio.MultiDirectionSlidingDrawer>
     </FrameLayout>
 
 </FrameLayout>
