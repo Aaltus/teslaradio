@@ -390,19 +390,15 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
 
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
-        Spatial carrier = spatial;//null;
-        /*for(Spatial sp : ((Node) spatial).getChildren()){
-            if(sp.getName().contains("Carrier")){
-                carrier =  sp;
-            }
-        }*/
+       
          if (notifierId.equals("InputWireAmpli")) {
           //Change Scale
-             carrier = this.particleAmplification(carrier);
+             spatial = this.particleAmplification(spatial);
              outputWireAmpli.getControl(ParticleEmitterControl.class).emitParticle(spatial);
          } else if(notifierId.equals("OutputWireAmpli")) {
              Float scale = new Float(spatial.getWorldScale().length());
              spatial.setUserData(AppGetter.USR_SCALE, scale);
+             spatial = this.particleAmplification(spatial);
              outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
          }   
     }

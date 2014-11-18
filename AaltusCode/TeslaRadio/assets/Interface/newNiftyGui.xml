@@ -3,7 +3,7 @@
     <!-- +++++++++++++++++++++++++++++++++++++++ -->
     <!-- start screen -->
     <!-- +++++++++++++++++++++++++++++++++++++++ -->
-    <screen id="start" controller="com.galimatias.teslaradio.world.Scenarios.ScenarioManager">
+    <screen id="start" controller="com.aaltus.teslaradio.world.Scenarios.ScenarioManager">
         
         <layer id="background" childLayout="center">
           

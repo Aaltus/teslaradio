@@ -43,7 +43,7 @@
 -keep class com.qualcomm.** { *; }
 
 
--keep class com.galimatias.teslaradio.** { *; }
+-keep class com.aaltus.teslaradio.** { *; }
 
 -keep class com.ar4android.vuforiaJME.** { *; }
 
