@@ -1,7 +1,7 @@
 package com.ar4android.vuforiaJME;
 
-import com.galimatias.teslaradio.subject.ScenarioEnum;
-import com.galimatias.teslaradio.world.Scenarios.IStartScreen;
+import com.aaltus.teslaradio.subject.ScenarioEnum;
+import com.aaltus.teslaradio.world.Scenarios.IStartScreen;
 
 /**
  * Created by jimbojd72 on 9/3/14.

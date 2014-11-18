@@ -45,6 +45,8 @@ public class AppGetter {
     
     static public final String USR_AMPLIFICATION="Amplification level";
     
+    static public final String USR_FIXED_ANGLE_CHILD="Fixed Angle child";
+    
     //world scalling
     private static float worldScaling = 10;
 
@@ -113,7 +115,7 @@ public class AppGetter {
     }
     
     public static ResourceBundle getResourceBundle(){
-        return ResourceBundle.getBundle("com.galimatias.teslaradio.Bundle");
+        return ResourceBundle.getBundle("com.aaltus.teslaradio.Bundle");
     
     }
 

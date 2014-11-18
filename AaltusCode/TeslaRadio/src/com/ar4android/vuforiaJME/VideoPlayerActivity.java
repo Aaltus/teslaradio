@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.VideoView;
-import com.galimatias.teslaradio.R;
+import com.aaltus.teslaradio.R;
 
 /**
  * Created by jimbojd72 on 10/27/2014.

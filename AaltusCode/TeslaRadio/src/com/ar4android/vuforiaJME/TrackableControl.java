@@ -26,7 +26,6 @@ public class TrackableControl extends AbstractControl {
     protected Vector3f   mVx = new Vector3f(0f,0f,0f);
     protected boolean    mIsVisible = false;
     protected boolean    mIsAttach = false;
-    private   boolean    mNeedFixedScenario = false;
 
     public TrackableControl()
     {
@@ -89,21 +88,21 @@ public class TrackableControl extends AbstractControl {
         return this.mIsAttach;
     }
 
-    public void setmFixedAngleChild(boolean needFixedScenario) { this.mNeedFixedScenario = needFixedScenario; }
 
     @Override
     public void setSpatial(Spatial spatial) {
         this.spatial = spatial;
         this.mFixedAngleChild.setName(this.spatial.getName().concat("_fixedAngleChild"));
         ((Node)this.spatial).attachChild(this.mFixedAngleChild);
+        this.spatial.setUserData(AppGetter.USR_FIXED_ANGLE_CHILD, false);
     }
 
     @Override
     protected void controlUpdate(float v) {
         this.spatial.setLocalRotation(this.mRotationMatrix);
         this.spatial.setLocalTranslation(this.mPosition);
-
-        if (mNeedFixedScenario) {
+        boolean needFixedScenario = this.spatial.getUserData(AppGetter.USR_FIXED_ANGLE_CHILD);
+        if (needFixedScenario) {
             this.mFixedAngleChild.setLocalRotation(this.mChildRotation);
         }
     }

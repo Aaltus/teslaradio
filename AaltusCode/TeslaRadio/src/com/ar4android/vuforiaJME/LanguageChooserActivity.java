@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import com.galimatias.teslaradio.LanguageDialogFragment;
+import com.aaltus.teslaradio.LanguageDialogFragment;
 
 /**
  * Created by jimbojd72 on 10/26/2014.

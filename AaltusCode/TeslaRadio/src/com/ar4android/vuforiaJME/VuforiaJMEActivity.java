@@ -40,12 +40,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import ch.qos.logback.core.Layout;
-import com.galimatias.teslaradio.*;
-import com.galimatias.teslaradio.subject.ScenarioEnum;
-import com.galimatias.teslaradio.subject.SubjectContent;
-import com.galimatias.teslaradio.world.Scenarios.IScenarioSwitcher;
-import com.galimatias.teslaradio.world.Scenarios.ScenarioManager;
-import com.galimatias.teslaradio.world.Scenarios.StartScreenController;
+import com.aaltus.teslaradio.*;
+
+import com.aaltus.teslaradio.subject.ScenarioEnum;
+import com.aaltus.teslaradio.subject.SubjectContent;
+import com.aaltus.teslaradio.world.Scenarios.IScenarioSwitcher;
+import com.aaltus.teslaradio.world.Scenarios.ScenarioManager;
+import com.aaltus.teslaradio.world.Scenarios.StartScreenController;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import com.jme3.texture.Image;
@@ -329,7 +330,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         {
             public void run()
             {
-                getInformativeMenuFragment().replaceDetailFragment(scenarioEnum);
+                if (getInformativeMenuFragment() != null) {
+                    getInformativeMenuFragment().replaceDetailFragment(scenarioEnum);
+
+                }
 
             }
         });
@@ -341,7 +345,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 new Runnable() {
                     @Override
                     public void run() {
-                        getInformativeMenuFragment().setTutorialMenu(scenarioEnum);
+                        if (getInformativeMenuFragment() != null) {
+                            getInformativeMenuFragment().setTutorialMenu(scenarioEnum);
+                        }
                     }
                 }
         );
@@ -573,7 +579,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(showAlertToast && !getInformativeMenuFragment().isChildFragmentShown()) {
+                if(showAlertToast && getInformativeMenuFragment() != null && !getInformativeMenuFragment().isChildFragmentShown()) {
 
                     LayoutInflater inflater = getLayoutInflater();
                     View layout = inflater.inflate(R.layout.toast_character_bubble,

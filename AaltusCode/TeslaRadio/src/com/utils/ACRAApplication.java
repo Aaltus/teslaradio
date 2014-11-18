@@ -1,7 +1,7 @@
 package com.utils;
 
 import android.app.Application;
-import com.galimatias.teslaradio.R;
+import com.aaltus.teslaradio.R;
 import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;

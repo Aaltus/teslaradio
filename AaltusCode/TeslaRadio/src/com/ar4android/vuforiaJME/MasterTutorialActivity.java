@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import com.galimatias.teslaradio.*;
+import com.aaltus.teslaradio.*;
 
 /**
  * Created by jimbojd72 on 10/26/2014.
