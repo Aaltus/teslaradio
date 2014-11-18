@@ -103,7 +103,8 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
 
     @Override
     public void emitParticle(Spatial spatialToSend) {
-         emitParticle(spatialToSend, this.radius*spatialToSend.getLocalScale().length());
+        
+        emitParticle(spatialToSend, this.radius*spatial.getLocalScale().length());
     }
     
     private void emitParticle(Spatial spatialToSend, float scale) {

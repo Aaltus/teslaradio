@@ -169,11 +169,11 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
             }
             if (this.isFirst){
                 nobAngle = (lastAngle + (trackableAngle+2*pi - initialAngle)) % (2*pi);
-                System.out.println("nobAngle :"+nobAngle+"\t initialAngle :"+initialAngle + "\t trackableAngle :"+trackableAngle+"\t lastAngle :"+lastAngle);
+                //System.out.println("nobAngle :"+nobAngle+"\t initialAngle :"+initialAngle + "\t trackableAngle :"+trackableAngle+"\t lastAngle :"+lastAngle);
             }
             else{
                 nobAngle = (lastAngle + (trackableAngle+2*pi - initialAngle)) % (2*pi);
-                System.out.println("nobAngle :"+nobAngle+"\t initialAngle :"+initialAngle + "\t trackableAngle :"+trackableAngle+"\t lastAngle :"+lastAngle);
+                //System.out.println("nobAngle :"+nobAngle+"\t initialAngle :"+initialAngle + "\t trackableAngle :"+trackableAngle+"\t lastAngle :"+lastAngle);
             }
         }
         
