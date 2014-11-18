@@ -503,7 +503,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                     if(node != null)
                     {
                         if(node.getParent() != null){
-                            node.getParent().setUserData(AppGetter.USR_FIXED_ANGLE_CHILD, ((Scenario) scenario.getchild(0)).getNeedFixedScenario());
+                            node.getParent().setUserData(AppGetter.USR_FIXED_ANGLE_CHILD, ((Scenario) scenario.getChild(0)).getNeedFixedScenario());
                         }
                         node.attachChild(scenario);
                     }
