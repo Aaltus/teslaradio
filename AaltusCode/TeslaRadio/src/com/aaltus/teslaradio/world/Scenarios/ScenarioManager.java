@@ -1,5 +1,7 @@
 package com.aaltus.teslaradio.world.Scenarios;
 
+import com.aaltus.teslaradio.subject.AudioOptionEnum;
+import com.aaltus.teslaradio.subject.SongEnum;
 import com.ar4android.vuforiaJME.AndroidActivityController;
 import com.ar4android.vuforiaJME.AppGetter;
 import com.ar4android.vuforiaJME.ITutorialSwitcher;
@@ -44,7 +46,7 @@ import java.util.List;
  *
  * Created by jimbojd72 on 9/3/14.
  */
-public class ScenarioManager extends AbstractAppState implements IScenarioManager, ITutorialSwitcher
+public class ScenarioManager extends AbstractAppState implements IScenarioManager, ITutorialSwitcher, ISongManager
 {
     private static final String TAG = ScenarioManager.class.getSimpleName();
     
@@ -79,6 +81,17 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             scenario.setCamera(camera);
         }
     }
+
+    @Override 
+    public void onSetNewSong(SongEnum value){
+        
+    }
+    @Override
+    public void onAudioOptionTouched(AudioOptionEnum value) {
+        this.getCurrentScenario().getScenarios().get(0).onAudioOptionTouched(value);
+    }
+
+   
 
     /**
      * An enum that provide insight to the manager to which scale/rotation it must provide to the scenario

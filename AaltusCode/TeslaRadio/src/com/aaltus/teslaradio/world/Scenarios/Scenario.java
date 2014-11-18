@@ -145,6 +145,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     protected final boolean SHOWTEXTDEBUG      = false;
     protected final boolean TEXTLOOKATCAMERA   = false;
     
+    
     /**
      * We make the default constructor private to prevent its use.
      * We always want a assetmanager and a camera
@@ -174,7 +175,9 @@ public abstract class Scenario extends Node implements SignalObserver {
             this.addControl(new SoundControl(this.backgroundSound,false,1));
         }
     }
-
+    
+ 
+    
     /**
      * Methods to load the associated 3D objects with the scenario that are unmovable.
      */
@@ -249,7 +252,7 @@ public abstract class Scenario extends Node implements SignalObserver {
         }
     }
 
-    protected void audioOptionTouch(AudioOptionEnum value){
+    protected void onAudioOptionTouched(AudioOptionEnum value){
         Spatial handler = this.getInputHandle();
         if(handler != null){
            DrumGuitarSoundControl dgsc =  handler.getControl(DrumGuitarSoundControl.class);
@@ -327,21 +330,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     public boolean getNeedsAutoGen() {
         return this.needAutoGenIfMain;
     }
-/*
-    private void startBackgroundSound() {
-        if(this.backgroundSound != null){
-            this.getControl(SoundControl.class).playSound(true);
-            this.getControl(SoundControl.class).setEnabled(true);
-        }
-    }
-    
-    private void stopBackgroundSound() {
-        if(this.backgroundSound != null){
-            this.getControl(SoundControl.class).stopSound();
-            this.getControl(SoundControl.class).setEnabled(false);
-        }
-    }
-*/
+
   
     /**
      * This method will apply an opposite trackable rotation on the model, preventing it from rotating
