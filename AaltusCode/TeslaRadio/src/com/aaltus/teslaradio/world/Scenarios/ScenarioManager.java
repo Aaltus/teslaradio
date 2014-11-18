@@ -154,14 +154,17 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         songManager = new SongManager();
         this.scenarioCommon.setNoiseControl(songManager.getNoiseControl());
         this.nodeList.get(1).attachChild(songManager.getAudioNode());
-        
+
+        // speed at which scenario translate
+        final float SCENARIO_TRANSLATION_SPEED = 30;
+
         // Init the playback scenario, this is the last of them! yayyyyy!
         Playback playback = new Playback(this.scenarioCommon, cam,null);
         Node playbackNode = new Node();
         playbackNode.attachChild(playback);
         playback.setName("Playback");
         playbackNode.setName("PlaybackNode");
-        playbackNode.addControl(new ScenarioTranslationAnimControl(node,100));
+        playbackNode.addControl(new ScenarioTranslationAnimControl(node,SCENARIO_TRANSLATION_SPEED));
         
         //Init Demodulation scenario
         Demodulation demodulation = new Demodulation(this.scenarioCommon,cam, playback.getInputHandle());
@@ -169,7 +172,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         demodulationNode.attachChild(demodulation);
         demodulation.setName("Demodulation");
         demodulationNode.setName("DemodulationNode");
-        demodulationNode.addControl(new ScenarioTranslationAnimControl(node,100));
+        demodulationNode.addControl(new ScenarioTranslationAnimControl(node,SCENARIO_TRANSLATION_SPEED));
         this.scenarioCommon.registerObserver(demodulation);
         
         // Init Filtering scenario
@@ -178,7 +181,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         filterNode.attachChild(filter);
         filter.setName("Filter");
         filterNode.setName("FilterNode");
-        filterNode.addControl(new ScenarioTranslationAnimControl(node,100));
+        filterNode.addControl(new ScenarioTranslationAnimControl(node,SCENARIO_TRANSLATION_SPEED));
         
         //Init Reception scenario
         Reception reception = new Reception(this.scenarioCommon,cam, filter.getInputHandle());
@@ -186,7 +189,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         receptionNode.attachChild(reception);
         reception.setName("Reception");
         receptionNode.setName("ReceptionNode");
-        receptionNode.addControl(new ScenarioTranslationAnimControl(node,100));
+        receptionNode.addControl(new ScenarioTranslationAnimControl(node,SCENARIO_TRANSLATION_SPEED));
         this.scenarioCommon.registerObserver(reception);
         
         //Init Amplification scenario
@@ -195,7 +198,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         amplificationNode.attachChild(amplification);
         amplification.setName("Amplification");
         amplificationNode.setName("AmplificationNode");
-        amplificationNode.addControl(new ScenarioTranslationAnimControl(node,100));
+        amplificationNode.addControl(new ScenarioTranslationAnimControl(node,SCENARIO_TRANSLATION_SPEED));
         this.scenarioCommon.registerObserver(amplification);
         
         //Init Modulation scenario
@@ -204,7 +207,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         modulationNode.attachChild(modulation);
         modulation.setName("Modulation");
         modulationNode.setName("ModulationNode");
-        modulationNode.addControl(new ScenarioTranslationAnimControl(node,100));
+        modulationNode.addControl(new ScenarioTranslationAnimControl(node,SCENARIO_TRANSLATION_SPEED));
         
         //Init SoundCapture scenario
         Scenario soundCapture = new SoundCapture(this.scenarioCommon,cam, modulation.getInputHandle());
@@ -212,7 +215,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         soundCaptureNode.attachChild(soundCapture);
         soundCapture.setName("SoundCapture");
         soundCaptureNode.setName("SoundCaptureNode");
-        soundCaptureNode.addControl(new ScenarioTranslationAnimControl(node,100));
+        soundCaptureNode.addControl(new ScenarioTranslationAnimControl(node,SCENARIO_TRANSLATION_SPEED));
         
         // Init SoundEmission scenario
         SoundEmission soundEmission = new SoundEmission(this.scenarioCommon,cam, soundCapture.getInputHandle());
@@ -220,7 +223,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         soundEmissionNode.attachChild(soundEmission);
         soundEmission.setName("SoundEmission");
         soundEmissionNode.setName("SoundEmissionNode");
-        soundEmissionNode.addControl(new ScenarioTranslationAnimControl(node,100));
+        soundEmissionNode.addControl(new ScenarioTranslationAnimControl(node,SCENARIO_TRANSLATION_SPEED));
 
 
         //Add first scenario
