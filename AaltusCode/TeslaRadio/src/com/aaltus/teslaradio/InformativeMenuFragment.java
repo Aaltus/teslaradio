@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SlidingDrawer;
+import com.aaltus.teslaradio.subject.AudioOptionEnum;
+import com.aaltus.teslaradio.world.Scenarios.ISongManager;
 import com.ar4android.vuforiaJME.ITutorialSwitcher;
 import com.aaltus.teslaradio.subject.ScenarioEnum;
 import com.aaltus.teslaradio.subject.SubjectContent;
@@ -44,6 +46,11 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         this.tutorialSwitcher = tutorialSwitcher;
     }
 
+    private ISongManager songManager;
+    public void setSongManager(ISongManager songManager) {
+        this.songManager = songManager;
+    }
+
 
 
     private static final String TAG = "InformativeMenuFragment";
@@ -69,6 +76,9 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
         myView.findViewById(R.id.previous_scenario_button).setOnClickListener(this);
         myView.findViewById(R.id.next_scenario_button).setOnClickListener(this);
+        myView.findViewById(R.id.guitar_hit_button).setOnClickListener(this);
+        myView.findViewById(R.id.tambour_hit_button).setOnClickListener(this);
+        myView.findViewById(R.id.ipod_song_selector_button).setOnClickListener(this);
 
 
 
@@ -325,6 +335,15 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
                 break;
             case R.id.next_scenario_button:
                 this.scenarioSwitcher.setNextScenario();
+                break;
+            case R.id.guitar_hit_button:
+                this.songManager.onAudioOptionTouched(AudioOptionEnum.GUITAR);
+                break;
+            case R.id.tambour_hit_button:
+                this.songManager.onAudioOptionTouched(AudioOptionEnum.DRUM);
+                break;
+            case R.id.ipod_song_selector_button:
+                this.songManager.onAudioOptionTouched(AudioOptionEnum.IPOD);
                 break;
             /* code for when there were language button
             case R.id.camera_toggle_language_button:

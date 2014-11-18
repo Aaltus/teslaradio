@@ -53,7 +53,7 @@ button on the handset.
 
  <LinearLayout android:layout_width="match_parent"
                   android:layout_height="match_parent"
-                android:gravity="left"
+                android:gravity="right"
                 android:baselineAligned="false"
                 android:orientation="vertical"
                 android:showDividers="middle"
@@ -194,7 +194,7 @@ button on the handset.
                         android:id="@+id/item_list_fragment_vuforia"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_gravity="top"/>
 
             </LinearLayout>
 

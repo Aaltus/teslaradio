@@ -43,9 +43,12 @@ import android.widget.Toast;
 import ch.qos.logback.core.Layout;
 import com.aaltus.teslaradio.*;
 
+import com.aaltus.teslaradio.subject.AudioOptionEnum;
 import com.aaltus.teslaradio.subject.ScenarioEnum;
+import com.aaltus.teslaradio.subject.SongEnum;
 import com.aaltus.teslaradio.subject.SubjectContent;
 import com.aaltus.teslaradio.world.Scenarios.IScenarioSwitcher;
+import com.aaltus.teslaradio.world.Scenarios.ISongManager;
 import com.aaltus.teslaradio.world.Scenarios.ScenarioManager;
 import com.aaltus.teslaradio.world.Scenarios.StartScreenController;
 import com.jme3.input.event.TouchEvent;
@@ -66,6 +69,7 @@ import java.util.concurrent.Callable;
 public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implements AndroidActivityController,
         IScenarioSwitcher,
         ITutorialSwitcher,
+        ISongManager,
         VuforiaCallback,
         StartScreenController {
 
@@ -552,9 +556,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     public void onTutorialButtonClick() {
         (app).enqueue(new Callable<Object>() {
             public Object call() throws Exception {
-                ((VuforiaJME)app).onTutorialButtonClick();
+                ((VuforiaJME) app).onTutorialButtonClick();
                 return null;
-            }});
+            }
+        });
 
     }
 
@@ -612,6 +617,30 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         });
 
     }
+
+    @Override
+    public void onSetNewSong(SongEnum songEnum) {
+
+    }
+
+    @Override
+    public void onAudioOptionTouched(final AudioOptionEnum optionEnum) {
+        (app).enqueue(new Callable<Object>() {
+            public Object call() throws Exception {
+                //((VuforiaJME)app).getiScenarioManager().setScenarioByEnum(scenarioEnum);
+                ScenarioManager state = app.getStateManager().getState(ScenarioManager.class);
+                if(state != null)
+                {
+                    state.onAudioOptionTouched(optionEnum);
+
+                }
+                return null;
+            }
+        }
+        );
+    }
+
+
 
 
     /** An async task to initialize QCAR asynchronously. */
@@ -921,6 +950,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         InformativeMenuFragment fragment = new InformativeMenuFragment();
         fragment.setScenarioSwitcher(this);
         fragment.setTutorialSwitcher(this);
+        fragment.setSongManager(this);
 
         ft.replace(frameLayout1.getId(), fragment, INFORMATIVE_MENU_FRAGMENT_TAG);
         ft.hide(fragment);

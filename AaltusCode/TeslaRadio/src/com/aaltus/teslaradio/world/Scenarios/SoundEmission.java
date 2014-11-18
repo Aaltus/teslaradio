@@ -438,7 +438,7 @@ public final class SoundEmission extends Scenario {
     }
     
     @Override
-    protected void audioOptionTouch(AudioOptionEnum value){
+    protected void onAudioOptionTouched(AudioOptionEnum value){
         if(value == AudioOptionEnum.DRUM){
             this.drumTouchEffect();
         }else if(value == AudioOptionEnum.GUITAR){
