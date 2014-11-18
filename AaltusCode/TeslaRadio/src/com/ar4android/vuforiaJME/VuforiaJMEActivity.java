@@ -330,7 +330,10 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         {
             public void run()
             {
-                getInformativeMenuFragment().replaceDetailFragment(scenarioEnum);
+                if (getInformativeMenuFragment() != null) {
+                    getInformativeMenuFragment().replaceDetailFragment(scenarioEnum);
+
+                }
 
             }
         });
@@ -342,7 +345,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 new Runnable() {
                     @Override
                     public void run() {
-                        getInformativeMenuFragment().setTutorialMenu(scenarioEnum);
+                        if (getInformativeMenuFragment() != null) {
+                            getInformativeMenuFragment().setTutorialMenu(scenarioEnum);
+                        }
                     }
                 }
         );
@@ -574,7 +579,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(showAlertToast && !getInformativeMenuFragment().isChildFragmentShown()) {
+                if(showAlertToast && getInformativeMenuFragment() != null && !getInformativeMenuFragment().isChildFragmentShown()) {
 
                     LayoutInflater inflater = getLayoutInflater();
                     View layout = inflater.inflate(R.layout.toast_character_bubble,
