@@ -28,8 +28,8 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         ItemListFragment.Callbacks,
         ItemDetailFragment.OnClickDetailFragmentListener,
         ITutorialSwitcher,
-        SlidingDrawer.OnDrawerOpenListener,
-        SlidingDrawer.OnDrawerCloseListener
+        MultiDirectionSlidingDrawer.OnDrawerOpenListener,
+        MultiDirectionSlidingDrawer.OnDrawerCloseListener
 
 {
 
@@ -54,7 +54,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     private final String LANGUAGE_DIALOG_FRAGMENT_TAG = "LANGUAGE_DIALOG_FRAGMENT_TAG";
     private final String TUTORIAL_FRAGMENT_TAG = "TUTORIAL_FRAGMENT_TAG";
 
-    private SlidingDrawer drawerLayout;
+    private MultiDirectionSlidingDrawer drawerLayout;
     //private View drawerView;
 
     @Override
@@ -62,7 +62,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     {
         AppLogger.getInstance().d(TAG, "Initialize Top Layout");
         View myView  = inflater.inflate(R.layout.vuforia_jme_overlay_layout, null, false);
-        drawerLayout = (SlidingDrawer)myView.findViewById(R.id.informative_menu_drawer);
+        drawerLayout = (MultiDirectionSlidingDrawer)myView.findViewById(R.id.informative_menu_drawer);
 
         drawerLayout.setOnDrawerOpenListener(this);
         drawerLayout.setOnDrawerCloseListener(this);

@@ -25,6 +25,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Debug;
@@ -161,13 +162,17 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     public void openProgressScreen(final String title) {
 
         final Context context = this;
+        // Get the Drawable custom_progressbar
+        final Drawable draw = getResources().getDrawable(R.drawable.custom_progress_bar);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                progressDialog = new ProgressDialog(context); //Here I get an error: The constructor ProgressDialog(PFragment) is undefined
+                progressDialog = new ProgressDialog(context,R.style.CustomDialog); //Here I get an error: The constructor ProgressDialog(PFragment) is undefined
                 progressDialog.setMessage("Loading stuff...");
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 progressDialog.setTitle(title);
+                // set the drawable as progress drawable
+                progressDialog.setProgressDrawable(draw);
                 //progressDialog.setIndeterminate(true);
                 progressDialog.setCancelable(false);
                 progressDialog.show();
