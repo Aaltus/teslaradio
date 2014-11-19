@@ -309,8 +309,11 @@ public class VuforiaJMEState extends AbstractAppState implements ICameraUpdater
        if (!mSceneInitialized) {
             return;
         }
-        mCameraImage = image;
-        mNewCameraFrameAvailable = true;
+
+        if(!mNewCameraFrameAvailable) {
+            mCameraImage = image;
+            mNewCameraFrameAvailable = true;
+        }
 
     }
 
