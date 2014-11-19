@@ -1,18 +1,19 @@
 package com.aaltus.teslaradio;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.Button;
 import android.widget.SlidingDrawer;
+import android.widget.TextView;
 import com.aaltus.teslaradio.subject.AudioOptionEnum;
 import com.aaltus.teslaradio.world.Scenarios.ISongManager;
 import com.ar4android.vuforiaJME.ITutorialSwitcher;
@@ -21,6 +22,7 @@ import com.aaltus.teslaradio.subject.SubjectContent;
 import com.aaltus.teslaradio.world.Scenarios.IScenarioSwitcher;
 import com.utils.AppLogger;
 import com.utils.LanguageLocaleChanger;
+import com.utils.PagerContainer;
 
 /**
  * Created by jimbojd72 on 4/26/14.
@@ -35,6 +37,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
 {
 
+    private PagerContainer mContainer;
 
     private IScenarioSwitcher scenarioSwitcher;
     public void setScenarioSwitcher(IScenarioSwitcher scenarioSwitcher) {
@@ -80,6 +83,20 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         myView.findViewById(R.id.tambour_hit_button).setOnClickListener(this);
         myView.findViewById(R.id.ipod_song_selector_button).setOnClickListener(this);
 
+        //Initilize the pageview
+        mContainer = (PagerContainer) myView.findViewById(R.id.pager_container);
+        ViewPager pager = mContainer.getViewPager();
+        PagerAdapter adapter = new MyPagerAdapter();
+        pager.setAdapter(adapter);
+        pager.setPageTransformer(true, new ZoomOutPageTransformer());
+        //Necessary or the pager will only have one extra page to show
+        // make this at least however many pages you can see
+        pager.setOffscreenPageLimit(adapter.getCount());
+        //A little space between pages
+        pager.setPageMargin(15);
+        //If hardware acceleration is enabled, you should also remove
+        // clipping on the pager for its children.
+        pager.setClipChildren(false);
 
 
 
@@ -533,4 +550,35 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     public void onDrawerOpened() {
         toggleTutorialVisibility(false);
     }
+
+    //Nothing special about this adapter, just throwing up colored views for demo
+    private class MyPagerAdapter extends PagerAdapter {
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            TextView view = new TextView(getActivity());
+            view.setText("Item "+position);
+            view.setGravity(Gravity.CENTER);
+            view.setBackgroundColor(Color.argb(255, position * 50, position * 10, position * 50));
+
+            container.addView(view);
+            return view;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View)object);
+        }
+
+        @Override
+        public int getCount() {
+            return 5;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return (view == object);
+        }
+    }
+
 }
