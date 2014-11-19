@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.*;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import com.aaltus.teslaradio.subject.AudioOptionEnum;
@@ -556,13 +557,21 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
+            /*
             TextView view = new TextView(getActivity());
             view.setText("Item "+position);
             view.setGravity(Gravity.CENTER);
             view.setBackgroundColor(Color.argb(255, position * 50, position * 10, position * 50));
+            */
+            ImageView imageView;
+            //if(position < SubjectContent.getPictogramCount()) {
+                Integer integer = SubjectContent.ITEMS.get(position).getPictogramDrawableId();
+                imageView = new ImageView(getActivity());
+                imageView.setBackgroundResource(integer);
+            //}
 
-            container.addView(view);
-            return view;
+            container.addView(imageView);
+            return imageView;
         }
 
         @Override
@@ -572,7 +581,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
         @Override
         public int getCount() {
-            return 5;
+            return SubjectContent.getPictogramCount();
         }
 
         @Override
