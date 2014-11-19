@@ -15,7 +15,7 @@ import com.aaltus.teslaradio.*;
 /**
  * Created by jimbojd72 on 10/26/2014.
  */
-public class MasterTutorialActivity extends FragmentActivity {
+public class MasterTutorialActivity extends FragmentActivity implements MasterTutorialFragment.OnMasterTutorialListener {
 
 
     private static final String MASTER_TUTORIAL_FRAGMENT_TAG = "MASTER_TUTORIAL_FRAGMENT_TAG";
@@ -28,7 +28,8 @@ public class MasterTutorialActivity extends FragmentActivity {
 
         FragmentManager fm = getSupportFragmentManager();//sgetSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        Fragment fragment = new MasterTutorialFragment();
+        MasterTutorialFragment fragment = new MasterTutorialFragment();
+        fragment.setOnMasterTutorialListener(this);
         ft.add(R.id.master_tutorial_container, fragment, MASTER_TUTORIAL_FRAGMENT_TAG);
         ft.commit();
 
@@ -54,5 +55,18 @@ public class MasterTutorialActivity extends FragmentActivity {
         
 
 
+    }
+
+
+    @Override
+    public void onContinueEvent() {
+        Intent intent = new Intent(this,VuforiaJMEActivity.class);
+        startActivity(intent);
+        this.finish();
+    }
+
+    @Override
+    public void onExitEvent() {
+        this.finish();
     }
 }

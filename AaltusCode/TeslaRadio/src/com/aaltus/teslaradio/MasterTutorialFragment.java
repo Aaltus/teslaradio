@@ -1,11 +1,9 @@
 package com.aaltus.teslaradio;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
-import com.ar4android.vuforiaJME.VuforiaJMEActivity;
 
 /**
  * Created by jimbojd72 on 11/8/2014.
@@ -14,6 +12,18 @@ public class MasterTutorialFragment extends Fragment implements View.OnClickList
 
 
     private static final String TAG = MasterTutorialFragment.class.getSimpleName();
+
+    public interface OnMasterTutorialListener{
+
+        public void onContinueEvent();
+        public void onExitEvent();
+
+    }
+
+    public OnMasterTutorialListener onMasterTutorialListener;
+    public void setOnMasterTutorialListener(OnMasterTutorialListener onMasterTutorialListener){
+        this.onMasterTutorialListener = onMasterTutorialListener;
+    }
 
     public MasterTutorialFragment() {
         // Empty constructor required for DialogFragment
@@ -55,15 +65,18 @@ public class MasterTutorialFragment extends Fragment implements View.OnClickList
         switch (id){
 
             case R.id.master_tutorial_cancel_button:
-                this.getActivity().finish();
+                if(this.onMasterTutorialListener != null){
+                    this.onMasterTutorialListener.onExitEvent();
+                }
                 break;
             case R.id.master_tutorial_ok_button:
-                Intent intent = new Intent(this.getActivity(), VuforiaJMEActivity.class);
-                startActivity(intent);
-                getActivity().finish();
+                if(this.onMasterTutorialListener != null){
+                    this.onMasterTutorialListener.onContinueEvent();
+                }
                 break;
 
         }
     }
+
 
 }
