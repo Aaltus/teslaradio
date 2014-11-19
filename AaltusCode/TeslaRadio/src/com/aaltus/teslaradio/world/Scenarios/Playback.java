@@ -15,6 +15,7 @@ import com.aaltus.teslaradio.world.effects.LookAtCameraControl;
 import com.aaltus.teslaradio.world.effects.ParticleEmitterControl;
 import com.aaltus.teslaradio.world.effects.PatternGeneratorControl;
 import com.aaltus.teslaradio.world.effects.SoundControl;
+import com.aaltus.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.aaltus.teslaradio.world.effects.TextBox;
 import com.aaltus.teslaradio.world.observer.EmitterObserver;
 import com.jme3.collision.CollisionResults;
@@ -46,7 +47,6 @@ public final class Playback extends Scenario implements EmitterObserver {
     
     private Spatial ampliSliderButton;
     private Spatial ampliSliderBox;
-    private Spatial speaker;
     private Vector3f translationIncrement;
     private boolean isTouched = false;
     private float ampliScale = 0f;
@@ -57,13 +57,31 @@ public final class Playback extends Scenario implements EmitterObserver {
     private TextBox titleTextBox;
     
     private Node sliderArrow;
+   
+    // Scenario entry point
+    private Spatial  cableHandleIn;
     
-    private Spatial  speakerHandleOut;
-    private Spatial  speakerHandleIn;
-    private Vector3f speakerHandleOutPosition;
-    private Vector3f speakerHandleInPosition;
-    private Node     speakerEmitter;
-    private Node     speakerIn = new Node();
+    // The speakers entries
+    private Spatial speaker1HandleIn;
+    private Spatial speaker2HandleIn;
+    
+    // The splitter handle
+    private Spatial splitterHandle;
+      
+    // The speakers output handles
+    private Spatial speaker1HandleOut;
+    private Spatial speaker2HandleOut;
+    
+    // The speaker emitters
+    private Node     speakerEmitter1;
+    private Node     speakerEmitter2;
+    
+    private Spatial speaker1;
+    private Spatial speaker2;
+    
+    private Node     cableEmitter = new Node();
+    private Node     cableSpeaker1Emitter = new Node();
+    private Node     cableSpeaker2Emitter = new Node();
     
     public Playback(ScenarioCommon sc, Camera Camera, Spatial destinationHandle) {
         
@@ -86,30 +104,59 @@ public final class Playback extends Scenario implements EmitterObserver {
         mat1.setColor("Color", new ColorRGBA(0, 0, 1, 0.5f));
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         
-        speakerHandleIn = scene.getChild("Speaker.Handle.In");
-        speakerHandleIn.setName("InputSpeaker");
-        speakerHandleOut = scene.getChild("Speaker.Handle.Out");
-        speakerHandleOutPosition = speakerHandleOut.getLocalTranslation().add(scene.getLocalTranslation());
-        speakerHandleInPosition = speakerHandleIn.getLocalTranslation();
+        cableHandleIn = scene.getChild("Handle.In");
+        cableHandleIn.setName("Cableinput");
         
-        speakerEmitter = new Node();
-        speakerEmitter.setLocalTranslation(speakerHandleOutPosition);
+        splitterHandle = scene.getChild("Splitter.Handle");
+        
+        speaker1HandleIn = scene.getChild("Speaker1.Handle.In");
+        speaker2HandleIn = scene.getChild("Speaker2.Handle.In");
+        
+        speaker1HandleOut = scene.getChild("Speaker1.Handle.Out");
+        speaker2HandleOut = scene.getChild("Speaker2.Handle.Out");
+                
+        speakerEmitter1 = new Node();
+        speakerEmitter1.setLocalTranslation(speaker1HandleOut.getLocalTranslation().add(scene.getLocalTranslation()));
         Quaternion quat = new Quaternion();
         quat.fromAngleAxis(3*pi/2, Vector3f.UNIT_Z);
-        speakerEmitter.setLocalRotation(quat);
-        scene.attachChild(speakerEmitter);
+        speakerEmitter1.setLocalRotation(quat);
+        scene.attachChild(speakerEmitter1);
         
-        speakerIn = new Node();
-        speakerIn.setLocalTranslation(speakerHandleInPosition);
-        scene.attachChild(speakerIn);
+        speakerEmitter2 = new Node();
+        speakerEmitter2.setLocalTranslation(speaker2HandleOut.getLocalTranslation().add(scene.getLocalTranslation()));
+        speakerEmitter2.setLocalRotation(quat);
+        scene.attachChild(speakerEmitter2);
+               
+        Node pathIn = (Node) scene.getChild("NurbsPath.002");
+        Geometry inputCablePath = (Geometry) pathIn.getChild("NurbsPath.002");
+        inputCablePath.setCullHint(cullHint.Always);
         
-        speakerIn.addControl(new DynamicWireParticleEmitterControl(speakerEmitter, 1000f));
-        speakerEmitter.addControl(new AirParticleEmitterControl(speakerHandleOut, 10f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
-        speakerEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
-        speakerEmitter.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
-        speakerIn.getControl(ParticleEmitterControl.class).registerObserver(this);
-        speakerIn.getControl(ParticleEmitterControl.class).setEnabled(true);
+        Node pathInSpeaker1 = (Node) scene.getChild("NurbsPath");
+        Geometry inputPathSpeaker1 = (Geometry) pathInSpeaker1.getChild("NurbsPath");
+        inputCablePath.setCullHint(cullHint.Always);
         
+        Node pathInSpeaker2 = (Node) scene.getChild("NurbsPath.001");
+        Geometry inputPathSpeaker2 = (Geometry) pathInSpeaker2.getChild("NurbsPath.001");
+        inputCablePath.setCullHint(cullHint.Always);
+        
+        initParticlesEmitter(cableEmitter, cableHandleIn, inputCablePath, null);
+        initParticlesEmitter(cableSpeaker1Emitter, splitterHandle, inputPathSpeaker1, null);
+        initParticlesEmitter(cableSpeaker2Emitter, splitterHandle, inputPathSpeaker2, null);
+        
+        cableEmitter.getControl(ParticleEmitterControl.class).registerObserver(cableSpeaker1Emitter.getControl(ParticleEmitterControl.class));
+        cableEmitter.getControl(ParticleEmitterControl.class).registerObserver(cableSpeaker2Emitter.getControl(ParticleEmitterControl.class));
+        
+        speakerEmitter1.addControl(new AirParticleEmitterControl(speaker1HandleOut, 10f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
+        speakerEmitter1.getControl(ParticleEmitterControl.class).setEnabled(true);
+        speakerEmitter1.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
+        
+        speakerEmitter2.addControl(new AirParticleEmitterControl(speaker2HandleOut, 10f, 13f, mat1, AirParticleEmitterControl.AreaType.DOME));
+        speakerEmitter2.getControl(ParticleEmitterControl.class).setEnabled(true);
+        speakerEmitter2.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
+        
+        cableSpeaker1Emitter.getControl(ParticleEmitterControl.class).registerObserver(speakerEmitter1.getControl(ParticleEmitterControl.class));
+        cableSpeaker2Emitter.getControl(ParticleEmitterControl.class).registerObserver(speakerEmitter2.getControl(ParticleEmitterControl.class));
+                
         Vector3f handleSliderBegin = scene.getChild("Slider.Handle.Begin").getLocalTranslation();
         scene.getChild("Slider.Handle.Begin").setCullHint(cullHint.Always);
         Vector3f handleSliderEnd = scene.getChild("Slider.Handle.End").getLocalTranslation();
@@ -131,12 +178,17 @@ public final class Playback extends Scenario implements EmitterObserver {
         ampliSliderButton.setName("SliderButton");
         ampliSliderBox.setName("SliderBox");
         
-        speaker = scene.getChild("Box01");
-        speaker.setName("Speaker");
+        speaker1 = scene.getChild("Rectangle0");
+        speaker1.setLocalScale(0.5f);
+        speaker1.setName("Speaker1");
+        
+        speaker2 = scene.getChild("Rectangle0.003");
+        speaker2.setLocalScale(0.5f);
+        speaker2.setName("Speaker2");
         
         this.spotlight = ScenarioCommon.spotlightFactory();
         
-        touchable.attachChild(speaker);
+        touchable.attachChild(speaker1);
         touchable.attachChild(ampliSliderButton);
         touchable.attachChild(ampliSliderBox);  
         
@@ -152,6 +204,13 @@ public final class Playback extends Scenario implements EmitterObserver {
         sliderArrow.addControl(control1);
         sliderArrow.setLocalScale(2f);
         this.attachChild(sliderArrow);
+    }
+    
+    private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
+        scene.attachChild(signalEmitter);
+        signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
+        signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
     
     /**
@@ -209,8 +268,11 @@ public final class Playback extends Scenario implements EmitterObserver {
                         
                         if(nameToCompare == null){
                             break;
-                        } else if (nameToCompare.equals("Speaker")) {
-                            this.speakerTouchEffect(1f);
+                        } else if (nameToCompare.equals("Speaker1")) {
+                            this.speakerTouchEffect(1f,1);
+                            break;
+                        } else if (nameToCompare.equals("Speaker2")) {
+                            this.speakerTouchEffect(1f,2);
                             break;
                         } else if (nameToCompare.equals("SliderButton")) {
                             touchCount++;
@@ -285,7 +347,7 @@ public final class Playback extends Scenario implements EmitterObserver {
 
     @Override
     protected Spatial getInputHandle() {
-        return speakerIn;
+        return cableEmitter;
     }
 
     @Override
@@ -346,22 +408,26 @@ public final class Playback extends Scenario implements EmitterObserver {
         soundParticle.setQueueBucket(queueBucket.Opaque);
     }
     
-    public void speakerTouchEffect(float particleScale)
+    public void speakerTouchEffect(float particleScale, int speakerId)
     {
 
         // Here, we need to get the vector to the mic handle
         //Vector3f receiverHandleVector = particleLinker.GetEmitterDestinationPaths(this);
         //GuitarSoundEmitter.prepareEmeitParticles(receiverHandleVector);
-
-        this.speakerEmitter.getControl(PatternGeneratorControl.class).toggleNewWave(ampliScale * particleScale);
+        if (speakerId == 1) {
+            this.speakerEmitter1.getControl(PatternGeneratorControl.class).toggleNewWave(ampliScale * particleScale);
+        } else {
+            this.speakerEmitter2.getControl(PatternGeneratorControl.class).toggleNewWave(ampliScale * particleScale);
+        }
     }
 
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {       
         
-        if (speakerEmitter != null) {
+        if (speakerEmitter1 != null) {
             if (touchCount != 0) {
-                speakerTouchEffect(spatial.getLocalScale().length());
+                speakerTouchEffect(spatial.getLocalScale().length(),1);
+                speakerTouchEffect(spatial.getLocalScale().length(),2);
             }
         }
     }
@@ -372,7 +438,10 @@ public final class Playback extends Scenario implements EmitterObserver {
             switch(this.currentObjectToEmphasisOn) {
                 // Attach on microphone
                 case 0:
-                    this.spotlight.setLocalTranslation(speaker.getLocalTranslation().add(0.0f,-speaker.getLocalTranslation().y,0.0f));
+                    Node dummy = new Node();
+                    dummy.attachChild(speaker1);
+                    dummy.attachChild(speaker2);
+                    this.spotlight.setLocalTranslation(dummy.getLocalTranslation().add(0.0f,-dummy.getLocalTranslation().y,0.0f));
                     this.spotlight.setLocalScale(new Vector3f(5.0f,30.0f,5.0f));
                     scene.attachChild(this.spotlight);
                     break;   
