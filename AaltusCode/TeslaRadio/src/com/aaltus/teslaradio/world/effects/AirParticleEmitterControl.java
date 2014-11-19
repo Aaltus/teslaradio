@@ -33,8 +33,8 @@ import java.util.logging.Logger;
  */
 public class AirParticleEmitterControl extends ParticleEmitterControl{
     private final static String TAG = AirParticleEmitterControl.class.getSimpleName();
-    
-    
+    private final static int MAX_WAVE_NB = 3;
+
     public enum AreaType
     {
         SPHERE,
@@ -52,13 +52,12 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
     
      //The future that is used to check the execution status:
     Future future = null;
-    private List<Spatial> multiPathSpatial = null;
  
     private float threadScale;
     private Spatial threadSpatialToSend;
     private Material threadMaterialClone;
-    
-    
+
+    private List<List<Spatial>> waveParticlesList = new ArrayList<List<Spatial>>();
     
     public AirParticleEmitterControl(Spatial destinationHandle, float speed, float maxScale, Material material)
     {
@@ -82,11 +81,15 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
     @Override
     public void onParticleEndOfLife(Spatial toBeDeletedSpatial) {
         
+        // delete particle wave in the waveList when they reach the end of their path
+        if(this.waveParticlesList.size() > 0 && this.waveParticlesList.get(0).contains(toBeDeletedSpatial)){
+            this.waveParticlesList.remove(0);
+        }
+        
         // deconnect particle from this particle emitter
         toBeDeletedSpatial.removeControl(ScalingSignalControl.class);
         toBeDeletedSpatial.removeControl(SignalControl.class);
         toBeDeletedSpatial.removeFromParent();
-        
     }
     @Override
     public void onParticleReachingReceiver(Spatial toBeDeletedSpatial) {
@@ -132,13 +135,21 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
         
 
         //start thread if no thread already running (else: do nothing)
-        if(this.multiPathSpatial == null && future == null){
+        if(future == null){
             // save scale and particle for thread
             this.threadScale = scale;
             this.threadSpatialToSend = spatialToSend;
             this.threadMaterialClone = materialClone; 
             
             future = AppGetter.getThreadExecutor().submit(createMultiPathParticles);
+
+            if(this.waveParticlesList.size() >= MAX_WAVE_NB){
+                for( Spatial particle : this.waveParticlesList.get(0)){
+                    Node dummy = particle.getParent();
+                    dummy.detachChild(particle);
+                }
+                this.waveParticlesList.remove(0);
+            }
         }
 
     }
@@ -198,8 +209,9 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
         if(future != null)
         {
             if(future.isDone()){                
-                try { 
-                    this.multiPathSpatial = (List<Spatial>) future.get();
+                try {
+                    List<Spatial> multiPathSpatial = ((List<Spatial>) future.get());
+                    List<Spatial> currentParticleList = new ArrayList<Spatial>();
                     for(Spatial spatialToAttach : multiPathSpatial)
                     {
 
@@ -214,7 +226,9 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
                         }
 
                         ((Node) this.spatial).attachChild(spatialToAttach);
+                        currentParticleList.add(spatialToAttach);
                     }
+                    this.waveParticlesList.add(currentParticleList);
                 }
                 catch (InterruptedException ex)
                 {
@@ -223,11 +237,8 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
                 catch (ExecutionException ex)
                 {
                     AppLogger.getInstance().e(TAG, ex.getMessage());
-                }  
-                
-                
-                
-                multiPathSpatial = null;
+                }
+
                 future = null;
             }
         }
@@ -286,7 +297,7 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
 
                 path_vector_flat = rotQuat2.mult(path_vector_flat);
             }            
-            
+
             return multiPathParticlesList;
         }
           
