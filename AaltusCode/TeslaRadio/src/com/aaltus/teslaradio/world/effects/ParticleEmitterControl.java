@@ -68,9 +68,18 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
     // observable method to notify whoever wants to know that a particle as ended his path
     @Override
     public void notifyObservers(Spatial spatial, String notifierId) {
+        int i = 0; 
+        
         for(EmitterObserver observer : this.observerList)
         {
-            observer.emitterObserverUpdate(spatial, notifierId);
+            if (this.observerList.size()-i > 1) {
+                spatial.removeControl(SignalControl.class);
+                observer.emitterObserverUpdate(spatial.clone(), notifierId);
+            } else {
+                observer.emitterObserverUpdate(spatial, notifierId);
+            }
+            
+            i++;
         }        
     }
     
