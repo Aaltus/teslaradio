@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="GifWebView">
-        <attr name="url" format="string" />
-    </declare-styleable>
-    <declare-styleable name="CustomVideoView">
-        <attr name="uri" format="string" />
-    </declare-styleable>
-
 
     <!--For multidirectional slidingmenu-->
     <attr name="direction">
