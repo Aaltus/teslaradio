@@ -143,6 +143,9 @@ public final class Playback extends Scenario implements EmitterObserver {
         initParticlesEmitter(cableSpeaker1Emitter, splitterHandle, inputPathSpeaker1, null);
         initParticlesEmitter(cableSpeaker2Emitter, splitterHandle, inputPathSpeaker2, null);
         
+        cableSpeaker1Emitter.setName("splitterSpeaker1");
+        cableSpeaker2Emitter.setName("splitterSpeaker2");
+        
         cableEmitter.getControl(ParticleEmitterControl.class).registerObserver(cableSpeaker1Emitter.getControl(ParticleEmitterControl.class));
         cableEmitter.getControl(ParticleEmitterControl.class).registerObserver(cableSpeaker2Emitter.getControl(ParticleEmitterControl.class));
         
@@ -154,8 +157,8 @@ public final class Playback extends Scenario implements EmitterObserver {
         speakerEmitter2.getControl(ParticleEmitterControl.class).setEnabled(true);
         speakerEmitter2.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
         
-        cableSpeaker1Emitter.getControl(ParticleEmitterControl.class).registerObserver(speakerEmitter1.getControl(ParticleEmitterControl.class));
-        cableSpeaker2Emitter.getControl(ParticleEmitterControl.class).registerObserver(speakerEmitter2.getControl(ParticleEmitterControl.class));
+        cableSpeaker1Emitter.getControl(ParticleEmitterControl.class).registerObserver(this);
+        cableSpeaker2Emitter.getControl(ParticleEmitterControl.class).registerObserver(this);
                 
         Vector3f handleSliderBegin = scene.getChild("Slider.Handle.Begin").getLocalTranslation();
         scene.getChild("Slider.Handle.Begin").setCullHint(cullHint.Always);
@@ -424,11 +427,10 @@ public final class Playback extends Scenario implements EmitterObserver {
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {       
         
-        if (speakerEmitter1 != null) {
-            if (touchCount != 0) {
-                speakerTouchEffect(spatial.getLocalScale().length(),1);
-                speakerTouchEffect(spatial.getLocalScale().length(),2);
-            }
+        if (speakerEmitter1 != null && notifierId.equals("splitterSpeaker1") && touchCount != 0) {
+            speakerTouchEffect(spatial.getLocalScale().length(),1);
+        } else if (speakerEmitter2 != null && notifierId.equals("splitterSpeaker2") && touchCount != 0) {
+            speakerTouchEffect(spatial.getLocalScale().length(),2);
         }
     }
 
