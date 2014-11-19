@@ -12,6 +12,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import com.utils.AppLogger;
 
 
 /**
@@ -31,10 +32,15 @@ public class SoundControl extends AbstractControl {
     
     public SoundControl(String wavPath, boolean isStream, float volume){
         this.audio = new AudioNode(AppGetter.getAssetManager(),wavPath,isStream);
-        this.audio.setVolume(volume);
+        
         this.audio.setPositional(false);
-        this.volume = volume;
         this.volumeUsrData = AppGetter.USR_AUDIO_SCALE;
+        /*Load the sound*/
+        this.audio.setVolume(0);
+        this.playSound(false);
+        this.stopSound();
+        this.volume = volume;
+        this.audio.setVolume(volume);
     }
     /**
      * Start sound
@@ -61,6 +67,7 @@ public class SoundControl extends AbstractControl {
        
       if(this.spatial.getUserData(AppGetter.USR_NEW_WAVE_TOGGLED) ){
            float scale = this.spatial.getUserData(AppGetter.USR_NEXT_WAVE_SCALE);
+           AppLogger.getInstance().e("SoundControl", ((Float)scale).toString());
            this.audio.setVolume(scale * (this.volume ) );
            this.audio.playInstance();
            this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, false);

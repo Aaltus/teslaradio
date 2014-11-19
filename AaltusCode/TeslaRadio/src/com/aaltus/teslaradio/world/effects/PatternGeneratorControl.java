@@ -109,14 +109,16 @@ public class PatternGeneratorControl extends AbstractControl {
      * @param particlePerWave particle per wave
      */
     public void startAutoPlay(float delay, int particlePerWave){
-        if(delay < this.minWaveDelay){
-            delay = this.minWaveDelay;
-        }
-        this.particlePerAutoWave = particlePerWave;
-        this.autoWaveDelay = delay;
-        this.autoPlayThread = AppGetter.getThreadExecutor().scheduleAtFixedRate(
+        if(this.autoPlayThread == null){
+            if(delay < this.minWaveDelay){
+                delay = this.minWaveDelay;
+            }
+            this.particlePerAutoWave = particlePerWave;
+            this.autoWaveDelay = delay;
+            this.autoPlayThread = AppGetter.getThreadExecutor().scheduleAtFixedRate(
                 autoPlay,0,(long) (1000*(this.autoWaveDelay  + particlePerWave * this.minWaveDelay)),TimeUnit.MILLISECONDS);
-    }
+        }
+      }
     /**
      * Start autoplay with the minmum delay being the delay
      */
@@ -124,9 +126,6 @@ public class PatternGeneratorControl extends AbstractControl {
         this.startAutoPlay(this.minWaveDelay, particlePerWave);
     }
     
-    public void resumeAutoPlay(){
-        this.startAutoPlay(this.autoWaveDelay, this.particlePerAutoWave);
-    }
     /**
      * Stop the autoplay
      */
@@ -147,8 +146,11 @@ public class PatternGeneratorControl extends AbstractControl {
         this.geomList.clear();
         if(this.outsideList == null){
             float tmpScale = this.scaleList.get(this.waveIterator);
-            this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, true);
-            this.spatial.setUserData(AppGetter.USR_NEXT_WAVE_SCALE, tmpScale/this.maxScale);
+            if(this.autoPlayThread == null)
+            {
+                this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, true);
+                this.spatial.setUserData(AppGetter.USR_NEXT_WAVE_SCALE, tmpScale/this.maxScale);
+            }
         
             for (int i=0; i<wavesPerToggle; i++) {
                 float scale = this.scaleList.get(this.waveIterator);
@@ -164,6 +166,14 @@ public class PatternGeneratorControl extends AbstractControl {
         else{
             for(int i=0; i < wavesPerToggle;i++){
                 Spatial sp = this.outsideList.get(this.waveIterator);
+                
+                if(this.autoPlayThread == null)
+                {
+                    Float tmpScale = sp.getLocalScale().x;
+                    System.out.println(sp.getLocalScale().x);
+                    this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, true);
+                    this.spatial.setUserData(AppGetter.USR_NEXT_WAVE_SCALE, tmpScale/this.maxScale);
+                }
                 this.geomList.add(sp.clone());
                 if(++this.waveIterator == this.outsideList.size()){
                     this.waveIterator = 0;
