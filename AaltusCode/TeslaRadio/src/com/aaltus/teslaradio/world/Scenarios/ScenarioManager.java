@@ -292,7 +292,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     public void setTutorialIndex(int index){
 
         AppLogger.getInstance().d(TAG,"ScenarioManager Index: " + index);
-        ((Scenario) this.getCurrentScenario().getScenarios().get(0)).setCurrentObjectEmphasis(index);
+        ((Scenario) this.getCurrentScenario().getScenarios().get(0).getChild(0)).setCurrentObjectEmphasis(index);
 
     }
 
