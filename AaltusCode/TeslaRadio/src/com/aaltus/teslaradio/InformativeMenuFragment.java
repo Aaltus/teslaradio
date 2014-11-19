@@ -34,13 +34,16 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         ItemDetailFragment.OnClickDetailFragmentListener,
         ITutorialSwitcher,
         MultiDirectionSlidingDrawer.OnDrawerOpenListener,
-        MultiDirectionSlidingDrawer.OnDrawerCloseListener
+        MultiDirectionSlidingDrawer.OnDrawerCloseListener,
+        ViewPager.OnPageChangeListener
 
 {
 
     private PagerContainer mContainer;
 
     private IScenarioSwitcher scenarioSwitcher;
+    private ViewPager pager;
+
     public void setScenarioSwitcher(IScenarioSwitcher scenarioSwitcher) {
         this.scenarioSwitcher = scenarioSwitcher;
     }
@@ -86,7 +89,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
         //Initilize the pageview
         mContainer = (PagerContainer) myView.findViewById(R.id.pager_container);
-        ViewPager pager = mContainer.getViewPager();
+        pager = mContainer.getViewPager();
         PagerAdapter adapter = new MyPagerAdapter();
         pager.setAdapter(adapter);
         pager.setPageTransformer(true, new ZoomOutPageTransformer());
@@ -98,6 +101,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         //If hardware acceleration is enabled, you should also remove
         // clipping on the pager for its children.
         pager.setClipChildren(false);
+        pager.setOnPageChangeListener(this);
 
 
 
@@ -349,10 +353,16 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         switch (id){
 
             case R.id.previous_scenario_button:
-                this.scenarioSwitcher.setPreviousScenario();
+                //this.scenarioSwitcher.setPreviousScenario();
+                if(pager.getCurrentItem() > 0){
+                    pager.setCurrentItem(pager.getCurrentItem()-1);
+                }
                 break;
             case R.id.next_scenario_button:
-                this.scenarioSwitcher.setNextScenario();
+                if(pager.getCurrentItem() < pager.getChildCount()-1){
+                    pager.setCurrentItem(pager.getCurrentItem()+1);
+                }
+                //this.scenarioSwitcher.setNextScenario();
                 break;
             case R.id.guitar_hit_button:
                 this.songManager.onAudioOptionTouched(AudioOptionEnum.GUITAR);
@@ -552,8 +562,38 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         toggleTutorialVisibility(false);
     }
 
+    @Override
+    public void onPageScrolled(int i, float v, int i2) {}
+
+    @Override
+    public void onPageSelected(int i) {
+        if(scenarioSwitcher != null){
+            scenarioSwitcher.setScenarioByEnum(SubjectContent.ITEMS.get(i).getScenarioEnum());
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int i) {}
+
     //Nothing special about this adapter, just throwing up colored views for demo
     private class MyPagerAdapter extends PagerAdapter {
+
+        /*
+        private IScenarioSwitcher scenarioSwitcher;
+        public void setScenarioSwitcher(IScenarioSwitcher scenarioSwitcher) {
+            this.scenarioSwitcher = scenarioSwitcher;
+        }
+
+        private MyPagerAdapter(){
+
+            this(null);
+        }
+
+        private MyPagerAdapter(IScenarioSwitcher scenarioSwitcher){
+
+            this.setScenarioSwitcher(scenarioSwitcher);
+        }
+        */
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
