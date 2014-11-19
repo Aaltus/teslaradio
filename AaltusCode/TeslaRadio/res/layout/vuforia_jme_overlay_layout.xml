@@ -24,16 +24,31 @@ button on the handset.
             android:gravity="center"
             android:background="@drawable/window_layout_bg">
         <LinearLayout android:layout_height="wrap_content"
-                  android:layout_width="wrap_content">
+                  android:layout_width="wrap_content"
+                  android:layout_gravity="center">
             <ImageButton android:layout_width="50dp"
                        android:layout_height="50dp"
                        android:id="@+id/previous_scenario_button"
-                       android:background="@drawable/arrow_flipped"/>
+                       android:background="@drawable/arrow_flipped"
+                       android:layout_gravity="center"/>
+            <com.utils.PagerContainer
+                    android:id="@+id/pager_container"
+                    android:layout_width="300dp"
+                    android:layout_height="75dp"
+                    android:background="@drawable/GreyOpaque"
+                    android:layout_gravity="center">
+                <android.support.v4.view.ViewPager
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center" />
+            </com.utils.PagerContainer>
             <ImageButton android:layout_width="50dp"
                          android:layout_height="50dp"
                        android:id="@+id/next_scenario_button"
-                       android:background="@drawable/arrow"/>
+                       android:background="@drawable/arrow"
+                       android:layout_gravity="center"/>
         </LinearLayout>
+<!--
         <LinearLayout android:layout_height="wrap_content"
                   android:layout_width="wrap_content">
             <TextView android:layout_width="wrap_content"
@@ -47,7 +62,7 @@ button on the handset.
                        android:text="@string/next_scenario_button"
                        android:textColor="@color/white"/>
         </LinearLayout>
-
+-->
     </LinearLayout>
 
 
@@ -203,5 +218,7 @@ button on the handset.
 
         </com.aaltus.teslaradio.MultiDirectionSlidingDrawer>
     </FrameLayout>
+
+
 
 </FrameLayout>
