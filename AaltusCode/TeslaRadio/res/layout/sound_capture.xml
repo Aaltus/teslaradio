@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--style="@style/ImageSize"-->
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -28,9 +28,8 @@
                     android:layout_gravity="center"
                     android:src="@drawable/principe_dynamic_microphone"
                     android:adjustViewBounds="true"
-                    android:layout_width="fill_parent"
-                    android:layout_height="300dp"
-                    android:clickable="false"/>
+                    android:clickable="false"
+                    style="@style/ImageSize"/>
 
 
         <TextView
