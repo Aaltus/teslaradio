@@ -13,7 +13,7 @@ import com.aaltus.teslaradio.R;
 /**
  * Created by jimbojd72 on 10/27/2014.
  */
-public class VideoPlayerActivity extends Activity implements MediaPlayer.OnCompletionListener,MediaPlayer.OnPreparedListener,View.OnTouchListener {
+public class VideoPlayerActivity extends Activity implements MediaPlayer.OnCompletionListener,MediaPlayer.OnPreparedListener,View.OnTouchListener, View.OnClickListener {
 
     public static final String FILE_RES_ID = "fileRes";
     private VideoView mVV;
@@ -24,6 +24,8 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnCompl
 
         setContentView(R.layout.videoplayer);
 
+        findViewById(R.id.video_player_cancel_button).setOnClickListener(this);
+
         int fileRes=0;
         Bundle e = getIntent().getExtras();
         if (e!=null) {
@@ -33,7 +35,7 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnCompl
         mVV = (VideoView)findViewById(R.id.myvideoview);
         mVV.setOnCompletionListener(this);
         mVV.setOnPreparedListener(this);
-        mVV.setOnTouchListener(this);
+        //mVV.setOnTouchListener(this);
 
         if (!playFileRes(fileRes)) return;
 
@@ -80,5 +82,18 @@ public class VideoPlayerActivity extends Activity implements MediaPlayer.OnCompl
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.setLooping(true);
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()){
+
+            case R.id.video_player_cancel_button:
+                stopPlaying();
+                break;
+
+        }
+
     }
 }
