@@ -21,6 +21,7 @@ package com.ar4android.vuforiaJME;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -101,6 +102,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     private static final String NATIVE_LIB_SAMPLE = "VuforiaNative";
     private static final String NATIVE_LIB_QCAR = "Vuforia";
 
+    private boolean openStartScreen = false;
+
     private VuforiaCaller vuforiaCaller;
     private ProgressDialog progressDialog;
 
@@ -128,6 +131,14 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             public void run() {
                 Log.d(TAG, "Show start screen dialog");
                 FragmentManager fm = getSupportFragmentManager();
+
+                fm.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                    @Override
+                    public void onBackStackChanged() {
+                        if(getFragmentManager().getBackStackEntryCount() == 0) finish();
+                    }
+                });
+
                 StartScreenDialogFragment startScreenDialogFragment =
                         new StartScreenDialogFragment();
                 startScreenDialogFragment.setCancelable(false);
@@ -640,7 +651,16 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         );
     }
 
+    @Override
+    public void openCreditsScreen() {
+        Intent intent = new Intent(this, CreditsActivity.class);
+        startActivity(intent);
+    }
 
+    @Override
+    public void dismissCreditsScreen() {
+
+    }
 
 
     /** An async task to initialize QCAR asynchronously. */
@@ -1135,6 +1155,14 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     public void onResume() {
         AppLogger.getInstance().i(TAG, "onResume");
     	super.onResume();
+
+        Intent i = this.getIntent();
+        this.onNewIntent(i);
+        Bundle extras = i.getExtras();
+        if (extras != null) {
+            Log.d("TAG","Chat");
+            openStartScreen = extras.getBoolean("openStartScreen");
+        }
     	
     	// make sure the AndroidGLSurfaceView view is on top of the view
 		// hierarchy
@@ -1144,7 +1172,20 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             pauseQCARandTasks(false);
         }
 
+        if(this.openStartScreen) { 
+            ((VuforiaJME)app).openStartScreen();
+            openStartScreen = false;
+        }
 
+
+    }
+
+    @Override
+    public void onNewIntent(Intent intent)
+    {
+        super.onNewIntent(intent);
+
+        setIntent(intent);
     }
 
     private void resumeQCARandTasks() {

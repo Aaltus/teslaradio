@@ -11,22 +11,17 @@ import com.aaltus.teslaradio.world.effects.LookAtCameraControl;
 import com.aaltus.teslaradio.world.effects.ParticleEmitterControl;
 import com.aaltus.teslaradio.world.effects.PatternGeneratorControl;
 import com.aaltus.teslaradio.world.effects.TextBox;
-import com.ar4android.vuforiaJME.AppGetter;
 import com.aaltus.teslaradio.world.observer.AutoGenObserver;
 import com.aaltus.teslaradio.world.observer.EmitterObserver;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.*;
 import com.jme3.renderer.Camera;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.utils.AppLogger;
 
 /**
  *

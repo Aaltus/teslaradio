@@ -1,36 +1,31 @@
 package com.ar4android.vuforiaJME;
 
-
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
-import com.aaltus.teslaradio.*;
+import com.aaltus.teslaradio.CreditsFragment;
+import com.aaltus.teslaradio.R;
+import com.aaltus.teslaradio.world.Scenarios.IStartScreen;
 
 /**
- * Created by jimbojd72 on 10/26/2014.
+ * Created by Batcave on 14-11-19.
  */
-public class MasterTutorialActivity extends FragmentActivity implements MasterTutorialFragment.OnMasterTutorialListener {
+public class CreditsActivity extends FragmentActivity {
 
-
-    private static final String MASTER_TUTORIAL_FRAGMENT_TAG = "MASTER_TUTORIAL_FRAGMENT_TAG";
+    private static final String CREDITS_FRAGMENT = "CREDITS_FRAGMENT";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.master_tutorial_activity_layout);
+        setContentView(R.layout.credits_layout_activity);
 
-        FragmentManager fm = getSupportFragmentManager(); //getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();// getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        MasterTutorialFragment fragment = new MasterTutorialFragment();
-        fragment.setOnMasterTutorialListener(this);
-        ft.add(R.id.master_tutorial_container, fragment, MASTER_TUTORIAL_FRAGMENT_TAG);
+        CreditsFragment fragment = new CreditsFragment();
+        ft.add(R.id.credits_fragment_container, fragment, CREDITS_FRAGMENT);
         ft.commit();
 
         /*
@@ -51,22 +46,15 @@ public class MasterTutorialActivity extends FragmentActivity implements MasterTu
         }
         */
 
-
-        
-
-
-    }
-
-
-    @Override
-    public void onContinueEvent() {
-        Intent intent = new Intent(this,VuforiaJMEActivity.class);
-        startActivity(intent);
-        this.finish();
     }
 
     @Override
-    public void onExitEvent() {
-        this.finish();
+    public void onBackPressed() {
+
+        Intent openMainActivity= new Intent(this, VuforiaJMEActivity.class);
+        openMainActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        openMainActivity.putExtra("openStartScreen",true);
+        this.startActivity(openMainActivity);
+
     }
 }

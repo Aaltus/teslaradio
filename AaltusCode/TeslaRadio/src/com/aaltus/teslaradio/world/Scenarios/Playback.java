@@ -6,15 +6,12 @@ package com.aaltus.teslaradio.world.Scenarios;
 
 import static com.aaltus.teslaradio.world.Scenarios.Scenario.DEBUG_ANGLE;
 
-import com.ar4android.vuforiaJME.AppGetter;
 import com.aaltus.teslaradio.world.effects.AirParticleEmitterControl;
 import com.aaltus.teslaradio.world.effects.Arrows;
-import com.aaltus.teslaradio.world.effects.DynamicWireParticleEmitterControl;
 import com.aaltus.teslaradio.world.effects.FadeControl;
 import com.aaltus.teslaradio.world.effects.LookAtCameraControl;
 import com.aaltus.teslaradio.world.effects.ParticleEmitterControl;
 import com.aaltus.teslaradio.world.effects.PatternGeneratorControl;
-import com.aaltus.teslaradio.world.effects.SoundControl;
 import com.aaltus.teslaradio.world.effects.StaticWireParticleEmitterControl;
 import com.aaltus.teslaradio.world.effects.TextBox;
 import com.aaltus.teslaradio.world.observer.EmitterObserver;

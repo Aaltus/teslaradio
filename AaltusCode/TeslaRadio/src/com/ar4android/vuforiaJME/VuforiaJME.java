@@ -182,6 +182,8 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
         androidActivityController.showInformativeMenu();
 
+        androidActivityController.dismissCreditsScreen();
+
         startScreenState.closeStartMenu();
 
         stopDevFramework();
@@ -197,6 +199,8 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
         androidActivityController.showInformativeMenu();
 
+        androidActivityController.dismissCreditsScreen();
+
         startScreenState.closeStartMenu();
 
         stopScenarioManagerForVuforiaJMEState();
@@ -210,6 +214,17 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
     @Override
     public void startCredits() {
 
+        androidActivityController.hideInformativeMenu();
+
+        startScreenState.closeStartMenu();
+
+        stopScenarioManagerForVuforiaJMEState();
+
+        stopVuforiaJMEState();
+
+        stopDevFramework();
+
+        androidActivityController.openCreditsScreen();
     }
 
     @Override

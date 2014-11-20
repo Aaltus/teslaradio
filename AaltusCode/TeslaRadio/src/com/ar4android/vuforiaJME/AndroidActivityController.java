@@ -11,7 +11,8 @@ public interface AndroidActivityController extends IStartScreen,
         IInformativeMenu,
         ITrackingController,
         ITutorialMenu,
-        ITrackableAlertToast{
+        ITrackableAlertToast,
+        ICredits {
 
     public void dismissAndroidSplashScreen();
 
