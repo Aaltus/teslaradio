@@ -36,6 +36,7 @@
     <string name="filterp1">On se souvient qu’à la transmission, on envoie notre signal avec une porteuse. Chaque station radio a sa propre porteuse, et par conséquent, sa propre fréquence d’opération. L’utilisation de ces porteuses permet le choix de plusieurs stations radio sans que les ondes radio émises par chacune de celles-ci s’interfèrent.\n\nComment fait-on pour différencier deux stations radio entre elles?\n\nÉvidemment pour sélectionner un poste de radio, on utilise un bouton pour passer d’un poste à un autre. Cependant, derrière ce bouton, un mécanisme bien spécifique se produit : le filtrage. Le filtrage permet de sélectionner une plage de fréquence et de rejeter les fréquences non voulues. La conséquence de cette opération est de conserver la porteuse voulue et de rejeter les autres. Bien que l’on voie dans le monde 3D un signal entrant directement dans le filtre, il faut noter que dans la réalité d’autres étapes mineures sont effectuées avant ce filtrage.</string>
     <string name="demodulationp1">Pour quelle raison démodule-t-on le signal?\n\nLe filtrage n’est pas l’opération qui permettra de retrouver le signal original provenant du microphone. Le filtrage permet uniquement de sélectionner un poste de radio par rapport à un autre. Il est nécessaire de faire l’inverse de la modulation, c’est-à-dire la démodulation, afin de retrouver le signal de départ (produit par le microphone). Si on suit l’analogie des formes géométriques, on extrait le signal de la porteuse. Dans un monde idéal, le signal qui ressort du démodulateur est identique à celui créé par le microphone. Donc, il reste à traduire ce signal électrique en un signal sonore afin de retrouver le son émis par le tambour et la guitare.</string>
     <string name="playbackp1">Une fois que la plage de fréquence voulue est conservée et que le signal électrique produit par le microphone est retrouvé par la démodulation, il reste à transformer ce signal électrique en un signal sonore. Pour ce faire, on utilise des hautparleurs. Le fonctionnement de ces hautparleurs est similaire à celui d’un microphone dans la majorité des cas. Une bobine attachée à un diaphragme entoure un aimant. Le passage d’un courant électrique dans la bobine la fera bouger rapidement par la présence d’un champ magnétique créé par l’aimant. Le déplacement rapide de ce diaphragme provoquera à son tour les zones de compression et de raréfaction de pression qui constitue le son entendu.\n\nPour mettre en mouvement la bobine, il est nécessaire d’avoir un courant électrique. Il se trouve que ce courant doit être suffisamment élevé pour que vous puissiez entendre un son quelconque. Il faut alors préalablement amplifier ce signal électrique avant de le convertir en un signal sonore. Comme vu précédemment, les transistors permettront cette amplification. Les tubes électroniques sont de moins en moins utilisés pour les amplificateurs audio à cause des progrès faits avec les transistors. Finalement, lorsque vous augmentez le volume de votre radio, vous augmentez en réalité le signal électrique et par conséquent le signal sonore.</string>
+    <string name="reference">[1] Bai, P. (2009). Advancing Moore\'s law: challenges and opportunities. Dans 2009 IEEE 8th International Conference on ASIC (ASICON). IEEE, Piscataway, NJ, USA, p. 7-8.\n\n[2] Benson, H. (2009).<i>Physique: Électricité et magnétisme</i>,volume 2, 4e édition. ERPI, 534 p.\n\n[3] Benson, H. (2009).<i>Physique: Ondes, optique et physique moderne</i>, volume 3, 4e édition. ERPI, 518 p.\n\n[4] Dixon, R. C. (1998).<i>Radio receiver design</i>. Marcel Dekker, 474 p.\n\n[5] Dye, N. et Granberg, H. (2001).<i>Radio frequency transistors: principles and practical applications</i>, 2e édition. Newnes, 320 p.\n\n[6] Eargle, J. (2005).<i>The Microphone Book: From mono to stereo to surround - a guide to microphone design and application</i>, 2e édition. Elsevier, 377 p.\n\n[7] Hood, J. L. (1997).<i>Valve and transistor audio amplifiers</i>. Newnes, 208 p.\n\n[8] Huber, D. M. et Runstein, R. E. (2013).<i>Modern recording techniques</i>, 8e édition. Focal Press, 672 p.\n\n[9] Lojek, B. (2007).<i>History of semiconductor engineering</i>. Springer, 401 p.\n\n[10] Paul, C. R. (2004).<i>Electromagnetics for engineers: with applications to digital systems and electromagnetic interference</i>. Wiley, 424 p.\n\n[11] Rossing, T. D. (2007).<i>Springer Handbook of acoustics</i>. Springer, 1182 p.\n\n[12] Sunquist, M. et Sunquist, F. (2002).<i>Wild cats of the world</i>. University of Chicago Press, 462 p.\n\n[13] Tashev, I. (2009).<i>Sound capture and processing: practical approaches</i>. Wiley, 388 p.\n\n[14] Thompson, D. (2005).<i>Understanding Audio: Getting the Most Out of Your Project or Professional Recording Studio</i>. Berklee Press, 368 p.\n\n[15] Whitaker, J. et Benson, B. (2002).<i>Standard handbook of audio and radio engineering</i>, 2e édition. McGraw-Hill, 1100 p.\n\n[16] Whitaker, J. (2005).<i>The electronics handbook</i>, 2e édition. CRC Press, 2640 p.\n\n[17] Whitaker, J. (2002).<i>The RF transmission systems handbook</i>. CRC Press, 504 p.\n\n</string>
 
 
     <!--ACRA string-->
@@ -100,10 +101,35 @@
     <string name="screen_tutorial_button">Tutoriel</string>
     <string name="screen_credits_button">Crédits</string>
     <string name="screen_exit_button">Quitter</string>
-    <string name="toast_no_trackable_seen">Pointes sur les cibles!</string>
+    <string name="toast_no_trackable_seen">Pointe sur les cibles!</string>
     <string name="master_tutorial_ok_button">Continuer</string>
     <string name="master_tutorial_cancel_button">Quitter</string>
     <string name="previous_scenario_button">Previous</string>
     <string name="next_scenario_button">Next</string>
+
+    <!--Credits strings-->
+    <string name="Credits">Crédits</string>
+    <string name="Aaltus">Aaltus</string>
+    <string name="Responsable">Responsable du produit</string>
+    <string name="Émilien">Émilien Boisvert</string>
+    <string name="David">David De Grandpré</string>
+    <string name="Programmeurs">Programmeurs</string>
+    <string name="Hugo">Hugo Deschamps</string>
+    <string name="Jonathan">Jonathan Desmarais</string>
+    <string name="Alexandre">Alexandre Hamel</string>
+    <string name="JC">Jean-Christophe Lavoie</string>
+    <string name="Thibault">Thibault Mainand</string>
+    <string name="Christian">Christian Methot</string>
+    <string name="Recherchiste">Recherchiste</string>
+    <string name="Simon">Simon Landry</string>
+    <string name="Artiste">Artiste</string>
+    <string name="Jérémy">Jérémy Vaucher</string>
+    <string name="Correctrice">Correctrice</string>
+    <string name="Mélissa">Mélissa Gilbert</string>
+    <string name="Photographe">Photographe</string>
+    <string name="Laurens">Laurens Coderre</string>
+    <string name="Professeurs">Professeurs</string>
+    <string name="Ahmed">Ahmed Khoumsi</string>
+    <string name="Ruben">Ruben Gonzalez-Rubio</string>
 
 </resources>

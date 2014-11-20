@@ -91,7 +91,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         //startScreenState = new ScreenState(this, this);
         //this.getStateManager().attach(startScreenState);
         //this.getFlyByCamera().setDragToRotate(true);
-        this.androidActivityController.openProgressScreen("Chargement des resources...");
+        this.androidActivityController.openProgressScreen("Chargement des ressources...");
         startLoading();
         startScreenState = androidActivityController;
         startScreenState.openStartMenu();

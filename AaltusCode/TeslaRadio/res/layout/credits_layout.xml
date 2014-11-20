@@ -4,19 +4,123 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
-    <LinearLayout android:layout_width="fill_parent"
-                  android:layout_height="fill_parent"
-                  android:orientation="vertical">
+    <TableLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical"
+                  style="@style/InformativeMenuTextStyle">
 
         <TextView android:layout_width="wrap_content"
                   android:layout_height="fill_parent"
-                  android:text="Alexandre Hamel - Shambbala Troll Shaman lvl 100"/>
+                  android:layout_gravity="center"
+                  android:textSize="30sp"
+                  android:paddingBottom="5dp"
+                  android:text="@string/Credits"/>
 
         <TextView android:layout_width="wrap_content"
                   android:layout_height="fill_parent"
-                  android:text="David Dubois DeGrandpré - Skorgak Orc Rogue lvl 94"/>
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Responsable"/>
 
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Émilien"/>
 
-    </LinearLayout>
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/David"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Programmeurs"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Hugo"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Jonathan"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Alexandre"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/JC"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Thibault"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Christian"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Recherchiste"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Simon"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Artiste"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Jérémy"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Correctrice"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Mélissa"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Photographe"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Laurens"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Professeurs"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Ahmed"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Ruben"/>
+
+    </TableLayout>
 
 </ScrollView>
