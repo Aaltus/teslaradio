@@ -21,6 +21,7 @@ public class DrumGuitarSoundControl extends SoundControl {
         this.guitar = new AudioNode(AppGetter.getAssetManager(),"Sounds/guitar.wav");
         this.drum = new AudioNode(AppGetter.getAssetManager(),"Sounds/drum_taiko.wav");
         this.audio = guitar;
+        this.volume = 3;
     }
     
     public void setNextInstrument(AudioOptionEnum newInstrument){

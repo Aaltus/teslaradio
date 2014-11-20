@@ -254,6 +254,7 @@ public abstract class Scenario extends Node implements SignalObserver {
 
     protected void onAudioOptionTouched(AudioOptionEnum value){
         Spatial handler = this.getInputHandle();
+        AppLogger.getInstance().e("AudioTouched", value.toString());
         if(handler != null){
            DrumGuitarSoundControl dgsc =  handler.getControl(DrumGuitarSoundControl.class);
            PatternGeneratorControl pgc = handler.getControl(PatternGeneratorControl.class);
@@ -264,6 +265,7 @@ public abstract class Scenario extends Node implements SignalObserver {
                default:
                    this.stopAutoGeneration();
                    dgsc.setNextInstrument(value);
+                   dgsc.setEnabled(true);
                    pgc.toggleNewWave(1);
            }
         }

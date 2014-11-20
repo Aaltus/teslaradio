@@ -1,18 +1,20 @@
 package com.aaltus.teslaradio;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SlidingDrawer;
+import android.widget.TextView;
 import com.aaltus.teslaradio.subject.AudioOptionEnum;
 import com.aaltus.teslaradio.world.Scenarios.ISongManager;
 import com.ar4android.vuforiaJME.ITutorialSwitcher;
@@ -21,6 +23,7 @@ import com.aaltus.teslaradio.subject.SubjectContent;
 import com.aaltus.teslaradio.world.Scenarios.IScenarioSwitcher;
 import com.utils.AppLogger;
 import com.utils.LanguageLocaleChanger;
+import com.utils.PagerContainer;
 
 /**
  * Created by jimbojd72 on 4/26/14.
@@ -31,12 +34,16 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         ItemDetailFragment.OnClickDetailFragmentListener,
         ITutorialSwitcher,
         MultiDirectionSlidingDrawer.OnDrawerOpenListener,
-        MultiDirectionSlidingDrawer.OnDrawerCloseListener
+        MultiDirectionSlidingDrawer.OnDrawerCloseListener,
+        ViewPager.OnPageChangeListener
 
 {
 
+    private PagerContainer mContainer;
 
     private IScenarioSwitcher scenarioSwitcher;
+    private ViewPager pager;
+
     public void setScenarioSwitcher(IScenarioSwitcher scenarioSwitcher) {
         this.scenarioSwitcher = scenarioSwitcher;
     }
@@ -80,6 +87,21 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         myView.findViewById(R.id.tambour_hit_button).setOnClickListener(this);
         myView.findViewById(R.id.ipod_song_selector_button).setOnClickListener(this);
 
+        //Initilize the pageview
+        mContainer = (PagerContainer) myView.findViewById(R.id.pager_container);
+        pager = mContainer.getViewPager();
+        PagerAdapter adapter = new MyPagerAdapter();
+        pager.setAdapter(adapter);
+        pager.setPageTransformer(true, new ZoomOutPageTransformer());
+        //Necessary or the pager will only have one extra page to show
+        // make this at least however many pages you can see
+        pager.setOffscreenPageLimit(adapter.getCount());
+        //A little space between pages
+        pager.setPageMargin(15);
+        //If hardware acceleration is enabled, you should also remove
+        // clipping on the pager for its children.
+        pager.setClipChildren(false);
+        pager.setOnPageChangeListener(this);
 
 
 
@@ -331,10 +353,16 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         switch (id){
 
             case R.id.previous_scenario_button:
-                this.scenarioSwitcher.setPreviousScenario();
+                //this.scenarioSwitcher.setPreviousScenario();
+                if(pager.getCurrentItem() > 0){
+                    pager.setCurrentItem(pager.getCurrentItem()-1);
+                }
                 break;
             case R.id.next_scenario_button:
-                this.scenarioSwitcher.setNextScenario();
+                if(pager.getCurrentItem() < pager.getChildCount()-1){
+                    pager.setCurrentItem(pager.getCurrentItem()+1);
+                }
+                //this.scenarioSwitcher.setNextScenario();
                 break;
             case R.id.guitar_hit_button:
                 this.songManager.onAudioOptionTouched(AudioOptionEnum.GUITAR);
@@ -533,4 +561,73 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     public void onDrawerOpened() {
         toggleTutorialVisibility(false);
     }
+
+    @Override
+    public void onPageScrolled(int i, float v, int i2) {}
+
+    @Override
+    public void onPageSelected(int i) {
+        if(scenarioSwitcher != null){
+            scenarioSwitcher.setScenarioByEnum(SubjectContent.ITEMS.get(i).getScenarioEnum());
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int i) {}
+
+    //Nothing special about this adapter, just throwing up colored views for demo
+    private class MyPagerAdapter extends PagerAdapter {
+
+        /*
+        private IScenarioSwitcher scenarioSwitcher;
+        public void setScenarioSwitcher(IScenarioSwitcher scenarioSwitcher) {
+            this.scenarioSwitcher = scenarioSwitcher;
+        }
+
+        private MyPagerAdapter(){
+
+            this(null);
+        }
+
+        private MyPagerAdapter(IScenarioSwitcher scenarioSwitcher){
+
+            this.setScenarioSwitcher(scenarioSwitcher);
+        }
+        */
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            /*
+            TextView view = new TextView(getActivity());
+            view.setText("Item "+position);
+            view.setGravity(Gravity.CENTER);
+            view.setBackgroundColor(Color.argb(255, position * 50, position * 10, position * 50));
+            */
+            ImageView imageView;
+            //if(position < SubjectContent.getPictogramCount()) {
+                Integer integer = SubjectContent.ITEMS.get(position).getPictogramDrawableId();
+                imageView = new ImageView(getActivity());
+                imageView.setBackgroundResource(integer);
+            //}
+
+            container.addView(imageView);
+            return imageView;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View)object);
+        }
+
+        @Override
+        public int getCount() {
+            return SubjectContent.getPictogramCount();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return (view == object);
+        }
+    }
+
 }

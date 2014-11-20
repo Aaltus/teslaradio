@@ -9,6 +9,7 @@ import com.aaltus.teslaradio.subject.SongEnum;
 import com.aaltus.teslaradio.world.effects.NoiseControl;
 import com.aaltus.teslaradio.world.effects.BackgroundSoundControl;
 import com.jme3.scene.Node;
+import com.utils.AppLogger;
 
 import java.util.EnumMap;
 
@@ -18,7 +19,9 @@ import java.util.EnumMap;
  */
 public class SongManager {
     private EnumMap songMap;
-    private Node audioNode;
+    private Node audioNode; 
+    private boolean audioPlaying;
+    private SongEnum selectedSong;
     
     
     public SongManager(){
@@ -32,7 +35,7 @@ public class SongManager {
         songMap.put(SongEnum.ELEK, song2);
         songMap.put(SongEnum.ROCK,song3);
         songMap.put(SongEnum.NOISE, noise);
-        songMap.put(SongEnum.SELECTED, song2 );
+        selectedSong = SongEnum.CLASSIC;
         
         audioNode = new Node();
         audioNode.addControl(noise);
@@ -40,13 +43,17 @@ public class SongManager {
         audioNode.addControl(song2);
         audioNode.addControl(song3);
         
-        song1.setEnabled(false);
-        song2.setEnabled(true);
+        song1.setEnabled(true);
+        song2.setEnabled(false);
         song3.setEnabled(false);
         
         noise.updateNoiseLevel(0);
         this.audioNode.setUserData(AppGetter.USR_NOISE_LEVEL, 0f);
         this.audioNode.setUserData(AppGetter.USR_AUDIO_SCALE, 1f);
+        
+        this.audioPlaying = false;
+        
+   
     }
     
     public Node getAudioNode(){
@@ -58,26 +65,30 @@ public class SongManager {
     }
     
     public void setNewSong(SongEnum value){
-        BackgroundSoundControl current = (BackgroundSoundControl)songMap.get(SongEnum.SELECTED);
+        BackgroundSoundControl current = (BackgroundSoundControl)songMap.get(this.selectedSong);
         current.stopSound();
         current.setEnabled(false);
         
         BackgroundSoundControl newSound = (BackgroundSoundControl) songMap.get(value);
-        newSound.playSound(true);
+        if(this.audioPlaying){
+            newSound.playSound(true);
+        }
         newSound.setEnabled(true);
         
-        songMap.put(SongEnum.SELECTED, newSound);
+       this.selectedSong = value;
         
     }
     
     public void stopSong(){
-        ((BackgroundSoundControl)songMap.get(SongEnum.SELECTED)).stopSound();
+        ((BackgroundSoundControl)songMap.get(this.selectedSong)).stopSound();
         ((BackgroundSoundControl)songMap.get(SongEnum.NOISE)).stopSound();
+        this.audioPlaying = false;
     }
      
     public void playSong(){
-        ((BackgroundSoundControl)songMap.get(SongEnum.SELECTED)).playSound(true);
+        ((BackgroundSoundControl)songMap.get(this.selectedSong)).playSound(true);
         ((BackgroundSoundControl)songMap.get(SongEnum.NOISE)).playSound(true);
+        this.audioPlaying = true;
     }
     
     public void playSong(SongEnum value){
@@ -85,5 +96,31 @@ public class SongManager {
         ((BackgroundSoundControl)songMap.get(SongEnum.NOISE)).playSound(true);
     }
     
+    public void ipodTouched(){
+          if(this.audioPlaying){
+              this.nextSong();
+          }else{
+              this.playSong();
+          }
+    }
     
+    
+    private void nextSong(){
+        SongEnum newSong;
+        switch(this.selectedSong){
+            case ROCK:
+                newSong = SongEnum.CLASSIC;
+                break;
+            case ELEK:
+                newSong = SongEnum.ROCK;
+                break;
+            case CLASSIC:
+                newSong = SongEnum.ELEK;
+                break;
+            default:
+                newSong = SongEnum.ELEK;
+        }
+        this.setNewSong(newSong);
+        
+    }
 }
