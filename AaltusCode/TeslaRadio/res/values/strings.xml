@@ -107,4 +107,29 @@
     <string name="previous_scenario_button">Previous</string>
     <string name="next_scenario_button">Next</string>
 
+    <!--Credits strings-->
+    <string name="Credits">Crédits</string>
+    <string name="Aaltus">Aaltus</string>
+    <string name="Responsable">Responsable du produit</string>
+    <string name="Émilien">Émilien Boisvert</string>
+    <string name="David">David De Grandpré</string>
+    <string name="Programmeurs">Programmeurs</string>
+    <string name="Hugo">Hugo Deschamps</string>
+    <string name="Jonathan">Jonathan Desmarais</string>
+    <string name="Alexandre">Alexandre Hamel</string>
+    <string name="JC">Jean-Christophe Lavoie</string>
+    <string name="Thibault">Thibault Mainand</string>
+    <string name="Christian">Christian Methot</string>
+    <string name="Recherchiste">Recherchiste</string>
+    <string name="Simon">Simon Landry</string>
+    <string name="Artiste">Artiste</string>
+    <string name="Jérémy">Jérémy Vaucher</string>
+    <string name="Correctrice">Correctrice</string>
+    <string name="Mélissa">Mélissa Gilbert</string>
+    <string name="Photographe">Photographe</string>
+    <string name="Laurens">Laurens Coderre</string>
+    <string name="Professeurs">Professeurs</string>
+    <string name="Ahmed">Ahmed Khoumsi</string>
+    <string name="Ruben">Ruben Gonzalez-Rubio</string>
+
 </resources>
