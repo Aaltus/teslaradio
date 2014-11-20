@@ -17,15 +17,23 @@ button on the handset.
 
 
     <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:gravity="center"
-            android:background="@drawable/window_layout_bg">
+            >
+        <View android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              />
+
         <LinearLayout android:layout_height="wrap_content"
-                  android:layout_width="wrap_content"
-                  android:layout_gravity="center">
+                  android:layout_width="0dp"
+                  android:layout_weight="1"
+                  android:layout_gravity="bottom"
+                  android:background="@drawable/window_layout_bg">
+
             <ImageButton android:layout_width="50dp"
                        android:layout_height="50dp"
                        android:id="@+id/previous_scenario_button"
@@ -33,7 +41,8 @@ button on the handset.
                        android:layout_gravity="center"/>
             <com.utils.PagerContainer
                     android:id="@+id/pager_container"
-                    android:layout_width="300dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="75dp"
                     android:background="@drawable/GreyOpaque"
                     android:layout_gravity="center">
@@ -47,6 +56,7 @@ button on the handset.
                        android:id="@+id/next_scenario_button"
                        android:background="@drawable/arrow"
                        android:layout_gravity="center"/>
+
         </LinearLayout>
 <!--
         <LinearLayout android:layout_height="wrap_content"
@@ -188,7 +198,8 @@ button on the handset.
                 android:orientation="horizontal"
                 my:direction="leftToRight"
                 my:handle="@+id/handle"
-                my:content="@+id/content">
+                my:content="@+id/content"
+                my:topOffset="0dp">
 
             <ImageView
                     android:id="@id/handle"
