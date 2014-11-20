@@ -18,6 +18,8 @@
 
 package com.ar4android.vuforiaJME;
 
+import com.aaltus.teslaradio.subject.AudioOptionEnum;
+import com.aaltus.teslaradio.subject.SongEnum;
 import com.aaltus.teslaradio.world.Scenarios.*;
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
@@ -160,6 +162,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
     public void onBackButton(){
 
         if(!startScreenState.isStartMenuShown()){
+            this.androidActivityController.onAudioOptionTouched(AudioOptionEnum.NOSOUND);
             openStartScreen();
         }
         else{

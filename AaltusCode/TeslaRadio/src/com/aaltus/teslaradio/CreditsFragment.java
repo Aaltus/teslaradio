@@ -4,13 +4,27 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Batcave on 14-11-19.
+ * Code taken from https://github.com/blessenm/AndroidAutoScrollListView/blob/master/src/com/blessan/VerticalSlideshow.java
  */
 public class CreditsFragment extends Fragment {
 
     private static final String TAG = CreditsFragment.class.getSimpleName();
+
+    private LinearLayout verticalOuterLayout;
+    private ScrollView verticalScrollview;
+    private int verticalScrollMax;
+    private Timer scrollTimer		=	null;
+    private TimerTask scrollerSchedule;
+    private int scrollPos =	0;
+    private TimerTask clickSchedule;
 
     public CreditsFragment() {
         // Empty constructor required for DialogFragment
@@ -29,9 +43,94 @@ public class CreditsFragment extends Fragment {
 
         Log.i(TAG, "onCreateView");
 
-        View view = inflater.inflate(R.layout.credits_layout, container,false);
+        View view = inflater.inflate(R.layout.credits_layout, container, false);
+
+        verticalScrollview  =   (ScrollView) view.findViewById(R.id.credits_scroller);
+        verticalOuterLayout =	(LinearLayout) view.findViewById(R.id.credits_layout);
+
+        ViewTreeObserver vto 		=	verticalOuterLayout.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                verticalOuterLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                getScrollMaxAmount();
+                startAutoScrolling();
+            }
+        });
 
         return view;
+
     }
 
+    @Override
+    public void onDestroy(){
+        clearTimerTaks(clickSchedule);
+        clearTimerTaks(scrollerSchedule);
+        clearTimers(scrollTimer);
+
+        clickSchedule         = null;
+        scrollerSchedule      = null;
+        scrollTimer           = null;
+
+        super.onDestroy();
+    }
+
+    private void clearTimers(Timer timer){
+        if(timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+    }
+
+    private void clearTimerTaks(TimerTask timerTask){
+        if(timerTask != null) {
+            timerTask.cancel();
+            timerTask = null;
+        }
+    }
+
+    public void getScrollMaxAmount(){
+        int actualWidth = (verticalOuterLayout.getMeasuredHeight()-(256*3));
+        verticalScrollMax   = actualWidth;
+    }
+
+    public void startAutoScrolling(){
+        if (scrollTimer == null) {
+            scrollTimer					=	new Timer();
+            final Runnable Timer_Tick 	= 	new Runnable() {
+                public void run() {
+                    moveScrollView();
+                }
+            };
+
+            if(scrollerSchedule != null){
+                scrollerSchedule.cancel();
+                scrollerSchedule = null;
+            }
+            scrollerSchedule = new TimerTask(){
+                @Override
+                public void run(){
+                    getActivity().runOnUiThread(Timer_Tick);
+                }
+            };
+
+            scrollTimer.schedule(scrollerSchedule, 30, 30);
+        }
+    }
+
+    public void moveScrollView(){
+        scrollPos							= 	(int) (verticalScrollview.getScrollY() + 1.0);
+        if(scrollPos >= verticalScrollMax){
+            scrollPos						=	0;
+        }
+        verticalScrollview.scrollTo(0,scrollPos);
+        Log.e("moveScrollView","moveScrollView");
+    }
+
+    public void stopAutoScrolling(){
+        if (scrollTimer != null) {
+            scrollTimer.cancel();
+            scrollTimer	=	null;
+        }
+    }
 }

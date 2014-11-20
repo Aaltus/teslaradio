@@ -55,6 +55,7 @@ public class CreditsActivity extends FragmentActivity {
         openMainActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         openMainActivity.putExtra(VuforiaJMEActivity.CreditsBackButtonKey,true);
         this.startActivity(openMainActivity);
-
+        this.finish();
+        this.overridePendingTransition(0,0);
     }
 }
