@@ -94,6 +94,11 @@ public class AirParticleEmitterControl extends ParticleEmitterControl{
     @Override
     public void onParticleReachingReceiver(Spatial toBeDeletedSpatial) {
         
+        // deconnect particle from this particle emitter
+        toBeDeletedSpatial.removeControl(ScalingSignalControl.class);
+        toBeDeletedSpatial.removeControl(SignalControl.class);
+        toBeDeletedSpatial.removeFromParent();
+        
         // notify Registered observers of the ParticleEmitter
         this.notifyObservers(toBeDeletedSpatial,this.spatial.getName());
     }
