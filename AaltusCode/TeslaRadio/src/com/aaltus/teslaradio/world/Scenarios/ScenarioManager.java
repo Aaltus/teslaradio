@@ -91,7 +91,9 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
      ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).onAudioOptionTouched(value);
         if(value == AudioOptionEnum.IPOD) {
             this.songManager.ipodTouched();
-        }else{
+        } else if (value == AudioOptionEnum.NOSOUND) {
+            this.songManager.stopSong();
+        } else {
             this.songManager.stopSong();
         }
 
