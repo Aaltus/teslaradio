@@ -39,9 +39,7 @@ public class SubjectContent {
         SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.DEMODULATION.ordinal(), activity.getString(R.string.demodulation_title), new int[]{R.layout.demodulation}, new int[]{R.string.demodulation_tutorial_p1,R.string.demodulation_tutorial_p2,R.string.playback_tutorial_p1}, ScenarioEnum.DEMODULATION, R.drawable.picto_7));
         SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.PLAYBACK.ordinal(), activity.getString(R.string.playback_title), new int[]{R.layout.playback}, new int[]{}, ScenarioEnum.PLAYBACK, null));
         SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.REFERENCE.ordinal(), activity.getString(R.string.reference_title), new int[]{R.layout.references}, null, ScenarioEnum.REFERENCE, null));
-        SubjectContent.addItem(new SubjectContent.SubjectItem(ScenarioEnum.ABOUTUS.ordinal(), activity.getString(R.string.about_us_title), new int[]{R.layout.about_us}, null, ScenarioEnum.ABOUTUS, null));
-
-    }
+            }
 
     /**
      * Add individual item to the list
