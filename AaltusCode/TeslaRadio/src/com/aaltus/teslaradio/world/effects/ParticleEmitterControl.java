@@ -73,7 +73,6 @@ public abstract class ParticleEmitterControl extends AbstractControl implements 
         for(EmitterObserver observer : this.observerList)
         {
             if (this.observerList.size()-i > 1) {
-                spatial.removeControl(SignalControl.class);
                 observer.emitterObserverUpdate(spatial.clone(), notifierId);
             } else {
                 observer.emitterObserverUpdate(spatial, notifierId);
