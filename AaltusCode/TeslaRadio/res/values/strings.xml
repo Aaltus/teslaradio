@@ -101,7 +101,7 @@
     <string name="screen_tutorial_button">Tutoriel</string>
     <string name="screen_credits_button">Crédits</string>
     <string name="screen_exit_button">Quitter</string>
-    <string name="toast_no_trackable_seen">Pointes sur les cibles!</string>
+    <string name="toast_no_trackable_seen">Pointe sur les cibles!</string>
     <string name="master_tutorial_ok_button">Continuer</string>
     <string name="master_tutorial_cancel_button">Quitter</string>
     <string name="previous_scenario_button">Previous</string>
