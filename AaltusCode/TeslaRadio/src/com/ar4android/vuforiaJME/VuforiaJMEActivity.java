@@ -102,7 +102,9 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     private static final String NATIVE_LIB_SAMPLE = "VuforiaNative";
     private static final String NATIVE_LIB_QCAR = "Vuforia";
 
+    // For the credits activity
     private boolean openStartScreen = false;
+    public static final String CreditsBackButtonKey = "openStartScreen";
 
     private VuforiaCaller vuforiaCaller;
     private ProgressDialog progressDialog;
@@ -1161,7 +1163,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         Bundle extras = i.getExtras();
         if (extras != null) {
             Log.d("TAG","Chat");
-            openStartScreen = extras.getBoolean("openStartScreen");
+            openStartScreen = extras.getBoolean(CreditsBackButtonKey);
         }
     	
     	// make sure the AndroidGLSurfaceView view is on top of the view
@@ -1172,7 +1174,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             pauseQCARandTasks(false);
         }
 
-        if(this.openStartScreen) { 
+        if(this.openStartScreen) {
             ((VuforiaJME)app).openStartScreen();
             openStartScreen = false;
         }

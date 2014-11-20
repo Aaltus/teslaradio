@@ -53,7 +53,7 @@ public class CreditsActivity extends FragmentActivity {
 
         Intent openMainActivity= new Intent(this, VuforiaJMEActivity.class);
         openMainActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        openMainActivity.putExtra("openStartScreen",true);
+        openMainActivity.putExtra(VuforiaJMEActivity.CreditsBackButtonKey,true);
         this.startActivity(openMainActivity);
 
     }
