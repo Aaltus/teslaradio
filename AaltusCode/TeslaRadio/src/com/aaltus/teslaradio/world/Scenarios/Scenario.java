@@ -163,6 +163,7 @@ public abstract class Scenario extends Node implements SignalObserver {
         this.destinationHandle = destinationHandle;
         this.setUserData("angleX", 0f);
         this.scenarioCommon = sc;
+        this.setLocalScale(0.75f);
     }
     
     public Scenario(ScenarioCommon sc, com.jme3.renderer.Camera Camera, Spatial destinationHandle, String bgm)
@@ -174,6 +175,7 @@ public abstract class Scenario extends Node implements SignalObserver {
         if(this.backgroundSound != null){
             this.addControl(new SoundControl(this.backgroundSound,false,1));
         }
+        this.setLocalScale(0.75f);
     }
     
  
