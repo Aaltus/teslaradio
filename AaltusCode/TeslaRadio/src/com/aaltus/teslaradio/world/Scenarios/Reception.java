@@ -265,13 +265,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
     @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
         if (notifierId.equals("OutputAntenneRx")) {
-            
-             if (outputAntenneRx != null) {
-     
-                Float particleScale = spatial.getUserData(AppGetter.USR_SCALE);
-                
-                float normScale = spatial.getWorldScale().length()/particleScale;
-                
+             if (outputAntenneRx != null) {                
                 outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
              }
         }
