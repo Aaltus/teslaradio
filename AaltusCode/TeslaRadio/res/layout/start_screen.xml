@@ -5,10 +5,9 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="#E6000000"
-                  xmlns:customfont="http://schemas.android.com/apk/res-auto"
-                customfont:fontName="Fonts/agencyr.ttf"
         >-->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:customfont="http://schemas.android.com/apk/com.aaltus.teslaradio"
                   android:layout_width="fill_parent"
                   android:layout_height="fill_parent"
                   android:background="@drawable/startscreen_background"
@@ -62,26 +61,27 @@
                                 android:layout_height="fill_parent"
                                 android:layout_weight="0.5"
                                 android:orientation="vertical">
-                            <Button
+                            <com.aaltus.teslaradio.ButtonPlus
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:id="@+id/start_screen_start_button"
                                     android:text="@string/screen_start_button"
                                     android:textColor="@color/white"
+                                    android:id="@+id/start_screen_start_button"
                                     android:background="@drawable/startscreen_button"
+                                    android:layout_weight="1"
                                     android:gravity="center"
-                                    android:layout_alignParentBottom="true"/>
-                            <Button
+                                    style="@style/button1"/>
+                            <com.aaltus.teslaradio.ButtonPlus
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
                                     android:id="@+id/start_screen_tutorial_button"
+                                    android:background="@drawable/startscreen_button"
                                     android:text="@string/screen_tutorial_button"
                                     android:textColor="@color/white"
-                                    android:background="@drawable/startscreen_button"
-                                    android:gravity="center"/>
-                            <Button
+                                    android:gravity="center"
+                                    android:layout_weight="1"
+                                    style="@style/button1"/>
+                            <com.aaltus.teslaradio.ButtonPlus
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -89,8 +89,9 @@
                                     android:text="@string/screen_credits_button"
                                     android:textColor="@color/white"
                                     android:background="@drawable/startscreen_button"
-                                    android:gravity="center"/>
-                            <Button
+                                    android:gravity="center"
+                                    style="@style/button2"/>
+                            <com.aaltus.teslaradio.ButtonPlus
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -98,7 +99,8 @@
                                     android:text="@string/screen_exit_button"
                                     android:textColor="@color/white"
                                     android:background="@drawable/startscreen_button"
-                                    android:gravity="center"/>
+                                    android:gravity="center"
+                                    style="@style/button2"/>
                         </LinearLayout>
                         <LinearLayout
                                 android:layout_width="fill_parent"

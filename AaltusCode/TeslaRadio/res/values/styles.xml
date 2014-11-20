@@ -94,4 +94,12 @@
         <item name="android:windowFrame">@null</item>-->
     </style>
 
+    <style name="button1" parent="@android:style/Widget.Button">
+        <item name="com.aaltus.teslaradio:font">Fonts/agencyb.ttf</item>
+    </style>
+
+    <style name="button2" parent="@android:style/Widget.Button">
+        <item name="com.aaltus.teslaradio:font">Fonts/agencyr.ttf</item>
+    </style>
+
 </resources>

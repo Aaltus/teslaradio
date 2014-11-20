@@ -26,6 +26,7 @@
             <ImageView
                     android:id="@+id/sound_capture_image"
                     android:layout_gravity="center"
+                    android:background="#111000"
                     android:src="@drawable/principe_dynamic_microphone"
                     style="@style/ImageSize"
                     android:clickable="false"/>
