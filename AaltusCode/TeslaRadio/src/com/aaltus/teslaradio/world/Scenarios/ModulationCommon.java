@@ -223,7 +223,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         digitalDisplay.setLocalTranslation(displayPosition);
         Quaternion rotY = new Quaternion();
         Quaternion rotZ = new Quaternion();
-        rotY.fromAngleAxis(pi / 2, Vector3f.UNIT_Y);
+        //rotY.fromAngleAxis(pi / 2, Vector3f.UNIT_Y);
         rotZ.fromAngleAxis(-pi / 3, Vector3f.UNIT_X);
         digitalDisplay.rotate(rotY);
         digitalDisplay.rotate(rotZ);
