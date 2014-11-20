@@ -1,11 +1,13 @@
 package com.aaltus.teslaradio;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import com.utils.AppLogger;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -26,6 +28,8 @@ public class CreditsFragment extends Fragment {
     private int scrollPos =	0;
     private TimerTask clickSchedule;
 
+    private MediaPlayer creditSong;
+
     public CreditsFragment() {
         // Empty constructor required for DialogFragment
     }
@@ -35,6 +39,10 @@ public class CreditsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Log.i(TAG, "onCreate");
+        creditSong = MediaPlayer.create(this.getActivity(), R.raw.credit);
+        creditSong.setLooping(true);
+        creditSong.start();
+
     }
 
     @Override
@@ -64,6 +72,7 @@ public class CreditsFragment extends Fragment {
 
     @Override
     public void onDestroy(){
+        creditSong.stop();
         clearTimerTaks(clickSchedule);
         clearTimerTaks(scrollerSchedule);
         clearTimers(scrollTimer);
