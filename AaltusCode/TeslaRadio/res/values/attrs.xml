@@ -16,6 +16,7 @@
         <attr name="direction" />
         <attr name="bottomOffset" format="dimension"  />
         <attr name="topOffset" format="dimension"  />
+        <attr name="handleOffset" format="dimension"  />
         <attr name="allowSingleTap" format="boolean" />
         <attr name="animateOnClick" format="boolean" />
     </declare-styleable>
