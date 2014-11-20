@@ -196,10 +196,10 @@ button on the handset.
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:orientation="horizontal"
+                my:handleOffset="20dp"
                 my:direction="leftToRight"
                 my:handle="@+id/handle"
-                my:content="@+id/content"
-                my:topOffset="0dp">
+                my:content="@+id/content">
 
             <ImageView
                     android:id="@id/handle"

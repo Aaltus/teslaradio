@@ -31,7 +31,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.*;
 import android.view.accessibility.AccessibilityEvent;
-import com.aaltus.teslaradio.R;
 
 
 /**
@@ -58,6 +57,7 @@ public class MultiDirectionSlidingDrawer extends ViewGroup {
 
     private final int						mHandleId;
     private final int						mContentId;
+    private final int                       mHandleOffset;
 
     private View							mHandle;
     private View							mContent;
@@ -171,6 +171,7 @@ public class MultiDirectionSlidingDrawer extends ViewGroup {
         mVertical = ( orientation == ORIENTATION_BTT || orientation == ORIENTATION_TTB );
         mBottomOffset = (int)a.getDimension( R.styleable.MultiDirectionSlidingDrawer_bottomOffset, 0.0f );
         mTopOffset = (int)a.getDimension( R.styleable.MultiDirectionSlidingDrawer_topOffset, 0.0f );
+        mHandleOffset = (int)a.getDimension( R.styleable.MultiDirectionSlidingDrawer_handleOffset, 0.0f );
         mAllowSingleTap = a.getBoolean( R.styleable.MultiDirectionSlidingDrawer_allowSingleTap, true );
         mAnimateOnClick = a.getBoolean( R.styleable.MultiDirectionSlidingDrawer_animateOnClick, true );
         mInvert = ( orientation == ORIENTATION_TTB || orientation == ORIENTATION_LTR );
@@ -326,7 +327,7 @@ public class MultiDirectionSlidingDrawer extends ViewGroup {
         }
 
         //TODO: We hardcore it to top align, it is stupid, but I don't care near the end like this...
-        handle.layout( handleLeft, 0, handleLeft + handleWidth, 0 + handleHeight );
+        handle.layout( handleLeft, 0 + mHandleOffset, handleLeft + handleWidth, 0 + handleHeight + mHandleOffset);
         //old code to center it in the parent.
         //handle.layout( handleLeft, handleTop, handleLeft + handleWidth, handleTop + handleHeight );
         mHandleHeight = handle.getHeight();
