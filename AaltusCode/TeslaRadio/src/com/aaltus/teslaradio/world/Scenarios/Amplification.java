@@ -242,6 +242,7 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
      private void initParticlesEmitter(Node signalEmitter, Spatial handle, Geometry path, Camera cam) {
         scene.attachChild(signalEmitter);
         signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        signalEmitter.setLocalRotation(handle.getWorldRotation());
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }

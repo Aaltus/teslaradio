@@ -82,7 +82,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         scene.setName("Filter");
         this.attachChild(scene);
 
-        scene.setLocalRotation(new Quaternion().fromAngleAxis(-pi/2f, Vector3f.UNIT_Y));
+        //scene.setLocalRotation(new Quaternion().fromAngleAxis(-pi/2f, Vector3f.UNIT_Y)); //nope, its Chuck Testa!
         scene.setLocalScale(1.5f);
         
         // Get the handles of the emitters

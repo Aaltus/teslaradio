@@ -351,6 +351,7 @@ public abstract class Scenario extends Node implements SignalObserver {
 
         scene.attachChild(signalEmitter);
         signalEmitter.setLocalTranslation(handle.getLocalTranslation()); // TO DO: utiliser le object handle blender pour position
+        signalEmitter.setLocalRotation(handle.getWorldRotation());
         signalEmitter.addControl(new StaticWireParticleEmitterControl(path.getMesh(), 3.5f, cam));
         signalEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
     }
