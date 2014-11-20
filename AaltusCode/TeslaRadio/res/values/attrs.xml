@@ -20,4 +20,8 @@
         <attr name="animateOnClick" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="CustomFont">
+        <attr name="font" format="string"/>
+    </declare-styleable>
+
 </resources>
