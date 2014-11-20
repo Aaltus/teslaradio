@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!--style="@style/ImageSize"-->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -19,6 +19,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/soundcapturep1"
                 style="@style/InformativeMenuTextStyle"
+                android:adjustViewBounds="true"
                 />
 
 
@@ -27,7 +28,7 @@
                     android:id="@+id/sound_capture_image"
                     android:layout_gravity="center"
                     android:src="@drawable/principe_dynamic_microphone"
-                    style="@style/ImageSize"
+
                     android:clickable="false"/>
 
 
