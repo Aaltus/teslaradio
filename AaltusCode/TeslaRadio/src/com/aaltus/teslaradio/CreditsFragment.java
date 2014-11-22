@@ -27,6 +27,7 @@ public class CreditsFragment extends Fragment {
     private TimerTask scrollerSchedule;
     private int scrollPos =	0;
     private TimerTask clickSchedule;
+    private int scrollSpeed = 2;
 
     private MediaPlayer creditSong;
 
@@ -52,6 +53,8 @@ public class CreditsFragment extends Fragment {
         Log.i(TAG, "onCreateView");
 
         View view = inflater.inflate(R.layout.credits_layout, container, false);
+
+        view.setVerticalScrollBarEnabled(false);
 
         verticalScrollview  =   (ScrollView) view.findViewById(R.id.credits_scroller);
         verticalOuterLayout =	(LinearLayout) view.findViewById(R.id.credits_layout);
@@ -82,6 +85,20 @@ public class CreditsFragment extends Fragment {
         scrollTimer           = null;
 
         super.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        creditSong.stop();
+        clearTimerTaks(clickSchedule);
+        clearTimerTaks(scrollerSchedule);
+        clearTimers(scrollTimer);
+
+        clickSchedule         = null;
+        scrollerSchedule      = null;
+        scrollTimer           = null;
+
+        super.onPause();
     }
 
     private void clearTimers(Timer timer){
@@ -128,9 +145,9 @@ public class CreditsFragment extends Fragment {
     }
 
     public void moveScrollView(){
-        scrollPos							= 	(int) (verticalScrollview.getScrollY() + 1.0);
+        scrollPos							= 	(int) (verticalScrollview.getScrollY() + scrollSpeed);
         if(scrollPos >= verticalScrollMax){
-            scrollPos						=	0;
+            scrollPos = verticalScrollMax;
         }
         verticalScrollview.scrollTo(0,scrollPos);
         Log.e("moveScrollView","moveScrollView");
