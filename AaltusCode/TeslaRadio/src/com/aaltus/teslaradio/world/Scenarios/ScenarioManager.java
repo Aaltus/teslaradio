@@ -94,7 +94,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         } else if (value == AudioOptionEnum.NOSOUND) {
             this.songManager.stopSong();
         } else {
-            this.songManager.stopSong();
+            this.songManager.stopSong(false);
         }
 
     }
