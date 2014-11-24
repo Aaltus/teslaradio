@@ -1,5 +1,7 @@
 package com.aaltus.teslaradio;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -34,6 +36,8 @@ public class MasterTutorialFragment extends DialogFragment implements View.OnCli
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.MyDialog);
+
         Log.i(TAG, "onCreate");
     }
 
@@ -43,6 +47,9 @@ public class MasterTutorialFragment extends DialogFragment implements View.OnCli
 
         Log.i(TAG, "onCreateView");
 
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        getDialog().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         View view = inflater.inflate(R.layout.master_tutorial, container,false);
 
