@@ -694,12 +694,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         startActivity(intent);
     }
 
-    @Override
-    public void dismissCreditsScreen() {
-
-    }
-
-
     /** An async task to initialize QCAR asynchronously. */
     private class InitQCARTask extends AsyncTask<Void, Integer, Boolean>
     {
