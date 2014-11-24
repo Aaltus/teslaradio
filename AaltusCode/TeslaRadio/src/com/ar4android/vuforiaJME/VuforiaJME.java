@@ -96,8 +96,6 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         startLoading();
         androidActivityController.closeProgressScreen();
         startScreenState = androidActivityController;
-        
-
 
         initLights();
 
@@ -105,8 +103,6 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         //Otherwise the camera background will be OVER the 3d models.
 
         // We use custom viewports - so the main viewport does not need to contain the rootNode
-
-
 
         //Init all the things
         TrackableManager trackableManager = new TrackableManager();
@@ -120,9 +116,6 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         vuforiaJMEState.setEnabled(true);
 
         stopVuforiaJMEState();
-
-
-
 
 	}
 
@@ -181,8 +174,6 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
         androidActivityController.showInformativeMenu();
 
-        androidActivityController.dismissCreditsScreen();
-
         startScreenState.closeStartMenu();
 
         stopDevFramework();
@@ -197,8 +188,6 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
     public void startTutorial() {
 
         androidActivityController.showInformativeMenu();
-
-        androidActivityController.dismissCreditsScreen();
 
         startScreenState.closeStartMenu();
 

@@ -135,5 +135,16 @@
     <string name="Vincent">Vincent Rhéaume</string>
     <string name="Philippe">Philippe Gournay</string>
     <string name="Outils">Outils logiciels</string>
+    <string name="Android">Android SDK</string>
+    <string name="Vuforia">Qualcomm Vuforia SDK</string>
+    <string name="JMonkey">JMonkeyEngine</string>
+    <string name="Blender">Blender</string>
+    <string name="Stack">Stackoverflow</string>
+    <string name="Musique">Musique</string>
+    <string name="Chanson1">Le jayce</string>
+    <string name="Chanson2">Le jayce2</string>
+    <string name="Chanson3">Le jayce3</string>
+    <string name="Chanson4">Le jayce4</string>
+    <string name="Merci">Merci!</string>
 
 </resources>

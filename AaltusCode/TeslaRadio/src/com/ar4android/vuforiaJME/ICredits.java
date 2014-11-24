@@ -6,6 +6,4 @@ package com.ar4android.vuforiaJME;
 public interface ICredits {
 
     void openCreditsScreen();
-
-    void dismissCreditsScreen();
 }
