@@ -18,6 +18,8 @@
 
 package com.ar4android.vuforiaJME;
 
+import android.content.Intent;
+import android.widget.ProgressBar;
 import com.aaltus.teslaradio.world.Scenarios.*;
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
@@ -86,18 +88,14 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
         androidActivityController.dismissAndroidSplashScreen();
 
-
         //Code to unable nifty gui loading bar and start screen.
         //startScreenState = new ScreenState(this, this);
         //this.getStateManager().attach(startScreenState);
         //this.getFlyByCamera().setDragToRotate(true);
         this.androidActivityController.openProgressScreen("Chargement des ressources...");
         startLoading();
+        androidActivityController.closeProgressScreen();
         startScreenState = androidActivityController;
-        startScreenState.openStartMenu();
-        //this.openStartScreen();
-
-        //this.androidActivityController.openStartScreen();
 
 
         initLights();
@@ -249,6 +247,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         stopDevFramework();
 
         startScreenState.openStartMenu();
+
     }
 
     private void startScenarioManagerForVuforiaJMEState() {
@@ -403,7 +402,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         }
         */
 
-        androidActivityController.closeProgressScreen();
+
     }
 
 }

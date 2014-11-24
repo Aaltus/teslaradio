@@ -1,6 +1,7 @@
 package com.aaltus.teslaradio;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
@@ -8,7 +9,7 @@ import android.view.*;
 /**
  * Created by jimbojd72 on 11/8/2014.
  */
-public class MasterTutorialFragment extends Fragment implements View.OnClickListener {
+public class MasterTutorialFragment extends DialogFragment implements View.OnClickListener {
 
 
     private static final String TAG = MasterTutorialFragment.class.getSimpleName();

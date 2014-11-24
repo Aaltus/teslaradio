@@ -13,12 +13,14 @@ import android.view.View;
 import com.aaltus.teslaradio.*;
 
 /**
+ * not use for the moment
  * Created by jimbojd72 on 10/26/2014.
  */
 public class MasterTutorialActivity extends FragmentActivity implements MasterTutorialFragment.OnMasterTutorialListener {
 
 
     private static final String MASTER_TUTORIAL_FRAGMENT_TAG = "MASTER_TUTORIAL_FRAGMENT_TAG";
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,10 @@ public class MasterTutorialActivity extends FragmentActivity implements MasterTu
         fragment.setOnMasterTutorialListener(this);
         ft.add(R.id.master_tutorial_container, fragment, MASTER_TUTORIAL_FRAGMENT_TAG);
         ft.commit();
+
+
+        Intent intent = new Intent(this,VuforiaJMEActivity.class);
+        startActivity(intent);
 
         /*
         SharedPreferences pref = getSharedPreferences("ActivityPREF", Context.MODE_PRIVATE);
@@ -60,8 +66,6 @@ public class MasterTutorialActivity extends FragmentActivity implements MasterTu
 
     @Override
     public void onContinueEvent() {
-        Intent intent = new Intent(this,VuforiaJMEActivity.class);
-        startActivity(intent);
         this.finish();
     }
 

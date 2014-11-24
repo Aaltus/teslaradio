@@ -72,7 +72,11 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         ITutorialSwitcher,
         ISongManager,
         VuforiaCallback,
-        StartScreenController {
+        StartScreenController,
+        MasterTutorialFragment.OnMasterTutorialListener{
+
+
+    private final MasterTutorialFragment fragment = new MasterTutorialFragment();
 
     // Boolean to use the profiler. If it's set to true, you can get the tracefile on your phone /sdcard/traceFile.trace
     private static final boolean UseProfiler = false;
@@ -81,6 +85,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     private final String INFORMATIVE_MENU_FRAGMENT_TAG = "INFORMATIVE_MENU_FRAGMENT_TAG";
     private final String ITEM_SPLASHSCREEN_FRAGMENT_TAG ="SPLASHSCREEN_FRAGMENT_TAG" ;
+    private final String MASTER_TUTORIAL_FRAGMENT_TAG ="MASTER_TUTORIAL_FRAGMENT_TAG" ;
 	
     // Focus mode constants:
     private static final int FOCUS_MODE_NORMAL = 0;
@@ -107,7 +112,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     public static final String CreditsBackButtonKey = "openStartScreen";
 
     private VuforiaCaller vuforiaCaller;
-    private ProgressDialog progressDialog;
+    public ProgressDialog progressDialog;
 
     @Override
     public ITrackerUpdater getITrackerUpdater() {
@@ -175,15 +180,20 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         return isVisible;
     }
 
+
+
     @Override
     public void openProgressScreen(final String title) {
 
         final Context context = this;
         // Get the Drawable custom_progressbar
         final Drawable draw = getResources().getDrawable(R.drawable.custom_progress_bar);
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                FragmentManager fm = getSupportFragmentManager();
+                fragment.show(fm,MASTER_TUTORIAL_FRAGMENT_TAG);
                 progressDialog = new ProgressDialog(context,R.style.CustomDialog); //Here I get an error: The constructor ProgressDialog(PFragment) is undefined
                 progressDialog.setMessage("Loading stuff...");
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -192,12 +202,34 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 progressDialog.setProgressDrawable(draw);
                 //progressDialog.setIndeterminate(true);
                 progressDialog.setCancelable(false);
-                progressDialog.show();
             }
         });
 
-
     }
+
+
+    public void onContinueEvent() {
+        if(progressDialog != null) {
+            progressDialog.show();
+        }
+        fragment.dismiss();
+        openStartScreen();
+    }
+
+    public void onExitEvent() {
+        this.finish();
+    }
+
+
+    public void openStartScreen() {
+        (app).enqueue(new Callable<Object>() {
+            public Object call() throws Exception {
+                ((VuforiaJME)app).openStartScreen();
+                return null;
+            }});
+    }
+
+
 
     @Override
     public void closeProgressScreen() {
@@ -206,6 +238,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             @Override
             public void run() {
                 progressDialog.dismiss();
+                progressDialog = null;
             }
         });
     }
@@ -298,6 +331,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         // Invert the MouseEvents Y (default = true)
         mouseEventsInvertY = true;
 
+        fragment.setOnMasterTutorialListener(this);
 
     }
 
