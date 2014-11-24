@@ -194,7 +194,7 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
 
             setCharacterAction(CharacterAction.SPEAKING);
         }
-        else if (nbClicks >= 5) {
+        else if (nbClicks >= 10) {
             //setSpeakAnimation(false);
             //setShakeAnimation(false);
             //setElectricAnimation(true);
