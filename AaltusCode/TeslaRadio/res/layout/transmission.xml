@@ -53,7 +53,7 @@
 
         <ImageView
                 android:id="@+id/tube_image"
-                style="@style/ImageSize"
+                style="@style/ImageSizeScale"
                 android:layout_gravity="center"
                 android:src="@drawable/tube"/>
 
