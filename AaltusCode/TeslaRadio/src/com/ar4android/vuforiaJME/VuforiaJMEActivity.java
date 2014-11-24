@@ -193,6 +193,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             @Override
             public void run() {
                 FragmentManager fm = getSupportFragmentManager();
+                fragment.setCancelable(false);
                 fragment.show(fm,MASTER_TUTORIAL_FRAGMENT_TAG);
 
                 progressDialog = new ProgressDialog(context,R.style.CustomDialog); //Here I get an error: The constructor ProgressDialog(PFragment) is undefined
