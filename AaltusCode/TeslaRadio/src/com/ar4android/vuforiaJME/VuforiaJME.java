@@ -96,6 +96,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         startLoading();
         androidActivityController.closeProgressScreen();
         startScreenState = androidActivityController;
+        
 
 
         initLights();
