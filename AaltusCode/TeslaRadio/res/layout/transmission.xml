@@ -25,7 +25,7 @@
                 android:id="@+id/transmission_image"
                 android:layout_width="fill_parent"
                 style="@style/ImageSize"
-                android:layout_height = "wrap_content"
+                android:layout_height ="wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/tuyau_valve"
 

@@ -52,8 +52,8 @@
         <ImageView
                 android:id="@+id/vitesse_image"
                 style="@style/ImageSize"
-                android:layout_height = "wrap_content"
                 android:layout_gravity="center"
+                android:layout_height="wrap_content"
                 android:src="@drawable/vitesse_lumiere"
                 />
         <TextView

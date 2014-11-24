@@ -27,7 +27,6 @@
                     android:id="@+id/sound_capture_image"
                     android:layout_gravity="center"
                     android:src="@drawable/principe_dynamic_microphone"
-                    android:adjustViewBounds="true"
                     android:clickable="false"
                     style="@style/ImageSize"/>
 
