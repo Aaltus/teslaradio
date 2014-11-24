@@ -23,10 +23,10 @@
                     android:endColor="#171717"
                     android:angle="270" />
             <stroke
-                    android:width="0.5dp"
+                    android:width="1dp"
                     android:color="#CECECE" />
             <corners
-                    android:radius="4dp" />
+                    android:radius="6dp" />
             <padding
                     android:left="0dp"
                     android:top="0dp"
