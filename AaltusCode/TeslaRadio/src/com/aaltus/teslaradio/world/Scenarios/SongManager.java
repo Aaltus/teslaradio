@@ -84,6 +84,13 @@ public class SongManager {
         ((BackgroundSoundControl)songMap.get(SongEnum.NOISE)).stopSound();
         this.audioPlaying = false;
     }
+       public void stopSong(boolean stopNoise){
+        ((BackgroundSoundControl)songMap.get(this.selectedSong)).stopSound();
+        if(stopNoise){
+            ((BackgroundSoundControl)songMap.get(SongEnum.NOISE)).stopSound();
+        }
+        this.audioPlaying = false;
+    }
      
     public void playSong(){
         ((BackgroundSoundControl)songMap.get(this.selectedSong)).playSound(true);
