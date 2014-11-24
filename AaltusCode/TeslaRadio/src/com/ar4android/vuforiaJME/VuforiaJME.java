@@ -107,6 +107,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         //Init all the things
         TrackableManager trackableManager = new TrackableManager();
         trackableManager.setiTrackableAlertToast(this.androidActivityController);
+        trackableManager.setSongManager(this.androidActivityController);
         this.rootNode.addControl(trackableManager);
         vuforiaJMEState = new VuforiaJMEState(this,this.androidActivityController.getITrackerUpdater());
         this.androidActivityController.setICameraUpdater(vuforiaJMEState);

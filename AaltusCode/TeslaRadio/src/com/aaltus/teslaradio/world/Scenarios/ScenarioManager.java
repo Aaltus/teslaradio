@@ -89,13 +89,14 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     @Override
     public void onAudioOptionTouched(AudioOptionEnum value) {
      ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).onAudioOptionTouched(value);
-        if(value == AudioOptionEnum.IPOD) {
+     boolean needBgm = ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).getNeedsBackgroundSound();
+     if(!needBgm || value == AudioOptionEnum.NOSOUND){
+         this.songManager.stopSong();
+     }else if(value == AudioOptionEnum.IPOD) {
             this.songManager.ipodTouched();
-        } else if (value == AudioOptionEnum.NOSOUND) {
-            this.songManager.stopSong();
-        } else {
+     }else{
             this.songManager.stopSong(false);
-        }
+     }
 
     }
 
