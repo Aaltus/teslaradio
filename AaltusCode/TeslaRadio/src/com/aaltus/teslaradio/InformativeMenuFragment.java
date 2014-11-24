@@ -1,19 +1,15 @@
 package com.aaltus.teslaradio;
 
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.*;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import com.aaltus.teslaradio.subject.AudioOptionEnum;
 import com.aaltus.teslaradio.world.Scenarios.ISongManager;
@@ -22,7 +18,6 @@ import com.aaltus.teslaradio.subject.ScenarioEnum;
 import com.aaltus.teslaradio.subject.SubjectContent;
 import com.aaltus.teslaradio.world.Scenarios.IScenarioSwitcher;
 import com.utils.AppLogger;
-import com.utils.LanguageLocaleChanger;
 import com.utils.PagerContainer;
 
 /**
@@ -288,6 +283,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         toggleDetailFragmentVisibility(showFragment);
         toggleItemListVisibility(showFragment);
         toggleTutorialVisibility(!showFragment);
+        audioWhenFragmentVisible(false);
     }
 
     private TutorialFragment getTutorialFragment(){
@@ -327,6 +323,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
         toggleDetailFragmentVisibility(true);
         toggleTutorialVisibility(false);
+        audioWhenFragmentVisible(false);
 
     }
 
@@ -429,6 +426,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
                 toggleDetailFragmentVisibility(false);
                 if(!isListFragmentsVisible()){
                     toggleTutorialVisibility(true);
+                    audioWhenFragmentVisible(true);
                 }
                 break;
         }
@@ -507,6 +505,15 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         }
     }
 
+    public void audioWhenFragmentVisible(boolean playSong) {
+
+        if (playSong) {
+            this.songManager.onAudioOptionTouched(AudioOptionEnum.IPOD);
+        } else {
+            this.songManager.onAudioOptionTouched(AudioOptionEnum.NOSOUND);
+        }
+    }
+
     /**
      * Toggle the detailfragment and listfragment visibility.
      */
@@ -553,13 +560,17 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     @Override
     public void onDrawerClosed() {
         if(!isDetailFragmentsVisible()){
+
             toggleTutorialVisibility(true);
+            audioWhenFragmentVisible(true);
         }
     }
 
     @Override
     public void onDrawerOpened() {
+
         toggleTutorialVisibility(false);
+        audioWhenFragmentVisible(false);
     }
 
     @Override

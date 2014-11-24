@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="rectangle">
 
-    <solid android:color="@drawable/global_app_color"/>
+    <solid android:color="@drawable/GreyOpaque"/>
     <!--<gradient-->
             <!--android:startColor="#SomeGradientBeginColor"-->
             <!--android:endColor="#SomeGradientEndColor"-->
