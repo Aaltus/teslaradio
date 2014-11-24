@@ -267,11 +267,7 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
         if (notifierId.equals("OutputAntenneRx")) {
             
              if (outputAntenneRx != null) {
-     
-                Float particleScale = spatial.getUserData(AppGetter.USR_SCALE);
-                
-                float normScale = spatial.getWorldScale().length()/particleScale;
-                
+             
                 outputModule.getControl(ParticleEmitterControl.class).emitParticle(spatial);
              }
         }
@@ -386,10 +382,11 @@ public final class Reception extends Scenario implements EmitterObserver, AutoGe
             wt = wt.subtract((Vector3f) this.getInputHandle().getUserData(AppGetter.USR_SOURCE_TRANSLATION));
             float distance = wt.divide(this.getWorldScale()).length();
             distance = distance / ampliScale;
-            //System.out.println("Distance : " + distance);
+           // AppLogger.getInstance().e("Reception  distance", ((Float)distance).toString());
             distance -= 8; //offset
             distance = distance < 0 ? 0 : distance;
             signalRatio = distance / 20.0f;
+          //  AppLogger.getInstance().e("Reception ratio", ((Float)signalRatio).toString());
             signalRatio = signalRatio > 1 ? 1 : signalRatio;
          }
          this.updateSignalIntensity(1-signalRatio);

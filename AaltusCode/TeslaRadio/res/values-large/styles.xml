@@ -26,13 +26,12 @@
         <item name="android:layout_height">200dp</item>
     </style>
     <style name="ImageSize">
-        <item name="android:layout_marginLeft">150dp</item>
-        <item name="android:layout_marginRight">150dp</item>
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:layout_marginBottom">10dp</item>
-        <item name="android:adjustViewBounds">true</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">300dp</item>
     </style>
-
+    <!--<item name="android:adjustViewBounds">true</item>-->
+    <!--<item name="android:layout_marginLeft">150dp</item>-->
+    <!--<item name="android:layout_marginRight">150dp</item>-->
 </resources>

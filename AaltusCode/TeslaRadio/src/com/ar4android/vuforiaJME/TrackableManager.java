@@ -42,6 +42,8 @@ public class TrackableManager extends AbstractControl {
     {
         this.mTrackableA.addControl(new TrackableControl());
         this.mTrackableB.addControl(new TrackableControl());
+        this.mTrackableB.setLocalScale(0.75f);
+        this.mTrackableA.setLocalScale(0.75f);
         this.mNodeList.add(0, mTrackableA);
         this.mNodeList.add(1, mTrackableB);
         this.mChildNodeList.add(0,this.mTrackableA.getControl(TrackableControl.class).getFixedAngleChild());

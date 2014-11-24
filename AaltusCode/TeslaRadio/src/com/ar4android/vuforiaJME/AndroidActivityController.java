@@ -1,6 +1,7 @@
 package com.ar4android.vuforiaJME;
 
 import com.aaltus.teslaradio.subject.ScenarioEnum;
+import com.aaltus.teslaradio.world.Scenarios.ISongManager;
 import com.aaltus.teslaradio.world.Scenarios.IStartScreen;
 
 /**
@@ -12,7 +13,8 @@ public interface AndroidActivityController extends IStartScreen,
         ITrackingController,
         ITutorialMenu,
         ITrackableAlertToast,
-        ICredits {
+        ICredits,
+        ISongManager {
 
     public void dismissAndroidSplashScreen();
 

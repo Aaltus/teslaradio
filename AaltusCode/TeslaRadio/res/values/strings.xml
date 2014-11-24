@@ -131,5 +131,9 @@
     <string name="Professeurs">Professeurs</string>
     <string name="Ahmed">Ahmed Khoumsi</string>
     <string name="Ruben">Ruben Gonzalez-Rubio</string>
+    <string name="Sebastien">Sébastien Roy</string>
+    <string name="Vincent">Vincent Rhéaume</string>
+    <string name="Philippe">Philippe Gournay</string>
+    <string name="Outils">Outils logiciels</string>
 
 </resources>

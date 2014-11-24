@@ -19,16 +19,17 @@
                 android:layout_height="wrap_content"
                 android:text="@string/soundcapturep1"
                 style="@style/InformativeMenuTextStyle"
-                />
 
+                />
 
 
             <ImageView
                     android:id="@+id/sound_capture_image"
                     android:layout_gravity="center"
                     android:src="@drawable/principe_dynamic_microphone"
-                    style="@style/ImageSize"
-                    android:clickable="false"/>
+                    android:adjustViewBounds="true"
+                    android:clickable="false"
+                    style="@style/ImageSize"/>
 
 
         <TextView

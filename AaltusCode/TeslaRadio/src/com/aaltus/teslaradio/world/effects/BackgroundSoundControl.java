@@ -4,6 +4,8 @@
  */
 package com.aaltus.teslaradio.world.effects;
 
+import com.utils.AppLogger;
+
 /**
  *
  * @author Jean-Christophe
@@ -17,6 +19,7 @@ public class BackgroundSoundControl extends SoundControl implements IBackgroundS
     @Override
     public void controlUpdate(float tpf){
         if(counter.tryAcquire()){
+           //  AppLogger.getInstance().e("NoiseControl", ((Float)this.spatial.getUserData(this.volumeUsrData)).toString());
           this.audio.setVolume((Float)this.spatial.getUserData(this.volumeUsrData));
         }
     }

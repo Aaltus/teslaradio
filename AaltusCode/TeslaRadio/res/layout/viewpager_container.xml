@@ -32,7 +32,8 @@
                 android:id="@+id/item_detail_fragment_close_button"
                 android:layout_width="40dip"
                 android:layout_height="40dip"
-                android:layout_gravity="right"
+                android:layout_gravity="right|center"
+                android:layout_margin="5dp"
                 android:adjustViewBounds="true"
                 android:background="@drawable/ic_navigation_cancel"
                 android:scaleType="centerCrop"/>

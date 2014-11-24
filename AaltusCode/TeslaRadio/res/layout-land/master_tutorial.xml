@@ -172,26 +172,43 @@
                         android:gravity="center_vertical"/>
             </LinearLayout>
         </LinearLayout>
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:paddingTop="20dp"></LinearLayout>
 
-        <LinearLayout android:layout_width="fill_parent"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal"
-                      android:gravity="center_horizontal">
-            <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/master_tutorial_cancel_button"
-                    android:id="@+id/master_tutorial_cancel_button"/>
-            <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/master_tutorial_ok_button"
-                    android:id="@+id/master_tutorial_ok_button"/>
-        </LinearLayout>
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:gravity="center_horizontal">
+                <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"></LinearLayout>
+                <Button
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/master_tutorial_cancel_button"
+                        android:id="@+id/master_tutorial_cancel_button"/>
+                <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"></LinearLayout>
+                <Button
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/master_tutorial_ok_button"
+                        android:id="@+id/master_tutorial_ok_button"/>
+                <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"></LinearLayout>
+            </LinearLayout>
 
     </LinearLayout>
 
