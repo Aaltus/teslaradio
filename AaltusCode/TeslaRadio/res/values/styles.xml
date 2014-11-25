@@ -91,14 +91,6 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:adjustViewBounds">true</item>
     </style>
-    <style name="ImageSizeScale">
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:adjustViewBounds">true</item>
-        <item name="android:scaleType">fitCenter</item>
-        <item name="android:scaleX">0.5</item>
-        <item name="android:scaleY">0.5</item>
-    </style>
     <style name="CustomDialog" parent="@android:style/Theme.Dialog">
         <item name="android:background">@drawable/GreyOpaque</item>
         <item name="android:textColor">#FFFFFF</item>
