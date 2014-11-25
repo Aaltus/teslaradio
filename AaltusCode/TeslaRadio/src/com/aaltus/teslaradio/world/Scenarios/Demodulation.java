@@ -37,14 +37,6 @@ public class Demodulation extends ModulationCommon  {
     }
     
     @Override
-    protected void initOutputSignals() {
-        
-        super.initOutputSignals();
-        
-        this.outputSignal.detachAllChildren();
-    }
-    
-    @Override
     public void restartScenario() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -123,8 +115,7 @@ public class Demodulation extends ModulationCommon  {
                     && spatial.getUserData("isFM").equals(isFM)) {
                 
                     ((Node)spatial).getChild(1).setLocalScale(((Node)spatial).getChild(1).getWorldScale());
-                    outputSignal.attachChild(((Node)spatial).getChild(1));
-                    pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(outputSignal.clone());
+                    pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(((Node)spatial).getChild(1));
                     if(!this.isFirst){
                         this.updateNoise(0f);
                     }
