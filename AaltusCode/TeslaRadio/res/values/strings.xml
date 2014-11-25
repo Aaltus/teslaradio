@@ -110,6 +110,8 @@
     <string name="master_tutorial_previous_button2">Retour</string>
     <string name="master_tutorial_previous_button3">Retour</string>
     <string name="master_tutorial_previous_button4">Retour</string>
+    <string name="master_tutorial_ok_button">Continuer</string>
+    <string name="master_tutorial_cancel_button">Annuler</string>
     <string name="previous_scenario_button">Previous</string>
     <string name="next_scenario_button">Next</string>
 
