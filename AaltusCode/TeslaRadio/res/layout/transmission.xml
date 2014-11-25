@@ -123,7 +123,7 @@
                   android:layout_weight="1"/>
 
                 <ImageView
-                        android:id="@+id/tube_image"
+                        android:id="@+id/transistor_image"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
                         android:layout_gravity="center"
