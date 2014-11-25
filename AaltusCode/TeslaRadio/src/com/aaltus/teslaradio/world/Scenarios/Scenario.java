@@ -263,6 +263,7 @@ public abstract class Scenario extends Node implements SignalObserver {
                    this.startAutoGeneration();
                    break;
                case SCENARIO_SWITCH:
+               case NOSOUND:
                    break;
                default:
                    this.stopAutoGeneration();

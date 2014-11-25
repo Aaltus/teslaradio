@@ -27,7 +27,7 @@ public class CreditsFragment extends Fragment {
     private TimerTask scrollerSchedule;
     private int scrollPos =	0;
     private TimerTask clickSchedule;
-    private int scrollSpeed = 2;
+    private int scrollSpeed = 3;
 
     private MediaPlayer creditSong;
 
