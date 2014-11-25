@@ -164,8 +164,8 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         turnButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
 
-        initAngleSwitch.fromAngleAxis(0.45f, Vector3f.UNIT_X);
-        endAngleSwitch.fromAngleAxis(-0.45f, Vector3f.UNIT_X);
+        initAngleSwitch.fromAngleAxis(0.45f, Vector3f.UNIT_Z);
+        endAngleSwitch.fromAngleAxis(-0.45f, Vector3f.UNIT_Z);
 
         Spatial[] geom = ScenarioCommon.initCarrierGeometries();
         dodecagoneCarrier = geom[0];
