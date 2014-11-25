@@ -513,7 +513,11 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                     Node scenario = getCurrentScenario().getScenarios().get(count);
                     if(count == 0 ){
                         ((Scenario) scenario.getChild(0)).onFirstNodeActions();
-                        this.onAudioOptionTouched(AudioOptionEnum.SCENARIO_SWITCH);
+                        if(((Scenario) scenario.getChild(0)).getNeedsBackgroundSound()){
+                            this.songManager.playSong();
+                        }else{
+                            this.songManager.stopSong();
+                        }
                     }
                     if(count == 1){
                         ((Scenario) scenario.getChild(0)).onSecondNodeActions();
