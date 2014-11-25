@@ -115,6 +115,13 @@ button on the handset.
                 android:layout_margin="5dp"
                 android:background="@drawable/layer_tambour"/>
 
+         <Button
+                 android:id="@+id/camera_toggle_info_button"
+                 android:layout_height="50dp"
+                 android:layout_width="50dp"
+                 android:layout_margin="5dp"
+                 android:background="@drawable/layer_list_info"/>
+
 
     </LinearLayout>
     <LinearLayout
@@ -197,7 +204,7 @@ button on the handset.
 
 
 
-
+<!--
     <FrameLayout
             android:layout_width="200dp"
             android:layout_height="fill_parent"
@@ -240,7 +247,7 @@ button on the handset.
 
         </com.aaltus.teslaradio.MultiDirectionSlidingDrawer>
     </FrameLayout>
-
+-->
 
 
 </FrameLayout>
