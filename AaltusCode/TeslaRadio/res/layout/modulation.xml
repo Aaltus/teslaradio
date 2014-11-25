@@ -22,19 +22,35 @@
                 style="@style/InformativeMenuTextStyle"
                 />
 
+
         <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:clickable="false">
 
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="fill_parent"
+                          android:orientation="horizontal">
 
-            <ImageView
-                    android:id="@+id/modulationam_preview"
-                    android:layout_gravity="center"
-                    android:src="@drawable/modulationam_preview"
-                    style="@style/ImageSize"
-                    android:clickable="false"/>
+                <View android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"/>
+
+                    <ImageView
+                            android:id="@+id/modulationam_preview"
+                            android:layout_gravity="center"
+                            android:src="@drawable/modulationam_preview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.3"
+                            android:adjustViewBounds="true"
+                            android:clickable="false"/>
+
+                <View android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"/>
+            </LinearLayout>
 
             <ImageView
                     android:layout_width="60dp"
@@ -73,13 +89,28 @@
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:clickable="false">
 
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="fill_parent"
+                          android:orientation="horizontal">
 
-            <ImageView
-                    android:id="@+id/souris_preview"
-                    style="@style/ImageSize"
-                    android:layout_gravity="center"
-                    android:src="@drawable/souris_preview"
-                    android:clickable="false"/>
+                <View android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"/>
+
+                    <ImageView
+                            android:id="@+id/souris_preview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.1"
+                            android:adjustViewBounds="true"
+                            android:layout_gravity="center"
+                            android:src="@drawable/souris_preview"
+                            android:clickable="false"/>
+
+                <View android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"/>
+            </LinearLayout>
 
             <ImageView
                     android:layout_width="60dp"
@@ -110,13 +141,28 @@
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:clickable="false">
 
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="fill_parent"
+                          android:orientation="horizontal">
 
-            <ImageView
-                    android:id="@+id/modulationfm_preview"
-                    style="@style/ImageSize"
-                    android:layout_gravity="center"
-                    android:src="@drawable/modulationfm_preview"
-                    android:clickable="false"/>
+                <View android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"/>
+
+                    <ImageView
+                            android:id="@+id/modulationfm_preview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.3"
+                            android:adjustViewBounds="true"
+                            android:layout_gravity="center"
+                            android:src="@drawable/modulationfm_preview"
+                            android:clickable="false"/>
+
+                <View android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"/>
+            </LinearLayout>
 
             <ImageView
                     android:layout_width="60dp"

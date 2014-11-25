@@ -22,14 +22,28 @@
 
                 />
 
+    <LinearLayout android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:orientation="horizontal">
+
+        <View android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"/>
 
             <ImageView
                     android:id="@+id/sound_capture_image"
                     android:layout_gravity="center"
                     android:src="@drawable/principe_dynamic_microphone"
                     android:clickable="false"
-                    style="@style/ImageSize"/>
+                    android:layout_weight="3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"/>
 
+        <View android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"/>
+    </LinearLayout>
 
         <TextView
                 android:layout_width="wrap_content"
