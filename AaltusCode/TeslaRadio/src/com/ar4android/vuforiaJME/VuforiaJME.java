@@ -45,7 +45,7 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
     private DirectionalLight front;
     private AmbientLight ambient;
     private boolean viewPortAttached = true;
-
+    private boolean debugFPS = false;
 
     public static void main(String[] args) {
 
@@ -81,10 +81,14 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
         /*settings.setFrameRate(20);
         setSettings(settings);*/
 
-		// Do not display statistics or frames per second	
-		setDisplayStatView(true);
-		setDisplayFps(true);
-
+		// Do not display statistics or frames per second
+        if (debugFPS) {
+            setDisplayStatView(true);
+            setDisplayFps(true);
+        } else {
+            setDisplayStatView(false);
+            setDisplayFps(false);
+        }
 
         androidActivityController.dismissAndroidSplashScreen();
 

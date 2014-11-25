@@ -297,6 +297,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     public void onItemSelected(int id) {
 
         toggleItemListVisibility(false);
+        audioWhenFragmentVisible(false);
         replaceDetailFragment(id);
 
 
