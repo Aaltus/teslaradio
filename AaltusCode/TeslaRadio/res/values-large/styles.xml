@@ -25,6 +25,30 @@
         <item name="android:layout_width">200dp</item>
         <item name="android:layout_height">200dp</item>
     </style>
+    <!--Credits-->
+    <style name="Credits">
+        <item name="android:textSize">100dp</item>
+    </style>
+    <!--Credits titles text style-->
+    <style name="CreditsTitlesStyle">
+        <item name="android:textSize">60sp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginBottom">20dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+    <!--Credits names text style-->
+    <style name="CreditsTextStyle">
+        <item name="android:textSize">36sp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+    <!--Credits top padding-->
+    <style name="CreditsTopPadding">
+        <item name="android:paddingTop">525dp</item>
+    </style>
     <style name="ImageSize">
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:layout_marginBottom">10dp</item>

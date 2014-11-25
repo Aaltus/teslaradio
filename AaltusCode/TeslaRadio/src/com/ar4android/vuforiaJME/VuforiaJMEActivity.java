@@ -196,12 +196,13 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                 fragment.setCancelable(false);
                 fragment.show(fm,MASTER_TUTORIAL_FRAGMENT_TAG);
 
-                progressDialog = new ProgressDialog(context,R.style.CustomDialog); //Here I get an error: The constructor ProgressDialog(PFragment) is undefined
+                //progressDialog = new ProgressDialog(context,R.style.CustomDialog); //Here I get an error: The constructor ProgressDialog(PFragment) is undefined
+                progressDialog = new ProgressDialog(context); //Here I get an error: The constructor ProgressDialog(PFragment) is undefined
                 progressDialog.setMessage("Loading stuff...");
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 progressDialog.setTitle(title);
                 // set the drawable as progress drawable
-                progressDialog.setProgressDrawable(draw);
+                //progressDialog.setProgressDrawable(draw);
                 //progressDialog.setIndeterminate(true);
                 progressDialog.setCancelable(false);
             }

@@ -112,12 +112,9 @@ public final class Modulation extends ModulationCommon {
             if (pcbAmpEmitter != null && spatial != null) {
                 Node clone = (Node)outputSignal.clone();
                 
-                scenarioCommon.modulateFMorAM(clone, spatial, isFM);
-                
                 clone.attachChild(spatial);
                 
-                clone.getChild(0).move(0.0f,clone.getChild(0).getLocalScale().y,0.0f);
-                clone.getChild(1).move(0.0f,clone.getChild(0).getLocalScale().y,0.0f);
+                scenarioCommon.modulateFMorAM(clone, spatial, isFM);
                 
                 pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(clone);
                 clone.setUserData("CarrierShape", outputSignal.getChild(0).getName());

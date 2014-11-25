@@ -24,6 +24,8 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.utils.AppLogger;
+
 import java.util.List;
 
 /**
@@ -83,7 +85,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         this.attachChild(scene);
 
         //scene.setLocalRotation(new Quaternion().fromAngleAxis(-pi/2f, Vector3f.UNIT_Y)); //nope, its Chuck Testa!
-        scene.setLocalScale(1.5f);
+        //scene.setLocalScale(1.5f);
         
         // Get the handles of the emitters
         Spatial pathInHandle = scene.getChild("Handle.In");
@@ -168,11 +170,11 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
                 timeBuffer += 1;
             }
             if (this.isFirst){
-                nobAngle = (lastAngle + (trackableAngle+2*pi - initialAngle)) % (2*pi);
+                nobAngle = (lastAngle + (trackableAngle+(2*pi) - initialAngle)) % (2*pi);
                 //System.out.println("nobAngle :"+nobAngle+"\t initialAngle :"+initialAngle + "\t trackableAngle :"+trackableAngle+"\t lastAngle :"+lastAngle);
             }
             else{
-                nobAngle = (lastAngle + (trackableAngle+2*pi - initialAngle)) % (2*pi);
+                nobAngle = (lastAngle + (trackableAngle+(2*pi) - initialAngle)) % (2*pi);
                 //System.out.println("nobAngle :"+nobAngle+"\t initialAngle :"+initialAngle + "\t trackableAngle :"+trackableAngle+"\t lastAngle :"+lastAngle);
             }
         }
@@ -233,22 +235,22 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
               
         this.cubeSignal = new Node();
         this.cubeSignal.attachChild(carrier[0].clone());
+        this.cubeSignal.attachChild(baseGeom);
         scenarioCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
-        this.cubeSignal.attachChild(baseGeom.clone());
         this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
         this.cubeSignal.setUserData("isFM", isFM);
         
         this.pyramidSignal = new Node();
         this.pyramidSignal.attachChild(carrier[0].clone());
+        this.pyramidSignal.attachChild(baseGeom);
         scenarioCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
-        this.pyramidSignal.attachChild(baseGeom.clone());
         this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
         this.pyramidSignal.setUserData("isFM", isFM);
        
         this.dodecagoneSignal = new Node();
         this.dodecagoneSignal.attachChild(carrier[0].clone());
+        this.dodecagoneSignal.attachChild(baseGeom);
         scenarioCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
-        this.dodecagoneSignal.attachChild(baseGeom.clone());
         this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
         this.dodecagoneSignal.setUserData("isFM", isFM);
         
@@ -264,6 +266,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         Node node = new Node();
         Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
         node.attachChild(newCarrier.clone());
+        node.attachChild(baseGeom);
         List<Spatial> lst = scenarioCommon.generateModulatedWaves(
                node , baseGeom, isFm, 10,scenarioCommon.minBaseParticleScale ,scenarioCommon.maxBaseParticleScale);
         
@@ -280,13 +283,13 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         float stepRange = 2f*pi / 3f;
         float deltaAngle = stepRange*0.25f/2f;
 
-        if (Angle <= stepRange + deltaAngle && Angle >= stepRange - deltaAngle) {
+        if (Angle <= stepRange + deltaAngle - pi/2f && Angle >= stepRange - deltaAngle - pi/2f) {
             frequency = 1;
             this.carrier = "CubeCarrier";
-        } else if (Angle <= 2 * stepRange + deltaAngle && Angle >= 2 * stepRange - deltaAngle) {
+        } else if (Angle <= 2 * stepRange + deltaAngle - pi/2f && Angle >= 2 * stepRange - deltaAngle - pi/2f) {
             frequency = 2;
             this.carrier = "PyramidCarrier";
-        } else if (Angle <= 3 * stepRange + deltaAngle && Angle >= 3 * stepRange - deltaAngle) {
+        } else if (Angle <= 3 * stepRange + deltaAngle - pi/2f && Angle >= 3 * stepRange - deltaAngle - pi/2f) {
             frequency = 3;
             this.carrier = "DodecagoneCarrier";
         } else {
@@ -303,15 +306,15 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
 
         switch(frequency) {
             case 1:
-                filterWheel.setLocalRotation(rot.fromAngleAxis(stepAngle,Vector3f.UNIT_Y));
+                filterWheel.setLocalRotation(rot.fromAngleAxis(stepAngle-pi/2f,Vector3f.UNIT_Y));
                 break;
             case 2:
-                filterWheel.setLocalRotation(rot.fromAngleAxis(2*stepAngle,Vector3f.UNIT_Y));
+                filterWheel.setLocalRotation(rot.fromAngleAxis(2*stepAngle-pi/2f,Vector3f.UNIT_Y));
                 break;
             case 3:
-                filterWheel.setLocalRotation(rot.fromAngleAxis(3*stepAngle,Vector3f.UNIT_Y));
+                filterWheel.setLocalRotation(rot.fromAngleAxis(3*stepAngle-pi/2f,Vector3f.UNIT_Y));
                 break;
-            case 4:
+            default:
                 filterWheel.setLocalRotation(rot.fromAngleAxis(nobAngle,Vector3f.UNIT_Y));
                 break;
         }

@@ -12,13 +12,14 @@
             android:layout_height="match_parent"
             android:id="@+id/credits_layout"
             android:orientation="vertical"
+            style="@style/CreditsTopPadding"
             android:paddingBottom="100dp"
             android:descendantFocusability="blocksDescendants">
 
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_gravity="center"
-                  android:textSize="50sp"
+                  style="@style/Credits"
                   android:layout_marginBottom="10dp"
                   android:text="@string/Credits"/>
 
@@ -165,8 +166,8 @@
                 <ImageView style="@style/ImageSize"
                            android:layout_gravity="center"
                            android:scaleType="fitCenter"
-                           android:scaleX="0.5"
-                           android:scaleY="0.5"
+                           android:scaleX="0.75"
+                           android:scaleY="0.75"
                            android:layout_marginLeft="10dp"
                            android:layout_marginRight="10dp"
                            android:src="@drawable/blender"/>

@@ -113,8 +113,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         scene.setName("Modulation_Demodulation");
         this.attachChild(scene);
 
-        scene.setLocalTranslation(new Vector3f(2.5f, 0.0f, 0.5f));
-
         // Get the handles of the emitters
         Spatial pathInHandle = scene.getChild("Handle.Module.In");
         Spatial pathCarrierHandle = scene.getChild("Handle.Generator");
@@ -164,8 +162,8 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         turnButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
 
-        initAngleSwitch.fromAngleAxis(0.45f, Vector3f.UNIT_X);
-        endAngleSwitch.fromAngleAxis(-0.45f, Vector3f.UNIT_X);
+        initAngleSwitch.fromAngleAxis(0.45f, Vector3f.UNIT_Z);
+        endAngleSwitch.fromAngleAxis(-0.45f, Vector3f.UNIT_Z);
 
         Spatial[] geom = ScenarioCommon.initCarrierGeometries();
         dodecagoneCarrier = geom[0];
@@ -267,7 +265,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     private void turnTunerButton(float ZXangle) {
 
         Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
+        rot.fromAngleAxis(ZXangle-pi/2f, Vector3f.UNIT_Y);
         turnButton.setLocalRotation(rot);
     }
 

@@ -128,13 +128,13 @@ public final class SoundEmission extends Scenario {
             this.guitarEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
             this.guitarEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
             this.guitarEmitter.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
-            this.guitarEmitter.addControl(new SoundControl("Sounds/guitar.wav",false,5));
+            this.guitarEmitter.addControl(new SoundControl("Sounds/guitar.ogg",false,5));
 
             this.drumEmitter.addControl(new AirParticleEmitterControl(this.destinationHandle, 10f, 19f, mat2, AirParticleEmitterControl.AreaType.DOME));
             this.drumEmitter.getControl(ParticleEmitterControl.class).registerObserver(microphoneControl);
             this.drumEmitter.getControl(ParticleEmitterControl.class).setEnabled(true);
             this.drumEmitter.addControl(new PatternGeneratorControl((float) 0.05, soundParticle, 1, 1, 1, false));
-            this.drumEmitter.addControl(new SoundControl("Sounds/drum_taiko.wav",false,5));
+            this.drumEmitter.addControl(new SoundControl("Sounds/drum_taiko.ogg",false,5));
         }
         
         this.spotlight = ScenarioCommon.spotlightFactory();

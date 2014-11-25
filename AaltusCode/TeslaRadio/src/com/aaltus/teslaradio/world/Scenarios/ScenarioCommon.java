@@ -109,6 +109,8 @@ public class ScenarioCommon {
         if (!isFm) {
             float scale = 1.25f;
             clone.getChild(0).setLocalScale(spatial.getLocalScale().mult(scale));
+            clone.getChild(0).move(0.0f,clone.getChild(0).getLocalScale().y,0.0f);
+            clone.getChild(1).move(0.0f,clone.getChild(0).getLocalScale().y,0.0f);
         } else {
             float scaleFactor = 1.25f;
             float midScaleValue = (minBaseParticleScale + maxBaseParticleScale)/2.0f;
@@ -135,10 +137,10 @@ public class ScenarioCommon {
 
             //System.out.println("New FM signal scale : " + scaleFM.toString());
             clone.getChild(0).setLocalScale(scaleFM);
+            clone.getChild(0).move(0.0f,clone.getChild(0).getLocalScale().y,0.0f);
+            clone.getChild(1).move(0.0f,clone.getChild(0).getLocalScale().y,0.0f);
             //clone.scale(0.5f);
-        }
-        clone.attachChild(spatial);
-      
+        }      
     }
     
     public static Node spotlightFactory() {

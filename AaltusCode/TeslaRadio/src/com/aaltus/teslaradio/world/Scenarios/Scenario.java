@@ -262,6 +262,9 @@ public abstract class Scenario extends Node implements SignalObserver {
                case IPOD:
                    this.startAutoGeneration();
                    break;
+               case SCENARIO_SWITCH:
+               case NOSOUND:
+                   break;
                default:
                    this.stopAutoGeneration();
                    dgsc.setNextInstrument(value);

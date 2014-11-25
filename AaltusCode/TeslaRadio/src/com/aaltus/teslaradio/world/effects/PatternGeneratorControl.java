@@ -36,7 +36,7 @@ public class PatternGeneratorControl extends AbstractControl {
     protected float minScale;
     protected int   scaleStep;
     protected int   waveIterator;
-    protected Future autoPlayThread;
+    protected Future autoPlayThread = null;
     private  boolean isRandom;
     private int particlePerAutoWave;
     private String id;
@@ -109,6 +109,7 @@ public class PatternGeneratorControl extends AbstractControl {
      * @param particlePerWave particle per wave
      */
     public void startAutoPlay(float delay, int particlePerWave){
+        this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, false);
         if(this.autoPlayThread == null){
             if(delay < this.minWaveDelay){
                 delay = this.minWaveDelay;
