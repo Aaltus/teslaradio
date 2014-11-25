@@ -4,7 +4,7 @@
     <item android:drawable="@drawable/button_bg">
     </item>
     <item>
-        <bitmap android:src="@drawable/browser"
+        <bitmap android:src="@drawable/info"
                 android:gravity="fill" />
     </item>
 </layer-list>
