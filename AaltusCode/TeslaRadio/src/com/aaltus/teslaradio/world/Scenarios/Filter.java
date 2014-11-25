@@ -85,7 +85,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         this.attachChild(scene);
 
         //scene.setLocalRotation(new Quaternion().fromAngleAxis(-pi/2f, Vector3f.UNIT_Y)); //nope, its Chuck Testa!
-        scene.setLocalScale(1.5f);
+        //scene.setLocalScale(1.5f);
         
         // Get the handles of the emitters
         Spatial pathInHandle = scene.getChild("Handle.In");
@@ -235,6 +235,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
               
         this.cubeSignal = new Node();
         this.cubeSignal.attachChild(carrier[0].clone());
+        this.cubeSignal.attachChild(baseGeom);
         scenarioCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
         this.cubeSignal.attachChild(baseGeom.clone());
         this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
@@ -242,6 +243,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         
         this.pyramidSignal = new Node();
         this.pyramidSignal.attachChild(carrier[0].clone());
+        this.pyramidSignal.attachChild(baseGeom);
         scenarioCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
         this.pyramidSignal.attachChild(baseGeom.clone());
         this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
@@ -249,6 +251,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
        
         this.dodecagoneSignal = new Node();
         this.dodecagoneSignal.attachChild(carrier[0].clone());
+        this.dodecagoneSignal.attachChild(baseGeom);
         scenarioCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
         this.dodecagoneSignal.attachChild(baseGeom.clone());
         this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
@@ -266,6 +269,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         Node node = new Node();
         Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
         node.attachChild(newCarrier.clone());
+        node.attachChild(baseGeom);
         List<Spatial> lst = scenarioCommon.generateModulatedWaves(
                node , baseGeom, isFm, 10,scenarioCommon.minBaseParticleScale ,scenarioCommon.maxBaseParticleScale);
         
