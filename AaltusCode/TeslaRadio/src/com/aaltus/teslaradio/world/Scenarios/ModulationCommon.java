@@ -267,7 +267,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     private void turnTunerButton(float ZXangle) {
 
         Quaternion rot = new Quaternion();
-        rot.fromAngleAxis(ZXangle, Vector3f.UNIT_Y);
+        rot.fromAngleAxis(ZXangle-pi/2f, Vector3f.UNIT_Y);
         turnButton.setLocalRotation(rot);
     }
 
