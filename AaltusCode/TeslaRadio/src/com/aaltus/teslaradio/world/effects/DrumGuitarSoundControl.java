@@ -18,8 +18,8 @@ public class DrumGuitarSoundControl extends SoundControl {
     private AudioNode drum;
     public DrumGuitarSoundControl() {
         super();
-        this.guitar = new AudioNode(AppGetter.getAssetManager(),"Sounds/guitar.wav");
-        this.drum = new AudioNode(AppGetter.getAssetManager(),"Sounds/drum_taiko.wav");
+        this.guitar = new AudioNode(AppGetter.getAssetManager(),"Sounds/guitar.ogg");
+        this.drum = new AudioNode(AppGetter.getAssetManager(),"Sounds/drum_taiko.ogg");
         this.audio = guitar;
         this.volume = 3;
     }
