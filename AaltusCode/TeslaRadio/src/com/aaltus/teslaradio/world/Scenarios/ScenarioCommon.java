@@ -109,6 +109,7 @@ public class ScenarioCommon {
         if (!isFm) {
             float scale = 1.25f;
             clone.getChild(0).setLocalScale(spatial.getLocalScale().mult(scale));
+            clone.getChild(1).setLocalScale(spatial.getLocalScale().mult(scale));
             clone.getChild(0).move(0.0f,clone.getChild(0).getLocalScale().y,0.0f);
             clone.getChild(1).move(0.0f,clone.getChild(0).getLocalScale().y,0.0f);
         } else {
@@ -137,6 +138,7 @@ public class ScenarioCommon {
 
             //System.out.println("New FM signal scale : " + scaleFM.toString());
             clone.getChild(0).setLocalScale(scaleFM);
+            clone.getChild(1).setLocalScale(scaleFM);
             clone.getChild(0).move(0.0f,clone.getChild(0).getLocalScale().y,0.0f);
             clone.getChild(1).move(0.0f,clone.getChild(0).getLocalScale().y,0.0f);
             //clone.scale(0.5f);
@@ -197,7 +199,7 @@ public class ScenarioCommon {
             baseParticle.setLocalScale(minScale+i*scale);
             clone.setUserData(AppGetter.USR_SCALE, minScale+i*scale);
             this.modulateFMorAM(clone, baseParticle.clone(), isFm);
-           
+        
             clone.setUserData("CarrierShape", baseNode.getChild(0).getName());
             clone.setUserData("isFM", isFm);
             lst.add(clone);
