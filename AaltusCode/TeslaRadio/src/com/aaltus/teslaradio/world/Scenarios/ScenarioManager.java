@@ -513,7 +513,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                     Node scenario = getCurrentScenario().getScenarios().get(count);
                     if(count == 0 ){
                         ((Scenario) scenario.getChild(0)).onFirstNodeActions();
-                        this.onAudioOptionTouched(AudioOptionEnum.SCENARIO_SWITCH);
+                       
                     }
                     if(count == 1){
                         ((Scenario) scenario.getChild(0)).onSecondNodeActions();
@@ -543,6 +543,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
             androidActivityController.setTutorialMenu(scenarioEnum);
         }
         //updateGuiNavigationArrows();
+        this.onAudioOptionTouched(AudioOptionEnum.SCENARIO_SWITCH);
         
     }
     
