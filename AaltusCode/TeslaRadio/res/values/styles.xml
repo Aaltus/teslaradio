@@ -23,6 +23,10 @@
         <!--<item name="android:textSize">10sp</item>-->
 
     </style>
+    <!--Credits-->
+    <style name="Credits">
+        <item name="android:textSize">50dp</item>
+    </style>
     <!--Credits titles text style-->
     <style name="CreditsTitlesStyle">
         <item name="android:textSize">30sp</item>
@@ -43,6 +47,10 @@
     <style name="CreditsImageStyle">
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginBottom">15dp</item>
+    </style>
+    <!--Credits top padding-->
+    <style name="CreditsTopPadding">
+        <item name="android:paddingTop">350dp</item>
     </style>
     <style name="InformativeMenuImageViewStyle">
         <item name="android:background">@drawable/imageview_bg</item>
