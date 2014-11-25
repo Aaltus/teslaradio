@@ -88,16 +88,19 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     }
     @Override
     public void onAudioOptionTouched(AudioOptionEnum value) {
-     ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).onAudioOptionTouched(value);
+     Boolean isAttached =  AppGetter.hasRootNodeAsAncestor(this.getCurrentScenario().getScenarios().get(0).getChild(0));
+     
      Boolean needBgm = ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).getNeedsBackgroundSound();
-     if(!needBgm || value == AudioOptionEnum.NOSOUND){
+     if(!needBgm || value == AudioOptionEnum.NOSOUND || !isAttached){
          this.songManager.stopSong();
      }else if(value == AudioOptionEnum.IPOD) {
             this.songManager.ipodTouched();
+            ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).onAudioOptionTouched(value);
      }else if(value == AudioOptionEnum.SCENARIO_SWITCH){
             this.songManager.playSong();
      }else{
             this.songManager.stopSong(false);
+            ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).onAudioOptionTouched(value);
      }
 
     }
