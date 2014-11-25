@@ -103,7 +103,7 @@ public class TrackableManager extends AbstractControl {
                         this.wasSongStop = false;
                         this.songManager.onAudioOptionTouched(AudioOptionEnum.IPOD);
                     }
-                }else if(!this.wasSongStop){
+                }else{
                     this.songManager.onAudioOptionTouched(AudioOptionEnum.NOSOUND);
                     this.wasSongStop = true;
                 }
