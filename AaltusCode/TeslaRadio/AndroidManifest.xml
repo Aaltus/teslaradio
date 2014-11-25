@@ -36,6 +36,7 @@
           android:label="@string/app_name"
           android:theme="@style/AppBaseTheme"
           android:name="com.utils.ACRAApplication"
+          android:largeHeap="true"
               >
           <!--android:theme="@style/AppTheme" >-->
 
