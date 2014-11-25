@@ -67,7 +67,6 @@ public class SoundControl extends AbstractControl {
        
       if(this.spatial.getUserData(AppGetter.USR_NEW_WAVE_TOGGLED) ){
            float scale = this.spatial.getUserData(AppGetter.USR_NEXT_WAVE_SCALE);
-           AppLogger.getInstance().e("SoundControl", ((Float)scale).toString());
            this.audio.setVolume(scale * (this.volume ) );
            this.audio.playInstance();
            this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, false);

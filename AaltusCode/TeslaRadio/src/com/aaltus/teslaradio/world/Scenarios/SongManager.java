@@ -9,7 +9,6 @@ import com.aaltus.teslaradio.subject.SongEnum;
 import com.aaltus.teslaradio.world.effects.NoiseControl;
 import com.aaltus.teslaradio.world.effects.BackgroundSoundControl;
 import com.jme3.scene.Node;
-import com.utils.AppLogger;
 
 import java.util.EnumMap;
 
