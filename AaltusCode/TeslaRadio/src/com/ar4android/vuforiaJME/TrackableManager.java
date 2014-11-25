@@ -101,7 +101,7 @@ public class TrackableManager extends AbstractControl {
                 if(isEnoughTrackableIsVisible(1)){
                     if(this.wasSongStop){
                         this.wasSongStop = false;
-                        this.songManager.onAudioOptionTouched(AudioOptionEnum.IPOD);
+                        this.songManager.onAudioOptionTouched(AudioOptionEnum.SCENARIO_SWITCH);
                     }
                 }else{
                     this.songManager.onAudioOptionTouched(AudioOptionEnum.NOSOUND);
