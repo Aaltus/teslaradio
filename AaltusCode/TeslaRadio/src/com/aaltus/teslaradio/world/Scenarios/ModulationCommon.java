@@ -113,8 +113,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         scene.setName("Modulation_Demodulation");
         this.attachChild(scene);
 
-        scene.setLocalTranslation(new Vector3f(2.5f, 0.0f, 0.5f));
-
         // Get the handles of the emitters
         Spatial pathInHandle = scene.getChild("Handle.Module.In");
         Spatial pathCarrierHandle = scene.getChild("Handle.Generator");

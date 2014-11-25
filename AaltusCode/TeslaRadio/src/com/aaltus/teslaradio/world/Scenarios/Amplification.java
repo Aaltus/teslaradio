@@ -95,9 +95,6 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
         scene = (Node) assetManager.loadModel("Models/Amplification/Antenne_Tx.j3o");
         scene.setName("Amplification");
         this.attachChild(scene);
-        scene.setLocalTranslation(new Vector3f(0.5f, 0.0f, 1.7f));
-
-        //initTitleBox();
         
         // Get the handles of the emitters
         pathInputAmpli = scene.getChild("Module.Handle.In");
