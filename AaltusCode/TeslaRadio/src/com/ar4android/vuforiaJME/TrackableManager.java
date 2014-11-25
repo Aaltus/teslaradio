@@ -1,6 +1,7 @@
 package com.ar4android.vuforiaJME;
 
-import com.jme3.animation.Track;
+import com.aaltus.teslaradio.subject.AudioOptionEnum;
+import com.aaltus.teslaradio.world.Scenarios.ISongManager;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -34,8 +35,15 @@ public class TrackableManager extends AbstractControl {
     }
 
     private ITrackableAlertToast iTrackableAlertToast;
+    private ISongManager songManager;
+    private boolean wasSongStop = false;
+
     public void setiTrackableAlertToast(ITrackableAlertToast iTrackableAlertToast) {
         this.iTrackableAlertToast = iTrackableAlertToast;
+    }
+
+    public void setSongManager(ISongManager songManager){
+        this.songManager = songManager;
     }
 
     public TrackableManager()
@@ -88,6 +96,17 @@ public class TrackableManager extends AbstractControl {
             timeOfTheLastVerification = currentTime;
             if(this.iTrackableAlertToast != null){
                 this.iTrackableAlertToast.showTrackableAlertToast(!isEnoughTrackableIsVisible(1));
+            }
+            if(this.songManager != null){
+                if(isEnoughTrackableIsVisible(1)){
+                    if(this.wasSongStop){
+                        this.wasSongStop = false;
+                        this.songManager.onAudioOptionTouched(AudioOptionEnum.IPOD);
+                    }
+                }else{
+                    this.songManager.onAudioOptionTouched(AudioOptionEnum.NOSOUND);
+                    this.wasSongStop = true;
+                }
             }
         }
     }

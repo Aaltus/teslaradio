@@ -289,19 +289,7 @@ public class VuforiaJMEState extends AbstractAppState implements ICameraUpdater
     }
     public void setTrackableVisibleNative(int id, int isTrackableVisible)
     {
-        boolean isVisible = false;
-        if(isTrackableVisible != 0)
-        {
-            isVisible = true;
-        }
-        try{
-            this.rootNode.getControl(TrackableManager.class).updateVisibility(id, isVisible);
-        }catch (Exception e)
-        {
-            System.out.println(e);
-        }
-
-
+        this.rootNode.getControl(TrackableManager.class).updateVisibility(id, isTrackableVisible == 0 ? false:true);
     }
 
     // This method retrieves the preview images from the Android world and puts them into a JME image.
