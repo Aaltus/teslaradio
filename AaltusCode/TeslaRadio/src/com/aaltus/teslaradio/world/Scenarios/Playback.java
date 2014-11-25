@@ -115,13 +115,15 @@ public final class Playback extends Scenario implements EmitterObserver {
         speakerEmitter1 = new Node();
         speakerEmitter1.setLocalTranslation(speaker1HandleOut.getLocalTranslation().add(scene.getLocalTranslation()));
         Quaternion quat = new Quaternion();
-        quat.fromAngleAxis(3*pi/2, Vector3f.UNIT_Z);
+        quat.fromAngles(pi/2, 5.66f, 0);
         speakerEmitter1.setLocalRotation(quat);
         scene.attachChild(speakerEmitter1);
         
         speakerEmitter2 = new Node();
         speakerEmitter2.setLocalTranslation(speaker2HandleOut.getLocalTranslation().add(scene.getLocalTranslation()));
-        speakerEmitter2.setLocalRotation(quat);
+        Quaternion quat2 = new Quaternion();
+        quat2.fromAngles(pi/2, 0.50f, 0);
+        speakerEmitter2.setLocalRotation(quat2);
         scene.attachChild(speakerEmitter2);
                
         Node pathIn = (Node) scene.getChild("NurbsPath.002");
