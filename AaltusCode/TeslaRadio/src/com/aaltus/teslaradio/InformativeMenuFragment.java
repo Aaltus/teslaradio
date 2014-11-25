@@ -28,8 +28,8 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         ItemListFragment.Callbacks,
         ItemDetailFragment.OnClickDetailFragmentListener,
         ITutorialSwitcher,
-        MultiDirectionSlidingDrawer.OnDrawerOpenListener,
-        MultiDirectionSlidingDrawer.OnDrawerCloseListener,
+        //MultiDirectionSlidingDrawer.OnDrawerOpenListener,
+        //MultiDirectionSlidingDrawer.OnDrawerCloseListener,
         ViewPager.OnPageChangeListener
 
 {
@@ -71,10 +71,9 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     {
         AppLogger.getInstance().d(TAG, "Initialize Top Layout");
         View myView  = inflater.inflate(R.layout.vuforia_jme_overlay_layout, null, false);
-        drawerLayout = (MultiDirectionSlidingDrawer)myView.findViewById(R.id.informative_menu_drawer);
-
-        drawerLayout.setOnDrawerOpenListener(this);
-        drawerLayout.setOnDrawerCloseListener(this);
+        //drawerLayout = (MultiDirectionSlidingDrawer)myView.findViewById(R.id.informative_menu_drawer);
+        //drawerLayout.setOnDrawerOpenListener(this);
+        //drawerLayout.setOnDrawerCloseListener(this);
 
         myView.findViewById(R.id.previous_scenario_button).setOnClickListener(this);
         myView.findViewById(R.id.next_scenario_button).setOnClickListener(this);
@@ -137,7 +136,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         TutorialFragment tutorialFragment =  new TutorialFragment();
         tutorialFragment.setTutorialSwitcher(this);
         //ft.hide(fragment);
-        ft.replace(R.id.item_list_fragment_vuforia, fragment, ITEM_LIST_FRAGMENT_TAG);
+        //ft.replace(R.id.item_list_fragment_vuforia, fragment, ITEM_LIST_FRAGMENT_TAG);
         ft.replace(R.id.tutorial_fragment, tutorialFragment, TUTORIAL_FRAGMENT_TAG);
 
         ft.commit();
@@ -153,9 +152,11 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
         FragmentManager fm = getChildFragmentManager();//getSupportFragmentManager();
 
+        View infoButton     = getView().findViewById(R.id.camera_toggle_info_button);
+        infoButton.setOnClickListener(this);
         //For the old code
         /*Button languageButton = (Button) getView().findViewById(R.id.camera_toggle_language_button);
-        Button infoButton     = (Button) getView().findViewById(R.id.camera_toggle_info_button);
+
 
         //Replace the current language button to show the current choosed locale language
         int drawableToGet = 0;
@@ -183,7 +184,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
 
         languageButton.setOnClickListener(this);
-        infoButton.setOnClickListener(this);
+
         */
 
         //Hi Jimbo myself, Hope you feel great, I commented because people asked me to hide
@@ -232,7 +233,8 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
     public boolean isListFragmentsVisible()
     {
-        return drawerLayout.isOpened();
+        return false;
+        //return drawerLayout.isOpened();
         /*
         FragmentManager fm                = getChildFragmentManager(); //getSupportFragmentManager();s
         ItemListFragment listFragment     = (ItemListFragment) fm.findFragmentByTag(ITEM_LIST_FRAGMENT_TAG);
@@ -358,7 +360,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
                 break;
             case R.id.next_scenario_button:
                 if(pager.getCurrentItem() < pager.getChildCount()-1){
-                    pager.setCurrentItem(pager.getCurrentItem()+1);
+                    pager.setCurrentItem(pager.getCurrentItem());
                 }
                 //this.scenarioSwitcher.setNextScenario();
                 break;
@@ -389,6 +391,31 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
                 }
                 break;
             */
+            case R.id.camera_toggle_info_button:
+                /*
+                if(isListFragmentsVisible()){
+
+                    toggleItemListVisibility(false);
+                    if(!isDetailFragmentsVisible()){
+                        toggleTutorialVisibility(true);
+                    }
+                }
+                else{
+                    toggleItemListVisibility(true);
+                    toggleTutorialVisibility(false);
+                }
+                */
+                //toggleDetailFragmentVisibility(!isDetailFragmentsVisible());
+                if(isDetailFragmentsVisible()){
+                    toggleDetailFragmentVisibility(false);
+                }
+                else{
+                    replaceDetailFragment(pager.getCurrentItem());
+                    toggleDetailFragmentVisibility(true);
+                }
+
+                break;
+
             default:
                 break;
         }
@@ -436,13 +463,14 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
     public void toggleItemListVisibility(boolean showFragment)
     {
-
+        /*
         if(showFragment){
             drawerLayout.animateOpen();
         }
         else{
             drawerLayout.animateClose();
         }
+        */
 
 
         /*
@@ -537,8 +565,8 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
             else
             {
                 Log.d(TAG,"Hiding detail fragment");
-                //ft.hide(fragmentDetail);
-                ft.remove(fragmentDetail);
+                ft.hide(fragmentDetail);
+                //ft.remove(fragmentDetail);
 
             }
             ft.commit();
@@ -558,6 +586,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         return getTutorialFragment().getCharacterHeightInPixel();
     }
 
+    /*
     @Override
     public void onDrawerClosed() {
         if(!isDetailFragmentsVisible()){
@@ -573,6 +602,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         toggleTutorialVisibility(false);
         audioWhenFragmentVisible(false);
     }
+    */
 
     @Override
     public void onPageScrolled(int i, float v, int i2) {}
@@ -582,7 +612,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         if(scenarioSwitcher != null){
 
             scenarioSwitcher.setScenarioByEnum(SubjectContent.ITEMS.get(i).getScenarioEnum());
-            ((TextView)getView().findViewById(R.id.picto_title)).setText(SubjectContent.ITEMS.get(i+1).getTitle());
+            ((TextView)getView().findViewById(R.id.picto_title)).setText(SubjectContent.ITEMS.get(i).getTitle());
         }
     }
 

@@ -88,16 +88,19 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     }
     @Override
     public void onAudioOptionTouched(AudioOptionEnum value) {
-     ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).onAudioOptionTouched(value);
+     Boolean isAttached =  AppGetter.hasRootNodeAsAncestor(this.getCurrentScenario().getScenarios().get(0).getChild(0));
+     
      Boolean needBgm = ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).getNeedsBackgroundSound();
-     if(!needBgm || value == AudioOptionEnum.NOSOUND){
+     if(!needBgm || value == AudioOptionEnum.NOSOUND || !isAttached){
          this.songManager.stopSong();
      }else if(value == AudioOptionEnum.IPOD) {
             this.songManager.ipodTouched();
+            ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).onAudioOptionTouched(value);
      }else if(value == AudioOptionEnum.SCENARIO_SWITCH){
             this.songManager.playSong();
      }else{
             this.songManager.stopSong(false);
+            ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).onAudioOptionTouched(value);
      }
 
     }
@@ -254,47 +257,47 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         List<Node> soundCaptureList = new ArrayList<Node>();
         soundCaptureList.add(soundEmissionNode);
         soundCaptureList.add(soundCaptureNode);
-        scenarioList.addScenario(ScenarioEnum.SOUNDEMISSION,soundCaptureList);
+        scenarioList.addScenario(ScenarioEnum.SOUNDCAPTURE,soundCaptureList);
         
         //Add second scenario
         List<Node> modulationList = new ArrayList<Node>();
         modulationList.add(soundCaptureNode);
         modulationList.add(modulationNode);
-        scenarioList.addScenario(ScenarioEnum.SOUNDCAPTURE,modulationList);
+        scenarioList.addScenario(ScenarioEnum.MODULATION,modulationList);
         
         //Add third scenario
         List<Node> amplificationList = new ArrayList<Node>();
         amplificationList.add(modulationNode);
         amplificationList.add(amplificationNode);
-        scenarioList.addScenario(ScenarioEnum.MODULATION,amplificationList);
+        scenarioList.addScenario(ScenarioEnum.TRANSMIT,amplificationList);
         
         //Add four scenario
         List<Node> receptionList = new ArrayList<Node>();
         receptionList.add(amplificationNode);
         receptionList.add(receptionNode);
-        scenarioList.addScenario(ScenarioEnum.TRANSMIT,receptionList);
+        scenarioList.addScenario(ScenarioEnum.RECEPTION,receptionList);
         
         //Add fifth scenario
         List<Node> filterList = new ArrayList<Node>();
         filterList.add(receptionNode);
         filterList.add(filterNode);
-        scenarioList.addScenario(ScenarioEnum.RECEPTION,filterList);
+        scenarioList.addScenario(ScenarioEnum.FILTER,filterList);
         
         //Add sixth scenario
         List<Node> demodulationList = new ArrayList<Node>();
         demodulationList.add(filterNode);
         demodulationList.add(demodulationNode);
-        scenarioList.addScenario(ScenarioEnum.FILTER,demodulationList);
+        scenarioList.addScenario(ScenarioEnum.DEMODULATION,demodulationList);
         
         //Add last scenario
         List<Node> playbackList = new ArrayList<Node>();
         playbackList.add(demodulationNode);
         playbackList.add(playbackNode);
-        scenarioList.addScenario(ScenarioEnum.DEMODULATION,playbackList);
+        scenarioList.addScenario(ScenarioEnum.PLAYBACK,playbackList);
         
 
         
-        setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDEMISSION));
+        setCurrentScenario(scenarioList.getScenarioListByEnum(ScenarioEnum.SOUNDCAPTURE));
 
         setNodeList(node);
 
