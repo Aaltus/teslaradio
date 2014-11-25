@@ -102,8 +102,14 @@
     <string name="screen_credits_button">Crédits</string>
     <string name="screen_exit_button">Quitter</string>
     <string name="toast_no_trackable_seen">Pointe sur les cibles!</string>
-    <string name="master_tutorial_ok_button">Continuer</string>
-    <string name="master_tutorial_cancel_button">Quitter</string>
+    <string name="master_tutorial_next_button1">Continuer</string>
+    <string name="master_tutorial_next_button2">Continuer</string>
+    <string name="master_tutorial_next_button3">Continuer</string>
+    <string name="master_tutorial_next_button4">Continuer</string>
+    <string name="master_tutorial_previous_button1">Retour</string>
+    <string name="master_tutorial_previous_button2">Retour</string>
+    <string name="master_tutorial_previous_button3">Retour</string>
+    <string name="master_tutorial_previous_button4">Retour</string>
     <string name="previous_scenario_button">Previous</string>
     <string name="next_scenario_button">Next</string>
 
