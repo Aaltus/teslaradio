@@ -34,7 +34,7 @@ public class SongManager {
         songMap.put(SongEnum.ELEK, song2);
         songMap.put(SongEnum.ROCK,song3);
         songMap.put(SongEnum.NOISE, noise);
-        selectedSong = SongEnum.CLASSIC;
+        selectedSong = SongEnum.ELEK;
         
         audioNode = new Node();
         audioNode.addControl(noise);
@@ -42,8 +42,8 @@ public class SongManager {
         audioNode.addControl(song2);
         audioNode.addControl(song3);
         
-        song1.setEnabled(true);
-        song2.setEnabled(false);
+        song1.setEnabled(false);
+        song2.setEnabled(true);
         song3.setEnabled(false);
         
         noise.updateNoiseLevel(0);
