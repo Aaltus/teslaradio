@@ -72,6 +72,7 @@ public class MasterTutorialFragment extends DialogFragment implements
         nextButton.setOnClickListener(this);
         previousButton     = (Button)view.findViewById(R.id.master_tutorial_previous_button);
         previousButton.setOnClickListener(this);
+        view.findViewById(R.id.master_tutorial_skip_button).setOnClickListener(this);
 
         /*
         View cancelButton     = view.findViewById(R.id.master_tutorial_cancel_button);
@@ -129,6 +130,9 @@ public class MasterTutorialFragment extends DialogFragment implements
                 else{
                     mPager.setCurrentItem(mPager.getCurrentItem()-1);
                 }
+                break;
+            case R.id.master_tutorial_skip_button:
+                this.onMasterTutorialListener.onContinueEvent();
                 break;
         }
     }
