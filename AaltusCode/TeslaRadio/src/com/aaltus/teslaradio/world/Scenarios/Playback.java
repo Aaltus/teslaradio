@@ -334,7 +334,9 @@ public final class Playback extends Scenario implements EmitterObserver {
         }
         
         /*TR-261 apparently we don't want this, but in this scenario we want! */
+        if(this.scenarioCommon.getNoiseControl().getNoiseLevel() == 0){
         this.updateVolume(ampliScale);
+        }
 
     }
 
@@ -450,6 +452,13 @@ public final class Playback extends Scenario implements EmitterObserver {
                     break;
             }
         }
+    }
+    
+    @Override
+    public void onSecondNodeActions(){
+        super.onSecondNodeActions();
+        this.updateNoise(0f);
+        this.updateVolume(ampliScale);
     }
     
 }

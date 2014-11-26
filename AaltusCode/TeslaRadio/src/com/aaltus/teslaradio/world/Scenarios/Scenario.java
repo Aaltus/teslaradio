@@ -67,8 +67,7 @@ public abstract class Scenario extends Node implements SignalObserver {
     
     // this is PIIIIIII! (kick persian)
     protected final float pi = (float) FastMath.PI;
-    
-    protected NoiseControl noiseControl = null;
+
     
     public void setCamera(Camera cam){
         this.Camera = cam;

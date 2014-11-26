@@ -109,20 +109,16 @@ public class Demodulation extends ModulationCommon  {
    @Override
     public void emitterObserverUpdate(Spatial spatial, String notifierId) {
         if (notifierId.equals("WirePCBEmitter")) {
-
             if (pcbAmpEmitter != null && spatial != null){ 
                if( selectedCarrier.getName().equals(((Node)spatial).getChild(0).getName()) 
                     && spatial.getUserData("isFM").equals(isFM)) {
                 
                     ((Node)spatial).getChild(1).setLocalScale(((Node)spatial).getChild(1).getWorldScale());
                     pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(((Node)spatial).getChild(1));
-                    if(!this.isFirst){
-                        this.updateNoise(0f);
-                    }
+                    this.updateNoise(0f);  
                 }
                else{
-                   this.updateNoise(1);
-                 
+                   this.updateNoise(1f);
                }
             }
             

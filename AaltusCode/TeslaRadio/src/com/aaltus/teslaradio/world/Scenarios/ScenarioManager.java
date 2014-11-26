@@ -90,18 +90,34 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     @Override
     public void onAudioOptionTouched(AudioOptionEnum value) {
      Boolean isAttached =  AppGetter.hasRootNodeAsAncestor(this.getCurrentScenario().getScenarios().get(0).getChild(0));
-     
-     Boolean needBgm = ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).getNeedsBackgroundSound();
-     if(!needBgm || value == AudioOptionEnum.NOSOUND || !isAttached){
+     if(!isAttached){
          this.songManager.stopSong();
-     }else if(value == AudioOptionEnum.IPOD) {
-            this.songManager.ipodTouched();
+         return;
+     }
+     Boolean needBgm = ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).getNeedsBackgroundSound();
+     
+     switch(value){
+         case DRUM:
+         case GUITAR:
+             this.songManager.stopSong(false);
             ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).onAudioOptionTouched(value);
-     }else if(value == AudioOptionEnum.SCENARIO_SWITCH){
-            this.songManager.playSong();
-     }else{
-            this.songManager.stopSong(false);
-            ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).onAudioOptionTouched(value);
+             break;
+         case NOSOUND:
+             this.songManager.stopSong();
+             break;
+         case IPOD:
+             if(needBgm){
+                 this.songManager.ipodTouched();
+                 ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).onAudioOptionTouched(value);
+             } 
+             break;
+         case SCENARIO_SWITCH:
+             if(needBgm){
+                 this.songManager.playSong();
+             }else{
+                 this.songManager.stopSong();
+             }
+             break;
      }
 
     }
