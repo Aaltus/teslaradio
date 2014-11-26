@@ -94,6 +94,10 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     protected boolean lastFm = false;
     private int lastFrequency = 0;
     
+    private static boolean changeScenario = false;
+    protected boolean firstFrameModulation = true;
+    protected boolean firstFrameDemodulation = true;
+    
     ModulationCommon(ScenarioCommon sc, Camera cam, Spatial destinationHandle) {
         
         super(sc, cam, destinationHandle);
@@ -216,7 +220,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         // Get the digital display parameters
         Vector3f displayPosition = scene.getChild("Display").getLocalTranslation();
         // TODO Use addLocal... I tried but for some reasons, it doesn't work...
-        displayPosition = displayPosition.add(-0.4f, 0.5f, 0.0f);
+        displayPosition = displayPosition.add(0f, 0.5f, 0.0f);
 
         digitalDisplay.setLocalTranslation(displayPosition);
         Quaternion rotY = new Quaternion();
@@ -250,7 +254,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
                 switchIsToggled = false;
                 tpfCumulSwitch = 0;
             }
-           
         }
     }
 
@@ -384,7 +387,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
      * @param isFM
      * @param tpfCumul
      */
-    private void switchRotation(boolean isFM, float tpfCumul) {
+    protected void switchRotation(boolean isFM, float tpfCumul) {
         Quaternion currRotation = new Quaternion();
         if (isFM) {
             actionSwitch.setLocalRotation(currRotation.slerp(initAngleSwitch, endAngleSwitch, tpfCumul));
@@ -449,8 +452,8 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     }
 
 
-    @Override
-    protected boolean simpleUpdate(float tpf) {
+
+    protected boolean simpleUpdateGeneral(float tpf) {
 
         tpfCumul += tpf;
 
@@ -544,5 +547,9 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         super.notOnNodeActions();
         lastAngle = nobAngle;
     }
-
+    
+    public boolean setChangeScenario(){
+        return changeScenario = true;
     }
+
+ }
