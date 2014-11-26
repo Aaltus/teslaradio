@@ -103,6 +103,14 @@ public class PagerContainer extends FrameLayout implements ViewPager.OnPageChang
         // to implement scrolling from a touch outside the pager bounds.
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
+
+                //I add these lines to be able to click on a pictogram picture.
+                if(!mPager.isFakeDragging()) {
+                    mPager.beginFakeDrag();
+                    mPager.fakeDragBy(mCenter.x - (int) ev.getX());
+                    mPager.endFakeDrag();
+                }
+
                 mInitialTouch.x = (int)ev.getX();
                 mInitialTouch.y = (int)ev.getY();
             default:
