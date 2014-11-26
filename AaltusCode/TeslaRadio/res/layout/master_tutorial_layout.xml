@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:background="@drawable/startscreen_background">
     <android.support.v4.view.ViewPager
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/master_tutorial_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="fill_parent"
                   android:layout_height="fill_parent"
@@ -21,20 +22,38 @@
         <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:minHeight="25dp"
                 android:layout_weight="1"
+                android:layout_marginBottom="10dp"
                 android:gravity="center"
                 android:text="@string/master_tutorial_previous_button"
                 android:id="@+id/master_tutorial_previous_button"
                 android:textColor="@color/white"
                 android:background="@drawable/button_bg"/>
-        <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"></LinearLayout>
-        <Button
+        <com.viewpagerindicator.CirclePageIndicator
+
+                android:id="@+id/master_tutorial_indicator"
+                android:padding="3dip"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="5dp"
+                app:radius="5dp"
+                app:strokeWidth="1dp"
+
+                app:fillColor="@drawable/global_app_color"
+                app:pageColor="#FFFFFFFF"
+                app:strokeColor="#FF000000"
+
+
+                />
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="25dp"
+                android:layout_weight="1"
+                android:layout_marginBottom="10dp"
                 android:gravity="center"
                 android:text="@string/master_tutorial_next_button"
                 android:id="@+id/master_tutorial_next_button"

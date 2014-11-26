@@ -11,6 +11,7 @@ import android.view.*;
 import android.widget.Button;
 import android.widget.ImageButton;
 import com.utils.AppLogger;
+import com.viewpagerindicator.CirclePageIndicator;
 
 /**
  * Created by jimbojd72 on 11/8/2014.
@@ -88,6 +89,9 @@ public class MasterTutorialFragment extends DialogFragment implements
         //mPager.setPageTransformer(true, new ZoomOutPageTransformer());
         mPager.setOffscreenPageLimit(1);
         mPager.setOnPageChangeListener(this);
+        //Attach page indicator to the ViewPager
+        CirclePageIndicator mIndicator = (CirclePageIndicator)view.findViewById(R.id.master_tutorial_indicator);
+        mIndicator.setViewPager(mPager);
 
 
         return view;

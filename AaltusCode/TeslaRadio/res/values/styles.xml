@@ -2,7 +2,7 @@
 
 
     <!--Change this color if you want to change the action bar color-->
-    <drawable name="global_app_color">#FAC9D6</drawable>
+    <drawable name="global_app_color">#FF212121</drawable>
     <drawable name="button_pressed_app_color">#CECECE</drawable>
     <drawable name="GreyTransparent">#CC212121</drawable>
     <drawable name="GreyOpaque">#FF212121</drawable>
