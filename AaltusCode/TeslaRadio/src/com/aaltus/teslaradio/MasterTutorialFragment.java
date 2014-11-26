@@ -88,10 +88,11 @@ public class MasterTutorialFragment extends DialogFragment implements
         mPager.setAdapter(mPagerAdapter);
         //mPager.setPageTransformer(true, new ZoomOutPageTransformer());
         mPager.setOffscreenPageLimit(1);
-        mPager.setOnPageChangeListener(this);
+
         //Attach page indicator to the ViewPager
         CirclePageIndicator mIndicator = (CirclePageIndicator)view.findViewById(R.id.master_tutorial_indicator);
         mIndicator.setViewPager(mPager);
+        mIndicator.setOnPageChangeListener(this);
 
 
         return view;
@@ -148,6 +149,7 @@ public class MasterTutorialFragment extends DialogFragment implements
 
     @Override
     public void onPageSelected(int i) {
+        AppLogger.getInstance().i(TAG,"onPageSelected:"+i);
         if(i < mLayouts.length-1){
             nextButton.setText(getActivity().getText(R.string.master_tutorial_next_button));
         }
