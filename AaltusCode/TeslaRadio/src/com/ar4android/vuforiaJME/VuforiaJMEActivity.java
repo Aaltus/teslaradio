@@ -24,8 +24,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,7 +39,6 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import ch.qos.logback.core.Layout;
 import com.aaltus.teslaradio.*;
 
 import com.aaltus.teslaradio.subject.AudioOptionEnum;
@@ -76,7 +73,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         MasterTutorialFragment.OnMasterTutorialListener{
 
 
-    private final MasterTutorialFragment fragment = new MasterTutorialFragment();
+    private final MasterTutorialFragment masterTutorialFragment = new MasterTutorialFragment();
 
     // Boolean to use the profiler. If it's set to true, you can get the tracefile on your phone /sdcard/traceFile.trace
     private static final boolean UseProfiler = false;
@@ -163,7 +160,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         DialogFragment fragment     = (DialogFragment)fm.findFragmentByTag(START_MENU_FRAGMENT_TAG);
         fragment.dismiss();
         //FragmentTransaction ft = fm.beginTransaction();
-        //ft.remove(fragment);
+        //ft.remove(masterTutorialFragment);
     }
 
     @Override
@@ -193,8 +190,8 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             @Override
             public void run() {
                 FragmentManager fm = getSupportFragmentManager();
-                fragment.setCancelable(false);
-                fragment.show(fm,MASTER_TUTORIAL_FRAGMENT_TAG);
+                masterTutorialFragment.setCancelable(false);
+                masterTutorialFragment.show(fm, MASTER_TUTORIAL_FRAGMENT_TAG);
 
                 //progressDialog = new ProgressDialog(context,R.style.CustomDialog); //Here I get an error: The constructor ProgressDialog(PFragment) is undefined
                 progressDialog = new ProgressDialog(context); //Here I get an error: The constructor ProgressDialog(PFragment) is undefined
@@ -215,7 +212,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         if(progressDialog != null) {
             progressDialog.show();
         }
-        fragment.dismiss();
+        masterTutorialFragment.dismiss();
         openStartScreen();
     }
 
@@ -334,7 +331,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         // Invert the MouseEvents Y (default = true)
         mouseEventsInvertY = true;
 
-        fragment.setOnMasterTutorialListener(this);
+        masterTutorialFragment.setOnMasterTutorialListener(this);
 
     }
 

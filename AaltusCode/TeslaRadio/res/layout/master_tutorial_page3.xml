@@ -8,34 +8,4 @@
               android:orientation="horizontal"
               android:gravity="bottom"
               android:background="@drawable/screen3_concept">
-    <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"></LinearLayout>
-    <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/master_tutorial_previous_button3"
-            android:id="@+id/master_tutorial_previous_button3"
-            android:textColor="@color/white"
-            android:background="@drawable/button_bg"/>
-    <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"></LinearLayout>
-    <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/master_tutorial_next_button3"
-            android:id="@+id/master_tutorial_next_button3"
-            android:textColor="@color/white"
-            android:background="@drawable/button_bg"/>
-    <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"></LinearLayout>
 </LinearLayout>

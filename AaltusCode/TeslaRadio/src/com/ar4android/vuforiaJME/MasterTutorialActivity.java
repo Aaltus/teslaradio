@@ -73,4 +73,5 @@ public class MasterTutorialActivity extends FragmentActivity implements MasterTu
     public void onExitEvent() {
         this.finish();
     }
+
 }
