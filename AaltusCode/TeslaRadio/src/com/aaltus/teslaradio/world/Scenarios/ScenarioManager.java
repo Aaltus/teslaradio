@@ -68,6 +68,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     private ScenarioCommon scenarioCommon = new ScenarioCommon();
     private Node rightArrowNode;
     private Node leftArrowNode;
+    private int  firstTutorialSpotlights = 0;
     
     private SongManager songManager;
 
@@ -306,7 +307,18 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     public void setTutorialIndex(int index){
 
         AppLogger.getInstance().d(TAG,"ScenarioManager Index: " + index);
-        ((Scenario) this.getCurrentScenario().getScenarios().get(0).getChild(0)).setCurrentObjectEmphasis(index);
+
+        ((Scenario) this.getCurrentScenario().getScenarios().get(0).getChild(0)).setCurrentObjectEmphasis(-1);
+
+        if (this.getCurrentScenario().getScenarios().get(0) == scenarioList.getScenarioByIndex(0).getScenarios().get(0)) {
+            if (index == 0) {
+                ((Scenario) this.getCurrentScenario().getScenarios().get(0).getChild(0)).setCurrentObjectEmphasis(index);
+            } else {
+                ((Scenario) this.getCurrentScenario().getScenarios().get(1).getChild(0)).setCurrentObjectEmphasis(index-1);
+            }
+        } else {
+            ((Scenario) this.getCurrentScenario().getScenarios().get(1).getChild(0)).setCurrentObjectEmphasis(index);
+        }
 
     }
 

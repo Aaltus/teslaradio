@@ -100,6 +100,7 @@ public final class Playback extends Scenario implements EmitterObserver {
         Material mat1 = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setColor("Color", new ColorRGBA(0, 0, 1, 0.5f));
         mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        mat1.getAdditionalRenderState().setDepthWrite(false);
         
         cableHandleIn = scene.getChild("Handle.In");
         cableHandleIn.setName("Cableinput");
@@ -439,11 +440,9 @@ public final class Playback extends Scenario implements EmitterObserver {
             switch(this.currentObjectToEmphasisOn) {
                 // Attach on microphone
                 case 0:
-                    Node dummy = new Node();
-                    dummy.attachChild(speaker1);
-                    dummy.attachChild(speaker2);
-                    this.spotlight.setLocalTranslation(dummy.getLocalTranslation().add(0.0f,-dummy.getLocalTranslation().y,0.0f));
-                    this.spotlight.setLocalScale(new Vector3f(5.0f,30.0f,5.0f));
+                    Vector3f pos = speaker1.getLocalTranslation().add(speaker2.getLocalTranslation()).divide(2f);
+                    this.spotlight.setLocalTranslation(pos.add(0.0f,-pos.y,0.0f));
+                    this.spotlight.setLocalScale(new Vector3f(8.0f,50.0f,8.0f));
                     scene.attachChild(this.spotlight);
                     break;   
                 default:

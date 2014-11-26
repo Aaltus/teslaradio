@@ -6,7 +6,7 @@ package com.aaltus.teslaradio.subject;
  */
 public enum ScenarioEnum
 {
-        SOUNDEMISSION, SOUNDCAPTURE, MODULATION, TRANSMIT,
+        SOUNDCAPTURE, MODULATION, TRANSMIT,
         RECEPTION, FILTER, DEMODULATION, PLAYBACK, REFERENCE, ABOUTUS
 
 }
