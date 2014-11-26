@@ -360,7 +360,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
                 break;
             case R.id.next_scenario_button:
                 if(pager.getCurrentItem() < pager.getChildCount()-1){
-                    pager.setCurrentItem(pager.getCurrentItem());
+                    pager.setCurrentItem(pager.getCurrentItem()+1);
                 }
                 //this.scenarioSwitcher.setNextScenario();
                 break;
@@ -408,6 +408,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
                 //toggleDetailFragmentVisibility(!isDetailFragmentsVisible());
                 if(isDetailFragmentsVisible()){
                     toggleDetailFragmentVisibility(false);
+                    toggleTutorialVisibility(true);
                 }
                 else{
                     replaceDetailFragment(pager.getCurrentItem());
@@ -610,9 +611,12 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     @Override
     public void onPageSelected(int i) {
         if(scenarioSwitcher != null){
-
             scenarioSwitcher.setScenarioByEnum(SubjectContent.ITEMS.get(i).getScenarioEnum());
             ((TextView)getView().findViewById(R.id.picto_title)).setText(SubjectContent.ITEMS.get(i).getTitle());
+        }
+
+        if(isDetailFragmentsVisible()){
+            replaceDetailFragment(i);
         }
     }
 
