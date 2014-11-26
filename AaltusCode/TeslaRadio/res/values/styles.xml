@@ -27,6 +27,10 @@
     <style name="Credits">
         <item name="android:textSize">50dp</item>
     </style>
+    <style name="InformativeMenuScrollView">
+        <item name="android:padding">10dp</item>
+        <item name="android:fadeScrollbars">false</item>
+    </style>
     <!--Credits titles text style-->
     <style name="CreditsTitlesStyle">
         <item name="android:textSize">30sp</item>
