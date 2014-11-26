@@ -68,7 +68,7 @@ public class StartScreenDialogFragment extends DialogFragment implements View.On
         listButtons.add(rootView.findViewById(R.id.start_screen_start_button));
         listButtons.add(rootView.findViewById(R.id.start_screen_tutorial_button));
         listButtons.add(rootView.findViewById(R.id.start_screen_credits_button));
-        listButtons.add(rootView.findViewById(R.id.start_screen_exit_button));
+        //listButtons.add(rootView.findViewById(R.id.start_screen_exit_button));
 
         for (View button : listButtons){
             button.setOnClickListener(this);
@@ -105,12 +105,13 @@ public class StartScreenDialogFragment extends DialogFragment implements View.On
                 }
                 //this.dismiss();
                 break;
-            case R.id.start_screen_exit_button:
+            /*case R.id.start_screen_exit_button:
                 if(startScreenController != null){
                     startScreenController.onEndGameClick();
                 }
                 //this.dismiss();
                 break;
+                */
 
         }
     }

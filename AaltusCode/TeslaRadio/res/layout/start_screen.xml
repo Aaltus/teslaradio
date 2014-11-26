@@ -91,7 +91,7 @@
                                     android:background="@drawable/startscreen_button"
                                     android:gravity="center"
                                     style="@style/button1"/>
-                            <com.aaltus.teslaradio.ButtonPlus
+                            <!--<com.aaltus.teslaradio.ButtonPlus
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -100,7 +100,7 @@
                                     android:textColor="@color/white"
                                     android:background="@drawable/startscreen_button"
                                     android:gravity="center"
-                                    style="@style/button1"/>
+                                    style="@style/button1"/>-->
                         </LinearLayout>
                         <LinearLayout
                                 android:layout_width="fill_parent"
