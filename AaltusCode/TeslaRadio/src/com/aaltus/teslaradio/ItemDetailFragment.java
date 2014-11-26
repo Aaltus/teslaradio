@@ -126,6 +126,8 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
         TextView titleTextView= (TextView) rootView.findViewById(R.id.item_detail_fragment_title_textview);
         titleTextView.setText(mItem.getTitle());
 
+        rootView.findViewById(R.id.detail_picto_icon).setBackgroundResource(mItem.getPictogramDrawableId());
+
         ImageButton cancelImageButton = (ImageButton) rootView.findViewById(R.id.item_detail_fragment_close_button);
         cancelImageButton.setOnClickListener(this);
 

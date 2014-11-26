@@ -16,7 +16,14 @@
                   android:layout_height="wrap_content"
                   android:orientation="horizontal">
 
-
+      <ImageView
+              android:id="@+id/detail_picto_icon"
+              android:layout_width="40dip"
+              android:layout_height="40dip"
+              android:background="@drawable/picto_1"
+              android:layout_gravity="center_vertical"
+              android:layout_margin="5dp"
+              android:adjustViewBounds="true"/>
       <TextView
               android:id="@+id/item_detail_fragment_title_textview"
                 android:layout_width="wrap_content"
