@@ -73,7 +73,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         MasterTutorialFragment.OnMasterTutorialListener{
 
 
-    private final MasterTutorialFragment masterTutorialFragment = new MasterTutorialFragment();
+    private MasterTutorialFragment masterTutorialFragment;
 
     // Boolean to use the profiler. If it's set to true, you can get the tracefile on your phone /sdcard/traceFile.trace
     private static final boolean UseProfiler = false;
@@ -189,9 +189,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                FragmentManager fm = getSupportFragmentManager();
-                masterTutorialFragment.setCancelable(false);
-                masterTutorialFragment.show(fm, MASTER_TUTORIAL_FRAGMENT_TAG);
+                showMasterTutorialFragment();
 
                 //progressDialog = new ProgressDialog(context,R.style.CustomDialog); //Here I get an error: The constructor ProgressDialog(PFragment) is undefined
                 progressDialog = new ProgressDialog(context); //Here I get an error: The constructor ProgressDialog(PFragment) is undefined
@@ -205,6 +203,15 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
             }
         });
 
+    }
+
+    private void showMasterTutorialFragment() {
+
+        masterTutorialFragment =  new MasterTutorialFragment();
+        masterTutorialFragment.setOnMasterTutorialListener(this);
+        FragmentManager fm = getSupportFragmentManager();
+        masterTutorialFragment.setCancelable(false);
+        masterTutorialFragment.show(fm, MASTER_TUTORIAL_FRAGMENT_TAG);
     }
 
 
@@ -330,8 +337,6 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
         mouseEventsInvertX = true;
         // Invert the MouseEvents Y (default = true)
         mouseEventsInvertY = true;
-
-        masterTutorialFragment.setOnMasterTutorialListener(this);
 
     }
 
@@ -601,12 +606,24 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
     @Override
     public void onTutorialButtonClick() {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                showMasterTutorialFragment();
+                closeStartMenu();
+            }
+        });
+        /*
+        //Old click for the application devframework
         (app).enqueue(new Callable<Object>() {
             public Object call() throws Exception {
                 ((VuforiaJME) app).onTutorialButtonClick();
                 return null;
             }
         });
+        */
 
     }
 

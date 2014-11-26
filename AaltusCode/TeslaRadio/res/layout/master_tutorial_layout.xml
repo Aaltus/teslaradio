@@ -45,4 +45,11 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"></LinearLayout>
     </LinearLayout>
+    <ImageButton android:layout_width="60dp"
+                 android:layout_height="60dp"
+                 android:id="@+id/master_tutorial_skip_button"
+                 android:background="@drawable/ic_navigation_cancel"
+                 android:scaleType="fitCenter"
+                 android:layout_gravity="top|right"
+            />
 </FrameLayout>

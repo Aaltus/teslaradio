@@ -18,6 +18,7 @@ public final class Modulation extends ModulationCommon {
         
     // Default text to be seen when scenario starts
     private String titleText = "La Modulation";
+    
 
     public Modulation(ScenarioCommon sc,com.jme3.renderer.Camera Camera, Spatial destinationHandle) {
         
@@ -49,6 +50,17 @@ public final class Modulation extends ModulationCommon {
         titleTextBox.move(titleTextPosition);
         this.attachChild(titleTextBox);
     }
+    
+    @Override
+     protected boolean simpleUpdate(float tpf) {
+        if(firstFrameModulation == true){
+            switchRotation(isFM, 1);
+            firstFrameDemodulation = false;
+        }
+         simpleUpdateGeneral(tpf);
+
+         return false;
+     }
     
     @Override
     public void restartScenario() {
@@ -164,4 +176,6 @@ public final class Modulation extends ModulationCommon {
             }
         }
     }
+
+    
 }

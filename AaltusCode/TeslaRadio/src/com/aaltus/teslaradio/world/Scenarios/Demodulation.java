@@ -36,6 +36,19 @@ public class Demodulation extends ModulationCommon  {
         
     }
     
+    
+    @Override
+     protected boolean simpleUpdate(float tpf) {
+         if(firstFrameDemodulation == true){
+            switchRotation(isFM, 1);
+            firstFrameModulation = false;
+        }
+         simpleUpdateGeneral(tpf);
+
+         return false;
+     }
+    
+    
     @Override
     public void restartScenario() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
