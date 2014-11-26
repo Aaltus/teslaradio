@@ -15,7 +15,6 @@ button on the handset.
         android:clickable="false"
         >
 
-
     <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -87,43 +86,6 @@ button on the handset.
     </LinearLayout>
 
 
- <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                android:gravity="right"
-                android:baselineAligned="false"
-                android:orientation="vertical"
-                android:showDividers="middle"
-                android:layout_weight="1">
-
-        <Button
-                android:id="@+id/ipod_song_selector_button"
-                android:layout_height="50dp"
-                android:layout_width="50dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/layer_musique"/>
-
-        <Button
-                android:id="@+id/guitar_hit_button"
-                android:layout_height="50dp"
-                android:layout_width="50dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/layer_guitare"/>
-        <Button
-                android:id="@+id/tambour_hit_button"
-                android:layout_height="50dp"
-                android:layout_width="50dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/layer_tambour"/>
-
-         <Button
-                 android:id="@+id/camera_toggle_info_button"
-                 android:layout_height="50dp"
-                 android:layout_width="50dp"
-                 android:layout_margin="5dp"
-                 android:background="@drawable/layer_list_info"/>
-
-
-    </LinearLayout>
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -139,17 +101,14 @@ button on the handset.
                       android:orientation="vertical"
                       android:gravity="top"
                 >
-            <LinearLayout android:layout_width="50dp"
-                          android:layout_margin="5dp"
-                          android:orientation="vertical"
-                          android:layout_height="wrap_content"
-                          android:layout_weight="1"/>
 
-            <LinearLayout android:layout_width="50dp"
-                          android:layout_margin="5dp"
-                          android:orientation="vertical"
-                          android:layout_height="wrap_content"
-                          android:layout_weight="1"/>
+            <Button
+                    android:id="@+id/camera_toggle_info_button"
+                    android:layout_gravity="top|left"
+                    android:layout_height="50dp"
+                    android:layout_width="50dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/layer_list_info"/>
 
         </LinearLayout>
 
@@ -164,9 +123,24 @@ button on the handset.
                 >
             <!--For some fucking reason, I need to add this view so the slidingdrawer don't go under everything
             when it is closing...thats kind of strange really...-->
-            <View android:layout_width="50dp"
-                  android:layout_height="fill_parent">
-            </View>
+            <Button
+                    android:id="@+id/ipod_song_selector_button"
+                    android:layout_height="50dp"
+                    android:layout_width="50dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/layer_musique"/>
+            <Button
+                       android:id="@+id/guitar_hit_button"
+                       android:layout_height="50dp"
+                       android:layout_width="50dp"
+                       android:layout_margin="5dp"
+                       android:background="@drawable/layer_guitare"/>
+            <Button
+                       android:id="@+id/tambour_hit_button"
+                       android:layout_height="50dp"
+                       android:layout_width="50dp"
+                       android:layout_margin="5dp"
+                       android:background="@drawable/layer_tambour"/>
             <!--
             <Button
                     android:id="@+id/camera_toggle_info_button"
