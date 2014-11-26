@@ -42,6 +42,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     // 3D objects of the scene
     private Spatial turnButton;
     private Spatial actionSwitch;
+    private Spatial actionSwitchHitBox;
     
     // TextBox of the scene
     private TextBox digitalDisplay;
@@ -165,6 +166,8 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     protected void loadMovableObjects() {
         turnButton = scene.getChild("Button");
         actionSwitch = scene.getChild("Switch");
+        actionSwitchHitBox = scene.getChild("Through-holes.001");
+        
 
         initAngleSwitch.fromAngleAxis(0.45f, Vector3f.UNIT_Z);
         endAngleSwitch.fromAngleAxis(-0.45f, Vector3f.UNIT_Z);
@@ -185,6 +188,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         //Assign touchable
         touchable = new Node();//(Node) scene.getParent().getChild("Touchable")
         touchable.attachChild(actionSwitch);
+        touchable.attachChild(actionSwitchHitBox);
         scene.attachChild(touchable);
     }
 
@@ -441,8 +445,9 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
 
                         Spatial touchedGeometry = closest.getGeometry();
                         String nameToCompare = touchedGeometry.getParent().getName();
-
-                        if (nameToCompare.equals(this.getChild("Switch").getName())) {
+                        
+                        if (nameToCompare.equals(this.getChild("Switch").getName()) ||
+                                nameToCompare.equals(this.getChild("Through-holes.001").getName())) {
                             toggleModulationMode();
                         }
                     }
@@ -548,8 +553,4 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         lastAngle = nobAngle;
     }
     
-    public boolean setChangeScenario(){
-        return changeScenario = true;
-    }
-
  }
