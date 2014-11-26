@@ -33,7 +33,7 @@
                 android:textColor="@color/white"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:paddingLeft="5dp"
-                android:textSize="40sp"
+                android:textSize="25sp"
               />
         <ImageButton
                 android:id="@+id/item_detail_fragment_close_button"
