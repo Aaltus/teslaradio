@@ -288,7 +288,7 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
 
         @Override
         public void onClick(View view) {
-            AppLogger.getInstance().d(TAG,"Testing stuff");
+            //AppLogger.getInstance().d(TAG,"Testing stuff");
             switch(view.getId()) {
                 case R.id.souris_preview:
                     playVideo(R.raw.souris);
@@ -368,7 +368,7 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
                 int width = d.getIntrinsicWidth();
                 //int width  = imageViewReference.get().getWidth();
                 //int height = imageViewReference.get().getHeight();
-                AppLogger.getInstance().i(TAG,"Bitmap width:"+width+" heigth:"+height+" id:"+data);
+                //AppLogger.getInstance().i(TAG,"Bitmap width:"+width+" heigth:"+height+" id:"+data);
                 publishProgress(decodeSampledBitmapFromResource(getResources(), data, width, height),i);
             }
             return null;
