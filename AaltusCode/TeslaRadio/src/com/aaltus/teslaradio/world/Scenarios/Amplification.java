@@ -43,11 +43,6 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
 
     private TextBox titleTextBox;
     
-    private Node autoGenParticle;
-    
-    private Node cubeSignal;
-    private Node pyramidSignal;
-    private Node dodecagoneSignal;
     private Node moveArrow;
     private Node sliderArrow;
     
@@ -247,36 +242,19 @@ public final class Amplification extends Scenario implements EmitterObserver, Au
      
     @Override
     protected void initPatternGenerator(){
-        this.initDrumGuitarSound();
+               this.initDrumGuitarSound();
         Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
-        Spatial[] carrier = scenarioCommon.initCarrierGeometries();
-                
-        this.cubeSignal = new Node();
-        this.cubeSignal.attachChild(carrier[0].clone());
-        this.cubeSignal.attachChild(baseGeom);
-        scenarioCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
-        this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
-        this.cubeSignal.setUserData("isFM", isFM);
-        
-        this.pyramidSignal = new Node();
-        this.pyramidSignal.attachChild(carrier[1].clone());
-        this.pyramidSignal.attachChild(baseGeom);
-        scenarioCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
-        this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
-        this.pyramidSignal.setUserData("isFM", isFM);
-       
-        this.dodecagoneSignal = new Node();
-        this.dodecagoneSignal.attachChild(carrier[2].clone());
-        this.dodecagoneSignal.attachChild(baseGeom);
-        scenarioCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
-        this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
-        this.dodecagoneSignal.setUserData("isFM", isFM);
-        
-        this.autoGenParticle = this.cubeSignal;
-        
-        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, autoGenParticle.clone(), 7, scenarioCommon.minBaseParticleScale, 
-                                                                     scenarioCommon.maxBaseParticleScale, true));
-       
+        Spatial[] carrier = ScenarioCommon.initCarrierGeometries();
+              
+        Node signal = new Node();
+        signal.attachChild(carrier[0].clone());
+        signal.attachChild(baseGeom.clone());
+        scenarioCommon.modulateFMorAM(signal, baseGeom, isFM);
+        signal.setUserData("CarrierShape", signal.getChild(0).getName());
+        signal.setUserData("isFM", isFM);
+
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, signal.clone(), 7, scenarioCommon.minBaseParticleScale, 
+                                                                     scenarioCommon.maxBaseParticleScale, true));  
     }
 
     @Override

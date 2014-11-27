@@ -68,7 +68,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     protected Node outputSignal;
 
     //Pattern Geometry
-    protected Spatial micTapParticle;
+    protected Spatial autoGenParticle;
 
     //Angle for test purposes
     private float initialAngle = 0;
@@ -532,9 +532,9 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
 
     @Override
     protected void setAutoGenerationParticle(Spatial particle){
-        this.micTapParticle = (Node) particle;
+        this.autoGenParticle = (Node) particle;
         this.wirePcbEmitter.getControl(PatternGeneratorControl.class).
-                setBaseParticle(this.micTapParticle);
+                setBaseParticle(this.autoGenParticle);
 
     }
 
