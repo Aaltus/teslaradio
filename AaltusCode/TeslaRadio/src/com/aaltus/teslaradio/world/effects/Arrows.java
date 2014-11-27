@@ -46,7 +46,7 @@ public class Arrows extends AbstractControl{
     {        
         if (name.equals("touch")){
             imageGeom = new Geometry(name ,new Box(0.5f, 0.5f, Float.MIN_VALUE));
-            imageGeom.move(Vector3f.UNIT_Y);
+            imageGeom.move(Vector3f.UNIT_Y.divide(1.7f));
             imageGeom.setQueueBucket(RenderQueue.Bucket.Translucent);
         }
         else{
