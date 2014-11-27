@@ -24,7 +24,7 @@
 
         <FrameLayout
                 android:layout_gravity="center_horizontal|center_vertical"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:clickable="false">
 
@@ -36,11 +36,11 @@
                       android:layout_height="wrap_content"
                       android:layout_weight="1"/>
 
-                    <ImageView
+                    <com.utils.BackgroundLoadingImageView
                             android:id="@+id/sound_emission_image_preview"
                             android:layout_gravity="center"
-                            android:layout_weight="0.3"
-                            android:src="@drawable/pression_preview"
+                            android:layout_weight="2"
+                            myapp:drawableId="@drawable/pression_preview"
                             android:layout_height="wrap_content"
                             android:adjustViewBounds="true"
                             android:layout_width="0dp"
@@ -76,14 +76,14 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"/>
 
-            <ImageView
+            <com.utils.BackgroundLoadingImageView
                     android:id="@+id/sound_emission_image"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
                     android:layout_weight="3"
-                    android:src="@drawable/source_et_front_donde"
+                    myapp:drawableId="@drawable/source_et_front_donde"
                     />
 
         <View android:layout_width="0dp"

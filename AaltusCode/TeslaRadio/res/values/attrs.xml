@@ -21,6 +21,10 @@
         <attr name="animateOnClick" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="BackgroundLoadingImageView">
+        <attr name="drawableId" format="reference" />
+    </declare-styleable>
+
     <declare-styleable name="CustomFont">
         <attr name="font" format="string"/>
     </declare-styleable>

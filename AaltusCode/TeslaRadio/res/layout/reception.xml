@@ -30,14 +30,14 @@
                   android:layout_height="wrap_content"
                   android:layout_weight="1"/>
 
-                <ImageView
+                <com.utils.BackgroundLoadingImageView
                         android:id="@+id/spectre_image"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
                         android:layout_weight="6"
                         android:adjustViewBounds="true"
                         android:layout_gravity="center"
-                        android:src="@drawable/spectre_electromagnetique"
+                        myapp:drawableId="@drawable/spectre_electromagnetique"
                         />
 
             <View android:layout_width="0dp"
@@ -92,14 +92,14 @@
                   android:layout_height="wrap_content"
                   android:layout_weight="1"/>
 
-            <ImageView
+            <com.utils.BackgroundLoadingImageView
                     android:id="@+id/vitesse_image"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="4"
                     android:adjustViewBounds="true"
                     android:layout_gravity="center"
-                    android:src="@drawable/vitesse_lumiere"
+                    myapp:drawableId="@drawable/vitesse_lumiere"
                     />
 
             <View android:layout_width="0dp"

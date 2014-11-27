@@ -144,34 +144,30 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
         switch (view.getId())
         {
             case R.id.character_tutorial_button:
-                nbClicks++;
-                if (nbClicks == 1) {
-                    time= System.currentTimeMillis();
-                } else if (nbClicks > 1) {
-                    long currentTime = System.currentTimeMillis();
-                    long deltaTime = currentTime - time;
 
-                    if (deltaTime >= 2000) {
-                        nbClicks = 0;
+                if (!(getView().findViewById(R.id.bubble_root_view).getVisibility() == View.VISIBLE)) {
+                    nbClicks++;
+                    if (nbClicks == 1) {
+                        time = System.currentTimeMillis();
+                    } else if (nbClicks > 1) {
+                        long currentTime = System.currentTimeMillis();
+                        long deltaTime = currentTime - time;
+
+                        if (deltaTime >= 2000) {
+                            nbClicks = 0;
+                        }
                     }
-                }
 
-                setBubbleViewVisibility(!(getView().findViewById(R.id.bubble_root_view).getVisibility() == View.VISIBLE));
-                if(getView().findViewById(R.id.bubble_root_view).getVisibility() == View.VISIBLE){
-                    mediaPlayer.start();
+                    setBubbleViewVisibility(!(getView().findViewById(R.id.bubble_root_view).getVisibility() == View.VISIBLE));
+                    if (getView().findViewById(R.id.bubble_root_view).getVisibility() == View.VISIBLE) {
+                        mediaPlayer.start();
+                    }
+                } else {
+                    switchBubbles();
                 }
                 break;
             case R.id.view_flipper:
-                ViewFlipper viewFlipper = getViewFlipper();
-                if(viewFlipper.getDisplayedChild() == viewFlipper.getChildCount()-1)
-                {
-                    setBubbleViewVisibility(false);
-                }
-                else
-                {
-                    viewFlipper.showNext();
-                    setTutorialMenuCallback(viewFlipper.getDisplayedChild());
-                }
+                switchBubbles();
                 break;
 
         }
@@ -179,6 +175,19 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
 
     private ViewFlipper getViewFlipper(){
         return (ViewFlipper)getView().findViewById(R.id.view_flipper);
+    }
+
+    private void switchBubbles() {
+        ViewFlipper viewFlipper = getViewFlipper();
+        if(viewFlipper.getDisplayedChild() == viewFlipper.getChildCount()-1)
+        {
+            setBubbleViewVisibility(false);
+        }
+        else
+        {
+            viewFlipper.showNext();
+            setTutorialMenuCallback(viewFlipper.getDisplayedChild());
+        }
     }
 
     private void setBubbleViewVisibility(boolean showBubble) {
@@ -193,19 +202,12 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
             }
 
             setCharacterAction(CharacterAction.SPEAKING);
-        }
-        else if (nbClicks >= 10) {
-            //setSpeakAnimation(false);
-            //setShakeAnimation(false);
-            //setElectricAnimation(true);
+        } else if (nbClicks >= 10) {
             setCharacterAction(CharacterAction.ELECTRIC);
-        }
-        else if (view.getVisibility() == View.VISIBLE && !showBubble){
+        } else if (view.getVisibility() == View.VISIBLE && !showBubble) {
             view.setVisibility(View.GONE);
             setTutorialMenuCallback(-1);
             setCharacterAction(CharacterAction.CALM);
-
-
         }
     }
 

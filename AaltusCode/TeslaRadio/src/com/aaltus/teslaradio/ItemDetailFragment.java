@@ -2,6 +2,12 @@ package com.aaltus.teslaradio;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,12 +17,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.ar4android.vuforiaJME.VideoPlayerActivity;
 import com.aaltus.teslaradio.subject.SubjectContent;
 import com.utils.AppLogger;
+import com.utils.BackgroundLoadingImageView;
 import com.viewpagerindicator.CirclePageIndicator;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Fragment that create a ViewPager adapter
@@ -154,7 +167,7 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
         return rootView;
     }
 
-    public static final PageDetailFragment newInstance(int position)
+    public final PageDetailFragment newInstance(int position)
     {
         PageDetailFragment f = new PageDetailFragment();
         Bundle bdl = new Bundle(2);
@@ -191,7 +204,7 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
      * A fragment that return a fragment based on the
      * provided position.
      */
-    public static class PageDetailFragment extends Fragment implements View.OnClickListener {
+    public class PageDetailFragment extends Fragment implements View.OnClickListener {
 
         private int position;
 
@@ -209,12 +222,31 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
             position = getArguments() != null ? getArguments().getInt(POSITION) : -1;
         }
 
+
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
             final View v = inflater.inflate(mLayouts[position], container, false);
             //v.setOnClickListener(this);
+
+            v.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+                @Override
+                public void onGlobalLayout() {
+                    // Ensure you call it only once :
+                    //v.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                    if (Build.VERSION.SDK_INT < 16) {
+                        v.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    } else {
+                        v.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                    // Here you can get the size :)
+                    startBackgroundImageProcessing((ViewGroup)v);
+                }
+            });
 
 
             View soundEmissionImage     = v.findViewById(R.id.sound_emission_image_preview);
@@ -239,6 +271,14 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
             return v;
         }
 
+        public void onViewCreated(View v, Bundle savedInstanceState) {
+            super.onViewCreated(v, savedInstanceState);
+
+
+
+
+        }
+
         private void playVideo(int res) {
             Intent videoPlaybackActivity = new Intent(this.getActivity(), VideoPlayerActivity.class);
             //int res=this.getResources().getIdentifier(resourceName, "raw", getActivity().getPackageName());
@@ -248,7 +288,7 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
 
         @Override
         public void onClick(View view) {
-            AppLogger.getInstance().d(TAG,"Testing stuff");
+            //AppLogger.getInstance().d(TAG,"Testing stuff");
             switch(view.getId()) {
                 case R.id.souris_preview:
                     playVideo(R.raw.souris);
@@ -264,5 +304,145 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
                     break;
             }
         }
+
+
+
     }
+
+    private void startBackgroundImageProcessing(ViewGroup v) {
+        List<BackgroundLoadingImageView> backgroundLoadingImageViewList = getCustomImageView(v);
+        BitmapWorkerTask task = new BitmapWorkerTask(backgroundLoadingImageViewList);
+        task.execute();
+        /*List<CustomImageView> customImageViewList = getCustomImageView(v);
+        AppLogger.getInstance().i(TAG, "customImageViewList:"+customImageViewList.size());
+        for(int i=0; i < customImageViewList.size(); i++ )
+        {
+            AppLogger.getInstance().d(TAG,"ImageId:"+customImageViewList.get(i).getImageId());
+            BitmapWorkerTask task = new BitmapWorkerTask(customImageViewList.get(i));
+            task.execute();
+
+        }*/
+    }
+
+    static private List<BackgroundLoadingImageView> getCustomImageView(ViewGroup parent) {
+        List<BackgroundLoadingImageView> backgroundLoadingImageViewList = new ArrayList<BackgroundLoadingImageView>();
+        int childCount = parent.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = parent.getChildAt(i);
+            if (child instanceof BackgroundLoadingImageView) {
+                backgroundLoadingImageViewList.add((BackgroundLoadingImageView) child);
+            }
+            else if (child instanceof ViewGroup) {
+                backgroundLoadingImageViewList.addAll(getCustomImageView((ViewGroup) child));
+            }
+        }
+        return backgroundLoadingImageViewList;
+    }
+
+
+
+    public class BitmapWorkerTask extends AsyncTask<Void, Object, Void> {
+
+        private final List<WeakReference<BackgroundLoadingImageView>> customImageViewList = new ArrayList<WeakReference<BackgroundLoadingImageView>>();
+
+        public BitmapWorkerTask(List<BackgroundLoadingImageView> imageViewList) {
+            // Use a WeakReference to ensure the ImageView can be garbage collected
+            for(int i =0; i < imageViewList.size(); i++){
+                customImageViewList.add(new WeakReference<BackgroundLoadingImageView>(imageViewList.get(i)));
+            }
+
+        }
+
+        // Decode image in background.
+        @Override
+        protected Void doInBackground(Void... params) {
+            //List<CustomImageView> customImageViewList = params[0];
+
+            int data;
+            ImageView imageView;
+            for(int i=0; i <customImageViewList.size(); i++)
+            {
+
+                //Old way to load a big image into memory
+                //int height = d.getIntrinsicHeight();
+                //int width = d.getIntrinsicWidth();
+
+                BackgroundLoadingImageView customImageView = customImageViewList.get(i).get();
+                data       = customImageView.getImageId();
+                Drawable d = getResources().getDrawable(data);
+                int width  = customImageView.getWidth();
+                int height = customImageView.getHeight();
+                //AppLogger.getInstance().i(TAG,"Bitmap width:"+width+" heigth:"+height+" id:"+data);
+                publishProgress(decodeSampledBitmapFromResource(getResources(), data, width, height),i);
+            }
+            return null;
+        }
+
+        protected void onProgressUpdate(Object...object) {
+            //super.onProgressUpdate(bitmap[0]);
+            Bitmap  bitmap                 = (Bitmap)object[0];
+            Integer index                  = (Integer)object[1];
+            WeakReference<BackgroundLoadingImageView> weakImageView= customImageViewList.get(index);
+
+            if (customImageViewList.get(index).get() != null && bitmap != null) {
+                final ImageView imageView = weakImageView.get();
+                if (imageView != null) {
+                    imageView.setImageBitmap(bitmap);
+                    imageView.invalidate();
+                }
+            }
+        }
+
+        // Once complete, see if ImageView is still around and set bitmap.
+        /*@Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (imageViewReference != null && bitmap != null) {
+                final ImageView imageView = imageViewReference.get();
+                if (imageView != null) {
+                    imageView.setImageBitmap(bitmap);
+                    imageView.invalidate();
+                }
+            }
+        }*/
+    }
+
+    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
+                                                         int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, resId, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(res, resId, options);
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
 }
