@@ -6,11 +6,9 @@ package com.aaltus.teslaradio.world.Scenarios;
 
 import com.aaltus.teslaradio.world.effects.ParticleEmitterControl;
 import com.aaltus.teslaradio.world.effects.PatternGeneratorControl;
-import com.aaltus.teslaradio.world.effects.SoundControl;
 import com.aaltus.teslaradio.world.effects.TextBox;
 import com.jme3.font.BitmapFont;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.List;
@@ -113,7 +111,7 @@ public class Demodulation extends ModulationCommon  {
                 
                     ((Node)spatial).getChild(1).setLocalScale(((Node)spatial).getChild(1).getWorldScale());
                     pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(((Node)spatial).getChild(1));
-                    this.updateNoise(0f);  
+                    this.updateNoise(0,false);  
                 }
                else{
                    this.updateNoise(1f);

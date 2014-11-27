@@ -26,13 +26,17 @@ public class NoiseControl extends BackgroundSoundControl{
     }
     
      public void updateNoiseLevel(float noiseLevel){
-        counter.drainPermits();
-        this.spatial.setUserData(AppGetter.USR_AUDIO_SCALE, 1 - noiseLevel);
         this.spatial.setUserData(AppGetter.USR_NOISE_LEVEL,noiseLevel);  
         this.volume = noiseLevel;
-        counter.release(2);
+        this.updateVolume(1-noiseLevel);
     }
-     
+      public void updateNoiseLevel(float noiseLevel, boolean updateVolume){
+        this.spatial.setUserData(AppGetter.USR_NOISE_LEVEL,noiseLevel);  
+        this.volume = noiseLevel;
+        if(updateVolume){
+            this.updateVolume(1-noiseLevel);
+        }
+    }
      @Override
      public void updateVolume(float volume){
          super.updateVolume(volume);
