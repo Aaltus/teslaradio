@@ -104,6 +104,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
         else
         {
             this.startOrientation = Quaternion.IDENTITY;
+            this.spatial.setLocalScale(0);
         }
 
         this.spatial.setLocalRotation(this.startOrientation);
@@ -135,6 +136,10 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
             currentLocalRotation = Quaternion.ZERO;
             if(!this.pathIsReverse) {
                 this.spatial.setLocalRotation(this.currentLocalRotation.slerp(this.startOrientation, Quaternion.IDENTITY, this.distanceTraveled / this.path.getLength()));
+            }
+            // set scenario scale when comming from outside (0 to 1 of scaling animation)
+            else{
+                this.spatial.setLocalScale(distanceTraveled/path.getLength()*AppGetter.getWorldScalingDefault());
             }
 
         }
