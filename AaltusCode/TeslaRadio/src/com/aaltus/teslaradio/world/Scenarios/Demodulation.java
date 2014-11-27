@@ -41,7 +41,8 @@ public class Demodulation extends ModulationCommon  {
      protected boolean simpleUpdate(float tpf) {
          if(firstFrameDemodulation == true){
             switchRotation(isFM, 1);
-            firstFrameModulation = false;
+            firstFrameDemodulation = false;
+            firstFrameModulation = true;
         }
          simpleUpdateGeneral(tpf);
 
@@ -140,7 +141,7 @@ public class Demodulation extends ModulationCommon  {
     
     @Override
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
-        this.isFM = isFm;
+        //this.isFM = isFm;
         Node node = new Node();
         Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
         node.attachChild(newCarrier.clone());

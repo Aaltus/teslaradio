@@ -55,7 +55,8 @@ public final class Modulation extends ModulationCommon {
      protected boolean simpleUpdate(float tpf) {
         if(firstFrameModulation == true){
             switchRotation(isFM, 1);
-            firstFrameDemodulation = false;
+            firstFrameModulation = false;
+            firstFrameDemodulation = true;
         }
          simpleUpdateGeneral(tpf);
 
