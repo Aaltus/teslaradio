@@ -8,11 +8,20 @@
               android:orientation="horizontal"
               android:gravity="center">
 
+    <View
+            style="@style/masterTutorialFillerWeight"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"/>
     <ImageView
-            android:layout_width="fill_parent"
+            android:layout_weight="2"
+            android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             android:src="@drawable/p3"/>
+    <View
+            style="@style/masterTutorialFillerWeight"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"/>
 
 </LinearLayout>
