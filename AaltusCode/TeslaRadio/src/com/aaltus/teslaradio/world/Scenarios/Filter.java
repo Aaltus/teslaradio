@@ -47,12 +47,6 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
     
     private boolean isFM = true;
     
-    //Pattern Geometry
-    private Node micTapParticle;
-    private Node cubeSignal;
-    private Node pyramidSignal;
-    private Node dodecagoneSignal;
-    
     private Node inputEmitter = new Node();
     private Node outFilterEmitter = new Node();
     private Node outputEmitter = new Node();
@@ -233,30 +227,15 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
         Spatial[] carrier = ScenarioCommon.initCarrierGeometries();
               
-        this.cubeSignal = new Node();
-        this.cubeSignal.attachChild(carrier[0].clone());
-        this.cubeSignal.attachChild(baseGeom);
-        scenarioCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
-        this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
-        this.cubeSignal.setUserData("isFM", isFM);
+        Node signal = new Node();
+        signal.attachChild(carrier[0].clone());
+        signal.attachChild(baseGeom.clone());
+        scenarioCommon.modulateFMorAM(signal, baseGeom, isFM);
+        signal.setUserData("CarrierShape", signal.getChild(0).getName());
+        signal.setUserData("isFM", isFM);
+
         
-        this.pyramidSignal = new Node();
-        this.pyramidSignal.attachChild(carrier[0].clone());
-        this.pyramidSignal.attachChild(baseGeom);
-        scenarioCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
-        this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
-        this.pyramidSignal.setUserData("isFM", isFM);
-       
-        this.dodecagoneSignal = new Node();
-        this.dodecagoneSignal.attachChild(carrier[0].clone());
-        this.dodecagoneSignal.attachChild(baseGeom);
-        scenarioCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
-        this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
-        this.dodecagoneSignal.setUserData("isFM", isFM);
-        
-        this.micTapParticle = this.cubeSignal;
-        
-        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, micTapParticle.clone(), 7, scenarioCommon.minBaseParticleScale, 
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, signal.clone(), 7, scenarioCommon.minBaseParticleScale, 
                                                                      scenarioCommon.maxBaseParticleScale, true));    
     }
     
@@ -327,7 +306,8 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
             if (outFilterEmitter != null) {
                 outFilterEmitter.getControl(ParticleEmitterControl.class).emitParticle(spatial);
             }
-            if(!this.isFirst){
+            /*Do not update volume if demodulator is sending noise*/
+            if( !this.isFirst || this.scenarioCommon.getNoiseControl().getNoiseLevel()==0){
                 this.updateVolume(1);
             }
         }

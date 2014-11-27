@@ -7,7 +7,6 @@ package com.aaltus.teslaradio.world.Scenarios;
 import com.ar4android.vuforiaJME.AppGetter;
 import com.aaltus.teslaradio.subject.AudioOptionEnum;
 import com.aaltus.teslaradio.world.effects.DrumGuitarSoundControl;
-import com.aaltus.teslaradio.world.effects.NoiseControl;
 import com.aaltus.teslaradio.world.effects.ParticleEmitterControl;
 import com.aaltus.teslaradio.world.effects.PatternGeneratorControl;
 import com.aaltus.teslaradio.world.effects.SoundControl;
@@ -25,7 +24,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.utils.AppLogger;
-import java.util.ArrayList;
 
 
 /**
@@ -253,7 +251,6 @@ public abstract class Scenario extends Node implements SignalObserver {
 
     protected void onAudioOptionTouched(AudioOptionEnum value){
         Spatial handler = this.getInputHandle();
-        AppLogger.getInstance().e("AudioTouched", value.toString());
         if(handler != null){
            DrumGuitarSoundControl dgsc =  handler.getControl(DrumGuitarSoundControl.class);
            PatternGeneratorControl pgc = handler.getControl(PatternGeneratorControl.class);
@@ -375,6 +372,11 @@ public abstract class Scenario extends Node implements SignalObserver {
         }
     }
 
+    protected void updateNoise(float noise, boolean updateVolume){
+        if(this.scenarioCommon.getNoiseControl() != null){
+            this.scenarioCommon.getNoiseControl().updateNoiseLevel(noise,updateVolume);
+        }
+    }
     public boolean getNeedFixedScenario() { return needFixedScenario; }
 }
 

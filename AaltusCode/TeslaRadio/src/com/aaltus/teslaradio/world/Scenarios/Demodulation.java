@@ -6,11 +6,9 @@ package com.aaltus.teslaradio.world.Scenarios;
 
 import com.aaltus.teslaradio.world.effects.ParticleEmitterControl;
 import com.aaltus.teslaradio.world.effects.PatternGeneratorControl;
-import com.aaltus.teslaradio.world.effects.SoundControl;
 import com.aaltus.teslaradio.world.effects.TextBox;
 import com.jme3.font.BitmapFont;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.List;
@@ -41,7 +39,8 @@ public class Demodulation extends ModulationCommon  {
      protected boolean simpleUpdate(float tpf) {
          if(firstFrameDemodulation == true){
             switchRotation(isFM, 1);
-            firstFrameModulation = false;
+            firstFrameDemodulation = false;
+            firstFrameModulation = true;
         }
          simpleUpdateGeneral(tpf);
 
@@ -90,33 +89,18 @@ public class Demodulation extends ModulationCommon  {
     protected void initPatternGenerator() {
         this.initDrumGuitarSound();
         Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
-        Spatial[] carrier = scenarioCommon.initCarrierGeometries();   
+        Spatial[] carrier = ScenarioCommon.initCarrierGeometries();
               
-        this.cubeSignal = new Node();
-        this.cubeSignal.attachChild(carrier[0].clone());
-        this.cubeSignal.attachChild(baseGeom);
-        scenarioCommon.modulateFMorAM(this.cubeSignal, baseGeom, isFM);
-        this.cubeSignal.setUserData("CarrierShape", this.cubeSignal.getChild(0).getName());
-        this.cubeSignal.setUserData("isFM", isFM);
+        Node signal = new Node();
+        signal.attachChild(carrier[0].clone());
+        signal.attachChild(baseGeom.clone());
+        scenarioCommon.modulateFMorAM(signal, baseGeom, isFM);
+        signal.setUserData("CarrierShape", signal.getChild(0).getName());
+        signal.setUserData("isFM", isFM);
+
         
-        this.pyramidSignal = new Node();
-        this.pyramidSignal.attachChild(carrier[1].clone());
-        this.pyramidSignal.attachChild(baseGeom);
-        scenarioCommon.modulateFMorAM(this.pyramidSignal, baseGeom, isFM);
-        this.pyramidSignal.setUserData("CarrierShape", this.pyramidSignal.getChild(0).getName());
-        this.pyramidSignal.setUserData("isFM", isFM);
-       
-        this.dodecagoneSignal = new Node();
-        this.dodecagoneSignal.attachChild(carrier[2].clone());
-        this.dodecagoneSignal.attachChild(baseGeom);
-        scenarioCommon.modulateFMorAM(this.dodecagoneSignal, baseGeom, isFM);
-        this.dodecagoneSignal.setUserData("CarrierShape", this.dodecagoneSignal.getChild(0).getName());
-        this.dodecagoneSignal.setUserData("isFM", isFM);
-        
-        this.micTapParticle = this.cubeSignal;
-        
-        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, micTapParticle.clone(), 7, scenarioCommon.minBaseParticleScale, 
-                                                                     scenarioCommon.maxBaseParticleScale, true));
+        this.getInputHandle().addControl(new PatternGeneratorControl(0.5f, signal.clone(), 7, scenarioCommon.minBaseParticleScale, 
+                                                                     scenarioCommon.maxBaseParticleScale, true));  
     }
 
    @Override
@@ -128,7 +112,7 @@ public class Demodulation extends ModulationCommon  {
                 
                     ((Node)spatial).getChild(1).setLocalScale(((Node)spatial).getChild(1).getWorldScale());
                     pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(((Node)spatial).getChild(1));
-                    this.updateNoise(0f);  
+                    this.updateNoise(0,false);  
                 }
                else{
                    this.updateNoise(1f);
@@ -140,7 +124,7 @@ public class Demodulation extends ModulationCommon  {
     
     @Override
     public void autoGenObserverUpdate(Spatial newCarrier, boolean isFm) {
-        this.isFM = isFm;
+        //this.isFM = isFm;
         Node node = new Node();
         Spatial baseGeom = scenarioCommon.initBaseGeneratorParticle();
         node.attachChild(newCarrier.clone());
