@@ -30,14 +30,14 @@
                   android:layout_height="wrap_content"
                   android:layout_weight="1"/>
 
-                <ImageView
+                <com.utils.BackgroundLoadingImageView
                         android:id="@+id/transmission_image"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
                         android:layout_weight="6"
                         android:adjustViewBounds="true"
                         android:layout_gravity="center"
-                        android:src="@drawable/tuyau_valve"
+                        myapp:drawableId="@drawable/tuyau_valve"
                         />
 
             <View android:layout_width="0dp"
@@ -61,14 +61,14 @@
                   android:layout_height="wrap_content"
                   android:layout_weight="1"/>
 
-                <ImageView
+                <com.utils.BackgroundLoadingImageView
                         android:id="@+id/amplification_image"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:adjustViewBounds="true"
                         android:layout_gravity="center"
-                        android:src="@drawable/amplification_signaux_module_am"
+                        myapp:drawableId="@drawable/amplification_signaux_module_am"
                         />
 
             <View android:layout_width="0dp"
@@ -92,14 +92,14 @@
                           android:layout_height="wrap_content"
                           android:layout_weight="1"/>
 
-            <ImageView
+            <com.utils.BackgroundLoadingImageView
                     android:id="@+id/tube_image"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_gravity="center"
                     android:layout_weight="2"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/tube"/>
+                    myapp:drawableId="@drawable/tube"/>
 
             <View android:layout_width="0dp"
                           android:layout_height="wrap_content"
@@ -122,14 +122,14 @@
                   android:layout_height="wrap_content"
                   android:layout_weight="1"/>
 
-                <ImageView
+                <com.utils.BackgroundLoadingImageView
                         android:id="@+id/transistor_image"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
                         android:layout_gravity="center"
                         android:layout_weight="2"
                         android:adjustViewBounds="true"
-                        android:src="@drawable/transistor"/>
+                        myapp:drawableId="@drawable/transistor"/>
 
             <View android:layout_width="0dp"
                   android:layout_height="wrap_content"

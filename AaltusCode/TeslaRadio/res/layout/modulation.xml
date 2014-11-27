@@ -37,15 +37,16 @@
                       android:layout_height="wrap_content"
                       android:layout_weight="1"/>
 
-                    <ImageView
+                    <com.utils.BackgroundLoadingImageView
                             android:id="@+id/modulationam_preview"
                             android:layout_gravity="center"
-                            android:src="@drawable/modulationam_preview"
+                            myapp:drawableId="@drawable/modulationam_preview"
                             android:layout_height="wrap_content"
                             android:layout_width="0dp"
                             android:layout_weight="0.3"
                             android:adjustViewBounds="true"
-                            android:clickable="false"/>
+                            android:clickable="false"
+                            android:background="@color/white"/>
 
                 <View android:layout_width="0dp"
                       android:layout_height="wrap_content"
@@ -97,14 +98,14 @@
                       android:layout_height="wrap_content"
                       android:layout_weight="1"/>
 
-                    <ImageView
+                    <com.utils.BackgroundLoadingImageView
                             android:id="@+id/souris_preview"
                             android:layout_height="wrap_content"
                             android:layout_width="0dp"
                             android:layout_weight="0.1"
                             android:adjustViewBounds="true"
                             android:layout_gravity="center"
-                            android:src="@drawable/souris_preview"
+                            myapp:drawableId="@drawable/souris_preview"
                             android:clickable="false"/>
 
                 <View android:layout_width="0dp"
@@ -149,14 +150,14 @@
                       android:layout_height="wrap_content"
                       android:layout_weight="1"/>
 
-                    <ImageView
+                    <com.utils.BackgroundLoadingImageView
                             android:id="@+id/modulationfm_preview"
                             android:layout_height="wrap_content"
                             android:layout_width="0dp"
                             android:layout_weight="0.3"
                             android:adjustViewBounds="true"
                             android:layout_gravity="center"
-                            android:src="@drawable/modulationfm_preview"
+                            myapp:drawableId="@drawable/modulationfm_preview"
                             android:clickable="false"/>
 
                 <View android:layout_width="0dp"

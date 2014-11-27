@@ -319,7 +319,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         FragmentTransaction ft = fm.beginTransaction();
         ft.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out);
         ft.replace(R.id.item_detail_fragment_vuforia, fragment, ITEM_DETAIL_FRAGMENT_TAG).commit();
-        fm.executePendingTransactions();
+        //fm.executePendingTransactions();
 
         ScenarioEnum scenarioEnum = SubjectContent.ITEM_MAP.get(id).getScenarioEnum();
         scenarioSwitcher.setScenarioByEnum(scenarioEnum);

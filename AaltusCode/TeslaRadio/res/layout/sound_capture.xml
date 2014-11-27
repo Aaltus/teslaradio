@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:myapp="http://schemas.android.com/apk/res/com.aaltus.teslaradio"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             style="@style/InformativeMenuScrollView"
@@ -30,10 +31,10 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"/>
 
-            <ImageView
+            <com.utils.BackgroundLoadingImageView
                     android:id="@+id/sound_capture_image"
                     android:layout_gravity="center"
-                    android:src="@drawable/principe_dynamic_microphone"
+                    myapp:drawableId="@drawable/principe_dynamic_microphone"
                     android:clickable="false"
                     android:layout_weight="3"
                     android:layout_width="0dp"
