@@ -359,15 +359,19 @@ public class ItemDetailFragment extends Fragment  implements View.OnClickListene
             //List<CustomImageView> customImageViewList = params[0];
 
             int data;
+            ImageView imageView;
             for(int i=0; i <customImageViewList.size(); i++)
             {
-                data = customImageViewList.get(i).get().getImageId();
+
+                //Old way to load a big image into memory
+                //int height = d.getIntrinsicHeight();
+                //int width = d.getIntrinsicWidth();
+
+                BackgroundLoadingImageView customImageView = customImageViewList.get(i).get();
+                data       = customImageView.getImageId();
                 Drawable d = getResources().getDrawable(data);
-                //TODO this code should have been changed to load a lower resolution for our image.
-                int height = d.getIntrinsicHeight();
-                int width = d.getIntrinsicWidth();
-                //int width  = imageViewReference.get().getWidth();
-                //int height = imageViewReference.get().getHeight();
+                int width  = customImageView.getWidth();
+                int height = customImageView.getHeight();
                 //AppLogger.getInstance().i(TAG,"Bitmap width:"+width+" heigth:"+height+" id:"+data);
                 publishProgress(decodeSampledBitmapFromResource(getResources(), data, width, height),i);
             }
