@@ -117,5 +117,10 @@
     <style name="button2" parent="@android:style/Widget.Button">
         <item name="com.aaltus.teslaradio:font">Fonts/agencyr.ttf</item>
     </style>
+    <style name="masterTutorialFillerWeight">
+        <item name="android:layout_weight">0</item>
+    </style>
+
+
 
 </resources>
