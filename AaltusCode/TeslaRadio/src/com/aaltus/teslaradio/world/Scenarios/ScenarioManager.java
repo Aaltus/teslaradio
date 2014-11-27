@@ -708,7 +708,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                         " dY : " + touchEvent.getDeltaY());
 */
         //I add a way to switch scenario with 2 fingers, still experimental
-        if(touchEvent.getPointerId() == 1 &&
+        /*if(touchEvent.getPointerId() == 1 &&
                 (touchEvent.getType() == TouchEvent.Type.FLING ||
                         touchEvent.getType() == TouchEvent.Type.SCROLL ||
                         touchEvent.getType() == TouchEvent.Type.MOVE))
@@ -723,7 +723,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 this.setPreviousScenario();
             }
         }
-        else{
+        else{*/
 
 
             //We check if the event is on the GUI NODE. We pass it down to scenario otherwise.
@@ -755,11 +755,11 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                     ((Scenario) scenario.getChild(0)).onScenarioTouch(name, touchEvent, v);
                 }
             }*/
-            for(Node scenario : getCurrentScenario().getScenarios() )
-                {
-                    ((Scenario) scenario.getChild(0)).onScenarioTouch(name, touchEvent, v);
-                }
-        }
+        for(Node scenario : getCurrentScenario().getScenarios() )
+            {
+                ((Scenario) scenario.getChild(0)).onScenarioTouch(name, touchEvent, v);
+            }
+        //}
 
 
     }
