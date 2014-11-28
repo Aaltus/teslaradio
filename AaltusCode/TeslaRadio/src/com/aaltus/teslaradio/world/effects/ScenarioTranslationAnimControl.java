@@ -40,6 +40,7 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
     private Vector3f startPos = new Vector3f();
     private Quaternion currentLocalRotation = new Quaternion();
     private Quaternion startOrientation = new Quaternion();
+    private boolean toDetachAtEndOfTranslation = false;
 
     public ScenarioTranslationAnimControl(List<Node> trackables, float speed){
 
@@ -54,7 +55,21 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
      * @param currentNodeIndex
      */
     public void startTranslationNext(int currentNodeIndex){
-        startTranslation(currentNodeIndex, true);
+        
+        this.toDetachAtEndOfTranslation = false;
+        this.endNode = this.trackables.get(currentNodeIndex);
+        
+        if(currentNodeIndex < this.trackables.size()-1) {
+            this.startNode = this.trackables.get(currentNodeIndex+1);
+            this.pathIsReverse = false;
+        }
+        else{
+            // from exterior path
+            this.startNode = this.trackables.get(currentNodeIndex-1);
+            this.pathIsReverse = true;
+        } 
+        
+        startTranslationCommon();
     }
 
     /** translation from node_i to node_i-1
@@ -62,38 +77,61 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
      * @param currentNodeIndex
      */
     public void startTranslationPrevious(int currentNodeIndex){
-        startTranslation(currentNodeIndex, false);
-    }
-    
-    public void startTranslation(int currentNodeIndex, boolean isNext){
+        
+        this.toDetachAtEndOfTranslation = false;
         this.endNode = this.trackables.get(currentNodeIndex);
-        if(isNext){
-            if(currentNodeIndex < this.trackables.size()-1) {
-                this.startNode = this.trackables.get(currentNodeIndex+1);
-                this.pathIsReverse = false;
-            }
-            else{
-                // from exterior path
-                this.startNode = this.trackables.get(currentNodeIndex-1);
-                this.pathIsReverse = true;
-            }   
+        
+        if(currentNodeIndex > 0){
+            this.startNode = this.trackables.get(currentNodeIndex-1);
+            this.pathIsReverse = false;
         }
         else{
-            if(currentNodeIndex > 0){
-                this.startNode = this.trackables.get(currentNodeIndex-1);
-                this.pathIsReverse = false;
-            }
-            else{
-                // from exterior path
-                this.startNode = this.trackables.get(currentNodeIndex+1);
-                this.pathIsReverse = true;
-            }
+            // from exterior path
+            this.startNode = this.trackables.get(currentNodeIndex+1);
+            this.pathIsReverse = true;
         }
+                    
+        startTranslationCommon();
+    }
+    
+    public void startDestructionTranslationPrevious() {
         
+        this.toDetachAtEndOfTranslation = true;
+        
+        this.startNode = this.trackables.get(1);
+        this.endNode = this.trackables.get(0);
+        
+        this.pathIsReverse = true;    
+        
+        startTranslationCommon();
+
+    }
+
+    public void startDestructionTranslationNext() {
+        
+        this.toDetachAtEndOfTranslation = true;
+        
+        this.startNode = this.trackables.get(0);
+        this.endNode = this.trackables.get(1);
+        
+        this.pathIsReverse = true;
+        
+        startTranslationCommon();
+    }    
+    
+    
+    
+    public void startTranslationCommon(){
+
         // set the start position of the scenario
         this.spatial.setLocalTranslation(getStartPositionVector(pathIsReverse));
 
         if(!this.pathIsReverse) {
+            
+            // reset to the good scaling in the eventuality the previous translation was not finish
+            this.spatial.setLocalScale(AppGetter.getWorldScalingDefault());
+            
+            
             if(!(((Scenario) ((Node) this.spatial).getChild(0)).getNeedFixedScenario()) ){
                 this.startOrientation = (this.endNode.getParent().getWorldRotation().inverse()).mult(this.startNode.getParent().getWorldRotation());
             }
@@ -139,7 +177,11 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
             }
             // set scenario scale when comming from outside (0 to 1 of scaling animation)
             else{
-                this.spatial.setLocalScale(distanceTraveled/path.getLength()*AppGetter.getWorldScalingDefault());
+                if(!this.toDetachAtEndOfTranslation){
+                    this.spatial.setLocalScale(distanceTraveled/path.getLength()*AppGetter.getWorldScalingDefault());
+                }else{
+                    this.spatial.setLocalScale((1-distanceTraveled/path.getLength())*AppGetter.getWorldScalingDefault());
+                }
             }
 
         }
@@ -150,6 +192,11 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
             this.spatial.setLocalTranslation(Vector3f.ZERO);
             this.spatial.setLocalRotation(Quaternion.IDENTITY);
             this.setEnabled(false);
+            
+            // detach scenario if it goes to outside
+            if(this.toDetachAtEndOfTranslation == true){
+                this.spatial.getParent().detachChild(this.spatial);
+            }
         }        
     }
     
@@ -162,16 +209,32 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
                     
             // remove last waypoints and add new one
             this.path.clearWayPoints();
-            this.path.addWayPoint(startPos);
-            this.path.addWayPoint(Vector3f.ZERO);
+            
+            if(!this.toDetachAtEndOfTranslation){
+                this.path.addWayPoint(startPos);
+                this.path.addWayPoint(Vector3f.ZERO);                
+            }else{
+                this.path.addWayPoint(Vector3f.ZERO);
+                this.path.addWayPoint(startPos);                
+            }
+
         }
     }
 
     private Vector3f getStartPositionVector(boolean isPathReverse){
         Vector3f startPosition;
+        
+        // path between 2 trackable
         if(!isPathReverse){
             startPosition = this.endNode.getWorldRotation().inverse().mult((this.startNode.getWorldTranslation().subtract(endNode.getWorldTranslation())).divide(endNode.getWorldScale()));
         }
+        
+        // path to the exterior
+        else if(this.toDetachAtEndOfTranslation){
+            startPosition = this.startNode.getWorldRotation().inverse().mult((this.startNode.getWorldTranslation().subtract(endNode.getWorldTranslation())).divide(endNode.getWorldScale()));
+        }
+        
+        // path from the exterior
         else{
             startPosition = this.endNode.getWorldRotation().inverse().mult((this.endNode.getWorldTranslation().subtract(startNode.getWorldTranslation())).divide(endNode.getWorldScale()));
         }
