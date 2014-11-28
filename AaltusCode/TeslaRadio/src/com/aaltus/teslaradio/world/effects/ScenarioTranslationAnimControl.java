@@ -187,16 +187,18 @@ public class ScenarioTranslationAnimControl extends AbstractControl{
         }
         else
         {
-            // stop the translation by deactivating the control
-            distanceTraveled = 0;
-            this.spatial.setLocalTranslation(Vector3f.ZERO);
-            this.spatial.setLocalRotation(Quaternion.IDENTITY);
-            this.setEnabled(false);
-            
             // detach scenario if it goes to outside
             if(this.toDetachAtEndOfTranslation == true){
                 this.spatial.getParent().detachChild(this.spatial);
             }
+
+            // stop the translation by deactivating the control
+            distanceTraveled = 0;
+            this.spatial.setLocalTranslation(Vector3f.ZERO);
+            this.spatial.setLocalRotation(Quaternion.IDENTITY);
+            this.spatial.setLocalScale(AppGetter.getWorldScalingDefault());
+            this.setEnabled(false);
+
         }        
     }
     
