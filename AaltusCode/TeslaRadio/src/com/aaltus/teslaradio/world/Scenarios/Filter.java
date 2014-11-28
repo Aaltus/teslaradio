@@ -306,7 +306,8 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
             if (outFilterEmitter != null) {
                 outFilterEmitter.getControl(ParticleEmitterControl.class).emitParticle(spatial);
             }
-            if(!this.isFirst){
+            /*Do not update volume if demodulator is sending noise*/
+            if( !this.isFirst || this.scenarioCommon.getNoiseControl().getNoiseLevel()==0){
                 this.updateVolume(1);
             }
         }
