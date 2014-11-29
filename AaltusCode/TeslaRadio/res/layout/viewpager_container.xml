@@ -14,7 +14,8 @@
 
     <LinearLayout android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
-                  android:orientation="horizontal">
+                  android:orientation="horizontal"
+                  android:background="@drawable/window_layout_bg_light_top">
 
       <ImageView
               android:id="@+id/detail_picto_icon"
@@ -55,20 +56,40 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             />
+    <!--<LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:layout_gravity="center">-->
+       <!-- <com.viewpagerindicator.CirclePageIndicator
+
+                android:id="@+id/indicator"
+                android:padding="10dip"
+                android:layout_height="fill_parent"
+                android:layout_width="wrap_content"
+                android:background="@drawable/window_layout_bg_light_bottom"
+
+
+                />-->
     <com.viewpagerindicator.CirclePageIndicator
 
             android:id="@+id/indicator"
-            android:padding="3dip"
+            android:layout_width="fill_parent"
+            android:padding="10dip"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_gravity="center"
-            android:layout_marginBottom="5dp"
-            app:radius="5dp"
+
+            app:radius="6dp"
             app:strokeWidth="1dp"
-            android:layout_width="wrap_content"
-            app:fillColor="@drawable/global_app_color"
-            app:pageColor="#FFFFFFFF"
-            app:strokeColor="#FF000000"
+            app:centered="true"
+
+
+            app:fillColor="@color/aaltluscolor"
+            app:pageColor="#FF000000"
+            app:strokeColor="#FFFFFFFF"
 
 
             />
+    <!--</LinearLayout>-->
 </LinearLayout>
