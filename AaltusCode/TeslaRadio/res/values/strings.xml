@@ -149,5 +149,6 @@
     <string name="Chanson3">Le jayce3</string>
     <string name="Chanson4">Le jayce4</string>
     <string name="Merci">Merci!</string>
+    <string name="image_web_site_url">www.google.ca</string>
 
 </resources>

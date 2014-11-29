@@ -1,7 +1,9 @@
 package com.aaltus.teslaradio;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.PagerAdapter;
@@ -95,6 +97,8 @@ public class MasterTutorialFragment extends DialogFragment implements
         mIndicator.setOnPageChangeListener(this);
 
 
+
+
         return view;
     }
 
@@ -138,6 +142,10 @@ public class MasterTutorialFragment extends DialogFragment implements
                 break;
             case R.id.master_tutorial_skip_button:
                 this.onMasterTutorialListener.onContinueEvent();
+                break;
+            case R.id.master_tutorial_open_url:
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + getActivity().getString(R.string.image_web_site_url)));
+                startActivity(i);
                 break;
         }
     }
@@ -183,7 +191,7 @@ public class MasterTutorialFragment extends DialogFragment implements
     }
     */
 
-    private static class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -194,7 +202,7 @@ public class MasterTutorialFragment extends DialogFragment implements
         @Override
         public Fragment getItem(int position) {
             AppLogger.getInstance().i(TAG,"Position:"+position);
-            return ScreenSlidePageFragment.newInstance(position);
+            return newInstance(position);
         }
 
         @Override
@@ -203,22 +211,22 @@ public class MasterTutorialFragment extends DialogFragment implements
         }
     }
 
+    static ScreenSlidePageFragment newInstance(int num) {
 
+        ScreenSlidePageFragment fragment = new ScreenSlidePageFragment();
+        Bundle arguments = new Bundle();
+        arguments.putInt(ScreenSlidePageFragment.ARG_ITEM_ID, num);
+        fragment.setArguments(arguments);
 
-    private static class ScreenSlidePageFragment extends Fragment {
+        return fragment;
+    }
+
+    private static class ScreenSlidePageFragment extends Fragment implements View.OnClickListener {
 
         private int position;
         private static final String ARG_ITEM_ID = "item_id";
 
-        static ScreenSlidePageFragment newInstance(int num) {
 
-            ScreenSlidePageFragment fragment = new ScreenSlidePageFragment();
-            Bundle arguments = new Bundle();
-            arguments.putInt(ScreenSlidePageFragment.ARG_ITEM_ID, num);
-            fragment.setArguments(arguments);
-
-            return fragment;
-        }
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -235,11 +243,35 @@ public class MasterTutorialFragment extends DialogFragment implements
                     mLayouts[position], container, false);
 
             //rootView.setOnClickListener(this);
+            View openUrlButton    = rootView.findViewById(R.id.master_tutorial_open_url);
+            if(openUrlButton != null) {
+                openUrlButton.setOnClickListener(this);
+            }
+
 
             return rootView;
         }
 
+        /**
+         * Reload the activity with the new language when clicked
+         * @param v
+         */
+        public void onClick(View v){
+
+            int id = v.getId();
+
+            switch (id){
+                case R.id.master_tutorial_open_url:
+                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + getActivity().getString(R.string.image_web_site_url)));
+                    startActivity(i);
+                    this.getActivity().finish();
+                    break;
+            }
+        }
+
     }
+
+
 
 
 }
