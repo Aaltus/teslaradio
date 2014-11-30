@@ -35,7 +35,6 @@ public class Typewriter extends TextView {
                 append(mTextToAdd);
                 mIndex++;
                 mHandler.postDelayed(characterAdder, mDelay);
-                AppLogger.getInstance().d("TAG","Index : " + mIndex);
             } else {
                 setText(getText().toString().replace("...", ""));
                 mHandler.postDelayed(characterAdder,700);

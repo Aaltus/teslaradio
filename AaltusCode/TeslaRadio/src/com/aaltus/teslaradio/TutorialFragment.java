@@ -6,6 +6,9 @@ import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.SpannedString;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -232,8 +235,8 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
             if (listXmlString != null) {
                 for (int i = 0; i < listXmlString.length; i++) {
                     textView = new Typewriter(this.getActivity());
-                    textView.setCharacterDelay(500);
-                    textView.setText(this.getActivity().getText(listXmlString[i]) + "  ");
+                    textView.setCharacterDelay(300);
+                    textView.setText(this.getActivity().getText(listXmlString[i]));
                     textView.setTextColor(Color.BLACK);
                     viewFlipper.addView(textView);
                 }

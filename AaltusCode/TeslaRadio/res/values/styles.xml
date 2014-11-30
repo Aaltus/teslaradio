@@ -26,7 +26,7 @@
     </style>
     <!--Credits-->
     <style name="Credits">
-        <item name="android:textSize">50dp</item>
+        <item name="android:textSize">50sp</item>
     </style>
     <style name="InformativeMenuScrollView">
         <item name="android:paddingLeft">10dp</item>
