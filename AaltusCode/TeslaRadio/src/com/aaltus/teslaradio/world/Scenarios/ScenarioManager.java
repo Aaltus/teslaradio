@@ -87,6 +87,7 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
     public void onSetNewSong(SongEnum value){
         
     }
+    
     @Override
     public void onAudioOptionTouched(AudioOptionEnum value) {
      Boolean isAttached =  AppGetter.hasRootNodeAsAncestor(this.getCurrentScenario().getScenarios().get(0).getChild(0));
@@ -95,6 +96,15 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
          return;
      }
      Boolean needBgm = ((Scenario)this.getCurrentScenario().getScenarios().get(0).getChild(0)).getNeedsBackgroundSound();
+     /*Do not restart song when switching scenario while info menu is open*/
+     if(this.songManager.isIsInformativeMenu()){
+         if(value == AudioOptionEnum.INFORMATIVE_MENU_OUT){
+             value = AudioOptionEnum.SCENARIO_SWITCH;
+             this.songManager.setIsInformativeMenu(false);
+         }else{
+             value = AudioOptionEnum.NOTHING;
+         }
+     }
      
      switch(value){
          case DRUM:
@@ -118,6 +128,11 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                  this.songManager.stopSong();
              }
              break;
+         case INFORMATIVE_MENU_IN:
+             this.songManager.setIsInformativeMenu(true);
+             this.songManager.stopSong();
+             break;
+         default:
      }
 
     }

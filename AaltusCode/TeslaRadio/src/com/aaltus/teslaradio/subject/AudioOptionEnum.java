@@ -6,5 +6,5 @@ package com.aaltus.teslaradio.subject;
  */
 public enum AudioOptionEnum
 {
-        GUITAR,DRUM,IPOD,NOSOUND,SCENARIO_SWITCH
+        GUITAR,DRUM,IPOD,NOSOUND,SCENARIO_SWITCH,INFORMATIVE_MENU_IN,INFORMATIVE_MENU_OUT,NOTHING
 }

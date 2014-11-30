@@ -537,9 +537,9 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
 
         if (playSong) {
-            this.songManager.onAudioOptionTouched(AudioOptionEnum.SCENARIO_SWITCH);
+            this.songManager.onAudioOptionTouched(AudioOptionEnum.INFORMATIVE_MENU_OUT);
         } else {
-            this.songManager.onAudioOptionTouched(AudioOptionEnum.NOSOUND);
+            this.songManager.onAudioOptionTouched(AudioOptionEnum.INFORMATIVE_MENU_IN);
         }
     }
 

@@ -21,6 +21,15 @@ public class SongManager {
     private Node audioNode; 
     private boolean audioPlaying;
     private SongEnum selectedSong;
+    private boolean isInformativeMenu = false;
+
+    public boolean isIsInformativeMenu() {
+        return isInformativeMenu;
+    }
+
+    public void setIsInformativeMenu(boolean isInformativeMenu) {
+        this.isInformativeMenu = isInformativeMenu;
+    }
     
     
     public SongManager(){
@@ -129,4 +138,6 @@ public class SongManager {
         this.setNewSong(newSong);
         
     }
+    
+
 }
