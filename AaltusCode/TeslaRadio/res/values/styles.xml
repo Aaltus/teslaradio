@@ -6,6 +6,7 @@
     <drawable name="button_pressed_app_color">#CECECE</drawable>
     <drawable name="GreyTransparent">#CC212121</drawable>
     <drawable name="GreyOpaque">#FF212121</drawable>
+    <drawable name="LightGreyOpaque">#ff222222</drawable>
 
 
     <!--For splashscreen-->
@@ -28,7 +29,8 @@
         <item name="android:textSize">50dp</item>
     </style>
     <style name="InformativeMenuScrollView">
-        <item name="android:padding">10dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
         <item name="android:fadeScrollbars">false</item>
     </style>
     <!--Credits titles text style-->

@@ -489,7 +489,11 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 for(Node scenario : nextScenarios ){
                     scenario.getControl(ScenarioTranslationAnimControl.class).startTranslationPrevious(index);
                     index ++;
-                }               
+                }      
+                
+                // set the translation for the scenario that goes out of sight
+                getCurrentScenario().getScenarios().get(1).getControl(ScenarioTranslationAnimControl.class).startDestructionTranslationPrevious();
+                getNodeList().get(1).attachChild(getCurrentScenario().getScenarios().get(1));
             }
             // scenario go to next 
             else if(getCurrentScenario().getScenarios().get(1) == nextScenarios.get(0))
@@ -498,12 +502,19 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
                 for(Node scenario : nextScenarios ){
                     scenario.getControl(ScenarioTranslationAnimControl.class).startTranslationNext(index);
                     index ++;
-                }               
+                } 
+                
+                // set the translation for the scenario that goes out of sight
+                getCurrentScenario().getScenarios().get(0).getControl(ScenarioTranslationAnimControl.class).startDestructionTranslationNext();
+                getNodeList().get(0).attachChild(getCurrentScenario().getScenarios().get(0));
             }
             // unknow translation = no translation
             else
             {
-                // do nothing
+                // do nothing, reset scale to default
+                for(Node scenario : nextScenarios ){
+                    scenario.setLocalScale(AppGetter.getWorldScalingDefault());
+                }
             }
 
         }

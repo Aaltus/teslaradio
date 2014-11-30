@@ -40,18 +40,18 @@
                 <com.viewpagerindicator.CirclePageIndicator
 
                         android:id="@+id/master_tutorial_indicator"
-                        android:padding="3dip"
+                        android:layout_gravity="center"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_gravity="bottom|center_horizontal"
-                        android:layout_marginBottom="5dp"
-                        app:radius="5dp"
+
+                        android:padding="3dip"
+                        app:radius="6dp"
                         app:strokeWidth="1dp"
 
-                        app:fillColor="@drawable/global_app_color"
-                        app:pageColor="#FFFFFFFF"
-                        app:strokeColor="#FF000000"
+                        app:fillColor="@color/aaltluscolor"
+                        app:pageColor="#FF000000"
+                        app:strokeColor="#FFFFFFFF"
 
 
                         />

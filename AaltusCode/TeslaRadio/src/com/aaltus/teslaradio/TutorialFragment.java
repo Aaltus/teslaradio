@@ -14,6 +14,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
+import com.aaltus.teslaradio.world.effects.Typewriter;
 import com.ar4android.vuforiaJME.ITutorialSwitcher;
 import com.aaltus.teslaradio.subject.ScenarioEnum;
 import com.aaltus.teslaradio.subject.SubjectContent;
@@ -27,6 +28,7 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
     MediaPlayer mediaPlayer = null;
 
     private Animation shakeAnim;
+    private Typewriter textView;
     private AnimationDrawable speakAnim;
 
     private enum CharacterAction{
@@ -182,10 +184,12 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
         if(viewFlipper.getDisplayedChild() == viewFlipper.getChildCount()-1)
         {
             setBubbleViewVisibility(false);
+            ((Typewriter)viewFlipper.getCurrentView()).removeAnimatedString();
         }
         else
         {
             viewFlipper.showNext();
+            ((Typewriter)viewFlipper.getCurrentView()).animateText(".");
             setTutorialMenuCallback(viewFlipper.getDisplayedChild());
         }
     }
@@ -198,6 +202,7 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
             if(viewFlipper.getChildCount() > 0){
                 int index = 0;
                 viewFlipper.setDisplayedChild(index);
+                ((Typewriter)viewFlipper.getCurrentView()).animateText(".");
                 this.setTutorialMenuCallback(index);
             }
 
@@ -222,11 +227,13 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
             setCharacterAction(CharacterAction.SHAKING);
             ViewFlipper viewFlipper = getViewFlipper();
             viewFlipper.removeAllViews();
+
             int[] listXmlString = SubjectContent.ENUM_MAP.get(scenarioEnum).getListStringIdTutorial();
             if (listXmlString != null) {
                 for (int i = 0; i < listXmlString.length; i++) {
-                    TextView textView = new TextView(this.getActivity());
-                    textView.setText(this.getActivity().getText(listXmlString[i]));
+                    textView = new Typewriter(this.getActivity());
+                    textView.setCharacterDelay(500);
+                    textView.setText(this.getActivity().getText(listXmlString[i]) + "  ");
                     textView.setTextColor(Color.BLACK);
                     viewFlipper.addView(textView);
                 }
