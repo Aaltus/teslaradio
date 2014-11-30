@@ -285,7 +285,6 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         toggleDetailFragmentVisibility(showFragment);
         toggleItemListVisibility(showFragment);
         toggleTutorialVisibility(!showFragment);
-        audioWhenFragmentVisible(false);
     }
 
     private TutorialFragment getTutorialFragment(){
@@ -299,7 +298,6 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
     public void onItemSelected(int id) {
 
         toggleItemListVisibility(false);
-        audioWhenFragmentVisible(false);
         replaceDetailFragment(id);
 
 
@@ -326,7 +324,6 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
 
         toggleDetailFragmentVisibility(true);
         toggleTutorialVisibility(false);
-        audioWhenFragmentVisible(false);
 
     }
 
@@ -409,10 +406,12 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
                 if(isDetailFragmentsVisible()){
                     toggleDetailFragmentVisibility(false);
                     toggleTutorialVisibility(true);
+                    audioWhenFragmentVisible(true);
                 }
                 else{
                     replaceDetailFragment(pager.getCurrentItem());
                     toggleDetailFragmentVisibility(true);
+                    audioWhenFragmentVisible(false);
                 }
 
                 break;
@@ -455,7 +454,6 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
                 toggleDetailFragmentVisibility(false);
                 if(!isListFragmentsVisible()){
                     toggleTutorialVisibility(true);
-                    audioWhenFragmentVisible(true);
                 }
                 break;
         }
@@ -535,7 +533,8 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
         }
     }
 
-    public void audioWhenFragmentVisible(boolean playSong) {
+    public void  audioWhenFragmentVisible(boolean playSong) {
+
 
         if (playSong) {
             this.songManager.onAudioOptionTouched(AudioOptionEnum.SCENARIO_SWITCH);
