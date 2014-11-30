@@ -1356,6 +1356,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
                             }
                             else
                             {
+                                onAudioOptionTouched(AudioOptionEnum.NOSOUND);
                                 (app).enqueue(new Callable<Object>() {
                                     public Object call() throws Exception {
                                         ((VuforiaJME)app).onBackButton();
