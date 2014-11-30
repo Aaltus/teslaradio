@@ -313,6 +313,7 @@ public class Filter extends Scenario implements EmitterObserver, AutoGenObserver
         }
          else{
             this.updateVolume(0);
+            this.updateNoise(0,false);
         }
     }
 

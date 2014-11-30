@@ -112,10 +112,13 @@ public class Demodulation extends ModulationCommon  {
                 
                     ((Node)spatial).getChild(1).setLocalScale(((Node)spatial).getChild(1).getWorldScale());
                     pcbAmpEmitter.getControl(ParticleEmitterControl.class).emitParticle(((Node)spatial).getChild(1));
+                
                     this.updateNoise(0,false);  
-                }
-               else{
-                   this.updateNoise(1f);
+                    
+                }else{
+                   if(this.isFirst || this.scenarioCommon.getNoiseControl().getVolume() != 0 ){
+                        this.updateNoise(1f);
+                   }
                }
             }
             
