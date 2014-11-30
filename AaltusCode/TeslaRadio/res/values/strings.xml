@@ -144,10 +144,11 @@
     <string name="Blender">Blender</string>
     <string name="Stack">Stackoverflow</string>
     <string name="Musique">Musique</string>
-    <string name="Chanson1">Le jayce</string>
-    <string name="Chanson2">Le jayce2</string>
-    <string name="Chanson3">Le jayce3</string>
-    <string name="Chanson4">Le jayce4</string>
+    <string name="License">Attribution-NonCommercial-ShareAlike 3.0</string>
+    <string name="Trame1">Jared C. Balogh - WENT TO FIGHT AND A HOCKEY GAME BROKE OUT</string>
+    <string name="Trame2">Rolemusic - A ninja among oscillators</string>
+    <string name="Trame3">Jahzzar - Trumbling Dishes Like Old-Man\'s Wishes</string>
+    <string name="Trame4">BoxCat Games - Epic Song</string>
     <string name="Merci">Merci!</string>
 
 </resources>

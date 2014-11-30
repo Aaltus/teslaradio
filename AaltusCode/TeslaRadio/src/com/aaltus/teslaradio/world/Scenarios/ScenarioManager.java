@@ -778,23 +778,17 @@ public class ScenarioManager extends AbstractAppState implements IScenarioManage
         if ((name.equals(GUITAR) || name.equals(DRUM) || name.equals(MICRO)) && !keyPressed) {
             List<Node> scenarios = getCurrentScenario().getScenarios();
             if(scenarios != null){
-                for(Node scenario : scenarios ){
-                    if(scenario instanceof SoundEmission){
-                        if(name.equals(DRUM))
-                        {
-                            ((SoundEmission) scenario.getChild(0)).drumTouchEffect();
-                        }
-                        if(name.equals(GUITAR))
-                        {
-                            ((SoundEmission) scenario.getChild(0)).guitarTouchEffect();
-                        }
-                    }
+                Scenario scenario = (Scenario) scenarios.get(0).getChild(0);
                     if(scenario instanceof SoundCapture){
                         if(name.equals(MICRO))
                         {
                             ((SoundCapture) scenario.getChild(0)).microTouchEffect();
                         }
                     }
+                   if(name.equals(GUITAR)){
+                       scenario.onAudioOptionTouched(AudioOptionEnum.GUITAR);
+                   }else if(name.equals(DRUM)){
+                       scenario.onAudioOptionTouched(AudioOptionEnum.DRUM);
                 }
             }
         }

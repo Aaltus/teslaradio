@@ -47,4 +47,8 @@ public class NoiseControl extends BackgroundSoundControl{
      public float getNoiseLevel(){
          return this.spatial.getUserData(AppGetter.USR_NOISE_LEVEL);
      }
+     
+     public float getVolume(){
+        return this.spatial.getUserData(AppGetter.USR_AUDIO_SCALE);
+     }
 }

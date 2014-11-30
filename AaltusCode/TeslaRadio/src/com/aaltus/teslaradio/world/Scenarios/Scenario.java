@@ -263,6 +263,7 @@ public abstract class Scenario extends Node implements SignalObserver {
                    break;
                default:
                    this.stopAutoGeneration();
+                   this.updateDrumGuittarVolume();
                    dgsc.setNextInstrument(value);
                    dgsc.setEnabled(true);
                    pgc.toggleNewWave(1);
@@ -365,18 +366,33 @@ public abstract class Scenario extends Node implements SignalObserver {
         if(this.scenarioCommon.getNoiseControl() != null){
         this.scenarioCommon.getNoiseControl().updateVolume(volume);
         }
+
     }
     protected void updateNoise(float noise){
         if(this.scenarioCommon.getNoiseControl() != null){
             this.scenarioCommon.getNoiseControl().updateNoiseLevel(noise);
         }
+
+            
     }
 
     protected void updateNoise(float noise, boolean updateVolume){
         if(this.scenarioCommon.getNoiseControl() != null){
             this.scenarioCommon.getNoiseControl().updateNoiseLevel(noise,updateVolume);
         }
+       
     }
     public boolean getNeedFixedScenario() { return needFixedScenario; }
+    
+    private void updateDrumGuittarVolume(){
+        Spatial handler = this.getInputHandle();
+        Float vol = this.scenarioCommon.getNoiseControl().getVolume();
+        if(handler != null){
+          DrumGuitarSoundControl dgsc =  handler.getControl(DrumGuitarSoundControl.class);
+          if(dgsc != null){
+            dgsc.updateVolume(vol);
+          }
+       }
+    }
 }
 

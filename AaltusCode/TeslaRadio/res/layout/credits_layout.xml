@@ -315,23 +315,28 @@
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   style="@style/CreditsTextStyle"
-                  android:text="@string/Chanson1"/>
+                  android:text="@string/License"/>
 
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   style="@style/CreditsTextStyle"
-                  android:text="@string/Chanson2"/>
+                  android:text="@string/Trame1"/>
 
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   style="@style/CreditsTextStyle"
-                  android:text="@string/Chanson3"/>
+                  android:text="@string/Trame2"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Trame3"/>
 
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   style="@style/CreditsTextStyle"
                   android:layout_marginBottom="50dp"
-                  android:text="@string/Chanson4"/>
+                  android:text="@string/Trame4"/>
 
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"

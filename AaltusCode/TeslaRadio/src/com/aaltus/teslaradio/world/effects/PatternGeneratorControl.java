@@ -171,7 +171,6 @@ public class PatternGeneratorControl extends AbstractControl {
                 if(this.autoPlayThread == null)
                 {
                     Float tmpScale = sp.getLocalScale().x;
-                    System.out.println(sp.getLocalScale().x);
                     this.spatial.setUserData(AppGetter.USR_NEW_WAVE_TOGGLED, true);
                     this.spatial.setUserData(AppGetter.USR_NEXT_WAVE_SCALE, tmpScale/this.maxScale);
                 }
