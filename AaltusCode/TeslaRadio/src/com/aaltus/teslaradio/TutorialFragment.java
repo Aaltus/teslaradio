@@ -1,23 +1,18 @@
 package com.aaltus.teslaradio;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Html;
-import android.text.SpannedString;
-import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.ViewFlipper;
-import com.aaltus.teslaradio.world.effects.Typewriter;
+import com.ar4android.Typewriter;
 import com.ar4android.vuforiaJME.ITutorialSwitcher;
 import com.aaltus.teslaradio.subject.ScenarioEnum;
 import com.aaltus.teslaradio.subject.SubjectContent;
