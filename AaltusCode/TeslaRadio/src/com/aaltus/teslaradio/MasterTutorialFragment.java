@@ -11,7 +11,6 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.*;
 import android.widget.Button;
-import android.widget.ImageButton;
 import com.utils.AppLogger;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -143,7 +142,7 @@ public class MasterTutorialFragment extends DialogFragment implements
             case R.id.master_tutorial_skip_button:
                 this.onMasterTutorialListener.onContinueEvent();
                 break;
-            case R.id.master_tutorial_open_url:
+            case R.id.button_website_printing:
                 Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + getActivity().getString(R.string.image_web_site_url)));
                 startActivity(i);
                 break;
@@ -243,11 +242,14 @@ public class MasterTutorialFragment extends DialogFragment implements
                     mLayouts[position], container, false);
 
             //rootView.setOnClickListener(this);
-            View openUrlButton    = rootView.findViewById(R.id.master_tutorial_open_url);
+            View openUrlButton    = rootView.findViewById(R.id.button_website_printing);
             if(openUrlButton != null) {
                 openUrlButton.setOnClickListener(this);
             }
-
+            View openEmailButton    = rootView.findViewById(R.id.button_email_printing);
+            if(openEmailButton != null) {
+                openEmailButton.setOnClickListener(this);
+            }
 
             return rootView;
         }
@@ -261,10 +263,15 @@ public class MasterTutorialFragment extends DialogFragment implements
             int id = v.getId();
 
             switch (id){
-                case R.id.master_tutorial_open_url:
+                case R.id.button_website_printing:
                     Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + getActivity().getString(R.string.image_web_site_url)));
                     startActivity(i);
                     this.getActivity().finish();
+                    break;
+                case R.id.button_email_printing:
+                    //Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + getActivity().getString(R.string.image_web_site_url)));
+                    //startActivity(i);
+                    //this.getActivity().finish();
                     break;
             }
         }

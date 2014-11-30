@@ -150,5 +150,7 @@
     <string name="Chanson4">Le jayce4</string>
     <string name="Merci">Merci!</string>
     <string name="image_web_site_url">www.google.ca</string>
+    <string name="print_website">Site Web</string>
+    <string name="print_email">Courriel</string>
 
 </resources>
