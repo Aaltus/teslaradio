@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
-import com.ar4android.vuforiaJME.Typewriter;
 import com.ar4android.vuforiaJME.ITutorialSwitcher;
 import com.aaltus.teslaradio.subject.ScenarioEnum;
 import com.aaltus.teslaradio.subject.SubjectContent;
