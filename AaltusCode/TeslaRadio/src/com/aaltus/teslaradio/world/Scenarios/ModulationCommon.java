@@ -168,7 +168,6 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         actionSwitch = scene.getChild("Switch");
         actionSwitchHitBox = scene.getChild("Through-holes.001");
         
-
         initAngleSwitch.fromAngleAxis(0.45f, Vector3f.UNIT_Z);
         endAngleSwitch.fromAngleAxis(-0.45f, Vector3f.UNIT_Z);
 
@@ -365,13 +364,14 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
     private void checkTrackableAngle(float Angle) {
 
         float stepRange = 2f * pi / 3;
+        float offsetAngle = Angle + pi/3f;
         int frequency = 0;
 
-        if (Angle >= 0 && Angle < stepRange) {
+        if (offsetAngle >= 0 && offsetAngle < stepRange) {
             frequency = 1;
-        } else if (Angle >= stepRange && Angle < 2 * stepRange) {
+        } else if (offsetAngle >= stepRange && offsetAngle < 2 * stepRange) {
             frequency = 2;
-        } else if (Angle >= 2 * stepRange && Angle < 3 * stepRange) {
+        } else if (offsetAngle >= 2 * stepRange && offsetAngle < 3 * stepRange) {
             frequency = 3;
         }
         
