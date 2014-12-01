@@ -1052,7 +1052,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        setImmersiveMode(hasFocus);
+        //setImmersiveMode(hasFocus);
     }
 
     private void setImmersiveMode(boolean hasFocus) {
@@ -1180,7 +1180,7 @@ public class VuforiaJMEActivity extends AndroidHarnessFragmentActivity implement
 
         super.onCreate(savedInstanceState);
 
-        setImmersiveMode(true);
+        //setImmersiveMode(true);
 
         //Enabling Profiler
         if (UseProfiler)
