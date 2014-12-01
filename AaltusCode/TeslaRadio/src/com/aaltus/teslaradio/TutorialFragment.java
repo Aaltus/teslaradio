@@ -13,12 +13,14 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 import com.ar4android.vuforiaJME.Typewriter;
 import com.ar4android.vuforiaJME.ITutorialSwitcher;
 import com.aaltus.teslaradio.subject.ScenarioEnum;
 import com.aaltus.teslaradio.subject.SubjectContent;
+import com.utils.AppLogger;
 
 /**
  * Created by jimbojd72 on 11/3/2014.
@@ -30,6 +32,7 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
 
     private Animation shakeAnim;
     private AnimationDrawable speakAnim;
+    private TextView typewriter;
 
     private enum CharacterAction{
 
@@ -72,6 +75,8 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
     private ITutorialSwitcher tutorialSwitcher;
     private int nbClicks = 0;
     private long time = 0;
+    private int legitClickCount = 1;
+    private int nbStrings = 0;
 
     public void setTutorialSwitcher(ITutorialSwitcher tutorialSwitcher) {
         this.tutorialSwitcher = tutorialSwitcher;
@@ -89,6 +94,8 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
         View myView = inflater.inflate(R.layout.tutorial_layout, null, false);
 
         View bubbleView = myView.findViewById(R.id.bubble_root_view);
+        LinearLayout layout = (LinearLayout) bubbleView.findViewById(R.id.bubbleLayout);
+        typewriter = (TextView)layout.findViewById(R.id.bubbleTypewriter);
         bubbleView.setVisibility(View.GONE);
 
         View characterButton     = myView.findViewById(R.id.character_tutorial_button);
@@ -194,10 +201,14 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
         if(viewFlipper.getDisplayedChild() == viewFlipper.getChildCount()-1)
         {
             setBubbleViewVisibility(false);
+            legitClickCount = 1;
+            typewriter.setText(legitClickCount + " de " + nbStrings);
         }
         else
         {
+            legitClickCount++;
             viewFlipper.showNext();
+            typewriter.setText(legitClickCount + " de " + nbStrings);
             setTutorialMenuCallback(viewFlipper.getDisplayedChild());
         }
     }
@@ -226,6 +237,7 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
         if(scenarioEnum == null)
         {
             setBubbleViewVisibility(false);
+            legitClickCount = 1;
         }
         else
         {
@@ -234,11 +246,14 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
             viewFlipper.removeAllViews();
 
             int[] listXmlString = SubjectContent.ENUM_MAP.get(scenarioEnum).getListStringIdTutorial();
+            nbStrings = listXmlString.length;
             if (listXmlString != null) {
-                for (int i = 0; i < listXmlString.length; i++) {
+                for (int i = 0; i < nbStrings; i++) {
                     TextView textView = new TextView(this.getActivity());
                     textView.setText(this.getActivity().getText(listXmlString[i]));
                     textView.setTextColor(Color.BLACK);
+                    typewriter.setText(legitClickCount + " de " + nbStrings);
+                    typewriter.setTextColor(Color.BLACK);
                     viewFlipper.addView(textView);
                 }
             }

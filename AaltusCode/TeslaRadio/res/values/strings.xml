@@ -64,18 +64,18 @@
 
 
     <!--Tesla's tutorials-->
-    <string name="sound_emission_tutorial_p1"><b>Tapoter</b> les instruments modifie la <u>pression d’air</u> autour de ceux-ci et crée ainsi des <u>ondes sonores</u></string>
-    <string name="sound_capture_tutorial_p1">Les ondes sonores sont captées par le microphone, qui les transforme en <u>courant électrique</u>. <b>Éloigner</b> le microphone des instruments nuit à la capture du son</string>
-    <string name="modulation_tutorial_p1">La forme géométrique représente une <u>porteuse</u>, c’est-à-dire la <u>fréquence</u> émise ou le poste de radio. On peut la changer en faisant<b> tourner</b> la cible, ce qui tourne le bouton rouge</string>
-    <string name="modulation_tutorial_p2">Le <u>modulateur</u> permet d’insérer l’information du courant électrique dans la porteuse, ce qui permettra de différencier les stations de radio entre elles. Par la <u>modulation</u>, le courant électrique modifie la grandeur générale de la porteuse</string>
-    <string name="modulation_tutorial_p3">Il existe deux types de modulation : <u>AM</u> et <u>FM</u>. La modulation <u>d’amplitude</u> (AM) a un effet sur la grosseur générale de la porteuse tandis que la modulation <u>de fréquence</u> (FM) a un effet sur sa largeur. <b>Basculer</b> l’interrupteur change le type de modulation</string>
-    <string name="transmission_tutorial_p1"><u>Amplifier</u> la <u>porteuse modulée</u> (i.e. forme géométrique modifiée) permet de l’envoyer dans les airs sur de longues distances. On peut modifier <u>l’amplification</u> en <b>touchant</b> le gradateur de l’amplificateur</string>
-    <string name="transmission_tutorial_p2">La <u>porteuse modulée</u>, sous forme électrique, entre dans <u>l’antenne émettrice</u> et se transforme en onde radio. L’onde radio se propage dans l’air et dans l’espace</string>
-    <string name="reception_tutorial_p1"><u>L’antenne réceptrice</u> capte toutes les ondes radio qui s’y rendent. L’antenne transforme l’onde radio en signal électrique. <b>Éloigner</b> l’antenne émettrice de l’antenne réceptrice nuit à la capture de l’onde radio</string>
-    <string name="filter_tutorial_p1">Le <u>filtre</u> sert à conserver uniquement le poste de radio voulu. Les autres fréquences sont rejetées. On peut syntoniser le poste de radio en <b>tournant</b> la cible</string>
-    <string name="demodulation_tutorial_p1">La <u>démodulation</u> permet d’extraire l’information voulue de la porteuse. De cette façon, on prépare le signal électrique à l’envoi vers le hautparleur</string>
-    <string name="demodulation_tutorial_p2">Si la modulation a été faite en amplitude (AM), il faut démoduler en AM. Il en est de même pour la démodulation de fréquence (FM). <b>Basculer</b> l’interrupteur change le type de démodulation</string>
-    <string name="playback_tutorial_p1">Finalement, le courant électrique est transformé en onde sonore grâce au hautparleur. On peut amplifier le signal électrique en <b>touchant</b> le gradateur. Le volume du son en est ainsi modifié</string>
+    <string name="sound_emission_tutorial_p1"><b>Tapoter</b> les instruments modifie la <u>pression d’air</u> autour de ceux-ci et crée ainsi des <u>ondes sonores.</u></string>
+    <string name="sound_capture_tutorial_p1">Les ondes sonores sont captées par le microphone, qui les transforme en <u>courant électrique</u>. <b>Éloigner</b> le microphone des instruments nuit à la capture du son.</string>
+    <string name="modulation_tutorial_p1">La forme géométrique représente une <u>porteuse</u>, c’est-à-dire la <u>fréquence</u> émise ou le poste de radio. On peut la changer en faisant<b> tourner</b> la cible, ce qui tourne le bouton rouge.</string>
+    <string name="modulation_tutorial_p2">Le <u>modulateur</u> permet d’insérer l’information du courant électrique dans la porteuse, ce qui permettra de différencier les stations de radio entre elles. Par la <u>modulation</u>, le courant électrique modifie la grandeur générale de la porteuse.</string>
+    <string name="modulation_tutorial_p3">Il existe deux types de modulation : <u>AM</u> et <u>FM</u>. La modulation <u>d’amplitude</u> (AM) a un effet sur la grosseur générale de la porteuse tandis que la modulation <u>de fréquence</u> (FM) a un effet sur sa largeur. <b>Basculer</b> l’interrupteur change le type de modulation.</string>
+    <string name="transmission_tutorial_p1"><u>Amplifier</u> la <u>porteuse modulée</u> (i.e. forme géométrique modifiée) permet de l’envoyer dans les airs sur de longues distances. On peut modifier <u>l’amplification</u> en <b>touchant</b> le gradateur de l’amplificateur.</string>
+    <string name="transmission_tutorial_p2">La <u>porteuse modulée</u>, sous forme électrique, entre dans <u>l’antenne émettrice</u> et se transforme en onde radio. L’onde radio se propage dans l’air et dans l’espace.</string>
+    <string name="reception_tutorial_p1"><u>L’antenne réceptrice</u> capte toutes les ondes radio qui s’y rendent. L’antenne transforme l’onde radio en signal électrique. <b>Éloigner</b> l’antenne émettrice de l’antenne réceptrice nuit à la capture de l’onde radio.</string>
+    <string name="filter_tutorial_p1">Le <u>filtre</u> sert à conserver uniquement le poste de radio voulu. Les autres fréquences sont rejetées. On peut syntoniser le poste de radio en <b>tournant</b> la cible.</string>
+    <string name="demodulation_tutorial_p1">La <u>démodulation</u> permet d’extraire l’information voulue de la porteuse. De cette façon, on prépare le signal électrique à l’envoi vers le hautparleur.</string>
+    <string name="demodulation_tutorial_p2">Si la modulation a été faite en amplitude (AM), il faut démoduler en AM. Il en est de même pour la démodulation de fréquence (FM). <b>Basculer</b> l’interrupteur change le type de démodulation.</string>
+    <string name="playback_tutorial_p1">Finalement, le courant électrique est transformé en onde sonore grâce au hautparleur. On peut amplifier le signal électrique en <b>touchant</b> le gradateur. Le volume du son en est ainsi modifié.</string>
 
     <!--Master tutorial strings-->
     <string name="tutorial_title">Tutoriel</string>

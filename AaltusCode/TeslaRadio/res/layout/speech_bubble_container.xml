@@ -8,6 +8,7 @@
         >
     <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/bubbleLayout"
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,6 +68,12 @@
 
 
         </ViewFlipper>
+
+        <TextView android:id="@+id/bubbleTypewriter"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:gravity="right"
+        />
 
     </LinearLayout>
 </LinearLayout>
