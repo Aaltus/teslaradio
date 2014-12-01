@@ -345,35 +345,35 @@ public class VuforiaJME extends SimpleApplication implements AppObservable, Stat
 
         ScenarioCommon scenarioCommon = new ScenarioCommon();
 
-        androidActivityController.setProgressBar(0, "Chargement Émission du son...");
+        androidActivityController.setProgressBar(0, "Disposition des instruments...");
         SoundEmission soundEmission = new SoundEmission(scenarioCommon, null, null);
         renderManager.preloadScene(soundEmission);
 
-        androidActivityController.setProgressBar(10, "Chargement Capture du son...");
+        androidActivityController.setProgressBar(10, "Ajustement du microphone...");
         Scenario soundCapture = new SoundCapture(scenarioCommon, null, null);
         renderManager.preloadScene(soundCapture);
 
-        androidActivityController.setProgressBar(20, "Chargement Amplification...");
+        androidActivityController.setProgressBar(20, "Chargement de l'amplificateur...");
         Amplification amplification = new Amplification(scenarioCommon, null, null);
         renderManager.preloadScene(amplification);
 
-        androidActivityController.setProgressBar(30, "Chargement Modulation...");
+        androidActivityController.setProgressBar(30, "Orientation de l'antenne...");
         Modulation modulation = new Modulation(scenarioCommon, null, null);
         renderManager.preloadScene(modulation);
 
-        androidActivityController.setProgressBar(40, "Chargement Réception...");
+        androidActivityController.setProgressBar(40, "Paramétrage de la réception...");
         Reception reception = new Reception(scenarioCommon, null, null);
         renderManager.preloadScene(reception);
 
-        androidActivityController.setProgressBar(50, "Chargement Démodulation...");
+        androidActivityController.setProgressBar(50, "Réglage du démodulateur...");
         Demodulation demodulation = new Demodulation(scenarioCommon, null, null);
         renderManager.preloadScene(demodulation);
 
-        androidActivityController.setProgressBar(60, "Chargement Filtrage...");
+        androidActivityController.setProgressBar(60, "Rotation du filtre...");
         Filter filter = new Filter(scenarioCommon, null, null);
         renderManager.preloadScene(filter);
 
-        androidActivityController.setProgressBar(70, "Chargement Hautparleur...");
+        androidActivityController.setProgressBar(70, "Branchement des hauts-parleurs...");
         Playback playback = new Playback(scenarioCommon, null, null);
         renderManager.preloadScene(playback);
 

@@ -1,18 +1,34 @@
 package com.aaltus.teslaradio;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.*;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.*;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 import com.utils.AppLogger;
+import com.utils.BackgroundLoadingImageView;
+import com.utils.BackgroundShareImage;
 import com.viewpagerindicator.CirclePageIndicator;
+
+import java.io.*;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jimbojd72 on 11/8/2014.
@@ -220,7 +236,7 @@ public class MasterTutorialFragment extends DialogFragment implements
         return fragment;
     }
 
-    private static class ScreenSlidePageFragment extends Fragment implements View.OnClickListener {
+    public static class ScreenSlidePageFragment extends Fragment implements View.OnClickListener {
 
         private int position;
         private static final String ARG_ITEM_ID = "item_id";
@@ -264,19 +280,25 @@ public class MasterTutorialFragment extends DialogFragment implements
 
             switch (id){
                 case R.id.button_website_printing:
-                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + getActivity().getString(R.string.image_web_site_url)));
-                    startActivity(i);
+                    Intent websiteIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getActivity().getString(R.string.image_web_site_url)));
+                    startActivity(websiteIntent);
                     this.getActivity().finish();
                     break;
                 case R.id.button_email_printing:
-                    //Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + getActivity().getString(R.string.image_web_site_url)));
-                    //startActivity(i);
-                    //this.getActivity().finish();
+
+                    BackgroundShareImage backgroundShareImage =
+                            new BackgroundShareImage(getActivity());
+                    backgroundShareImage.execute(R.drawable.trackable_merged);
+
+
                     break;
             }
         }
-
     }
+
+
+
+
 
 
 
