@@ -5,6 +5,8 @@ import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +14,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
-import com.ar4android.Typewriter;
+import com.ar4android.vuforiaJME.Typewriter;
 import com.ar4android.vuforiaJME.ITutorialSwitcher;
 import com.aaltus.teslaradio.subject.ScenarioEnum;
 import com.aaltus.teslaradio.subject.SubjectContent;
@@ -145,18 +147,20 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
         {
             case R.id.character_tutorial_button:
 
-                if (!(getView().findViewById(R.id.bubble_root_view).getVisibility() == View.VISIBLE)) {
-                    nbClicks++;
-                    if (nbClicks == 1) {
-                        time = System.currentTimeMillis();
-                    } else if (nbClicks > 1) {
-                        long currentTime = System.currentTimeMillis();
-                        long deltaTime = currentTime - time;
+                checkIfEasterEgg();
 
-                        if (deltaTime >= 2000) {
-                            nbClicks = 0;
-                        }
+                if (nbClicks == 1) {
+                    time = System.currentTimeMillis();
+                } else if (nbClicks > 1) {
+                    long currentTime = System.currentTimeMillis();
+                    long deltaTime = currentTime - time;
+
+                    if (deltaTime >= 2000) {
+                        nbClicks = 0;
                     }
+                }
+
+                if (!(getView().findViewById(R.id.bubble_root_view).getVisibility() == View.VISIBLE)) {
 
                     setBubbleViewVisibility(!(getView().findViewById(R.id.bubble_root_view).getVisibility() == View.VISIBLE));
                     if (getView().findViewById(R.id.bubble_root_view).getVisibility() == View.VISIBLE) {
@@ -170,6 +174,14 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
                 switchBubbles();
                 break;
 
+        }
+    }
+
+    private void checkIfEasterEgg() {
+        nbClicks++;
+
+        if (nbClicks >= 5) {
+            setElectricAnimation();
         }
     }
 
@@ -205,8 +217,6 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
             }
 
             setCharacterAction(CharacterAction.SPEAKING);
-        } else if (nbClicks >= 10) {
-            setCharacterAction(CharacterAction.ELECTRIC);
         } else if (view.getVisibility() == View.VISIBLE && !showBubble) {
             view.setVisibility(View.GONE);
             setTutorialMenuCallback(-1);
