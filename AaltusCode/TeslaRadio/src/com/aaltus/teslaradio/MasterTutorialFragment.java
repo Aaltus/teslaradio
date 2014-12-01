@@ -280,7 +280,7 @@ public class MasterTutorialFragment extends DialogFragment implements
 
             switch (id){
                 case R.id.button_website_printing:
-                    Intent websiteIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + getActivity().getString(R.string.image_web_site_url)));
+                    Intent websiteIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getActivity().getString(R.string.image_web_site_url)));
                     startActivity(websiteIntent);
                     this.getActivity().finish();
                     break;
@@ -288,7 +288,7 @@ public class MasterTutorialFragment extends DialogFragment implements
 
                     BackgroundShareImage backgroundShareImage =
                             new BackgroundShareImage(getActivity());
-                    backgroundShareImage.execute(R.drawable.arrow_flipped);
+                    backgroundShareImage.execute(R.drawable.trackable_merged);
 
 
                     break;

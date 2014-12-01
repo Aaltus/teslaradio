@@ -32,7 +32,7 @@ public class BackgroundShareImage extends AsyncTask<Integer, Uri, Uri> {
         Bitmap icon = BitmapFactory.decodeResource(context.getResources(), resourceId);
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "title");
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
         Uri uri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 values);
 
@@ -40,7 +40,7 @@ public class BackgroundShareImage extends AsyncTask<Integer, Uri, Uri> {
         boolean isImageLoaded = false;
         try {
             outstream = context.getContentResolver().openOutputStream(uri);
-            icon.compress(Bitmap.CompressFormat.PNG, 100, outstream);
+            icon.compress(Bitmap.CompressFormat.JPEG, 100, outstream);
             outstream.close();
             isImageLoaded = true;
         } catch (Exception e) {
@@ -57,7 +57,7 @@ public class BackgroundShareImage extends AsyncTask<Integer, Uri, Uri> {
 
         if(uriImage != null) {
             Intent share = new Intent(Intent.ACTION_SEND);
-            share.setType("image/png");
+            share.setType("image/jpeg");
             share.putExtra(Intent.EXTRA_STREAM, uriImage);
             context.startActivity(Intent.createChooser(share, "Share Image"));
         }
