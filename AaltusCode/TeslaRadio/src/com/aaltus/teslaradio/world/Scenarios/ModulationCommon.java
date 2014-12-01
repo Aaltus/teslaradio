@@ -223,7 +223,7 @@ public abstract class ModulationCommon extends Scenario implements EmitterObserv
         // Get the digital display parameters
         Vector3f displayPosition = scene.getChild("Display").getLocalTranslation();
         // TODO Use addLocal... I tried but for some reasons, it doesn't work...
-        displayPosition = displayPosition.add(0f, 0.5f, 0.0f);
+        displayPosition = displayPosition.add(0.0f, 0.7f, -0.1f);
 
         digitalDisplay.setLocalTranslation(displayPosition);
         Quaternion rotY = new Quaternion();
