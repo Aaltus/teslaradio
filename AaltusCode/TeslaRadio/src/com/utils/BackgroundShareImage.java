@@ -40,7 +40,7 @@ public class BackgroundShareImage extends AsyncTask<Integer, Uri, Uri> {
         boolean isImageLoaded = false;
         try {
             outstream = context.getContentResolver().openOutputStream(uri);
-            icon.compress(Bitmap.CompressFormat.JPEG, 100, outstream);
+            icon.compress(Bitmap.CompressFormat.JPEG, 25, outstream);
             outstream.close();
             isImageLoaded = true;
         } catch (Exception e) {
