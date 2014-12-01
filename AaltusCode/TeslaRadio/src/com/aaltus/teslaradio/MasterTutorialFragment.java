@@ -1,18 +1,26 @@
 package com.aaltus.teslaradio;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.*;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.*;
 import android.widget.Button;
+import android.widget.Toast;
 import com.utils.AppLogger;
 import com.viewpagerindicator.CirclePageIndicator;
+
+import java.io.*;
 
 /**
  * Created by jimbojd72 on 11/8/2014.
@@ -220,7 +228,7 @@ public class MasterTutorialFragment extends DialogFragment implements
         return fragment;
     }
 
-    private static class ScreenSlidePageFragment extends Fragment implements View.OnClickListener {
+    public static class ScreenSlidePageFragment extends Fragment implements View.OnClickListener {
 
         private int position;
         private static final String ARG_ITEM_ID = "item_id";
@@ -264,14 +272,60 @@ public class MasterTutorialFragment extends DialogFragment implements
 
             switch (id){
                 case R.id.button_website_printing:
-                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + getActivity().getString(R.string.image_web_site_url)));
-                    startActivity(i);
+                    Intent websiteIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + getActivity().getString(R.string.image_web_site_url)));
+                    startActivity(websiteIntent);
                     this.getActivity().finish();
                     break;
                 case R.id.button_email_printing:
-                    //Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + getActivity().getString(R.string.image_web_site_url)));
-                    //startActivity(i);
-                    //this.getActivity().finish();
+
+                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.arrow_flipped);
+                    Intent share = new Intent(Intent.ACTION_SEND);
+                    share.setType("image/png");
+
+                    ContentValues values = new ContentValues();
+                    values.put(MediaStore.Images.Media.TITLE, "title");
+                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+                    Uri uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            values);
+
+
+                    OutputStream outstream;
+                    try {
+                        outstream = getActivity().getContentResolver().openOutputStream(uri);
+                        icon.compress(Bitmap.CompressFormat.PNG, 100, outstream);
+                        outstream.close();
+                    } catch (Exception e) {
+                        AppLogger.getInstance().e(TAG,e.getMessage());
+                    }
+
+                    share.putExtra(Intent.EXTRA_STREAM, uri);
+                    startActivity(Intent.createChooser(share, "Share Image"));
+
+                    /*Intent share = new Intent(Intent.ACTION_SEND);
+                    share.setType("image/*");
+                    //Uri imageUri = Uri.parse("android.resource://"+getActivity().getPackageName()+"/" + R.drawable.arrow_flipped);
+                    Uri imageUri = Uri.parse("content://com.aaltus.teslaradio.provider/arrow_flipped");
+                    Log.i("Sharing image imageUri",""+imageUri);
+                    share.putExtra(Intent.EXTRA_STREAM,imageUri);
+                    startActivity(Intent.createChooser(share, "Share Image"));*/
+
+                    /*Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                    emailIntent.setType("image/png");
+                    //emailIntent.setType("message/rfc822");
+                    //emailIntent.putExtra(Intent.EXTRA_EMAIL  , new String[]{"recipient@example.com"});
+                    //emailIntent.putExtra(Intent.EXTRA_SUBJECT, "subject of email");
+                    //emailIntent.putExtra(Intent.EXTRA_TEXT   , "body of email");
+                    String packageName = "android.resource://"+getActivity().getPackageName()+"/" + R.drawable.arrow_flipped;
+                    AppLogger.getInstance().i(TAG,"Resource string:"+packageName);
+                    emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("android.resource://"+getActivity().getPackageName()+"/" + R.drawable.arrow));
+                    try {
+                        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+                        //this.getActivity().finish();
+                    } catch (android.content.ActivityNotFoundException ex) {
+                        Toast.makeText(getActivity(), getActivity().getText(R.string.no_email_available), Toast.LENGTH_SHORT).show();
+                    }*/
+
+
                     break;
             }
         }
