@@ -6,7 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -16,11 +18,17 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.*;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 import com.utils.AppLogger;
+import com.utils.BackgroundLoadingImageView;
+import com.utils.BackgroundShareImage;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.io.*;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jimbojd72 on 11/8/2014.
@@ -278,59 +286,19 @@ public class MasterTutorialFragment extends DialogFragment implements
                     break;
                 case R.id.button_email_printing:
 
-                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.arrow_flipped);
-                    Intent share = new Intent(Intent.ACTION_SEND);
-                    share.setType("image/png");
-
-                    ContentValues values = new ContentValues();
-                    values.put(MediaStore.Images.Media.TITLE, "title");
-                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
-                    Uri uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                            values);
-
-
-                    OutputStream outstream;
-                    try {
-                        outstream = getActivity().getContentResolver().openOutputStream(uri);
-                        icon.compress(Bitmap.CompressFormat.PNG, 100, outstream);
-                        outstream.close();
-                    } catch (Exception e) {
-                        AppLogger.getInstance().e(TAG,e.getMessage());
-                    }
-
-                    share.putExtra(Intent.EXTRA_STREAM, uri);
-                    startActivity(Intent.createChooser(share, "Share Image"));
-
-                    /*Intent share = new Intent(Intent.ACTION_SEND);
-                    share.setType("image/*");
-                    //Uri imageUri = Uri.parse("android.resource://"+getActivity().getPackageName()+"/" + R.drawable.arrow_flipped);
-                    Uri imageUri = Uri.parse("content://com.aaltus.teslaradio.provider/arrow_flipped");
-                    Log.i("Sharing image imageUri",""+imageUri);
-                    share.putExtra(Intent.EXTRA_STREAM,imageUri);
-                    startActivity(Intent.createChooser(share, "Share Image"));*/
-
-                    /*Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                    emailIntent.setType("image/png");
-                    //emailIntent.setType("message/rfc822");
-                    //emailIntent.putExtra(Intent.EXTRA_EMAIL  , new String[]{"recipient@example.com"});
-                    //emailIntent.putExtra(Intent.EXTRA_SUBJECT, "subject of email");
-                    //emailIntent.putExtra(Intent.EXTRA_TEXT   , "body of email");
-                    String packageName = "android.resource://"+getActivity().getPackageName()+"/" + R.drawable.arrow_flipped;
-                    AppLogger.getInstance().i(TAG,"Resource string:"+packageName);
-                    emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("android.resource://"+getActivity().getPackageName()+"/" + R.drawable.arrow));
-                    try {
-                        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-                        //this.getActivity().finish();
-                    } catch (android.content.ActivityNotFoundException ex) {
-                        Toast.makeText(getActivity(), getActivity().getText(R.string.no_email_available), Toast.LENGTH_SHORT).show();
-                    }*/
+                    BackgroundShareImage backgroundShareImage =
+                            new BackgroundShareImage(getActivity());
+                    backgroundShareImage.execute(R.drawable.arrow_flipped);
 
 
                     break;
             }
         }
-
     }
+
+
+
+
 
 
 
