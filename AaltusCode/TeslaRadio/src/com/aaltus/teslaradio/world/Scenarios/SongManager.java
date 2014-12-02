@@ -37,12 +37,14 @@ public class SongManager {
         BackgroundSoundControl song1 = new BackgroundSoundControl("Sounds/SongClassic.ogg");
         BackgroundSoundControl song2 = new BackgroundSoundControl("Sounds/SongElek.ogg");
         BackgroundSoundControl song3 = new BackgroundSoundControl("Sounds/SongRock.ogg");
+        BackgroundSoundControl song4 = new BackgroundSoundControl("Sounds/nosound.ogg");
         
         songMap = new EnumMap<SongEnum,BackgroundSoundControl>(SongEnum.class);
         songMap.put(SongEnum.CLASSIC, song1);
         songMap.put(SongEnum.ELEK, song2);
         songMap.put(SongEnum.ROCK,song3);
         songMap.put(SongEnum.NOISE, noise);
+        songMap.put(SongEnum.NOSOUND, song4);
         selectedSong = SongEnum.ELEK;
         
         audioNode = new Node();
@@ -50,10 +52,12 @@ public class SongManager {
         audioNode.addControl(song1);
         audioNode.addControl(song2);
         audioNode.addControl(song3);
+        audioNode.addControl(song4);
         
         song1.setEnabled(false);
         song2.setEnabled(true);
         song3.setEnabled(false);
+        song4.setEnabled(false);
         
         noise.updateNoiseLevel(0);
         this.audioNode.setUserData(AppGetter.USR_NOISE_LEVEL, 0f);
@@ -130,6 +134,9 @@ public class SongManager {
                 newSong = SongEnum.ROCK;
                 break;
             case CLASSIC:
+                newSong = SongEnum.NOSOUND;
+                break;
+            case NOSOUND:
                 newSong = SongEnum.ELEK;
                 break;
             default:

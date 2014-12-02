@@ -10,5 +10,5 @@ package com.aaltus.teslaradio.subject;
  */
 public enum SongEnum {
     
-    NOISE, ROCK, CLASSIC, ELEK, SELECTED
+    NOISE, ROCK, CLASSIC, ELEK, SELECTED, NOSOUND
 }
