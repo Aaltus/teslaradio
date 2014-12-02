@@ -35,7 +35,8 @@ public class ACRAApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        //UNCOMMENT TO ABLE THE CRASH REPORT
         // The following line triggers the initialization of ACRA
-        ACRA.init(this);
+        //ACRA.init(this);
     }
 }
