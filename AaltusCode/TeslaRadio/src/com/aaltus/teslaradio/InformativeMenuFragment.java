@@ -452,6 +452,7 @@ public class InformativeMenuFragment extends Fragment implements View.OnClickLis
             case R.id.item_detail_fragment_close_button:
                 //Log.d(TAG, "OnClick Callback from detail fragment");
                 toggleDetailFragmentVisibility(false);
+                audioWhenFragmentVisible(true);
                 if(!isListFragmentsVisible()){
                     toggleTutorialVisibility(true);
                 }
