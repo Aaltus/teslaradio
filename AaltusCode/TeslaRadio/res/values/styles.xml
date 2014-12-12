@@ -1,0 +1,128 @@
+<resources>
+
+
+    <!--Change this color if you want to change the action bar color-->
+    <drawable name="global_app_color">#FF212121</drawable>
+    <drawable name="button_pressed_app_color">#CECECE</drawable>
+    <drawable name="GreyTransparent">#CC212121</drawable>
+    <drawable name="GreyOpaque">#FF212121</drawable>
+    <drawable name="LightGreyOpaque">#ff222222</drawable>
+
+
+    <!--For splashscreen-->
+    <style name="Theme.NoBackground" parent="android:Theme">
+        <item name="android:windowBackground">@null</item>
+    </style>
+
+    <!--Informative menu style-->
+    <style name="InformativeMenuTextStyle">
+        <item name="android:gravity">left</item>
+        <item name="android:layout_gravity">center_vertical|right</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <!--<item name="android:typeface">serif</item>-->
+        <!--<item name="android:textSize">10sp</item>-->
+
+    </style>
+    <!--Credits-->
+    <style name="Credits">
+        <item name="android:textSize">50sp</item>
+    </style>
+    <style name="InformativeMenuScrollView">
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:fadeScrollbars">false</item>
+    </style>
+    <!--Credits titles text style-->
+    <style name="CreditsTitlesStyle">
+        <item name="android:textSize">30sp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+    <!--Credits names text style-->
+    <style name="CreditsTextStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+    <!--Credits images text style-->
+    <style name="CreditsImageStyle">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginBottom">15dp</item>
+    </style>
+    <!--Credits top padding-->
+    <style name="CreditsTopPadding">
+        <item name="android:paddingTop">350dp</item>
+    </style>
+    <style name="InformativeMenuImageViewStyle">
+        <item name="android:background">@drawable/imageview_bg</item>
+    </style>
+
+    <style name="MyDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTitleStyle">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:gravity">center</item>
+
+        <!--<item name="android:windowIsTranslucent">true</item>-->
+        <!--<item name="android:backgroundDimEnabled">false</item>-->
+        <!--<item name="android:windowBackground">@drawable/window_layout_bg</item>-->
+
+    </style>
+
+    <style name="LanguageMenuTextStyle">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center_vertical|center_horizontal</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+
+    </style>
+    <style name="ListFragmentPadding">
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+    </style>
+    <style name="SeekBarLinearLayoutStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+    <style name="BubbleWeight">
+        <item name="android:layout_weight">1</item>
+    </style>
+    <style name="CharacterSize">
+        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_height">80dp</item>
+    </style>
+    <style name="ImageSize">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:adjustViewBounds">true</item>
+    </style>
+    <style name="CustomDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:background">@drawable/GreyOpaque</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <!--<item name="android:windowBackground">@null</item>
+        <item name="android:windowFrame">@null</item>-->
+    </style>
+
+    <style name="button1" parent="@android:style/Widget.Button">
+        <item name="com.aaltus.teslaradio:font">Fonts/agencyb.ttf</item>
+    </style>
+
+    <style name="button2" parent="@android:style/Widget.Button">
+        <item name="com.aaltus.teslaradio:font">Fonts/agencyr.ttf</item>
+    </style>
+    <style name="masterTutorialFillerWeight">
+        <item name="android:layout_weight">0</item>
+    </style>
+
+
+
+</resources>

@@ -1,0 +1,229 @@
+<!--
+Jonathan Desmarais 3/18/2014
+
+This layout is inflated on top of the jMonkey view
+to superpose list and detail fragment and put some
+button on the handset.
+-->
+
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:my="http://schemas.android.com/apk/res/com.aaltus.teslaradio"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/activity_item_twopane_2_rootview"
+        android:clickable="false"
+        >
+
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:orientation="horizontal"
+            android:gravity="center"
+            >
+        <View android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              />
+
+        <LinearLayout android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                  android:layout_width="0dp"
+                  android:layout_weight="1"
+                  android:layout_gravity="bottom"
+                  android:background="@drawable/window_layout_bg"
+                  android:padding="1dp">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/picto_title"
+                    android:text="@string/sound_capture_title"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:layout_gravity="center"/>
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+                <ImageButton android:layout_width="50dp"
+                           android:layout_height="50dp"
+                           android:id="@+id/previous_scenario_button"
+                           android:background="@drawable/arrow_flipped"
+                           android:layout_gravity="center"/>
+                <com.utils.PagerContainer
+                        android:id="@+id/pager_container"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="60dp"
+                        android:background="@drawable/GreyOpaque"
+                        android:layout_gravity="center">
+                    <android.support.v4.view.ViewPager
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            />
+                </com.utils.PagerContainer>
+                <ImageButton android:layout_width="50dp"
+                             android:layout_height="50dp"
+                           android:id="@+id/next_scenario_button"
+                           android:background="@drawable/arrow"
+                           android:layout_gravity="center"/>
+            </LinearLayout>
+        </LinearLayout>
+<!--
+        <LinearLayout android:layout_height="wrap_content"
+                  android:layout_width="wrap_content">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/previous_scenario_button"
+                      android:layout_gravity="center"
+                      android:textColor="@color/white"/>
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_gravity="center"
+                       android:text="@string/next_scenario_button"
+                       android:textColor="@color/white"/>
+        </LinearLayout>
+-->
+    </LinearLayout>
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:showDividers="middle"
+            android:layout_weight="1"
+         >
+
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="fill_parent"
+                      android:orientation="vertical"
+                      android:gravity="top"
+                >
+
+            <Button
+                    android:id="@+id/camera_toggle_info_button"
+                    android:layout_gravity="top|left"
+                    android:layout_height="50dp"
+                    android:layout_width="50dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/layer_list_info"/>
+
+        </LinearLayout>
+
+        <include layout="@layout/item_detail_fragment_container"/>
+
+        <!-- Artefact from the old code for the informative menu and language button-->
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="fill_parent"
+                      android:orientation="vertical"
+                      android:id="@+id/linear_layout_global_buttons"
+                      android:gravity="top"
+                >
+            <!--For some fucking reason, I need to add this view so the slidingdrawer don't go under everything
+            when it is closing...thats kind of strange really...-->
+            <Button
+                    android:id="@+id/ipod_song_selector_button"
+                    android:layout_height="50dp"
+                    android:layout_width="50dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/layer_musique"/>
+            <Button
+                       android:id="@+id/guitar_hit_button"
+                       android:layout_height="50dp"
+                       android:layout_width="50dp"
+                       android:layout_margin="5dp"
+                       android:background="@drawable/layer_guitare"/>
+            <Button
+                       android:id="@+id/tambour_hit_button"
+                       android:layout_height="50dp"
+                       android:layout_width="50dp"
+                       android:layout_margin="5dp"
+                       android:background="@drawable/layer_tambour"/>
+            <!--
+            <Button
+                    android:id="@+id/camera_toggle_info_button"
+                    android:layout_height="50dp"
+                    android:layout_width="50dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/layer_list_info"/>
+            <LinearLayout android:layout_width="50dp"
+                          android:layout_margin="5dp"
+                          android:orientation="vertical"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                    android:gravity="center">
+
+
+        </LinearLayout>
+            <Button
+                    android:id="@+id/camera_toggle_language_button"
+                    android:layout_height="50dp"
+                    android:layout_width="50dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/layer_list_language"
+
+                    />-->
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <FrameLayout
+            android:id="@+id/tutorial_fragment"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+    </FrameLayout>
+
+
+
+<!--
+    <FrameLayout
+            android:layout_width="200dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="left">
+        <com.aaltus.teslaradio.MultiDirectionSlidingDrawer
+                android:id="@+id/informative_menu_drawer"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal"
+                my:handleOffset="20dp"
+                my:direction="leftToRight"
+                my:handle="@+id/handle"
+                my:content="@+id/content">
+
+            <ImageView
+                    android:id="@id/handle"
+                    android:layout_width="44dip"
+                    android:layout_height="80dp"
+                    android:background="@drawable/drawer_handle"/>
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@id/content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:showDividers="middle"
+                    >
+
+                <FrameLayout
+                        android:id="@+id/item_list_fragment_vuforia"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="top"/>
+
+            </LinearLayout>
+
+
+
+
+        </com.aaltus.teslaradio.MultiDirectionSlidingDrawer>
+    </FrameLayout>
+-->
+
+
+</FrameLayout>

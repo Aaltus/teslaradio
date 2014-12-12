@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/credits_scroller"
+            android:padding="10dp"
+            android:fadeScrollbars="true">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/credits_layout"
+            android:orientation="vertical"
+            style="@style/CreditsTopPadding"
+            android:paddingBottom="100dp"
+            android:descendantFocusability="blocksDescendants">
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center"
+                  style="@style/Credits"
+                  android:layout_marginBottom="10dp"
+                  android:text="@string/Credits"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Responsable"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Emilien"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:layout_marginBottom="20dp"
+                  android:text="@string/David"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Programmeurs"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Hugo"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Jonathan"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Alexandre"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/JC"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Thibault"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:layout_marginBottom="20dp"
+                  android:text="@string/Christian"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Recherchiste"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:layout_marginBottom="20dp"
+                  android:text="@string/Simon"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Artiste"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:layout_marginBottom="20dp"
+                  android:text="@string/Jeremy"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Correctrice"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:layout_marginBottom="20dp"
+                  android:text="@string/Melissa"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Photographe"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:layout_marginBottom="20dp"
+                  android:text="@string/Laurens"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Professeurs"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Ahmed"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Ruben"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Sebastien"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Vincent"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:layout_marginBottom="20dp"
+                  android:text="@string/Philippe"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Outils"/>
+
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="fill_parent"
+                          android:layout_weight="1">
+
+                <ImageView style="@style/ImageSize"
+                           android:layout_gravity="center"
+                           android:scaleType="fitCenter"
+                           android:scaleX="0.75"
+                           android:scaleY="0.75"
+                           android:layout_marginLeft="10dp"
+                           android:layout_marginRight="10dp"
+                           android:src="@drawable/blender"/>
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="fill_parent"
+                          android:layout_weight="1">
+
+                <ImageView style="@style/ImageSize"
+                           android:layout_gravity="center"
+                           android:layout_marginLeft="10dp"
+                           android:layout_marginRight="20dp"
+                           android:src="@drawable/stack"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:layout_marginBottom="30dp">
+
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1">
+
+                <TextView android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          style="@style/CreditsTextStyle"
+                          android:gravity="center"
+                          android:text="@string/Blender"/>
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1">
+
+                <TextView android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          style="@style/CreditsTextStyle"
+                          android:gravity="center"
+                          android:text="@string/Stack"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="fill_parent"
+                          android:layout_weight="1">
+
+                <ImageView style="@style/ImageSize"
+                           android:layout_gravity="center"
+                           android:scaleType="fitCenter"
+                           android:scaleX="0.5"
+                           android:scaleY="0.5"
+                           android:layout_marginLeft="10dp"
+                           android:layout_marginRight="10dp"
+                           android:src="@drawable/android_robot"/>
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="fill_parent"
+                          android:layout_weight="1">
+
+                <ImageView style="@style/ImageSize"
+                           android:layout_gravity="center"
+                           android:layout_marginLeft="10dp"
+                           android:layout_marginRight="20dp"
+                           android:src="@drawable/vuforia"/>
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="fill_parent"
+                          android:layout_weight="1">
+
+                <ImageView style="@style/ImageSize"
+                           android:layout_gravity="center"
+                           android:layout_marginLeft="10dp"
+                           android:layout_marginRight="10dp"
+                           android:src="@drawable/jmonkey"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:layout_marginBottom="30dp">
+
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1">
+
+                <TextView android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          style="@style/CreditsTextStyle"
+                          android:gravity="center"
+                          android:text="@string/Android"/>
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1">
+
+                <TextView android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          style="@style/CreditsTextStyle"
+                          android:gravity="center"
+                          android:text="@string/Vuforia"/>
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1">
+
+                <TextView android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          style="@style/CreditsTextStyle"
+                          android:gravity="center"
+                          android:text="@string/JMonkey"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Refs"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reference"
+                style="@style/CreditsTextStyle"
+                />
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTitlesStyle"
+                  android:text="@string/Musique"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/License"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Trame1"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Trame2"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:text="@string/Trame3"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTextStyle"
+                  android:layout_marginBottom="50dp"
+                  android:text="@string/Trame4"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/CreditsTitlesStyle"
+                  android:textSize="50sp"
+                  android:text="@string/Merci"/>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,63 @@
+
+-dontwarn com.jme3.**
+-keep class com.jme3.** { *; }
+-keep class jme3tools.** { *; }
+
+-dontwarn org.bushe.swing.event.**
+-keep class org.bushe.swing.event.** { *; }
+
+-dontwarn android.support.v7.app.**
+-keep class android.support.v7.app.** { *; }
+
+-dontwarn android.support.v7.internal.**
+-keep class android.support.v7.internal.** { *; }
+
+-dontwarn android.support.v7.widget.**
+-keep class android.support.v7.widget.** { *; }
+
+-dontwarn android.support.v7.appcompat.**
+-keep class android.support.v7.appcompat.** { *; }
+
+-dontwarn cz.advel.stack.instrument.**
+-keep class cz.advel.stack.instrument.** { *; }
+
+-dontwarn ch.qos.logback.core.net.**
+-keep class ch.qos.logback.core.net.** { *; }
+-keep class ch.qos.logback.classic.** { *; }
+-keep class ch.qos.logback.core.** { *; }
+-keep class ch.qos.logback.repackage.** { *; }
+
+-dontwarn net.java.games.util.plugins.test.**
+-keep class net.java.games.util.plugins.test.** { *; }
+
+-dontwarn net.java.games.input.**
+-keep class net.java.games.input.** { *; }
+
+-dontwarn javax.vecmath.**
+-keep class javax.vecmath.** { *; }
+
+-dontwarn de.lessvoid.nifty.ClipboardAWT
+-keep class de.lessvoid.xml.** { *; }
+-keep class de.lessvoid.nifty.** { *; }
+
+-keep class com.qualcomm.** { *; }
+
+
+-keep class com.aaltus.teslaradio.** { *; }
+
+-keep class com.ar4android.vuforiaJME.** { *; }
+
+-keep class com.viewpagerindicator.** { *; }
+
+
+-keep class com.utils.** { *; }
+
+
+
+
+#Library duplicate ...
+-dontwarn android.**
+-keep class android.** { *; }
+
+-keep class org.xmlpull.v1.** { *; }
+-keep class org.** { *; }

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:myapp="http://schemas.android.com/apk/res/com.aaltus.teslaradio"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            style="@style/InformativeMenuScrollView"
+
+        >
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/test_layout"
+    android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/modulationp1"
+                style="@style/InformativeMenuTextStyle"
+                />
+
+
+        <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:clickable="false">
+
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="fill_parent"
+                          android:orientation="horizontal">
+
+                <View android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"/>
+
+                    <com.utils.BackgroundLoadingImageView
+                            android:id="@+id/modulationam_preview"
+                            android:layout_gravity="center"
+                            myapp:drawableId="@drawable/modulationam_preview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:adjustViewBounds="true"
+                            android:clickable="false"
+                            android:background="@color/white"/>
+
+                <View android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"/>
+            </LinearLayout>
+
+            <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/play_button" />
+
+        </FrameLayout>
+        <!--<com.utils.CustomVideoView
+                android:layout_gravity="center_horizontal"
+                android:layout_height="350dp"
+                android:layout_width="fill_parent"
+                android:id="@+id/videoView"
+                myapp:uri="android.resource://com.galimatias.teslaradio/raw/modulationam"
+                />-->
+
+        <!--android:background="@drawable/button_bg"-->
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/modulationp2"
+                style="@style/InformativeMenuTextStyle"
+                />
+
+        <!--<com.utils.CustomVideoView
+                android:layout_gravity="center_horizontal"
+                android:layout_height="500dp"
+                android:layout_width="fill_parent"
+                android:id="@+id/videoView"
+                myapp:uri="android.resource://com.galimatias.teslaradio/raw/souris"
+                />-->
+
+        <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:clickable="false">
+
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="fill_parent"
+                          android:orientation="horizontal">
+
+                <View android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"/>
+
+                    <com.utils.BackgroundLoadingImageView
+                            android:id="@+id/souris_preview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:adjustViewBounds="true"
+                            android:layout_gravity="center"
+                            myapp:drawableId="@drawable/souris_preview"
+                            android:clickable="false"/>
+
+                <View android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"/>
+            </LinearLayout>
+
+            <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/play_button" />
+
+        </FrameLayout>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/modulationp3"
+                style="@style/InformativeMenuTextStyle"
+                />
+
+        <!--<com.utils.CustomVideoView
+                android:layout_gravity="center_horizontal"
+                android:layout_height="350dp"
+                android:layout_width="fill_parent"
+                android:id="@+id/videoView"
+                myapp:uri="android.resource://com.galimatias.teslaradio/raw/modulationfm"
+                />-->
+
+        <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:clickable="false">
+
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="fill_parent"
+                          android:orientation="horizontal">
+
+                <View android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"/>
+
+                    <com.utils.BackgroundLoadingImageView
+                            android:id="@+id/modulationfm_preview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:adjustViewBounds="true"
+                            android:layout_gravity="center"
+                            myapp:drawableId="@drawable/modulationfm_preview"
+                            android:clickable="false"/>
+
+                <View android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"/>
+            </LinearLayout>
+
+            <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/play_button" />
+
+        </FrameLayout>
+
+
+    </LinearLayout>
+</ScrollView>
